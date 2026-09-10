@@ -1,0 +1,626 @@
+/* =========================================================
+   OCD4 - TÁC PHẨM MỚI NHẤT
+   STUDENT WORK LATEST v1.0
+   ---------------------------------------------------------
+   - Public only
+   - Mobile: 10 bài
+   - Desktop: 25 bài
+   - Không Admin
+   - Không chấm điểm
+   - Không tặng quà
+   - Không tìm kiếm
+   - Không phân trang
+========================================================= */
+
+#swLatestApp{
+    --sw-bg:#ffffff;
+    --sw-text:#172033;
+    --sw-muted:#718096;
+    --sw-border:#e2e8f0;
+    --sw-soft:#f8fafc;
+    --sw-accent:#7c3aed;
+
+    max-width:1240px;
+    margin:0 auto;
+    padding:24px 14px 46px;
+
+    box-sizing:border-box;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color:var(--sw-text);
+}
+
+
+#swLatestApp *,
+#swLatestApp *::before,
+#swLatestApp *::after{
+    box-sizing:border-box;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.sw-latest-header{
+    margin-bottom:18px;
+    text-align:center;
+}
+
+
+.sw-latest-title{
+    margin:0;
+
+    color:var(--sw-text);
+
+    font-size:
+        clamp(
+            25px,
+            4vw,
+            34px
+        );
+
+    line-height:1.2;
+    font-weight:900;
+}
+
+
+.sw-latest-subtitle{
+    max-width:680px;
+
+    margin:
+        7px auto
+        0;
+
+    color:var(--sw-muted);
+
+    font-size:12px;
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   NỘP BÀI
+========================================================= */
+
+.sw-latest-submit{
+    display:flex;
+
+    justify-content:center;
+
+    margin:
+        0
+        0
+        25px;
+}
+
+
+.sw-latest-submit a{
+    display:inline-flex;
+
+    align-items:center;
+    justify-content:center;
+
+    gap:8px;
+
+    min-height:46px;
+
+    padding:
+        0
+        25px;
+
+    border-radius:12px;
+
+    background:#172033;
+
+    color:#fff !important;
+
+    text-decoration:none !important;
+
+    box-shadow:
+        0 8px 22px
+        rgba(23,32,51,.14);
+
+    font-size:14px;
+    font-weight:900;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+
+.sw-latest-submit a:hover{
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 11px 28px
+        rgba(23,32,51,.18);
+}
+
+
+.sw-latest-submit a:active{
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.sw-latest-status{
+    display:none;
+
+    max-width:720px;
+
+    margin:
+        0 auto
+        20px;
+
+    padding:
+        10px
+        14px;
+
+    border-radius:11px;
+
+    background:#f8fafc;
+
+    color:#64748b;
+
+    text-align:center;
+
+    font-size:10px;
+    line-height:1.5;
+    font-weight:800;
+}
+
+
+.sw-latest-status.on{
+    display:block;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.sw-latest-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0,1fr)
+        );
+
+    gap:18px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.sw-latest-card{
+    position:relative;
+
+    min-width:0;
+
+    overflow:hidden;
+
+    border:
+        1px solid
+        var(--sw-border);
+
+    border-radius:18px;
+
+    background:var(--sw-bg);
+
+    box-shadow:
+        0 7px 22px
+        rgba(15,23,42,.07);
+
+    content-visibility:auto;
+
+    contain-intrinsic-size:
+        430px;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+
+.sw-latest-card:hover{
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 12px 30px
+        rgba(15,23,42,.11);
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.sw-latest-image-box{
+    position:relative;
+
+    aspect-ratio:
+        4 / 3;
+
+    overflow:hidden;
+
+    background:#eef2f7;
+}
+
+
+.sw-latest-work-link{
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    text-decoration:none;
+}
+
+
+.sw-latest-image{
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    transition:
+        transform .28s ease;
+}
+
+
+.sw-latest-card:hover
+.sw-latest-image{
+    transform:
+        scale(1.025);
+}
+
+
+.sw-latest-number{
+    position:absolute;
+
+    z-index:5;
+
+    top:10px;
+    left:10px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    min-width:30px;
+    height:30px;
+
+    padding:
+        0
+        8px;
+
+    border-radius:999px;
+
+    background:
+        rgba(15,23,42,.78);
+
+    color:#fff;
+
+    backdrop-filter:
+        blur(5px);
+
+    font-size:10px;
+    font-weight:900;
+}
+
+
+.sw-latest-no-image{
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+    gap:7px;
+
+    width:100%;
+    height:100%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #111827,
+            #312e81
+        );
+
+    color:#fff;
+
+    font-size:35px;
+}
+
+
+.sw-latest-no-image small{
+    opacity:.75;
+
+    font-size:9px;
+}
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.sw-latest-info{
+    padding:
+        14px
+        15px
+        15px;
+}
+
+
+.sw-latest-name{
+    overflow:hidden;
+
+    margin-bottom:9px;
+
+    color:#172033;
+
+    font-size:16px;
+    line-height:1.35;
+    font-weight:900;
+
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+
+.sw-latest-meta{
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:6px;
+
+    margin-bottom:10px;
+}
+
+
+.sw-latest-chip{
+    display:inline-flex;
+
+    align-items:center;
+
+    min-height:26px;
+
+    padding:
+        4px
+        8px;
+
+    border-radius:999px;
+
+    background:#f1f5f9;
+
+    color:#526076;
+
+    font-size:9px;
+    font-weight:800;
+}
+
+
+.sw-latest-time{
+    color:#94a3b8;
+
+    font-size:9px;
+    line-height:1.45;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.sw-latest-loading{
+    padding:
+        42px
+        15px;
+
+    color:#7c8597;
+
+    text-align:center;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+
+.sw-latest-spinner{
+    width:28px;
+    height:28px;
+
+    margin:
+        0 auto
+        12px;
+
+    border:
+        3px solid
+        #e2e8f0;
+
+    border-top-color:
+        var(--sw-accent);
+
+    border-radius:50%;
+
+    animation:
+        swLatestSpin
+        .8s linear
+        infinite;
+}
+
+
+/* =========================================================
+   EMPTY / ERROR
+========================================================= */
+
+.sw-latest-empty,
+.sw-latest-error{
+    display:none;
+
+    padding:
+        34px
+        15px;
+
+    border-radius:14px;
+
+    text-align:center;
+
+    font-size:12px;
+    line-height:1.6;
+}
+
+
+.sw-latest-empty.on{
+    display:block;
+
+    background:#f8fafc;
+
+    color:#64748b;
+}
+
+
+.sw-latest-error.on{
+    display:block;
+
+    background:#fff1f2;
+
+    color:#be123c;
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes swLatestSpin{
+
+    to{
+        transform:
+            rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:1000px){
+
+    .sw-latest-grid{
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0,1fr)
+            );
+    }
+}
+
+
+@media(max-width:760px){
+
+    .sw-latest-grid{
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0,1fr)
+            );
+
+        gap:14px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:600px){
+
+    #swLatestApp{
+        padding:
+            17px
+            10px
+            35px;
+    }
+
+
+    .sw-latest-header{
+        margin-bottom:15px;
+    }
+
+
+    .sw-latest-title{
+        font-size:25px;
+    }
+
+
+    .sw-latest-subtitle{
+        font-size:11px;
+    }
+
+
+    .sw-latest-submit{
+        margin-bottom:20px;
+    }
+
+
+    .sw-latest-submit a{
+        min-height:45px;
+
+        padding:
+            0
+            22px;
+
+        font-size:13px;
+    }
+
+
+    .sw-latest-grid{
+        grid-template-columns:1fr;
+
+        gap:17px;
+    }
+
+
+    .sw-latest-image-box{
+        aspect-ratio:
+            4 / 3;
+    }
+
+
+    .sw-latest-info{
+        padding:
+            13px
+            14px
+            14px;
+    }
+
+
+    .sw-latest-name{
+        font-size:17px;
+    }
+}
