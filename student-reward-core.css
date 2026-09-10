@@ -1,0 +1,142 @@
+/* =========================================================
+   STUDENT REWARD SYSTEM CORE v3.6.0
+   CSS DÙNG CHUNG TOÀN WEBSITE
+
+   v3.6.0
+   ---------------------------------------------------------
+   KHO VẬT PHẨM HỢP NHẤT:
+   - PhieuDoi
+   - Quà Hộp bí ẩn
+   - QuaTangGVCN
+
+   LINH THẠCH HỢP NHẤT:
+   - Linh thạch học tập
+   - Linh thạch đổi từ Chợ phiên
+   - Linh thạch từ Hộp bí ẩn
+   - Linh thạch GVCN tặng
+
+   TẤT CẢ CHẠY QUA CÙNG normalizeGemBalance()
+========================================================= */
+
+
+/* =========================================================
+   THUỐC ĐA NHIỆM
+========================================================= */
+
+.reward-multitask-wrap{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    max-width:100%;
+}
+
+.reward-multitask-name{
+    position:relative;
+    color:#f59e0b !important;
+
+    animation:
+        rewardMultitaskColor 2.8s linear infinite,
+        rewardMultitaskGlow 1.6s ease-in-out infinite alternate;
+}
+
+.reward-multitask-star{
+    position:absolute;
+    z-index:30;
+    pointer-events:none;
+    user-select:none;
+    line-height:1;
+    color:#fff;
+
+    text-shadow:
+        0 0 4px rgba(255,255,255,.9),
+        0 0 8px rgba(251,191,36,.9);
+
+    animation:
+        rewardMultitaskStar 1.6s ease-in-out infinite;
+}
+
+.reward-multitask-star-left{
+    left:-17px;
+    top:-11px;
+}
+
+.reward-multitask-star-right{
+    right:-18px;
+    top:-9px;
+    animation-delay:.35s;
+}
+
+.reward-multitask-star-bottom-left{
+    left:-10px;
+    bottom:-12px;
+    animation-delay:.7s;
+}
+
+.reward-multitask-star-bottom-right{
+    right:-12px;
+    bottom:-11px;
+    animation-delay:1.05s;
+}
+
+.reward-multitask-size-small .reward-multitask-star{
+    font-size:10px;
+}
+
+.reward-multitask-size-medium .reward-multitask-star{
+    font-size:13px;
+}
+
+.reward-multitask-size-large .reward-multitask-star{
+    font-size:16px;
+}
+
+@keyframes rewardMultitaskColor{
+
+    0%{
+        color:#f59e0b;
+    }
+
+    25%{
+        color:#ec4899;
+    }
+
+    50%{
+        color:#8b5cf6;
+    }
+
+    75%{
+        color:#0ea5e9;
+    }
+
+    100%{
+        color:#f59e0b;
+    }
+}
+
+@keyframes rewardMultitaskGlow{
+
+    from{
+        text-shadow:
+            0 0 3px rgba(245,158,11,.35);
+    }
+
+    to{
+        text-shadow:
+            0 0 6px rgba(255,255,255,.85),
+            0 0 12px rgba(245,158,11,.75);
+    }
+}
+
+@keyframes rewardMultitaskStar{
+
+    0%,
+    100%{
+        opacity:.25;
+        transform:scale(.65) rotate(0deg);
+    }
+
+    50%{
+        opacity:1;
+        transform:scale(1.15) rotate(18deg);
+    }
+}
