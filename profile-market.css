@@ -1,1 +1,1745 @@
 
+/* =========================================================
+   HỒ SƠ / CHỢ PHIÊN v4.9L STABLE LAZY
+   YÊU CẦU: StudentRewardSystem Core v3.6.0+
+
+   NỀN ỔN ĐỊNH:
+   - Giữ startWhenReady()
+   - Giữ startApp()
+   - Giữ bindEvents()
+   - Không thay cách Reward Core khởi động
+
+   TỐI ƯU:
+   - KHÔNG tải Chợ phiên khi vừa mở trang
+   - Chỉ loadMarket() khi mở Chợ phiên lần đầu
+   - KHÔNG dựng bảng bài nộp ngay khi tra cứu
+   - Chỉ dựng bảng khi mở "Danh sách bài đã nộp"
+   - Ảnh lazy loading
+   - decoding async
+   - DocumentFragment khi render danh sách
+
+   GIỮ NGUYÊN:
+   - ADMIN test
+   - ADMIN vốn gốc 1000 Hồng Ngọc
+   - Giao dịch thật Google Form / PhieuDoi
+   - Replay giao dịch bằng Core
+   - XoaBai
+   - Điểm / streak / high-score
+   - Linh thạch
+   - Vật phẩm
+   - Metadata QuaTang
+   - Daily NPC
+   - Profit deal
+========================================================= */
+
+#rewardExchangeApp{
+    --brown:#92400e;
+    --brown-dark:#78350f;
+    --orange:#d97706;
+    --yellow:#fbbf24;
+    --green:#16a34a;
+    --blue:#2563eb;
+    --red:#dc2626;
+
+    max-width:1100px;
+    margin:30px auto;
+    padding:25px;
+    background:#fff;
+    border-radius:20px;
+    box-shadow:0 8px 30px rgba(0,0,0,.12);
+    font-family:Arial,sans-serif;
+    color:#292524;
+    box-sizing:border-box;
+}
+
+#rewardExchangeApp *,
+#rewardExchangeApp *::before,
+#rewardExchangeApp *::after{
+    box-sizing:border-box;
+}
+
+.rx-title{
+    text-align:center;
+    color:#92400e;
+    font-size:28px;
+    font-weight:900;
+    margin-bottom:7px;
+}
+
+.rx-desc{
+    text-align:center;
+    color:#666;
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:22px;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.rx-search{
+    padding:18px;
+    background:#fffdf7;
+    border:1px solid #fbbf24;
+    border-radius:15px;
+}
+
+.rx-section-title{
+    color:#7c2d12;
+    font-size:21px;
+    font-weight:900;
+    margin-bottom:5px;
+}
+
+.rx-day{
+    color:#78716c;
+    font-size:13px;
+    margin-bottom:14px;
+}
+
+.rx-search-row{
+    display:flex;
+    gap:10px;
+}
+
+.rx-input{
+    width:100%;
+    min-width:0;
+    padding:14px 16px;
+    background:#fff;
+    border:1px solid #d1d5db;
+    border-radius:11px;
+    outline:none;
+    font-size:16px;
+}
+
+.rx-input:focus{
+    border-color:#d97706;
+    box-shadow:0 0 0 3px rgba(217,119,6,.13);
+}
+
+.rx-search-btn{
+    flex:0 0 155px;
+    padding:14px 18px;
+    border:none;
+    border-radius:11px;
+    background:#d97706;
+    color:#fff;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.rx-search-btn:hover{
+    background:#b45309;
+}
+
+.rx-search-btn:disabled{
+    background:#9ca3af;
+    cursor:not-allowed;
+}
+
+.rx-message{
+    display:none;
+    margin-top:13px;
+    padding:12px;
+    border-radius:10px;
+    font-size:13px;
+    line-height:1.5;
+    text-align:center;
+}
+
+.rx-message.loading{
+    display:block;
+    background:#eff6ff;
+    color:#1d4ed8;
+}
+
+.rx-message.success{
+    display:block;
+    background:#dcfce7;
+    color:#166534;
+}
+
+.rx-message.error{
+    display:block;
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.student-profile-module{
+    display:none;
+    position:relative;
+    margin-top:17px;
+    min-height:245px;
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7ed,
+            #fffbeb
+        );
+
+    background-position:center;
+    background-size:cover;
+    border:1px solid #f3d38a;
+    border-radius:20px;
+    box-shadow:0 6px 22px rgba(120,53,15,.12);
+    isolation:isolate;
+}
+
+.student-profile-module.admin-profile{
+    border-color:#c084fc;
+    box-shadow:
+        0 0 0 2px rgba(147,51,234,.07),
+        0 8px 26px rgba(124,58,237,.16);
+}
+
+.student-profile-overlay{
+    position:absolute;
+    inset:0;
+    z-index:0;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(20,15,10,.84),
+            rgba(20,15,10,.55),
+            rgba(20,15,10,.14)
+        );
+
+    opacity:0;
+    pointer-events:none;
+}
+
+.student-profile-module.has-profile-background
+.student-profile-overlay{
+    opacity:1;
+}
+
+.student-profile-inner{
+    position:relative;
+    z-index:1;
+    min-height:245px;
+    padding:24px;
+}
+
+.student-profile-main{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.student-profile-avatar{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:116px;
+    height:116px;
+    flex:0 0 116px;
+    overflow:visible;
+}
+
+.student-profile-avatar-core{
+    position:relative;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:92px;
+    height:92px;
+    overflow:hidden;
+    background:rgba(255,255,255,.95);
+    border:4px solid rgba(255,255,255,.9);
+    border-radius:50%;
+    box-shadow:0 5px 15px rgba(0,0,0,.18);
+    font-size:43px;
+}
+
+.student-profile-avatar-core img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+.student-profile-avatar-frame{
+    position:absolute;
+    z-index:2;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    pointer-events:none;
+}
+
+.student-profile-avatar:not(.has-avatar-frame)
+.student-profile-avatar-core{
+    width:96px;
+    height:96px;
+}
+
+/* =========================================================
+   PROFILE INFO
+========================================================= */
+
+.student-profile-content{
+    min-width:0;
+}
+
+.student-profile-label{
+    color:#a16207;
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:1.4px;
+    margin-bottom:5px;
+}
+
+.student-profile-module.has-profile-background
+.student-profile-label{
+    color:#fde68a;
+}
+
+.student-profile-name-wrap{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    max-width:100%;
+}
+
+.student-profile-name{
+    position:relative;
+    display:inline-block;
+    max-width:100%;
+    color:#78350f;
+    font-size:27px;
+    font-weight:900;
+    line-height:1.25;
+    word-break:break-word;
+}
+
+.student-profile-module.has-profile-background
+.student-profile-name{
+    color:#fff;
+    text-shadow:0 2px 8px rgba(0,0,0,.65);
+}
+
+.student-profile-badges{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:12px;
+}
+
+.student-profile-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:6px 9px;
+    background:rgba(255,255,255,.92);
+    border:1px solid rgba(253,186,116,.85);
+    border-radius:999px;
+    color:#7c2d12;
+    font-size:11px;
+    font-weight:800;
+}
+
+.student-profile-module.has-profile-background
+.student-profile-badge{
+    background:rgba(255,255,255,.18);
+    border-color:rgba(255,255,255,.38);
+    color:#fff;
+}
+
+.student-profile-actions{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:9px;
+    margin-top:18px;
+}
+
+.student-profile-action{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    padding:11px 8px;
+    border:1px solid #fbbf24;
+    border-radius:12px;
+    background:rgba(255,255,255,.94);
+    color:#78350f;
+    font-size:12px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.student-profile-action.active{
+    background:#d97706;
+    border-color:#d97706;
+    color:#fff;
+}
+
+.student-profile-module.has-profile-background
+.student-profile-action:not(.active){
+    background:rgba(255,255,255,.18);
+    border-color:rgba(255,255,255,.38);
+    color:#fff;
+}
+
+.student-profile-action-number{
+    font-size:15px;
+}
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.rx-expand-panel{
+    display:none;
+    margin-top:12px;
+    padding:15px;
+    background:#fff;
+    border:1px solid #f3d38a;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.rx-expand-panel.visible{
+    display:block;
+}
+
+.rx-panel-title{
+    color:#78350f;
+    font-size:16px;
+    font-weight:900;
+    margin-bottom:11px;
+}
+
+/* =========================================================
+   LEARNING
+========================================================= */
+
+.learning-info-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:9px;
+}
+
+.learning-info-item{
+    padding:12px;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+}
+
+.learning-info-label{
+    color:#6b7280;
+    font-size:11px;
+    margin-bottom:5px;
+}
+
+.learning-info-value{
+    color:#111827;
+    font-size:15px;
+    font-weight:800;
+}
+
+.learning-average{
+    color:#15803d;
+    font-size:18px;
+}
+
+.learning-ranking{
+    color:#b45309;
+    font-size:18px;
+}
+
+.learning-status{
+    margin-top:12px;
+    padding:13px 15px;
+    border:1px solid;
+    border-radius:11px;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.learning-status.safe{
+    background:#ecfdf5;
+    border-color:#86efac;
+    color:#166534;
+}
+
+.learning-status.warning{
+    background:#fff7ed;
+    border-color:#fdba74;
+    color:#c2410c;
+}
+
+.learning-status.danger{
+    background:#fef2f2;
+    border-color:#fca5a5;
+    color:#b91c1c;
+}
+
+.learning-status-title{
+    font-weight:900;
+    margin-bottom:4px;
+}
+
+/* =========================================================
+   GEMS
+========================================================= */
+
+.profile-gem-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:9px;
+}
+
+.profile-gem-card{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px;
+    border-radius:11px;
+}
+
+.profile-gem-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:45px;
+    height:45px;
+    flex:0 0 45px;
+}
+
+.profile-gem-icon img{
+    width:42px;
+    height:42px;
+    object-fit:contain;
+}
+
+.profile-gem-name{
+    color:#57534e;
+    font-size:10px;
+}
+
+.profile-gem-value{
+    color:#78350f;
+    font-size:18px;
+    font-weight:900;
+}
+
+.gem-hoang{
+    background:#fef3c7;
+    border:1px solid #fcd34d;
+}
+
+.gem-hailam{
+    background:#e0f2fe;
+    border:1px solid #7dd3fc;
+}
+
+.gem-thachanh{
+    background:#f3e8ff;
+    border:1px solid #d8b4fe;
+}
+
+.gem-lambao{
+    background:#dbeafe;
+    border:1px solid #93c5fd;
+}
+
+.gem-luc{
+    background:#dcfce7;
+    border:1px solid #86efac;
+}
+
+.gem-hong{
+    background:#ffe4e6;
+    border:1px solid #fda4af;
+}
+
+/* =========================================================
+   RARITY
+========================================================= */
+
+.rx-gift,
+.profile-item-card{
+    --rarity-text:#78350f;
+    --rarity-soft:#fff7ed;
+    --rarity-soft-2:#fffbeb;
+    --rarity-border:#f3d38a;
+    --rarity-main:#b45309;
+    --rarity-main-hover:#92400e;
+}
+
+.rarity-hoang{
+    --rarity-text:#854d0e;
+    --rarity-soft:#fef9c3;
+    --rarity-soft-2:#fffbeb;
+    --rarity-border:#facc15;
+    --rarity-main:#ca8a04;
+    --rarity-main-hover:#a16207;
+}
+
+.rarity-hailam{
+    --rarity-text:#075985;
+    --rarity-soft:#e0f2fe;
+    --rarity-soft-2:#f0f9ff;
+    --rarity-border:#38bdf8;
+    --rarity-main:#0284c7;
+    --rarity-main-hover:#0369a1;
+}
+
+.rarity-thachanh{
+    --rarity-text:#6b21a8;
+    --rarity-soft:#f3e8ff;
+    --rarity-soft-2:#faf5ff;
+    --rarity-border:#c084fc;
+    --rarity-main:#9333ea;
+    --rarity-main-hover:#7e22ce;
+}
+
+.rarity-lambao{
+    --rarity-text:#1e40af;
+    --rarity-soft:#dbeafe;
+    --rarity-soft-2:#eff6ff;
+    --rarity-border:#60a5fa;
+    --rarity-main:#2563eb;
+    --rarity-main-hover:#1d4ed8;
+}
+
+.rarity-luc{
+    --rarity-text:#166534;
+    --rarity-soft:#dcfce7;
+    --rarity-soft-2:#f0fdf4;
+    --rarity-border:#4ade80;
+    --rarity-main:#16a34a;
+    --rarity-main-hover:#15803d;
+}
+
+.rarity-hong{
+    --rarity-text:#9f1239;
+    --rarity-soft:#ffe4e6;
+    --rarity-soft-2:#fff1f2;
+    --rarity-border:#fb7185;
+    --rarity-main:#e11d48;
+    --rarity-main-hover:#be123c;
+}
+
+.rx-rarity-badge,
+.profile-item-rarity{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    max-width:100%;
+    background:var(--rarity-soft);
+    border:1px solid var(--rarity-border);
+    border-radius:999px;
+    color:var(--rarity-text);
+    font-weight:900;
+    line-height:1;
+}
+
+.rx-rarity-badge{
+    margin-top:7px;
+    padding:5px 9px;
+    font-size:9px;
+    letter-spacing:.25px;
+    text-transform:uppercase;
+}
+
+.profile-item-rarity{
+    margin-top:5px;
+    padding:4px 7px;
+    font-size:8px;
+}
+
+.rx-rarity-gem{
+    width:21px;
+    height:21px;
+    flex:0 0 21px;
+    object-fit:contain;
+}
+
+.profile-rarity-gem{
+    width:17px;
+    height:17px;
+    flex:0 0 17px;
+    object-fit:contain;
+}
+
+.rx-mobile-rarity-icon,
+.profile-mobile-rarity-icon{
+    display:none;
+    vertical-align:middle;
+    object-fit:contain;
+}
+
+/* =========================================================
+   PROFILE ITEMS
+========================================================= */
+
+.profile-item-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:9px;
+}
+
+.profile-item-card{
+    position:relative;
+    padding:9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--rarity-soft-2),
+            #fff
+        );
+
+    border:1px solid var(--rarity-border);
+    border-radius:11px;
+}
+
+.profile-item-top{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.profile-item-image{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:54px;
+    height:54px;
+    flex:0 0 54px;
+    overflow:hidden;
+    background:#fff;
+    border:1px solid var(--rarity-border);
+    border-radius:10px;
+    font-size:25px;
+}
+
+.profile-item-image img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.profile-item-info{
+    min-width:0;
+    flex:1;
+}
+
+.profile-item-name-line{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:4px;
+}
+
+.profile-item-name{
+    color:var(--rarity-text);
+    font-size:11px;
+    font-weight:900;
+    line-height:1.35;
+}
+
+.profile-item-quantity{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:28px;
+    padding:3px 6px;
+    background:var(--rarity-main);
+    border-radius:999px;
+    color:#fff;
+    font-size:9px;
+    font-weight:900;
+}
+
+.profile-item-date{
+    margin-top:4px;
+    color:#78716c;
+    font-size:9px;
+}
+
+.profile-item-description{
+    margin-top:7px;
+    padding-top:7px;
+    border-top:1px dashed var(--rarity-border);
+    color:#57534e;
+    font-size:10px;
+    line-height:1.5;
+}
+
+.profile-empty{
+    grid-column:1/-1;
+    padding:13px;
+    background:#fffaf0;
+    border:1px dashed #f3d38a;
+    border-radius:10px;
+    color:#78716c;
+    font-size:12px;
+    text-align:center;
+}
+
+/* =========================================================
+   SUBMISSIONS
+========================================================= */
+
+.submission-section{
+    display:none;
+    margin-top:16px;
+}
+
+.submission-toggle-button{
+    width:100%;
+    padding:15px 17px;
+    border:none;
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d4ed8,
+            #2563eb,
+            #3b82f6
+        );
+
+    color:#fff;
+    font-size:15px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.submission-toggle-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.submission-toggle-left{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.submission-toggle-count{
+    color:#dbeafe;
+    font-size:12px;
+}
+
+.submission-toggle-arrow{
+    transition:.2s transform;
+}
+
+.submission-toggle-button.open
+.submission-toggle-arrow{
+    transform:rotate(180deg);
+}
+
+.submission-content{
+    display:none;
+    margin-top:10px;
+}
+
+.submission-content.visible{
+    display:block;
+}
+
+.submission-table-wrapper{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+}
+
+.submission-table{
+    width:100%;
+    min-width:950px;
+    border-collapse:collapse;
+    background:#fff;
+}
+
+.submission-table th{
+    padding:13px 10px;
+    background:#2563eb;
+    color:#fff;
+    font-size:14px;
+    text-align:center;
+}
+
+.submission-table td{
+    padding:12px 10px;
+    border-bottom:1px solid #e5e7eb;
+    color:#374151;
+    font-size:14px;
+    vertical-align:middle;
+}
+
+.score-box{
+    display:inline-block;
+    min-width:55px;
+    padding:7px 10px;
+    background:#fee2e2;
+    border-radius:8px;
+    color:#dc2626;
+    font-weight:900;
+}
+
+.score-empty{
+    display:inline-block;
+    padding:6px 9px;
+    background:#f3e8ff;
+    border-radius:7px;
+    color:#7c3aed;
+    font-weight:900;
+}
+
+.comment-empty{
+    display:inline-block;
+    padding:6px 9px;
+    background:#f3f4f6;
+    border-radius:7px;
+    color:#6b7280;
+}
+
+.comment-box{
+    min-width:180px;
+    max-width:320px;
+    padding:10px 12px;
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    border-radius:9px;
+    color:#92400e;
+}
+
+.submission-image-container{
+    text-align:center;
+}
+
+.submission-image{
+    display:block;
+    width:150px;
+    height:150px;
+    margin:0 auto;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.submission-image-note{
+    margin-top:7px;
+    color:#6b7280;
+    font-size:11px;
+}
+
+.file-link{
+    display:inline-block;
+    padding:7px 11px;
+    background:#eff6ff;
+    border-radius:7px;
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:700;
+}
+
+/* =========================================================
+   MARKET
+========================================================= */
+
+.market-toggle-wrap{
+    margin-top:22px;
+}
+
+.market-toggle-button{
+    width:100%;
+    padding:18px 20px;
+    border:1px solid #f59e0b;
+    border-radius:17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c2d12,
+            #b45309,
+            #d97706
+        );
+
+    color:#fff;
+    box-shadow:0 7px 20px rgba(146,64,14,.25);
+    cursor:pointer;
+    text-align:left;
+}
+
+.market-toggle-content{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.market-toggle-left{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.market-toggle-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:48px;
+    height:48px;
+    flex:0 0 48px;
+    background:rgba(255,255,255,.17);
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:14px;
+    font-size:26px;
+}
+
+.market-toggle-title{
+    font-size:18px;
+    font-weight:900;
+}
+
+.market-toggle-subtitle{
+    margin-top:3px;
+    color:rgba(255,255,255,.82);
+    font-size:11px;
+    line-height:1.4;
+}
+
+.market-toggle-arrow{
+    font-size:22px;
+    transition:.2s transform;
+}
+
+.market-toggle-button.open
+.market-toggle-arrow{
+    transform:rotate(180deg);
+}
+
+.rx-market-panel{
+    display:none;
+    margin-top:10px;
+    padding:17px;
+    background:#fffdf7;
+    border:1px solid #fde68a;
+    border-radius:16px;
+}
+
+.rx-market-panel.visible{
+    display:block;
+}
+
+.rx-market-day{
+    margin-bottom:14px;
+    padding:10px 12px;
+    background:#fef3c7;
+    border-radius:10px;
+    color:#92400e;
+    font-size:12px;
+    font-weight:800;
+    text-align:center;
+}
+
+.rx-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+}
+
+.rx-card{
+    padding:15px;
+    background:#fff;
+    border:1px solid #e7d3a1;
+    border-radius:16px;
+    text-align:center;
+}
+
+.rx-card.special-merchant{
+    border-color:#f0c879;
+}
+
+.rx-avatar{
+    width:92px;
+    height:92px;
+    margin:0 auto;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.rx-avatar-fallback{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:92px;
+    height:92px;
+    margin:0 auto;
+    background:#f5f5f4;
+    border-radius:50%;
+    font-size:38px;
+}
+
+.rx-npc-name{
+    margin-top:9px;
+    color:#78350f;
+    font-size:18px;
+    font-weight:900;
+}
+
+.rx-npc-desc{
+    margin:5px 0 12px;
+    color:#666;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.rx-offer-list{
+    display:grid;
+    gap:9px;
+}
+
+/* =========================================================
+   MARKET GIFT
+========================================================= */
+
+.rx-gift{
+    position:relative;
+    padding:11px;
+
+    background:
+        linear-gradient(
+            180deg,
+            var(--rarity-soft-2),
+            #fff 58%
+        );
+
+    border:1px solid var(--rarity-border);
+    border-radius:13px;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+.rx-gift:hover{
+    transform:translateY(-1px);
+    box-shadow:0 5px 14px rgba(0,0,0,.07);
+}
+
+.rx-mystery-badge{
+    display:inline-flex;
+    margin-bottom:8px;
+    padding:4px 8px;
+    border-radius:999px;
+    background:#7c2d12;
+    color:#fff7ed;
+    font-size:9px;
+    font-weight:900;
+}
+
+.rx-gift-img-wrap{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:72px;
+    height:72px;
+    margin:0 auto;
+    overflow:hidden;
+    background:#fff;
+    border:1px solid var(--rarity-border);
+    border-radius:11px;
+    font-size:34px;
+}
+
+.rx-gift-img-wrap img{
+    width:68px;
+    height:68px;
+    object-fit:contain;
+}
+
+.rx-gift-name-line{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:4px;
+    margin-top:8px;
+}
+
+.rx-gift-name{
+    color:var(--rarity-text);
+    font-size:13px;
+    font-weight:900;
+    line-height:1.35;
+}
+
+.rx-gift-desc{
+    margin-top:7px;
+    color:#57534e;
+    font-size:11px;
+    line-height:1.55;
+}
+
+.rx-reward-preview{
+    margin-top:8px;
+    padding:7px 8px;
+    background:var(--rarity-soft);
+    border:1px dashed var(--rarity-border);
+    border-radius:9px;
+    color:var(--rarity-text);
+    font-size:10px;
+    font-weight:900;
+}
+
+/* =========================================================
+   SALE
+========================================================= */
+
+.rx-sale-area{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:5px;
+    margin-top:8px;
+}
+
+.rx-sale-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:5px 8px;
+    background:var(--rarity-soft);
+    border:1px solid var(--rarity-border);
+    border-radius:999px;
+    color:var(--rarity-text);
+    font-size:9px;
+    font-weight:900;
+}
+
+.rx-old-price{
+    color:#78716c;
+    font-size:9px;
+}
+
+.rx-old-price strong{
+    color:var(--rarity-text);
+    text-decoration:line-through;
+}
+
+/* =========================================================
+   EXCHANGE
+========================================================= */
+
+.rx-exchange{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    width:100%;
+    margin-top:10px;
+    padding:8px 9px 8px 12px;
+    border:1px solid var(--rarity-main);
+    border-radius:11px;
+    background:var(--rarity-main);
+    color:#fff;
+    box-shadow:0 4px 10px rgba(0,0,0,.10);
+    cursor:pointer;
+
+    transition:
+        background .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+.rx-exchange:hover{
+    background:var(--rarity-main-hover);
+    transform:translateY(-1px);
+    box-shadow:0 6px 13px rgba(0,0,0,.13);
+}
+
+.rx-exchange:disabled{
+    background:#9ca3af;
+    border-color:#9ca3af;
+    cursor:not-allowed;
+    box-shadow:none;
+}
+
+.rx-exchange-action{
+    min-width:0;
+    color:inherit;
+    font-size:12px;
+    font-weight:900;
+    line-height:1.2;
+    text-align:left;
+}
+
+.rx-exchange-price{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    flex:0 0 auto;
+    min-height:31px;
+    padding:4px 8px 4px 5px;
+    background:rgba(255,255,255,.94);
+    border-radius:8px;
+    color:var(--rarity-text);
+    font-size:13px;
+    font-weight:900;
+}
+
+.rx-price-gem{
+    width:24px;
+    height:24px;
+    object-fit:contain;
+}
+
+/* =========================================================
+   MARKET INFO
+========================================================= */
+
+.market-info-area{
+    display:grid;
+    gap:10px;
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px dashed #e7d3a1;
+}
+
+.market-info-details{
+    overflow:hidden;
+    background:#fff;
+    border:1px solid #e7d3a1;
+    border-radius:13px;
+}
+
+.market-info-details summary{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:13px 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7ed,
+            #fffbeb
+        );
+
+    color:#78350f;
+    font-size:14px;
+    font-weight:900;
+    cursor:pointer;
+    list-style:none;
+    user-select:none;
+}
+
+.market-info-details summary::-webkit-details-marker{
+    display:none;
+}
+
+.market-info-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.market-info-arrow{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;
+    height:24px;
+    color:#b45309;
+    transition:transform .2s ease;
+}
+
+.market-info-details[open]
+.market-info-arrow{
+    transform:rotate(180deg);
+}
+
+.market-info-body{
+    padding:4px 16px 16px;
+    color:#57534e;
+    font-size:13px;
+    line-height:1.75;
+}
+
+.market-info-body p{
+    margin:11px 0 0;
+}
+
+.market-info-body strong{
+    color:#92400e;
+}
+
+.market-info-note{
+    margin-top:12px;
+    padding:11px 12px;
+    background:#fef3c7;
+    border:1px solid #fde68a;
+    border-radius:10px;
+    color:#78350f;
+    font-size:12px;
+    line-height:1.6;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.rx-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    background:rgba(0,0,0,.58);
+}
+
+.rx-modal-box{
+    width:100%;
+    max-width:480px;
+    max-height:90vh;
+    overflow-y:auto;
+    padding:22px;
+    background:#fff;
+    border-radius:18px;
+}
+
+.rx-modal-title{
+    color:#92400e;
+    font-size:21px;
+    font-weight:900;
+    text-align:center;
+}
+
+.rx-ticket-notice{
+    margin-top:12px;
+    padding:11px 12px;
+    background:#eff6ff;
+    border:1px solid #93c5fd;
+    border-radius:10px;
+    color:#1e40af;
+    font-size:13px;
+    font-weight:700;
+    line-height:1.6;
+    text-align:center;
+}
+
+.rx-ticket-notice.mystery{
+    background:#fffbeb;
+    border-color:#fbbf24;
+    color:#92400e;
+}
+
+.rx-ticket-notice.success{
+    background:#ecfdf5;
+    border-color:#86efac;
+    color:#166534;
+}
+
+.rx-ticket-notice.error{
+    background:#fef2f2;
+    border-color:#fca5a5;
+    color:#b91c1c;
+}
+
+.rx-ticket{
+    margin-top:14px;
+    padding:16px;
+    background:#fffdf7;
+    border:2px dashed #d97706;
+    border-radius:14px;
+}
+
+.rx-ticket-heading{
+    margin-bottom:13px;
+    color:#78350f;
+    font-size:17px;
+    font-weight:900;
+    text-align:center;
+}
+
+.rx-ticket-row{
+    display:grid;
+    grid-template-columns:125px minmax(0,1fr);
+    gap:8px;
+    padding:7px 0;
+    border-bottom:1px dashed #e7d3a1;
+    font-size:13px;
+}
+
+.rx-ticket-label{
+    color:#78716c;
+    font-weight:700;
+}
+
+.rx-ticket-value{
+    font-weight:800;
+    word-break:break-word;
+}
+
+.rx-ticket-rarity{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+
+.rx-ticket-rarity img{
+    width:23px;
+    height:23px;
+    object-fit:contain;
+}
+
+.rx-form-confirm{
+    width:100%;
+    margin-top:15px;
+    padding:13px;
+    border:none;
+    border-radius:11px;
+    background:#16a34a;
+    color:#fff;
+    font-size:15px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.rx-form-confirm:hover{
+    background:#15803d;
+}
+
+.rx-form-confirm:disabled{
+    background:#9ca3af;
+    cursor:wait;
+}
+
+.rx-form-help{
+    margin-top:10px;
+    color:#64748b;
+    font-size:11px;
+    line-height:1.5;
+    text-align:center;
+}
+
+.rx-modal-close{
+    width:100%;
+    margin-top:8px;
+    padding:11px;
+    border:none;
+    border-radius:10px;
+    background:#e5e7eb;
+    color:#333;
+    font-weight:800;
+    cursor:pointer;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:900px){
+
+    .rx-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .profile-gem-grid,
+    .profile-item-grid,
+    .learning-info-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:650px){
+
+    #rewardExchangeApp{
+        margin:10px 8px;
+        padding:14px;
+    }
+
+    .rx-search-row{
+        display:block;
+    }
+
+    .rx-search-btn{
+        width:100%;
+        margin-top:10px;
+    }
+
+    .student-profile-main{
+        gap:11px;
+    }
+
+    .student-profile-avatar{
+        width:88px;
+        height:88px;
+        flex-basis:88px;
+    }
+
+    .student-profile-avatar-core{
+        width:68px;
+        height:68px;
+        font-size:31px;
+    }
+
+    .student-profile-avatar:not(.has-avatar-frame)
+    .student-profile-avatar-core{
+        width:72px;
+        height:72px;
+    }
+
+    .student-profile-name{
+        font-size:21px;
+    }
+
+    .student-profile-actions{
+        grid-template-columns:1fr;
+    }
+
+    .rx-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:8px;
+    }
+
+    .rx-card{
+        padding:9px;
+    }
+
+    .rx-avatar,
+    .rx-avatar-fallback{
+        width:70px;
+        height:70px;
+    }
+
+    .rx-npc-name{
+        font-size:15px;
+    }
+
+    .rx-npc-desc{
+        font-size:10px;
+    }
+
+    .rx-gift{
+        padding:8px;
+    }
+
+    .rx-gift-img-wrap{
+        width:58px;
+        height:58px;
+    }
+
+    .rx-gift-img-wrap img{
+        width:54px;
+        height:54px;
+    }
+
+    .rx-gift-name{
+        font-size:11px;
+    }
+
+    .rx-gift-desc{
+        font-size:9px;
+    }
+
+    .rx-rarity-badge,
+    .profile-item-rarity{
+        display:none;
+    }
+
+    .rx-mobile-rarity-icon{
+        display:inline-block;
+        width:18px;
+        height:18px;
+        flex:0 0 18px;
+    }
+
+    .profile-mobile-rarity-icon{
+        display:inline-block;
+        width:16px;
+        height:16px;
+        flex:0 0 16px;
+    }
+
+    .rx-reward-preview{
+        padding:6px;
+        font-size:8px;
+    }
+
+    .rx-sale-badge{
+        padding:4px 5px;
+        font-size:7.5px;
+    }
+
+    .rx-old-price{
+        font-size:7.5px;
+    }
+
+    .rx-exchange{
+        gap:4px;
+        padding:6px 6px 6px 8px;
+    }
+
+    .rx-exchange-action{
+        font-size:9px;
+    }
+
+    .rx-exchange-price{
+        gap:2px;
+        min-height:27px;
+        padding:3px 5px 3px 3px;
+        font-size:10px;
+    }
+
+    .rx-price-gem{
+        width:20px;
+        height:20px;
+    }
+
+    .rx-ticket-row{
+        grid-template-columns:1fr;
+    }
+
+    .submission-image{
+        width:125px;
+        height:125px;
+    }
+
+    .market-info-details summary{
+        padding:12px;
+        font-size:13px;
+    }
+
+    .market-info-body{
+        padding:3px 13px 14px;
+        font-size:12px;
+    }
+}
+
