@@ -1,0 +1,1600 @@
+
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+#student-ranking-app{
+    --rank-bg:#07111f;
+    --rank-panel:#0d1b2d;
+    --rank-panel-2:#102238;
+    --rank-border:rgba(148,163,184,.16);
+    --rank-text:#e5eefb;
+    --rank-muted:#94a3b8;
+
+    max-width:1200px;
+    margin:28px auto;
+    padding:22px;
+
+    box-sizing:border-box;
+
+    color:var(--rank-text);
+
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(30,64,175,.18),
+            transparent 35%
+        ),
+        var(--rank-bg);
+
+    border-radius:24px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.25);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+#student-ranking-app *,
+#student-ranking-app *::before,
+#student-ranking-app *::after{
+    box-sizing:border-box;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.ranking-header{
+    text-align:center;
+    margin-bottom:22px;
+}
+
+.ranking-title{
+    margin:0;
+
+    font-size:
+        clamp(
+            29px,
+            5vw,
+            44px
+        );
+
+    line-height:1.15;
+    font-weight:900;
+
+    background:
+        linear-gradient(
+            90deg,
+            #fde68a,
+            #93c5fd,
+            #c4b5fd
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    color:transparent;
+}
+
+.ranking-subtitle{
+    max-width:800px;
+
+    margin:8px auto 0;
+
+    color:var(--rank-muted);
+
+    font-size:14px;
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   GRADUATION GOAL
+   v4.3: TO HƠN + NỔI BẬT HƠN
+========================================================= */
+
+.graduation-goal{
+    position:relative;
+
+    overflow:hidden;
+
+    margin:26px 0;
+
+    padding:28px;
+
+    border:
+        2px solid
+        rgba(250,204,21,.42);
+
+    border-radius:26px;
+
+    background:
+        radial-gradient(
+            circle at 12% 10%,
+            rgba(250,204,21,.18),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 100%,
+            rgba(59,130,246,.16),
+            transparent 34%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(245,158,11,.12),
+            rgba(59,130,246,.08)
+        ),
+        #0b1929;
+
+    box-shadow:
+        0 18px 50px rgba(0,0,0,.28),
+        0 0 32px rgba(245,158,11,.08);
+
+    isolation:isolate;
+}
+
+.graduation-goal::before{
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+    height:260px;
+
+    right:-100px;
+    top:-145px;
+
+    border-radius:50%;
+
+    background:
+        rgba(251,191,36,.10);
+
+    pointer-events:none;
+
+    z-index:-1;
+}
+
+.graduation-goal::after{
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+    height:180px;
+
+    left:-90px;
+    bottom:-110px;
+
+    border-radius:50%;
+
+    background:
+        rgba(96,165,250,.10);
+
+    pointer-events:none;
+
+    z-index:-1;
+}
+
+.graduation-head{
+    position:relative;
+
+    display:flex;
+    align-items:center;
+
+    gap:16px;
+
+    margin-bottom:21px;
+}
+
+.graduation-icon{
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    flex:0 0 auto;
+
+    width:66px;
+    height:66px;
+
+    border:
+        1px solid
+        rgba(250,204,21,.28);
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(245,158,11,.24),
+            rgba(245,158,11,.08)
+        );
+
+    box-shadow:
+        0 8px 22px rgba(245,158,11,.10);
+
+    font-size:37px;
+}
+
+.graduation-title{
+    margin:0;
+
+    color:#fde68a;
+
+    font-size:
+        clamp(
+            21px,
+            3vw,
+            29px
+        );
+
+    line-height:1.2;
+    font-weight:900;
+
+    letter-spacing:.2px;
+}
+
+.graduation-desc{
+    max-width:800px;
+
+    margin:7px 0 0;
+
+    color:#cbd5e1;
+
+    font-size:13px;
+    line-height:1.55;
+}
+
+.graduation-grid{
+    position:relative;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0,1fr)
+        );
+
+    gap:14px;
+}
+
+.graduation-item{
+    position:relative;
+
+    overflow:hidden;
+
+    min-height:135px;
+
+    padding:19px;
+
+    border:
+        1px solid
+        rgba(148,163,184,.17);
+
+    border-radius:19px;
+
+    background:
+        rgba(7,17,31,.68);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.graduation-item:hover{
+    transform:
+        translateY(-2px);
+
+    border-color:
+        rgba(250,204,21,.32);
+
+    box-shadow:
+        0 10px 28px rgba(0,0,0,.18);
+}
+
+.graduation-item-primary{
+    border-color:
+        rgba(52,211,153,.30);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,185,129,.11),
+            rgba(7,17,31,.75)
+        );
+}
+
+.graduation-value{
+    display:block;
+
+    margin-bottom:8px;
+
+    color:#fff;
+
+    font-size:
+        clamp(
+            25px,
+            4vw,
+            34px
+        );
+
+    line-height:1.1;
+    font-weight:900;
+}
+
+.graduation-item-primary
+.graduation-value{
+    color:#86efac;
+
+    text-shadow:
+        0 0 18px
+        rgba(34,197,94,.20);
+}
+
+.graduation-label{
+    display:block;
+
+    color:#e2e8f0;
+
+    font-size:14px;
+    line-height:1.45;
+    font-weight:800;
+}
+
+.graduation-note{
+    display:block;
+
+    margin-top:7px;
+
+    color:#94a3b8;
+
+    font-size:10px;
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   STAT
+========================================================= */
+
+.ranking-stats{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0,1fr)
+        );
+
+    gap:12px;
+
+    margin-bottom:20px;
+}
+
+.stat-card{
+    padding:16px;
+
+    border:
+        1px solid
+        var(--rank-border);
+
+    border-radius:17px;
+
+    background:
+        rgba(15,31,51,.88);
+
+    text-align:center;
+}
+
+.stat-value{
+    display:block;
+
+    margin-bottom:5px;
+
+    color:#fff;
+
+    font-size:24px;
+    font-weight:900;
+}
+
+.stat-label{
+    color:#94a3b8;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.ranking-section{
+    margin:18px 0;
+
+    overflow:hidden;
+
+    border:
+        1px solid
+        var(--rank-border);
+
+    border-radius:20px;
+
+    background:
+        rgba(15,31,51,.68);
+}
+
+.ranking-section-header{
+    display:flex;
+
+    justify-content:space-between;
+    align-items:center;
+
+    gap:12px;
+
+    width:100%;
+
+    padding:16px 18px;
+
+    border:0;
+
+    cursor:pointer;
+
+    color:#fff;
+    background:#102238;
+
+    text-align:left;
+}
+
+.ranking-section-title-wrap{
+    min-width:0;
+}
+
+.ranking-section-title{
+    margin:0;
+
+    font-size:19px;
+    font-weight:900;
+}
+
+.ranking-section-subtitle{
+    margin:4px 0 0;
+
+    color:#94a3b8;
+
+    font-size:12px;
+    line-height:1.45;
+}
+
+.ranking-section-arrow{
+    flex:0 0 auto;
+
+    font-size:20px;
+
+    transition:
+        transform .2s ease;
+}
+
+.ranking-section.open
+.ranking-section-arrow{
+    transform:
+        rotate(180deg);
+}
+
+.ranking-section-body{
+    display:none;
+
+    padding:16px;
+}
+
+.ranking-section.open
+.ranking-section-body{
+    display:block;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.ranking-toolbar{
+    display:flex;
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    align-items:center;
+
+    margin-bottom:10px;
+
+    padding:13px;
+
+    border:
+        1px solid
+        var(--rank-border);
+
+    border-radius:15px;
+
+    background:#091728;
+}
+
+.ranking-toolbar-group{
+    display:flex;
+    flex-direction:column;
+
+    gap:5px;
+
+    flex:1 1 165px;
+}
+
+.ranking-toolbar-label{
+    color:#64748b;
+
+    font-size:10px;
+    font-weight:900;
+
+    text-transform:uppercase;
+}
+
+.ranking-toolbar select{
+    width:100%;
+
+    min-width:150px;
+    min-height:42px;
+
+    padding:0 35px 0 12px;
+
+    border:
+        1px solid
+        rgba(148,163,184,.22);
+
+    border-radius:12px;
+
+    background:#0d1b2d;
+    color:#fff;
+
+    outline:none;
+}
+
+.ranking-toolbar select:focus{
+    border-color:#60a5fa;
+}
+
+.ranking-mode-group{
+    flex:
+        1.35 1 220px;
+}
+
+.ranking-button{
+    min-height:42px;
+
+    margin-top:15px;
+
+    padding:0 16px;
+
+    border:0;
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-weight:800;
+}
+
+.ranking-button-primary{
+    color:#06111e;
+    background:#93c5fd;
+}
+
+.ranking-button-secondary{
+    color:#dbeafe;
+    background:#172a43;
+}
+
+.active-filter-text{
+    margin:0 0 15px;
+
+    padding:0 2px;
+
+    color:#94a3b8;
+
+    font-size:12px;
+    line-height:1.55;
+}
+
+.filter-count{
+    color:#93c5fd;
+    font-weight:900;
+}
+
+.filter-mode{
+    color:#fde68a;
+    font-weight:900;
+}
+
+
+/* =========================================================
+   TOP 3
+========================================================= */
+
+.top-three{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0,1fr)
+        );
+
+    gap:16px;
+
+    margin:20px 0;
+}
+
+.top-card{
+    position:relative;
+
+    min-width:0;
+
+    overflow:hidden;
+
+    padding:
+        24px 17px
+        18px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.15);
+
+    border-radius:24px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(7,17,31,.38),
+            rgba(7,17,31,.94)
+        ),
+        #0d1b2d;
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    text-align:center;
+
+    isolation:isolate;
+}
+
+.top-card::before{
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    z-index:-1;
+
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(5,12,23,.10),
+            rgba(5,12,23,.82)
+        );
+}
+
+.top-card.rank-1{
+    border-color:
+        rgba(251,191,36,.55);
+
+    box-shadow:
+        0 0 30px
+        rgba(251,191,36,.08);
+}
+
+.top-card.rank-2{
+    border-color:
+        rgba(203,213,225,.45);
+}
+
+.top-card.rank-3{
+    border-color:
+        rgba(251,146,60,.42);
+}
+
+.top-medal{
+    position:absolute;
+
+    right:13px;
+    top:12px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    width:42px;
+    height:42px;
+
+    border-radius:50%;
+
+    background:
+        rgba(7,17,31,.72);
+
+    font-size:25px;
+}
+
+
+/* =========================================================
+   AVATAR TOP
+========================================================= */
+
+.top-avatar-shell{
+    position:relative;
+
+    width:112px;
+    height:112px;
+
+    margin:8px auto 14px;
+}
+
+.top-avatar-core{
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    z-index:1;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    width:80px;
+    height:80px;
+
+    overflow:hidden;
+
+    transform:
+        translate(-50%,-50%);
+
+    border-radius:50%;
+
+    background:#172a43;
+
+    font-size:35px;
+}
+
+.top-avatar-core img{
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+.top-avatar-frame{
+    position:absolute;
+    inset:0;
+
+    z-index:2;
+
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    object-fit:contain;
+
+    pointer-events:none;
+}
+
+.top-name-wrap{
+    justify-content:center;
+}
+
+.top-name{
+    color:#fff;
+
+    font-size:18px;
+    line-height:1.35;
+    font-weight:900;
+}
+
+
+/* =========================================================
+   TOP META
+========================================================= */
+
+.top-meta-line{
+    display:flex;
+    flex-wrap:wrap;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:6px;
+
+    margin-top:9px;
+}
+
+.meta-pill{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:3px;
+
+    min-height:24px;
+
+    padding:3px 7px;
+
+    border-radius:999px;
+
+    background:
+        rgba(15,23,42,.72);
+
+    color:#cbd5e1;
+
+    font-size:10px;
+    font-weight:800;
+}
+
+.meta-score{
+    color:#fde68a;
+}
+
+.top-ranking-extra{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:4px;
+
+    min-height:25px;
+
+    padding:4px 8px;
+
+    border-radius:999px;
+
+    background:
+        rgba(16,185,129,.11);
+
+    color:#a7f3d0;
+
+    font-size:10px;
+    font-weight:900;
+}
+
+.top-title{
+    margin-top:9px;
+
+    color:#e5e7eb;
+
+    font-size:13px;
+    font-weight:800;
+}
+
+
+/* =========================================================
+   ACHIEVEMENTS
+========================================================= */
+
+.achievement-icons{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:3px;
+
+    flex:0 0 auto;
+}
+
+.achievement-icon{
+    display:inline-flex;
+
+    align-items:center;
+    justify-content:center;
+
+    width:25px;
+    height:25px;
+
+    border:
+        1px solid
+        rgba(251,191,36,.18);
+
+    border-radius:50%;
+
+    background:
+        rgba(245,158,11,.08);
+
+    cursor:help;
+
+    font-size:16px;
+    line-height:1;
+}
+
+.top-meta-line
+.achievement-icon{
+    width:27px;
+    height:27px;
+
+    font-size:17px;
+}
+
+
+/* =========================================================
+   ASSETS
+========================================================= */
+
+.top-assets{
+    display:flex;
+    flex-wrap:wrap;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:7px;
+
+    margin-top:12px;
+}
+
+.direct-assets{
+    display:flex;
+    flex-wrap:wrap;
+
+    align-items:center;
+
+    gap:6px;
+
+    min-width:190px;
+}
+
+.asset-chip{
+    display:inline-flex;
+
+    align-items:center;
+    justify-content:center;
+
+    gap:3px;
+
+    min-height:31px;
+
+    padding:3px 6px;
+
+    border:
+        1px solid
+        rgba(148,163,184,.13);
+
+    border-radius:10px;
+
+    background:#102238;
+}
+
+.asset-chip img{
+    display:block;
+
+    width:25px;
+    height:25px;
+
+    object-fit:contain;
+
+    border-radius:5px;
+}
+
+.asset-fallback{
+    display:inline-flex;
+
+    align-items:center;
+    justify-content:center;
+
+    width:25px;
+    height:25px;
+
+    font-size:18px;
+}
+
+.asset-count{
+    color:#fff;
+
+    font-size:10px;
+    font-weight:900;
+}
+
+.redeemed-asset{
+    border-color:
+        rgba(167,139,250,.18);
+
+    background:
+        rgba(124,58,237,.08);
+}
+
+.gem-asset{
+    border-color:
+        rgba(96,165,250,.16);
+
+    background:
+        rgba(59,130,246,.07);
+}
+
+.no-assets{
+    color:#64748b;
+
+    font-size:11px;
+    font-style:italic;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-container,
+.team-table-wrapper{
+    width:100%;
+
+    overflow-x:auto;
+
+    -webkit-overflow-scrolling:
+        touch;
+
+    border:
+        1px solid
+        var(--rank-border);
+
+    border-radius:16px;
+}
+
+.rank-table{
+    width:100%;
+    min-width:1000px;
+
+    border-collapse:
+        separate;
+
+    border-spacing:0;
+
+    background:#091728;
+}
+
+/*
+   v4.3:
+   Bảng tổ đã bỏ cột "Chỉ số đang xếp",
+   nên thu nhỏ min-width.
+*/
+.team-table{
+    width:100%;
+    min-width:980px;
+
+    border-collapse:
+        separate;
+
+    border-spacing:0;
+
+    background:#091728;
+}
+
+.rank-table th,
+.rank-table td,
+.team-table th,
+.team-table td{
+    padding:12px 10px;
+
+    border-bottom:
+        1px solid
+        rgba(148,163,184,.1);
+
+    vertical-align:middle;
+
+    font-size:13px;
+}
+
+.rank-table th,
+.team-table th{
+    background:#0b1929;
+
+    color:#bfdbfe;
+
+    font-size:12px;
+    font-weight:900;
+
+    text-align:left;
+}
+
+.rank-table tbody tr:hover,
+.team-table tbody tr:hover{
+    background:
+        rgba(96,165,250,.04);
+}
+
+.rank-number,
+.team-position{
+    width:55px;
+
+    text-align:center !important;
+
+    font-weight:900;
+}
+
+
+/* =========================================================
+   DYNAMIC METRIC
+   CHỈ CÒN DÙNG CHO CÁ NHÂN
+========================================================= */
+
+.metric-box{
+    display:inline-flex;
+    flex-direction:column;
+
+    gap:3px;
+
+    min-width:105px;
+
+    padding:7px 9px;
+
+    border:
+        1px solid
+        rgba(148,163,184,.13);
+
+    border-radius:11px;
+
+    background:
+        rgba(15,31,51,.8);
+}
+
+.metric-value{
+    color:#fde68a;
+
+    font-size:14px;
+    font-weight:900;
+}
+
+.metric-note{
+    color:#64748b;
+
+    font-size:9px;
+    line-height:1.35;
+}
+
+
+/* =========================================================
+   STUDENT
+========================================================= */
+
+.student-main{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    min-width:290px;
+}
+
+.student-avatar-shell{
+    position:relative;
+
+    flex:0 0 auto;
+
+    width:58px;
+    height:58px;
+}
+
+.student-avatar-core{
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    z-index:1;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    width:42px;
+    height:42px;
+
+    overflow:hidden;
+
+    transform:
+        translate(-50%,-50%);
+
+    border-radius:50%;
+
+    background:#172a43;
+
+    font-size:20px;
+}
+
+.student-avatar-core img{
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+.student-avatar-frame{
+    position:absolute;
+    inset:0;
+
+    z-index:2;
+
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    object-fit:contain;
+
+    pointer-events:none;
+}
+
+.student-main-content{
+    min-width:0;
+}
+
+.student-name{
+    color:#fff;
+
+    font-size:14px;
+    font-weight:900;
+}
+
+.student-meta-line{
+    display:flex;
+    flex-wrap:wrap;
+
+    align-items:center;
+
+    gap:5px;
+
+    margin-top:6px;
+
+    min-height:25px;
+}
+
+.student-group,
+.student-course,
+.admin-test-label,
+.student-score-pill{
+    display:inline-flex;
+
+    align-items:center;
+
+    min-height:22px;
+
+    padding:2px 7px;
+
+    border-radius:999px;
+
+    color:#bfdbfe;
+
+    background:
+        rgba(59,130,246,.12);
+
+    font-size:10px;
+    font-weight:800;
+}
+
+.student-course{
+    color:#d8b4fe;
+
+    background:
+        rgba(168,85,247,.10);
+}
+
+.admin-test-label{
+    color:#fde68a;
+
+    background:
+        rgba(245,158,11,.13);
+}
+
+.student-score-pill{
+    gap:3px;
+
+    color:#fde68a;
+
+    background:
+        rgba(245,158,11,.08);
+}
+
+
+/* =========================================================
+   TEAM
+========================================================= */
+
+.team-gems{
+    display:flex;
+    flex-wrap:wrap;
+
+    align-items:center;
+
+    gap:5px;
+
+    min-width:210px;
+}
+
+.team-secondary{
+    margin-top:3px;
+
+    color:#64748b;
+
+    font-size:10px;
+}
+
+
+/* =========================================================
+   LEVEL
+========================================================= */
+
+.level-badge{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:5px;
+
+    max-width:210px;
+    margin-top:8px;
+    padding:7px 10px;
+
+    border-radius:999px;
+
+    background:#11233a;
+
+    color:#e2e8f0;
+
+    font-size:11px;
+    font-weight:800;
+}
+
+.level-progress{
+    width:118px;
+    height:6px;
+
+    margin-top:6px;
+
+    overflow:hidden;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.1);
+}
+
+.level-progress-fill{
+    height:100%;
+
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #60a5fa,
+            #34d399
+        );
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.pagination{
+    display:flex;
+    flex-wrap:wrap;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:6px;
+
+    margin-top:18px;
+}
+
+.page-btn{
+    min-width:37px;
+    height:37px;
+
+    padding:0 9px;
+
+    border:
+        1px solid
+        rgba(148,163,184,.15);
+
+    border-radius:10px;
+
+    background:#102238;
+
+    color:#cbd5e1;
+
+    cursor:pointer;
+
+    font-weight:800;
+}
+
+.page-btn.active{
+    color:#06111e;
+    background:#93c5fd;
+}
+
+.page-btn:disabled{
+    opacity:.35;
+    cursor:not-allowed;
+}
+
+.page-info{
+    color:#94a3b8;
+
+    font-size:11px;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.ranking-loading,
+.ranking-error{
+    padding:25px 14px;
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    font-size:14px;
+    line-height:1.6;
+}
+
+.ranking-error{
+    color:#fecdd3;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:850px){
+
+    #student-ranking-app{
+        margin:14px auto;
+        padding:14px;
+
+        border-radius:18px;
+    }
+
+    .ranking-stats{
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0,1fr)
+            );
+    }
+
+    .graduation-grid{
+        grid-template-columns:1fr;
+    }
+
+    .top-three{
+        grid-template-columns:1fr;
+    }
+
+    .ranking-section-body{
+        padding:11px;
+    }
+
+    .graduation-goal{
+        padding:22px;
+    }
+
+    .graduation-item{
+        min-height:auto;
+    }
+}
+
+
+@media(max-width:600px){
+
+    .ranking-toolbar-group{
+        flex:
+            1 1 100%;
+
+        width:100%;
+    }
+
+    .ranking-button{
+        flex:
+            1 1 calc(50% - 5px);
+
+        margin-top:0;
+    }
+
+    .graduation-head{
+        align-items:flex-start;
+    }
+
+    .graduation-icon{
+        width:58px;
+        height:58px;
+
+        font-size:32px;
+    }
+}
+
+
+@media(max-width:480px){
+
+    .ranking-button{
+        flex:
+            1 1 100%;
+
+        width:100%;
+    }
+
+    .ranking-section-title{
+        font-size:16px;
+    }
+
+    .ranking-section-subtitle{
+        font-size:11px;
+    }
+
+    .achievement-icon{
+        width:23px;
+        height:23px;
+
+        font-size:15px;
+    }
+
+    .level-progress{
+        width:100px;
+    }
+
+    .graduation-goal{
+        margin:20px 0;
+
+        padding:17px;
+
+        border-radius:21px;
+    }
+
+    .graduation-head{
+        gap:11px;
+    }
+
+    .graduation-icon{
+        width:49px;
+        height:49px;
+
+        border-radius:15px;
+
+        font-size:27px;
+    }
+
+    .graduation-title{
+        font-size:18px;
+    }
+
+    .graduation-desc{
+        font-size:11px;
+    }
+
+    .graduation-value{
+        font-size:27px;
+    }
+}
