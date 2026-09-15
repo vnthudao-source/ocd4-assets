@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V153__
+    window.__OCD_MINH_HONG_FOOTER_V154__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V153__=
+window.__OCD_MINH_HONG_FOOTER_V154__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V153__=
 const CONFIG={
 
     version:
-        "1.5.3",
+        "1.5.4",
 
     enabled:
         true,
@@ -73,14 +73,14 @@ const CONFIG={
 
 
     /* =====================================================
-       MINH HỒNG CONTENT SHEET v1.5.3
+       MINH HỒNG CONTENT SHEET v1.5.4
     ===================================================== */
 
     contentSpreadsheetId:
         "1-J6sXAbiepK6C3Bx0JQ3916Y7JNfBIyGrxvQuJYqx74",
 
     contentCachePrefix:
-        "ocd_minh_hong_content_v153_",
+        "ocd_minh_hong_content_v154_",
 
     contentCacheTime:
         20*60*1000,
@@ -534,7 +534,7 @@ function isSilentContext(){ return getPageContext()==="silent"; }
 
 
 /* =========================================================
-   CONTENT TAB ROUTER v1.5.3
+   CONTENT TAB ROUTER v1.5.4
 
    Mục tiêu:
    - Khách chỉ tải nội dung của đúng trang đang xem.
@@ -1470,7 +1470,7 @@ const InsightStore=
 
 
 /* =========================================================
-   GUEST JOURNEY v1.5.3
+   GUEST JOURNEY v1.5.4
 
    - Ghi nhớ nhẹ hành trình của khách trong localStorage.
    - Kích hoạt đúng điều kiện first_visit / returning_guest.
@@ -1580,7 +1580,7 @@ const GuestJourney=
     }
 
     return {
-        version:"1.5.3",
+        version:"1.5.4",
         registerVisit:registerVisit,
         getContext:getContext,
         isSeen:isSeen,
@@ -1594,7 +1594,7 @@ window.OCDMinhHongGuestJourney=GuestJourney;
 
 
 /* =========================================================
-   CONTENT ENGINE v1.5.3
+   CONTENT ENGINE v1.5.4
 
    - Đọc nội dung điều khiển từ Google Sheet MinhHong
    - Chỉ tải tab được yêu cầu (lazy-load)
@@ -1603,6 +1603,65 @@ window.OCDMinhHongGuestJourney=GuestJourney;
    - Ngày trống = luôn có hiệu lực
    - Ưu tiên số lớn hiển thị trước
 ========================================================= */
+
+
+/* =========================================================
+   MINH HỒNG CONTEXT BRIDGE v1.5.4
+   Trang học tính dữ liệu; Minh Hồng chỉ đọc context.
+========================================================= */
+const MinhHongContextStore=(function(){
+    let state={page:"",studentCode:"",data:{},conditions:{},updatedAt:0,source:""};
+
+    function obj(v){return v&&typeof v==="object"&&!Array.isArray(v)?v:{};}
+    function clone(v){try{return JSON.parse(JSON.stringify(v));}catch(e){return v;}}
+    function emit(previous,current){
+        try{
+            window.dispatchEvent(new CustomEvent("ocdMinhHongContextChanged",{
+                detail:{previous:clone(previous),current:clone(current)}
+            }));
+        }catch(e){}
+    }
+    function set(next,source){
+        next=obj(next);
+        const previous=clone(state);
+        state={
+            page:clean(next.page),
+            studentCode:OCDStudentSession.normalizeCode(next.studentCode),
+            data:Object.assign({},obj(next.data)),
+            conditions:Object.assign({},obj(next.conditions)),
+            updatedAt:Date.now(),
+            source:clean(source||next.source||"page")
+        };
+        emit(previous,state);
+        return clone(state);
+    }
+    function patch(next,source){
+        next=obj(next);
+        return set({
+            page:next.page!==undefined?next.page:state.page,
+            studentCode:next.studentCode!==undefined?next.studentCode:state.studentCode,
+            data:Object.assign({},state.data,obj(next.data)),
+            conditions:Object.assign({},state.conditions,obj(next.conditions))
+        },source||next.source||state.source||"page");
+    }
+    function clear(source){
+        const previous=clone(state);
+        state={page:"",studentCode:"",data:{},conditions:{},updatedAt:Date.now(),source:clean(source||"clear")};
+        emit(previous,state);
+        return clone(state);
+    }
+    function getState(){return clone(state);}
+    function getForStudent(code){
+        const wanted=OCDStudentSession.normalizeCode(code);
+        const current=OCDStudentSession.normalizeCode(state.studentCode);
+        if(wanted&&current&&wanted!==current){
+            return {page:"",studentCode:wanted,data:{},conditions:{},updatedAt:0,source:""};
+        }
+        return clone(state);
+    }
+    return{version:"1.5.4",set:set,patch:patch,clear:clear,getState:getState,getForStudent:getForStudent};
+})();
+window.OCDMinhHongContext=MinhHongContextStore;
 
 const MinhHongContentEngine=
 (function(){
@@ -1821,7 +1880,7 @@ const MinhHongContentEngine=
     }
 
     /* =====================================================
-       AUDIENCE / CONDITION MATCHER v1.5.3
+       AUDIENCE / CONDITION MATCHER v1.5.4
 
        Guest:
        - Đối tượng trống / all / guest
@@ -1873,6 +1932,12 @@ const MinhHongContentEngine=
             if(condition==="verified_student"){
                 return Boolean(context.verified);
             }
+            if(
+                context.conditions &&
+                Object.prototype.hasOwnProperty.call(context.conditions,condition)
+            ){
+                return Boolean(context.conditions[condition]);
+            }
             return false;
         }
 
@@ -1915,7 +1980,7 @@ const MinhHongContentEngine=
     }
 
     return {
-        version:"1.5.3",
+        version:"1.5.4",
         load:load,
         get:get,
         getForGuest:getForGuest,
@@ -7015,119 +7080,113 @@ const MinhHongAssistant=
     ===================================================== */
 
     /* =====================================================
-       STUDENT SHEET CONTENT v1.5.3
+       STUDENT SHEET CONTENT v1.5.4
        - Chỉ chạy khi session đã VERIFIED.
        - Đọc đúng tab của trang hiện tại.
        - Chỉ nhận Đối tượng student / all / trống.
        - Không có nội dung phù hợp: không hiện section.
        - Lỗi Sheet: không ảnh hưởng các chức năng Student cũ.
     ===================================================== */
+    function renderContextTemplate(value,data){
+        const source=String(value===undefined||value===null?"":value);
+        data=data&&typeof data==="object"?data:{};
+        return source.replace(/\{\{\s*([A-Za-z0-9_.-]+)\s*\}\}/g,function(match,key){
+            const parts=key.split(".");
+            let current=data;
+            for(let i=0;i<parts.length;i++){
+                if(current===null||current===undefined||typeof current!=="object"||
+                   !Object.prototype.hasOwnProperty.call(current,parts[i])) return match;
+                current=current[parts[i]];
+            }
+            if(current===null||current===undefined) return "";
+            if(typeof current==="object") return match;
+            return String(current);
+        });
+    }
+
     function appendStudentSheetContent(state){
-        if(!state || !state.verified) return;
+        if(!state||!state.verified) return;
 
         const pageTab=getPageContentTab();
         const section=makeElement("div","mh-section");
         section.style.display="none";
 
-        function renderItems(items){
+        function buildContext(){
+            const bridge=MinhHongContextStore.getForStudent(state.code);
+            return{
+                verified:true,
+                code:state.code||"",
+                pageTab:pageTab,
+                data:Object.assign({},bridge.data||{}),
+                conditions:Object.assign({},bridge.conditions||{})
+            };
+        }
+
+        function renderItems(items,context){
             clearNode(section);
-
-            if(!items || !items.length){
-                section.style.display="none";
-                return;
-            }
-
+            if(!items||!items.length){section.style.display="none";return;}
             section.style.display="";
+            section.appendChild(makeElement("div","mh-section-title",ICONS.book+" GỢI Ý TRÊN TRANG NÀY"));
 
-            section.appendChild(
-                makeElement(
-                    "div",
-                    "mh-section-title",
-                    ICONS.book+" GỢI Ý TRÊN TRANG NÀY"
-                )
+            const templateData=Object.assign(
+                {studentCode:state.code||"",page:pageTab},
+                context&&context.data?context.data:{}
             );
 
             items.forEach(function(item,index){
                 const card=makeElement("div","mh-guide-card");
-
-                card.appendChild(
-                    makeElement(
-                        "div",
-                        "mh-guide-title",
-                        item.title || ("Gợi ý "+(index+1))
-                    )
-                );
-
+                card.appendChild(makeElement(
+                    "div","mh-guide-title",
+                    renderContextTemplate(item.title||("Gợi ý "+(index+1)),templateData)
+                ));
                 if(item.content){
-                    card.appendChild(
-                        makeElement(
-                            "div",
-                            "mh-guide-text",
-                            item.content
-                        )
-                    );
+                    card.appendChild(makeElement(
+                        "div","mh-guide-text",
+                        renderContextTemplate(item.content,templateData)
+                    ));
                 }
-
                 if(item.button){
                     const button=createActionButton(
-                        item.button,
+                        renderContextTemplate(item.button,templateData),
                         false,
                         function(){
-                            const link=clean(item.link);
-                            if(link && link!=="#"){
-                                window.location.href=link;
-                            }
+                            const link=renderContextTemplate(clean(item.link),templateData);
+                            if(link&&link!=="#") window.location.href=link;
                         }
                     );
                     card.appendChild(button);
                 }
-
                 section.appendChild(card);
             });
         }
 
-        panelBody.appendChild(section);
-
-        const context={
-            verified:true,
-            code:state.code || "",
-            pageTab:pageTab
-        };
-
-        const cached=
-            MinhHongContentEngine.getForStudent(
-                pageTab,
+        function refresh(){
+            if(!panelOpen) return;
+            const current=OCDStudentSession.getState();
+            if(!current.verified||current.code!==state.code) return;
+            const context=buildContext();
+            renderItems(
+                MinhHongContentEngine.getForStudent(pageTab,context),
                 context
             );
-
-        if(cached.length){
-            renderItems(cached);
         }
 
-        MinhHongContentEngine.load(pageTab).then(function(){
-            if(!panelOpen) return;
+        panelBody.appendChild(section);
 
-            const current=
-                OCDStudentSession.getState();
+        const initial=buildContext();
+        const cached=MinhHongContentEngine.getForStudent(pageTab,initial);
+        if(cached.length) renderItems(cached,initial);
 
-            if(
-                !current.verified ||
-                current.code!==state.code
-            ){
+        MinhHongContentEngine.load(pageTab).then(refresh);
+
+        const onContextChanged=function(){
+            if(!panelOpen||!document.body.contains(section)){
+                window.removeEventListener("ocdMinhHongContextChanged",onContextChanged);
                 return;
             }
-
-            renderItems(
-                MinhHongContentEngine.getForStudent(
-                    pageTab,
-                    {
-                        verified:true,
-                        code:current.code,
-                        pageTab:pageTab
-                    }
-                )
-            );
-        });
+            refresh();
+        };
+        window.addEventListener("ocdMinhHongContextChanged",onContextChanged);
     }
 
 
@@ -7796,7 +7855,7 @@ const MinhHongAssistant=
 
 
     /* =====================================================
-       CONTENT PRELOAD v1.5.3
+       CONTENT PRELOAD v1.5.4
        Khách chỉ preload đúng tab của trang hiện tại.
        Guest chỉ được tải sau nếu tab trang không có nội dung.
        Không chặn UI và không ảnh hưởng Student Mode.
@@ -7848,6 +7907,9 @@ const MinhHongAssistant=
 
                     contentTab:
                         getPageContentTab(),
+
+                    context:
+                        MinhHongContextStore.getState(),
 
                     notificationMode:
                         getPageContext(),
