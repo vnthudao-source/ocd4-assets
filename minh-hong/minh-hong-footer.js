@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V140__
+    window.__OCD_MINH_HONG_FOOTER_V150__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V140__=
+window.__OCD_MINH_HONG_FOOTER_V150__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V140__=
 const CONFIG={
 
     version:
-        "1.4.7",
+        "1.5.0",
 
     enabled:
         true,
@@ -70,6 +70,20 @@ const CONFIG={
 
     insightMaxAge:
         24*60*60*1000,
+
+
+    /* =====================================================
+       MINH HỒNG CONTENT SHEET v1.5.0
+    ===================================================== */
+
+    contentSpreadsheetId:
+        "1-J6sXAbiepK6C3Bx0JQ3916Y7JNfBIyGrxvQuJYqx74",
+
+    contentCachePrefix:
+        "ocd_minh_hong_content_v150_",
+
+    contentCacheTime:
+        20*60*1000,
 
 
     /* =====================================================
@@ -1399,6 +1413,262 @@ const InsightStore=
     };
 
 })();
+
+
+/* =========================================================
+   CONTENT ENGINE v1.5.0
+
+   - Đọc nội dung điều khiển từ Google Sheet MinhHong
+   - Chỉ tải tab được yêu cầu (lazy-load)
+   - Cache riêng từng tab trong localStorage
+   - Sheet lỗi: trả dữ liệu cache cũ hoặc [] và KHÔNG làm hỏng Minh Hồng
+   - Ngày trống = luôn có hiệu lực
+   - Ưu tiên số lớn hiển thị trước
+========================================================= */
+
+const MinhHongContentEngine=
+(function(){
+
+    const memory=Object.create(null);
+    const loading=Object.create(null);
+
+    const ALLOWED_TABS=[
+        "Guest",
+        "TrangChu",
+        "TraCuu",
+        "TacPham",
+        "LamMo",
+        "ThuVien",
+        "GiangDuong",
+        "ThiTotNghiep",
+        "FAQ"
+    ];
+
+    function normalizeTab(tab){
+        const wanted=clean(tab);
+        const found=ALLOWED_TABS.find(function(name){
+            return name.toLowerCase()===wanted.toLowerCase();
+        });
+        return found || "";
+    }
+
+    function cacheKey(tab){
+        return CONFIG.contentCachePrefix+tab.toLowerCase();
+    }
+
+    function parseCSV(text){
+        const rows=[];
+        let row=[];
+        let cell="";
+        let quoted=false;
+
+        for(let i=0;i<text.length;i++){
+            const ch=text[i];
+            const next=text[i+1];
+
+            if(ch==='"' && quoted && next==='"'){
+                cell+='"';
+                i++;
+            }else if(ch==='"'){
+                quoted=!quoted;
+            }else if(ch==="," && !quoted){
+                row.push(cell);
+                cell="";
+            }else if((ch==="\n" || ch==="\r") && !quoted){
+                if(ch==="\r" && next==="\n") i++;
+                row.push(cell);
+                if(row.some(function(v){ return clean(v)!==""; })) rows.push(row);
+                row=[];
+                cell="";
+            }else{
+                cell+=ch;
+            }
+        }
+
+        if(cell!=="" || row.length){
+            row.push(cell);
+            if(row.some(function(v){ return clean(v)!==""; })) rows.push(row);
+        }
+
+        return rows;
+    }
+
+    function headerKey(value){
+        return clean(value)
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g,"")
+            .replace(/đ/g,"d")
+            .replace(/[^a-z0-9]+/g,"");
+    }
+
+    function parseVNDate(value,endOfDay){
+        const text=clean(value);
+        if(!text) return null;
+
+        let m=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+        if(m){
+            const hasTime=m[4]!==undefined;
+            const hour=hasTime ? Number(m[4]) : (endOfDay ? 23 : 0);
+            const minute=hasTime ? Number(m[5]||0) : (endOfDay ? 59 : 0);
+            const second=hasTime ? Number(m[6]||0) : (endOfDay ? 59 : 0);
+            return Date.UTC(Number(m[3]),Number(m[2])-1,Number(m[1]),hour-7,minute,second);
+        }
+
+        const d=new Date(text);
+        return Number.isNaN(d.getTime()) ? null : d.getTime();
+    }
+
+    function mapRows(csv){
+        const rows=parseCSV(csv);
+        if(rows.length<2) return [];
+
+        const headers=rows[0].map(headerKey);
+        function idx(name){ return headers.indexOf(headerKey(name)); }
+
+        const col={
+            id:idx("ID"),
+            status:idx("Trạng thái"),
+            audience:idx("Đối tượng"),
+            condition:idx("Điều kiện"),
+            title:idx("Tiêu đề"),
+            content:idx("Nội dung"),
+            button:idx("Nút"),
+            link:idx("Link"),
+            priority:idx("Ưu tiên"),
+            start:idx("Ngày bắt đầu"),
+            end:idx("Ngày kết thúc")
+        };
+
+        const now=Date.now();
+
+        return rows.slice(1).map(function(row,index){
+            function val(i){ return i>=0 ? clean(row[i]) : ""; }
+            const start=parseVNDate(val(col.start),false);
+            const end=parseVNDate(val(col.end),true);
+            return {
+                id:val(col.id) || ("ROW"+(index+2)),
+                status:val(col.status).toUpperCase(),
+                audience:val(col.audience).toLowerCase(),
+                condition:val(col.condition).toLowerCase() || "always",
+                title:val(col.title),
+                content:val(col.content),
+                button:val(col.button),
+                link:val(col.link),
+                priority:Number(val(col.priority)) || 0,
+                startAt:start,
+                endAt:end
+            };
+        }).filter(function(item){
+            if(item.status && item.status!=="ON") return false;
+            if(item.startAt!==null && now<item.startAt) return false;
+            if(item.endAt!==null && now>item.endAt) return false;
+            return Boolean(item.title || item.content);
+        }).sort(function(a,b){
+            return b.priority-a.priority;
+        });
+    }
+
+    function readCache(tab,allowExpired){
+        const raw=safeStorageGet(cacheKey(tab));
+        if(!raw) return null;
+        try{
+            const data=JSON.parse(raw);
+            if(!data || !Array.isArray(data.items) || !data.savedAt) return null;
+            if(!allowExpired && Date.now()-Number(data.savedAt)>CONFIG.contentCacheTime) return null;
+            return data.items;
+        }catch(error){
+            return null;
+        }
+    }
+
+    function saveCache(tab,items){
+        safeStorageSet(cacheKey(tab),JSON.stringify({savedAt:Date.now(),items:items}));
+    }
+
+    function csvUrl(tab){
+        return "https://docs.google.com/spreadsheets/d/"+
+            encodeURIComponent(CONFIG.contentSpreadsheetId)+
+            "/gviz/tq?tqx=out:csv&sheet="+
+            encodeURIComponent(tab)+
+            "&_="+Date.now();
+    }
+
+    function load(tab,options){
+        tab=normalizeTab(tab);
+        options=options || {};
+        if(!tab) return Promise.resolve([]);
+
+        if(memory[tab] && !options.force){
+            return Promise.resolve(memory[tab].slice());
+        }
+
+        const cached=readCache(tab,false);
+        if(cached && !options.force){
+            memory[tab]=cached;
+            return Promise.resolve(cached.slice());
+        }
+
+        if(loading[tab]) return loading[tab];
+
+        loading[tab]=fetch(csvUrl(tab),{cache:"no-store",credentials:"omit"})
+            .then(function(response){
+                if(!response.ok) throw new Error("HTTP "+response.status);
+                return response.text();
+            })
+            .then(function(text){
+                const items=mapRows(text);
+                memory[tab]=items;
+                saveCache(tab,items);
+                return items.slice();
+            })
+            .catch(function(error){
+                console.warn("[Minh Hồng] Content "+tab+":",error);
+                const stale=readCache(tab,true) || [];
+                if(stale.length) memory[tab]=stale;
+                return stale.slice();
+            })
+            .finally(function(){
+                loading[tab]=null;
+            });
+
+        return loading[tab];
+    }
+
+    function get(tab){
+        tab=normalizeTab(tab);
+        if(!tab) return [];
+        if(memory[tab]) return memory[tab].slice();
+        return (readCache(tab,false) || []).slice();
+    }
+
+    function matches(item,context){
+        context=context || {};
+        const audience=clean(item.audience).toLowerCase();
+        if(audience && audience!=="all" && audience!=="guest") return false;
+
+        const condition=clean(item.condition).toLowerCase();
+        if(!condition || condition==="always") return true;
+        if(condition==="first_visit") return Boolean(context.firstVisit);
+        if(condition==="returning_guest") return Boolean(context.returningGuest);
+        return false;
+    }
+
+    function getForGuest(tab,context){
+        return get(tab).filter(function(item){ return matches(item,context); });
+    }
+
+    return {
+        version:"1.5.0",
+        load:load,
+        get:get,
+        getForGuest:getForGuest,
+        tabs:ALLOWED_TABS.slice()
+    };
+
+})();
+
+window.OCDMinhHongContent=MinhHongContentEngine;
 
 
 /* =========================================================
@@ -6309,238 +6579,137 @@ const MinhHongAssistant=
 
     function renderNewcomerGuide(){
 
-        const back=
-            makeElement(
-                "button",
-                "mh-action-back",
-                ICONS.back+
-                " Quay lại"
-            );
-
-
-        back.type=
-            "button";
-
-
-        back.addEventListener(
-            "click",
-            function(){
-
-                guestView=
-                    "home";
-
-
-                renderPanel();
-
-            }
-        );
-
+        const back=makeElement("button","mh-action-back",ICONS.back+" Quay lại");
+        back.type="button";
+        back.addEventListener("click",function(){
+            guestView="home";
+            renderPanel();
+        });
+        panelBody.appendChild(back);
 
         panelBody.appendChild(
-            back
+            makeElement("div","mh-status",ICONS.book+" DÀNH CHO NGƯỜI MỚI")
         );
-
 
         panelBody.appendChild(
-            makeElement(
-                "div",
-                "mh-status",
-                ICONS.book+
-                " DÀNH CHO NGƯỜI MỚI"
-            )
+            makeElement("div","mh-intro-title","Làm quen với Thanh Phong Thư Môn")
         );
-
-
-        panelBody.appendChild(
-            makeElement(
-                "div",
-                "mh-intro-title",
-                "Làm quen với Thanh Phong Thư Môn"
-            )
-        );
-
 
         panelBody.appendChild(
             makeElement(
                 "div",
                 "mh-intro-text",
-                "Nếu đây là lần đầu bạn đến với website, Minh Hồng sẽ giới thiệu một số thông tin cơ bản để bạn hiểu rõ hơn về website, khóa học và hệ thống dành cho học viên."
+                "Minh Hồng sẽ giới thiệu những thông tin cơ bản để bạn hiểu website, khóa học và các chức năng dành cho học viên."
             )
         );
 
-
-        const guideSection=
-            makeElement(
-                "div",
-                "mh-section"
-            );
-
-
+        const guideSection=makeElement("div","mh-section");
         guideSection.appendChild(
-            makeElement(
-                "div",
-                "mh-section-title",
-                ICONS.book+
-                " THÔNG TIN DÀNH CHO NGƯỜI MỚI"
-            )
+            makeElement("div","mh-section-title",ICONS.book+" THÔNG TIN DÀNH CHO NGƯỜI MỚI")
         );
 
-
-        const guides=[
-
-            {
-                title:
-                    "1. Giới thiệu website",
-
-                text:
-                    "Đây là trang chia sẻ thông tin, kiến thức, hoạt động của Thanh Phong Thư Môn. Bạn có thể đăng ký khóa học thư pháp Online tại Trang chủ."
-            },
-
-            {
-                title:
-                    "2. Khóa học thư pháp Online",
-
-                text:
-                    "Chiêu sinh 2 lần/năm vào khoảng tháng 3 và tháng 9. Sau khi đăng ký, học viên vào nhóm chung để nhận mã học viên."
-            },
-
-            {
-                title:
-                    "3. Mã học viên",
-
-                text:
-                    "Là mã số đại diện cho học viên trong lớp. Mã được dùng để quản lý bài tập, đăng nhập Giảng đường, truy cập Kho tài liệu hoặc sử dụng các trò chơi game hóa như Chợ phiên."
-            },
-
-            {
-                title:
-                    "4. Bằng tốt nghiệp",
-
-                text:
-                    "Không có giá trị quy đổi và chỉ là hiện vật do GVCN công nhận cho học viên đã tốt nghiệp lớp học thư pháp các cấp độ."
-            }
-
-        ];
-
-
-        guides.forEach(
-            function(guide){
-
-                const card=
-                    makeElement(
-                        "div",
-                        "mh-guide-card"
-                    );
-
-
-                card.appendChild(
-                    makeElement(
-                        "div",
-                        "mh-guide-title",
-                        guide.title
-                    )
-                );
-
-
-                card.appendChild(
-                    makeElement(
-                        "div",
-                        "mh-guide-text",
-                        guide.text
-                    )
-                );
-
-
-                guideSection.appendChild(
-                    card
-                );
-
-            }
+        const loadingCard=makeElement("div","mh-guide-card");
+        loadingCard.appendChild(
+            makeElement("div","mh-guide-text","Đang tải nội dung dành cho người mới...")
         );
+        guideSection.appendChild(loadingCard);
+        panelBody.appendChild(guideSection);
 
-
-        panelBody.appendChild(
-            guideSection
-        );
-
-
-        const actions=
-            makeElement(
-                "div",
-                "mh-section"
+        function appendGuideItems(items){
+            clearNode(guideSection);
+            guideSection.appendChild(
+                makeElement("div","mh-section-title",ICONS.book+" THÔNG TIN DÀNH CHO NGƯỜI MỚI")
             );
 
+            if(!items || !items.length){
+                items=[
+                    {
+                        title:"1. Giới thiệu website",
+                        content:"Đây là trang chia sẻ thông tin, kiến thức, hoạt động của Thanh Phong Thư Môn. Bạn có thể đăng ký khóa học thư pháp Online tại Trang chủ.",
+                        button:"Khám phá website",
+                        link:"/"
+                    },
+                    {
+                        title:"2. Khóa học thư pháp Online",
+                        content:"Khóa học thư pháp Online dành cho người muốn học thư pháp theo lộ trình có hướng dẫn.",
+                        button:"Tìm hiểu khóa học",
+                        link:"/"
+                    },
+                    {
+                        title:"3. Nội dung công khai",
+                        content:"Bạn có thể khám phá các nội dung công khai trên website trước khi đăng ký khóa học.",
+                        button:"Bắt đầu khám phá",
+                        link:"/"
+                    },
+                    {
+                        title:"4. Khi trở thành học viên",
+                        content:"Sau khi có mã học viên, Minh Hồng có thể hỗ trợ bạn trên các trang đã được kết nối.",
+                        button:"Tôi đã có mã học viên",
+                        link:""
+                    }
+                ];
+            }
 
-        const actionWrap=
-            makeElement(
-                "div",
-                "mh-actions"
-            );
+            items.forEach(function(item,index){
+                const card=makeElement("div","mh-guide-card");
+                card.appendChild(
+                    makeElement("div","mh-guide-title",item.title || ("Thông tin "+(index+1)))
+                );
+                card.appendChild(
+                    makeElement("div","mh-guide-text",item.content || "")
+                );
 
+                if(item.button){
+                    const button=createActionButton(item.button,false,function(){
+                        const link=clean(item.link);
+                        if(link && link!=="#"){
+                            window.location.href=link;
+                        }else if(item.id==="G004"){
+                            guestView="home";
+                            renderPanel();
+                            setTimeout(function(){
+                                const input=panelBody.querySelector(".mh-code-input");
+                                const box=input ? input.closest(".mh-inline-box") : null;
+                                if(box) box.style.display="block";
+                                if(input) input.focus();
+                            },0);
+                        }
+                    });
+                    card.appendChild(button);
+                }
+
+                guideSection.appendChild(card);
+            });
+        }
+
+        const cached=MinhHongContentEngine.getForGuest("Guest",{});
+        if(cached.length){
+            appendGuideItems(cached);
+        }
+
+        MinhHongContentEngine.load("Guest").then(function(){
+            if(!panelOpen || guestView!=="newcomer") return;
+            appendGuideItems(MinhHongContentEngine.getForGuest("Guest",{}));
+        });
+
+        const actions=makeElement("div","mh-section");
+        const actionWrap=makeElement("div","mh-actions");
 
         actionWrap.appendChild(
-            createActionButton(
-                "Tôi đã có mã học viên",
-                true,
-                function(){
-
-                    guestView=
-                        "home";
-
-
-                    renderPanel();
-
-
-                    setTimeout(
-                        function(){
-
-                            const input=
-                                panelBody.querySelector(
-                                    ".mh-code-input"
-                                );
-
-
-                            const box=
-                                input
-                                ?
-                                input.closest(
-                                    ".mh-inline-box"
-                                )
-                                :
-                                null;
-
-
-                            if(box){
-
-                                box.style.display=
-                                    "block";
-
-                            }
-
-
-                            if(input){
-
-                                input.focus();
-
-                            }
-
-                        },
-                        0
-                    );
-
-                }
-            )
+            createActionButton("Tôi đã có mã học viên",true,function(){
+                guestView="home";
+                renderPanel();
+                setTimeout(function(){
+                    const input=panelBody.querySelector(".mh-code-input");
+                    const box=input ? input.closest(".mh-inline-box") : null;
+                    if(box) box.style.display="block";
+                    if(input) input.focus();
+                },0);
+            })
         );
 
-
-        actions.appendChild(
-            actionWrap
-        );
-
-
-        panelBody.appendChild(
-            actions
-        );
+        actions.appendChild(actionWrap);
+        panelBody.appendChild(actions);
 
     }
 
@@ -7208,6 +7377,19 @@ const MinhHongAssistant=
 
 
     /* =====================================================
+       CONTENT PRELOAD v1.5.0
+       Chỉ preload Guest khi chưa xác minh học viên.
+       Không chặn UI và không ảnh hưởng Student Mode.
+    ===================================================== */
+
+    if(!OCDStudentSession.isVerified()){
+        setTimeout(function(){
+            MinhHongContentEngine.load("Guest");
+        },1200);
+    }
+
+
+    /* =====================================================
        PUBLIC API
     ===================================================== */
 
@@ -7293,6 +7475,8 @@ console.info(
 
 
 })();
+
+
 
 
 
