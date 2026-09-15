@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V140__=
 const CONFIG={
 
     version:
-        "1.4.0",
+        "1.4.3",
 
     enabled:
         true,
@@ -6697,7 +6697,10 @@ const MinhHongAssistant=
 
     function renderPanel(){
 
-        if(!panelBody){
+        if(
+            !panelBody ||
+            !panelOpen
+        ){
 
             return;
         }
