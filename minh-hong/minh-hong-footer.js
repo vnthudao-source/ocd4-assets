@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V150__
+    window.__OCD_MINH_HONG_FOOTER_V151__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V150__=
+window.__OCD_MINH_HONG_FOOTER_V151__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V150__=
 const CONFIG={
 
     version:
-        "1.5.0",
+        "1.5.1",
 
     enabled:
         true,
@@ -525,6 +525,54 @@ function isCommunityContext(){ return getPageContext()==="community"; }
 function isPersonalContext(){ return getPageContext()==="personal"; }
 function isClassPulseContext(){ return getPageContext()==="class-pulse"; }
 function isSilentContext(){ return getPageContext()==="silent"; }
+
+
+/* =========================================================
+   CONTENT TAB ROUTER v1.5.1
+
+   Mục tiêu:
+   - Khách chỉ tải nội dung của đúng trang đang xem.
+   - Guest là fallback chung, không tải đồng thời toàn bộ 9 tab.
+   - Trang con có thể khai báo chính xác bằng:
+       window.OCDMinhHongContentTab = "LamMo";
+========================================================= */
+function normalizeContentTab(value){
+    const wanted=clean(value).toLowerCase();
+    const allowed=[
+        "Guest","TrangChu","TraCuu","TacPham","LamMo",
+        "ThuVien","GiangDuong","ThiTotNghiep","FAQ"
+    ];
+    return allowed.find(function(name){
+        return name.toLowerCase()===wanted;
+    }) || "";
+}
+
+function getPageContentTab(){
+    const explicit=normalizeContentTab(window.OCDMinhHongContentTab);
+    if(explicit) return explicit;
+
+    if(isHomePage()) return "TrangChu";
+
+    /* DOM nhận diện các trang đã biết */
+    if(document.getElementById("ocd4-student-work-page")) return "TacPham";
+    if(document.getElementById("rewardExchangeApp")) return "TraCuu";
+    if(document.getElementById("lectureHallPage")) return "GiangDuong";
+    if(document.getElementById("ocdGraduationExamPage")) return "ThiTotNghiep";
+
+    const path=String(window.location.pathname || "").toLowerCase();
+    const title=String(document.title || "").toLowerCase();
+    const haystack=path+" "+title;
+
+    if(/tra[-_ ]?cuu|ch[oợ][- _]?phi[eê]n/.test(haystack)) return "TraCuu";
+    if(/tac[-_ ]?pham|student[-_ ]?work|n[oộ]p[-_ ]?b[aà]i/.test(haystack)) return "TacPham";
+    if(/lam[-_ ]?mo|l[aâ]m[-_ ]?m[oô]/.test(haystack)) return "LamMo";
+    if(/giang[-_ ]?duong|gi[aả]ng[-_ ]?[dđ][uư][oơ]ng|lecture[-_ ]?hall/.test(haystack)) return "GiangDuong";
+    if(/thi[-_ ]?tot[-_ ]?nghiep|t[oố]t[-_ ]?nghi[eệ]p|graduation/.test(haystack)) return "ThiTotNghiep";
+    if(/faq|hoi[-_ ]?dap|h[oỏ]i[-_ ]?[dđ][aá]p/.test(haystack)) return "FAQ";
+    if(/thu[-_ ]?vien|th[uư][-_ ]?vi[eệ]n|library/.test(haystack)) return "ThuVien";
+
+    return "Guest";
+}
 
 /* =========================================================
    SAFE STORAGE
@@ -1659,7 +1707,7 @@ const MinhHongContentEngine=
     }
 
     return {
-        version:"1.5.0",
+        version:"1.5.1",
         load:load,
         get:get,
         getForGuest:getForGuest,
@@ -6682,14 +6730,38 @@ const MinhHongAssistant=
             });
         }
 
-        const cached=MinhHongContentEngine.getForGuest("Guest",{});
+        const pageTab=getPageContentTab();
+
+        function getGuestItemsForCurrentPage(){
+            const pageItems=MinhHongContentEngine.getForGuest(pageTab,{});
+            if(pageItems.length) return pageItems;
+            return MinhHongContentEngine.getForGuest("Guest",{});
+        }
+
+        const cached=getGuestItemsForCurrentPage();
         if(cached.length){
             appendGuideItems(cached);
         }
 
-        MinhHongContentEngine.load("Guest").then(function(){
+        MinhHongContentEngine.load(pageTab).then(function(pageItems){
             if(!panelOpen || guestView!=="newcomer") return;
-            appendGuideItems(MinhHongContentEngine.getForGuest("Guest",{}));
+
+            const matched=MinhHongContentEngine.getForGuest(pageTab,{});
+            if(matched.length){
+                appendGuideItems(matched);
+                return;
+            }
+
+            if(pageTab==="Guest"){
+                appendGuideItems([]);
+                return;
+            }
+
+            /* Chỉ khi tab trang rỗng/lỗi mới tải Guest làm fallback. */
+            MinhHongContentEngine.load("Guest").then(function(){
+                if(!panelOpen || guestView!=="newcomer") return;
+                appendGuideItems(MinhHongContentEngine.getForGuest("Guest",{}));
+            });
         });
 
         const actions=makeElement("div","mh-section");
@@ -7377,14 +7449,15 @@ const MinhHongAssistant=
 
 
     /* =====================================================
-       CONTENT PRELOAD v1.5.0
-       Chỉ preload Guest khi chưa xác minh học viên.
+       CONTENT PRELOAD v1.5.1
+       Khách chỉ preload đúng tab của trang hiện tại.
+       Guest chỉ được tải sau nếu tab trang không có nội dung.
        Không chặn UI và không ảnh hưởng Student Mode.
     ===================================================== */
 
     if(!OCDStudentSession.isVerified()){
         setTimeout(function(){
-            MinhHongContentEngine.load("Guest");
+            MinhHongContentEngine.load(getPageContentTab());
         },1200);
     }
 
@@ -7424,6 +7497,9 @@ const MinhHongAssistant=
 
                     pageContext:
                         getPageContext(),
+
+                    contentTab:
+                        getPageContentTab(),
 
                     notificationMode:
                         getPageContext(),
