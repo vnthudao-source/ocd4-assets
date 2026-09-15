@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V140__=
 const CONFIG={
 
     version:
-        "1.4.3",
+        "1.4.4",
 
     enabled:
         true,
@@ -5382,15 +5382,26 @@ const MinhHongAssistant=
 
     /* =====================================================
        CLASS PULSE PANEL
+       v1.4.4
+       -----------------------------------------------------
+       - Bỏ 3 ô thống kê cũ
+       - Thay bằng một bảng lời khuyên
+       - Hiển thị hoạt động các Tổ / Khóa
+       - Ưu tiên Tổ của học viên hiện tại
+       - Không fetch Google Sheet lần hai
+       - Tương thích getSnapshot() / getState()
     ===================================================== */
 
     function readClassPulse(){
         try{
+            if(window.OCDClassPulse && typeof window.OCDClassPulse.getSnapshot==="function"){
+                return window.OCDClassPulse.getSnapshot() || classPulseState || null;
+            }
             if(window.OCDClassPulse && typeof window.OCDClassPulse.getState==="function"){
-                return window.OCDClassPulse.getState() || null;
+                return window.OCDClassPulse.getState() || classPulseState || null;
             }
         }catch(error){}
-        return classPulseState;
+        return classPulseState || null;
     }
 
     function normalizeClassPulseEvents(pulse){
@@ -5423,6 +5434,136 @@ const MinhHongAssistant=
         }
     }
 
+    function classPulseNumber(value){
+        const number=Number(value || 0);
+        return Number.isFinite(number) ? number : 0;
+    }
+
+    function classPulseGroupLabel(group){
+        if(!group){
+            return "Nhóm học viên";
+        }
+
+        const parts=[];
+        if(group.group){
+            parts.push("Tổ "+group.group);
+        }
+        if(group.course){
+            parts.push("Khóa "+group.course);
+        }
+
+        return parts.join(" "+CHAR.dot+" ") || group.label || "Nhóm học viên";
+    }
+
+    function isCurrentPulseGroup(group,pulse){
+        if(!group || !pulse){
+            return false;
+        }
+
+        if(pulse.currentGroup && pulse.currentGroup.key && group.key){
+            return pulse.currentGroup.key===group.key;
+        }
+
+        const student=pulse.currentStudent;
+        if(!student){
+            return false;
+        }
+
+        return clean(group.group)===clean(student.group) && clean(group.course)===clean(student.course);
+    }
+
+    function buildClassPulseAdvice(pulse){
+        if(!pulse){
+            return "Minh Hồng đang chờ dữ liệu lớp học để đưa ra lời khuyên.";
+        }
+
+        const current=pulse.currentGroup;
+        const sample=classPulseNumber(pulse.sampleSize || pulse.totalSubmissions || pulse.total);
+
+        if(pulse.currentStudent && current){
+            const submissions=classPulseNumber(current.submissionCount);
+            const reviewed=classPulseNumber(current.reviewedCount);
+
+            if(submissions>=5){
+                if(reviewed>0){
+                    return "Tổ của bạn đang có nhịp học tập rất tốt với "+submissions+" bài trong "+sample+" bài mới nhất. "+reviewed+" bài trong tổ đã có điểm hoặc nhận xét. Hãy xem các bài mới của tổ để tham khảo và tiếp tục duy trì tiến độ luyện tập.";
+                }
+                return "Tổ của bạn đang hoạt động rất tích cực với "+submissions+" bài trong "+sample+" bài mới nhất. Đây là thời điểm tốt để tiếp tục luyện tập và nộp bài cùng các bạn trong tổ.";
+            }
+
+            if(submissions>=2){
+                return "Tổ của bạn có "+submissions+" bài trong "+sample+" bài nộp mới nhất. Nhịp luyện tập đang được duy trì. Hãy tiếp tục hoàn thành bài của mình và tham khảo thêm tác phẩm mới của các bạn cùng tổ.";
+            }
+
+            if(submissions===1){
+                return "Tổ của bạn hiện có 1 bài trong "+sample+" bài mới nhất. Hoạt động của tổ đang khá yên ắng. Nếu đã hoàn thành bài luyện tập, bạn có thể chủ động nộp bài để duy trì nhịp học.";
+            }
+
+            return "Trong "+sample+" bài mới nhất hiện chưa thấy bài của tổ bạn. Bạn có thể kiểm tra lại tiến độ học tập và bắt đầu một bài luyện tập mới.";
+        }
+
+        const groups=Array.isArray(pulse.groups) ? pulse.groups : [];
+        if(groups.length){
+            const top=groups[0];
+            return "Lớp học đang có "+sample+" bài mới được Minh Hồng theo dõi. "+classPulseGroupLabel(top)+" đang hoạt động nổi bật với "+classPulseNumber(top.submissionCount)+" bài. Hãy tra cứu hồ sơ để Minh Hồng nhận diện tổ của bạn và đưa ra lời khuyên phù hợp hơn.";
+        }
+
+        return "Minh Hồng chưa có đủ dữ liệu hoạt động lớp học để đưa ra lời khuyên.";
+    }
+
+    function appendClassPulseAdvice(section,pulse){
+        const card=makeElement("div","mh-advice-card");
+        card.appendChild(makeElement("div","mh-advice-title",ICONS.brain+" LỜI KHUYÊN DÀNH CHO BẠN"));
+        card.appendChild(makeElement("div","mh-advice-text",buildClassPulseAdvice(pulse)));
+        section.appendChild(card);
+    }
+
+    function appendClassPulseGroups(section,pulse){
+        const groups=pulse && Array.isArray(pulse.groups) ? pulse.groups.slice() : [];
+        section.appendChild(makeElement("div","mh-section-title",ICONS.activity+" HOẠT ĐỘNG CÁC TỔ / KHÓA"));
+
+        if(!groups.length){
+            section.appendChild(makeElement("div","mh-empty","Chưa có dữ liệu hoạt động của các tổ."));
+            return;
+        }
+
+        groups.sort(function(a,b){
+            const aOwn=isCurrentPulseGroup(a,pulse) ? 1 : 0;
+            const bOwn=isCurrentPulseGroup(b,pulse) ? 1 : 0;
+            if(aOwn!==bOwn){
+                return bOwn-aOwn;
+            }
+            return classPulseNumber(b.submissionCount)-classPulseNumber(a.submissionCount);
+        });
+
+        const list=makeElement("div","mh-insight-advice-list");
+
+        groups.forEach(function(group){
+            const own=isCurrentPulseGroup(group,pulse);
+            const card=makeElement("div","mh-advice-card");
+            const heading=classPulseGroupLabel(group)+(own ? " "+CHAR.dot+" Tổ của bạn" : "");
+            card.appendChild(makeElement("div","mh-advice-title",heading));
+
+            const lines=[];
+            const submissions=classPulseNumber(group.submissionCount);
+            const students=classPulseNumber(group.studentCount);
+            const reviewed=classPulseNumber(group.reviewedCount);
+
+            lines.push(submissions+" bài mới");
+            if(students>0){
+                lines.push(students+" học viên");
+            }
+            if(reviewed>0){
+                lines.push(reviewed+" bài đã có điểm hoặc nhận xét");
+            }
+
+            card.appendChild(makeElement("div","mh-advice-text",lines.join(" "+CHAR.dot+" ")));
+            list.appendChild(card);
+        });
+
+        section.appendChild(list);
+    }
+
     function appendClassPulseSection(){
         if(!isClassPulseContext()){
             return;
@@ -5433,39 +5574,14 @@ const MinhHongAssistant=
         section.appendChild(makeElement("div","mh-insight-head",ICONS.activity+" NHỊP LỚP HỌC"));
 
         if(!pulse){
-            section.appendChild(makeElement("div","mh-empty","Đang chờ trang Tác phẩm học viên tổng hợp 20 bài nộp mới nhất. Minh Hồng không tải lại Sheet nên trang vẫn nhẹ."));
+            section.appendChild(makeElement("div","mh-empty","Minh Hồng đang chờ trang Tác phẩm học viên tổng hợp dữ liệu các bài nộp mới nhất."));
             panelBody.appendChild(section);
             return;
         }
 
-        const summary=makeElement("div","mh-insight-summary");
-        function stat(value,label){
-            const box=makeElement("div","mh-insight-stat");
-            box.appendChild(makeElement("div","mh-insight-stat-value",String(value===undefined || value===null ? "—" : value)));
-            box.appendChild(makeElement("div","mh-insight-stat-label",label));
-            summary.appendChild(box);
-        }
-
-        stat(pulse.total || 0,"Bài mới nhất");
-        stat(pulse.uniqueStudents || 0,"Học viên hoạt động");
-        stat(pulse.gradedCount || 0,"Bài đã chấm");
+        appendClassPulseAdvice(section,pulse);
+        appendClassPulseGroups(section,pulse);
         panelBody.appendChild(section);
-        section.appendChild(summary);
-
-        const events=normalizeClassPulseEvents(pulse);
-        if(!events.length){
-            section.appendChild(makeElement("div","mh-empty","Chưa có đủ dữ liệu để tạo thông báo Nhịp lớp học."));
-            return;
-        }
-
-        events.forEach(function(event){
-            const card=makeElement("div","mh-advice-card");
-            const title=makeElement("div","mh-advice-title",(event.icon || ICONS.activity)+" "+event.title);
-            const text=makeElement("div","mh-advice-text",event.text);
-            card.appendChild(title);
-            card.appendChild(text);
-            section.appendChild(card);
-        });
     }
 
     /* =====================================================
