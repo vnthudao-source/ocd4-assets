@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V151__
+    window.__OCD_MINH_HONG_FOOTER_V152__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V151__=
+window.__OCD_MINH_HONG_FOOTER_V152__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V151__=
 const CONFIG={
 
     version:
-        "1.5.1",
+        "1.5.2",
 
     enabled:
         true,
@@ -73,17 +73,23 @@ const CONFIG={
 
 
     /* =====================================================
-       MINH HỒNG CONTENT SHEET v1.5.0
+       MINH HỒNG CONTENT SHEET v1.5.2
     ===================================================== */
 
     contentSpreadsheetId:
         "1-J6sXAbiepK6C3Bx0JQ3916Y7JNfBIyGrxvQuJYqx74",
 
     contentCachePrefix:
-        "ocd_minh_hong_content_v150_",
+        "ocd_minh_hong_content_v152_",
 
     contentCacheTime:
         20*60*1000,
+
+    guestJourneyKey:
+        "ocd_minh_hong_guest_journey_v1",
+
+    guestJourneyMaxSeen:
+        120,
 
 
     /* =====================================================
@@ -528,7 +534,7 @@ function isSilentContext(){ return getPageContext()==="silent"; }
 
 
 /* =========================================================
-   CONTENT TAB ROUTER v1.5.1
+   CONTENT TAB ROUTER v1.5.2
 
    Mục tiêu:
    - Khách chỉ tải nội dung của đúng trang đang xem.
@@ -1464,7 +1470,131 @@ const InsightStore=
 
 
 /* =========================================================
-   CONTENT ENGINE v1.5.0
+   GUEST JOURNEY v1.5.2
+
+   - Ghi nhớ nhẹ hành trình của khách trong localStorage.
+   - Kích hoạt đúng điều kiện first_visit / returning_guest.
+   - Ưu tiên nội dung chưa xem, nhưng KHÔNG làm mất fallback.
+   - Không chứa dữ liệu học viên và không can thiệp Student Session.
+========================================================= */
+const GuestJourney=
+(function(){
+
+    const DEFAULT_STATE={
+        firstSeenAt:0,
+        lastSeenAt:0,
+        visitCount:0,
+        pageVisits:{},
+        seenItems:{}
+    };
+
+    let registeredThisPage=false;
+
+    function sanitize(value){
+        value=(value && typeof value==="object") ? value : {};
+        return {
+            firstSeenAt:Number(value.firstSeenAt || 0),
+            lastSeenAt:Number(value.lastSeenAt || 0),
+            visitCount:Math.max(0,Number(value.visitCount || 0)),
+            pageVisits:(value.pageVisits && typeof value.pageVisits==="object") ? value.pageVisits : {},
+            seenItems:(value.seenItems && typeof value.seenItems==="object") ? value.seenItems : {}
+        };
+    }
+
+    function read(){
+        const raw=safeStorageGet(CONFIG.guestJourneyKey);
+        if(!raw) return sanitize(DEFAULT_STATE);
+        try{ return sanitize(JSON.parse(raw)); }
+        catch(error){ return sanitize(DEFAULT_STATE); }
+    }
+
+    function save(state){
+        state=sanitize(state);
+        safeStorageSet(CONFIG.guestJourneyKey,JSON.stringify(state));
+        return state;
+    }
+
+    function registerVisit(tab){
+        if(registeredThisPage) return read();
+        registeredThisPage=true;
+
+        tab=normalizeContentTab(tab) || "Guest";
+        const state=read();
+        const now=Date.now();
+
+        if(!state.firstSeenAt) state.firstSeenAt=now;
+        state.lastSeenAt=now;
+        state.visitCount+=1;
+        state.pageVisits[tab]=Math.max(0,Number(state.pageVisits[tab] || 0))+1;
+        return save(state);
+    }
+
+    function getContext(tab){
+        tab=normalizeContentTab(tab) || "Guest";
+        const state=read();
+        const visits=Math.max(0,Number(state.visitCount || 0));
+        const pageVisits=Math.max(0,Number(state.pageVisits[tab] || 0));
+        return {
+            firstVisit:visits<=1,
+            returningGuest:visits>1,
+            pageFirstVisit:pageVisits<=1,
+            pageReturning:pageVisits>1,
+            visitCount:visits,
+            pageVisitCount:pageVisits
+        };
+    }
+
+    function itemKey(tab,item){
+        tab=normalizeContentTab(tab) || "Guest";
+        const id=clean(item && item.id);
+        return tab+":"+(id || clean(item && item.title) || "item");
+    }
+
+    function isSeen(tab,item){
+        const state=read();
+        return Boolean(state.seenItems[itemKey(tab,item)]);
+    }
+
+    function markSeen(tab,items){
+        if(!Array.isArray(items) || !items.length) return;
+        const state=read();
+        const now=Date.now();
+
+        items.forEach(function(item){
+            state.seenItems[itemKey(tab,item)]=now;
+        });
+
+        const keys=Object.keys(state.seenItems).sort(function(a,b){
+            return Number(state.seenItems[b] || 0)-Number(state.seenItems[a] || 0);
+        });
+        keys.slice(CONFIG.guestJourneyMaxSeen).forEach(function(key){
+            delete state.seenItems[key];
+        });
+        save(state);
+    }
+
+    function preferUnseen(tab,items){
+        if(!Array.isArray(items) || !items.length) return [];
+        const unseen=items.filter(function(item){ return !isSeen(tab,item); });
+        return unseen.length ? unseen : items.slice();
+    }
+
+    return {
+        version:"1.5.2",
+        registerVisit:registerVisit,
+        getContext:getContext,
+        isSeen:isSeen,
+        markSeen:markSeen,
+        preferUnseen:preferUnseen
+    };
+
+})();
+
+window.OCDMinhHongGuestJourney=GuestJourney;
+
+
+/* =========================================================
+   CONTENT ENGINE v1.5.2
 
    - Đọc nội dung điều khiển từ Google Sheet MinhHong
    - Chỉ tải tab được yêu cầu (lazy-load)
@@ -1707,7 +1837,7 @@ const MinhHongContentEngine=
     }
 
     return {
-        version:"1.5.1",
+        version:"1.5.2",
         load:load,
         get:get,
         getForGuest:getForGuest,
@@ -6731,24 +6861,38 @@ const MinhHongAssistant=
         }
 
         const pageTab=getPageContentTab();
+        const journeyContext=GuestJourney.getContext(pageTab);
+
+        function selectItems(tab){
+            const matched=MinhHongContentEngine.getForGuest(tab,journeyContext);
+            return GuestJourney.preferUnseen(tab,matched);
+        }
+
+        function showItems(tab,items){
+            appendGuideItems(items);
+            if(items && items.length){
+                GuestJourney.markSeen(tab,items);
+            }
+        }
 
         function getGuestItemsForCurrentPage(){
-            const pageItems=MinhHongContentEngine.getForGuest(pageTab,{});
-            if(pageItems.length) return pageItems;
-            return MinhHongContentEngine.getForGuest("Guest",{});
+            const pageItems=selectItems(pageTab);
+            if(pageItems.length) return {tab:pageTab,items:pageItems};
+            const guestItems=selectItems("Guest");
+            return {tab:"Guest",items:guestItems};
         }
 
         const cached=getGuestItemsForCurrentPage();
-        if(cached.length){
-            appendGuideItems(cached);
+        if(cached.items.length){
+            showItems(cached.tab,cached.items);
         }
 
-        MinhHongContentEngine.load(pageTab).then(function(pageItems){
+        MinhHongContentEngine.load(pageTab).then(function(){
             if(!panelOpen || guestView!=="newcomer") return;
 
-            const matched=MinhHongContentEngine.getForGuest(pageTab,{});
+            const matched=selectItems(pageTab);
             if(matched.length){
-                appendGuideItems(matched);
+                showItems(pageTab,matched);
                 return;
             }
 
@@ -6757,10 +6901,11 @@ const MinhHongAssistant=
                 return;
             }
 
-            /* Chỉ khi tab trang rỗng/lỗi mới tải Guest làm fallback. */
+            /* Chỉ khi tab trang không có nội dung phù hợp mới tải Guest. */
             MinhHongContentEngine.load("Guest").then(function(){
                 if(!panelOpen || guestView!=="newcomer") return;
-                appendGuideItems(MinhHongContentEngine.getForGuest("Guest",{}));
+                const fallback=selectItems("Guest");
+                showItems("Guest",fallback);
             });
         });
 
@@ -7449,13 +7594,14 @@ const MinhHongAssistant=
 
 
     /* =====================================================
-       CONTENT PRELOAD v1.5.1
+       CONTENT PRELOAD v1.5.2
        Khách chỉ preload đúng tab của trang hiện tại.
        Guest chỉ được tải sau nếu tab trang không có nội dung.
        Không chặn UI và không ảnh hưởng Student Mode.
     ===================================================== */
 
     if(!OCDStudentSession.isVerified()){
+        GuestJourney.registerVisit(getPageContentTab());
         setTimeout(function(){
             MinhHongContentEngine.load(getPageContentTab());
         },1200);
