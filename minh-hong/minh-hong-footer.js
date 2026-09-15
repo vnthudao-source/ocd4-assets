@@ -1,11 +1,3 @@
-/* =========================================================
-   MINH HỒNG COMMUNITY ASSISTANT
-   FOOTER GLOBAL v1.4.0
-   EXTERNAL JS
-   Tách từ Footer v1.4.0 hiện tại.
-   CSS đã chuyển sang minh-hong-footer.css.
-========================================================= */
-
 (function(){
 
 "use strict";
@@ -477,79 +469,39 @@ function isHomePage(){
    Ưu tiên context do trang con công bố.
    Có fallback theo DOM để tương thích các trang hiện tại.
 ========================================================= */
-
 function normalizePageContext(value){
-
-    const context=
-        clean(value)
-        .toLowerCase();
-
-    if(
-        context==="community" ||
-        context==="personal" ||
-        context==="class-pulse" ||
-        context==="silent"
-    ){
+    const context=clean(value).toLowerCase();
+    if(context==="community" || context==="personal" || context==="class-pulse" || context==="silent"){
         return context;
     }
-
     return "";
-
 }
 
-
 function getPageContext(){
-
     if(isHomePage()){
         return "community";
     }
 
-    const explicit=
-        normalizePageContext(
-            window.OCDMinhHongPageContext
-        );
-
+    const explicit=normalizePageContext(window.OCDMinhHongPageContext);
     if(explicit){
         return explicit;
     }
 
-    if(
-        document.getElementById(
-            "ocd4-student-work-page"
-        )
-    ){
+    if(document.getElementById("ocd4-student-work-page")){
         return "class-pulse";
     }
 
-    if(
-        document.getElementById(
-            "rewardExchangeApp"
-        )
-    ){
+    if(document.getElementById("rewardExchangeApp")){
         return "personal";
     }
 
     return "silent";
-
 }
 
-
-function isCommunityContext(){
-    return getPageContext()==="community";
-}
-
-function isPersonalContext(){
-    return getPageContext()==="personal";
-}
-
-function isClassPulseContext(){
-    return getPageContext()==="class-pulse";
-}
-
-function isSilentContext(){
-    return getPageContext()==="silent";
-}
-
+function isCommunityContext(){ return getPageContext()==="community"; }
+function isPersonalContext(){ return getPageContext()==="personal"; }
+function isClassPulseContext(){ return getPageContext()==="class-pulse"; }
+function isSilentContext(){ return getPageContext()==="silent"; }
 
 /* =========================================================
    SAFE STORAGE
@@ -582,6 +534,7 @@ function safeStorageSet(
             key,
             value
         );
+
 
         return true;
 
@@ -834,16 +787,19 @@ const OCDStudentSession=
         const previous=
             read();
 
+
         const current=
             save(
                 state
             );
+
 
         emit(
             previous,
             current,
             source
         );
+
 
         return current;
 
@@ -888,6 +844,7 @@ const OCDStudentSession=
 
         const state=
             read();
+
 
         return Boolean(
 
@@ -1433,7 +1390,9 @@ const InsightStore=
     };
 
 })();
-   /* =========================================================
+
+
+/* =========================================================
    COMMUNITY ENGINE
 ========================================================= */
 
@@ -3700,7 +3659,6 @@ const CommunityEngine=
     return{
 
         load,
-
         getEvents,
 
         isReady:
@@ -3890,21 +3848,16 @@ const MinhHongAssistant=
 
     /* =====================================================
        CSS
-       CSS đã được tách sang minh-hong-footer.css
     ===================================================== */
 
     function createStyles(){
 
-        /*
-           CSS đã được tách sang:
-           minh-hong-footer.css
-
-           Giữ hàm này để không phải thay đổi luồng khởi tạo
-           của Footer v1.4.0.
-        */
+        /* CSS được tải từ minh-hong-footer.css */
 
     }
-       function appendAvatar(
+
+
+    function appendAvatar(
         container,
         className
     ){
@@ -4519,13 +4472,16 @@ const MinhHongAssistant=
             .getForCurrentStudent();
 
 
-        if(!data){
+        if(
+            !data ||
+            !OCDStudentSession.isVerified()
+        ){
 
             return [];
         }
 
 
-        const result=[];
+        const list=[];
 
 
         if(
@@ -4541,8 +4497,7 @@ const MinhHongAssistant=
                 data.trend.type==="up"
             ){
 
-                icon=
-                    ICONS.up;
+                icon=ICONS.up;
 
             }
 
@@ -4550,19 +4505,16 @@ const MinhHongAssistant=
                 data.trend.type==="down"
             ){
 
-                icon=
-                    ICONS.down;
+                icon=ICONS.down;
 
             }
 
 
-            result.push({
+            list.push({
 
-                personal:
-                    true,
+                personal:true,
 
-                type:
-                    "personal-trend",
+                type:"trend",
 
                 icon,
 
@@ -4570,7 +4522,9 @@ const MinhHongAssistant=
                     "Tiến độ học tập",
 
                 text:
-                    data.trend.text
+                    clean(
+                        data.trend.text
+                    )
 
             });
 
@@ -4600,13 +4554,11 @@ const MinhHongAssistant=
                     }
 
 
-                    result.push({
+                    list.push({
 
-                        personal:
-                            true,
+                        personal:true,
 
-                        type:
-                            "personal-advice",
+                        type:"advice",
 
                         icon:
                             advice.icon ||
@@ -4616,7 +4568,9 @@ const MinhHongAssistant=
                             "Minh Hồng nhắc bạn",
 
                         text:
-                            advice.text
+                            clean(
+                                advice.text
+                            )
 
                     });
 
@@ -4626,26 +4580,33 @@ const MinhHongAssistant=
         }
 
 
-        if(data.goal){
+        if(
+            data.goal &&
+            (
+                data.goal.name ||
+                data.goal.detail
+            )
+        ){
 
-            result.push({
+            list.push({
 
-                personal:
-                    true,
+                personal:true,
 
-                type:
-                    "personal-goal",
+                type:"goal",
 
                 icon:
                     ICONS.target,
 
                 title:
-                    data.goal.name ||
-                    "Mục tiêu tiếp theo",
+                    clean(
+                        data.goal.name ||
+                        "Mục tiêu tiếp theo"
+                    ),
 
                 text:
-                    data.goal.detail ||
-                    ""
+                    clean(
+                        data.goal.detail
+                    )
 
             });
 
@@ -4657,43 +4618,38 @@ const MinhHongAssistant=
             data.priorityGift.name
         ){
 
-            result.push({
+            const gift=
+                data.priorityGift;
 
-                personal:
-                    true,
 
-                type:
-                    "personal-gift",
+            list.push({
+
+                personal:true,
+
+                type:"gift",
 
                 icon:
                     ICONS.gift,
 
                 title:
                     "Vật phẩm nên ưu tiên: "+
-                    data.priorityGift.name,
+                    clean(
+                        gift.name
+                    ),
 
                 text:
-                    data.priorityGift.description ||
-                    data.priorityGift.reason ||
-                    ""
+                    clean(
+                        gift.statusText ||
+                        gift.description ||
+                        ""
+                    )
 
             });
 
         }
 
 
-        return result
-        .filter(
-            function(item){
-
-                return Boolean(
-                    item.text ||
-                    item.title
-                );
-
-            }
-        )
-        .slice(
+        return list.slice(
             0,
             CONFIG.maxPersonalNotifications
         );
@@ -4701,281 +4657,73 @@ const MinhHongAssistant=
     }
 
 
-    function refreshPersonalEvents(){
+    function activeEvents(){
+        const context=getPageContext();
 
-        personalNotificationEvents=
-            buildPersonalNotificationEvents();
-
-    }
-
-
-    /* =====================================================
-       CLASS PULSE NOTIFICATION
-    ===================================================== */
-
-    function readClassPulse(){
-
-        try{
-
-            if(
-                window.OCDClassPulse &&
-                typeof window.OCDClassPulse.getState===
-                "function"
-            ){
-
-                return(
-                    window.OCDClassPulse.getState()
-                    ||
-                    null
-                );
-
-            }
-
-        }catch(error){}
-
-
-        return classPulseState;
-
-    }
-
-
-    function normalizeClassPulseEvents(pulse){
-
-        if(
-            !pulse ||
-            !Array.isArray(
-                pulse.events
-            )
-        ){
-
-            return [];
-        }
-
-
-        return pulse.events
-        .slice(
-            0,
-            5
-        )
-        .map(
-            function(event){
-
-                return{
-
-                    classPulse:
-                        true,
-
-                    type:
-                        clean(
-                            event.type ||
-                            "class-pulse"
-                        ),
-
-                    icon:
-                        event.icon ||
-                        ICONS.activity,
-
-                    title:
-                        clean(
-                            event.title ||
-                            "Nhịp lớp học"
-                        ),
-
-                    text:
-                        clean(
-                            event.text ||
-                            event.message ||
-                            ""
-                        )
-
-                };
-
-            }
-        )
-        .filter(
-            function(event){
-
-                return Boolean(
-                    event.text
-                );
-
-            }
-        );
-
-    }
-
-
-    function setClassPulse(pulse){
-
-        classPulseState=
-            pulse ||
-            readClassPulse();
-
-
-        classPulseNotificationEvents=
-            normalizeClassPulseEvents(
-                classPulseState
-            );
-
-
-        if(
-            isClassPulseContext()
-        ){
-
-            renderPanel();
-
-
-            if(
-                !panelOpen &&
-                !notificationsMuted
-            ){
-
-                startNotificationLoop();
-
-            }
-
-        }
-
-    }
-
-
-    /* =====================================================
-       ACTIVE NOTIFICATION MODE
-    ===================================================== */
-
-    function activeNotificationEvents(){
-
-        const context=
-            getPageContext();
-
-
-        if(
-            context==="community"
-        ){
-
+        if(context==="community"){
             return communityNotificationEvents;
-
         }
 
-
-        if(
-            context==="personal"
-        ){
-
+        if(context==="personal"){
             return personalNotificationEvents;
-
         }
 
-
-        if(
-            context==="class-pulse"
-        ){
-
+        if(context==="class-pulse"){
             return classPulseNotificationEvents;
-
         }
-
 
         return [];
-
     }
 
 
     function activeFirstDelay(){
-
-        if(
-            isCommunityContext()
-        ){
-
-            return CONFIG.firstNotificationDelay;
-
-        }
-
-
-        return CONFIG.personalFirstDelay;
-
+        return isCommunityContext()
+        ? CONFIG.firstNotificationDelay
+        : CONFIG.personalFirstDelay;
     }
 
 
     function activeGapTime(){
-
-        if(
-            isCommunityContext()
-        ){
-
-            return CONFIG.gapTime;
-
-        }
-
-
-        return CONFIG.personalGapTime;
-
+        return isCommunityContext()
+        ? CONFIG.gapTime
+        : CONFIG.personalGapTime;
     }
 
 
-    function canShowActiveNotifications(){
+    function renderNotification(event){
 
-        const context=
-            getPageContext();
+        if(event && event.classPulse){
+            notification.className=
+                "mh-notification mh-personal";
 
+            notificationLabel.textContent=
+                "NHỊP LỚP HỌC";
 
-        if(
-            context==="community"
-        ){
+            notificationIcon.textContent=
+                event.icon || ICONS.activity;
 
-            return true;
+            notificationTitle.textContent=
+                event.title || "Hoạt động lớp học";
 
-        }
+            notificationText.textContent=
+                event.text || event.message || "";
 
-
-        if(
-            context==="class-pulse"
-        ){
-
-            return true;
-
-        }
-
-
-        if(
-            context==="personal"
-        ){
-
-            return OCDStudentSession.isVerified();
-
-        }
-
-
-        return false;
-
-    }
-
-
-    /* =====================================================
-       NOTIFICATION RENDER
-    ===================================================== */
-
-    function renderNotificationEvent(event){
-
-        if(!event){
+            notificationTime.textContent=
+                "20 bài nộp mới nhất";
 
             return;
         }
 
+        if(
+            event.personal
+        ){
 
-        notification.className=
-            "mh-notification";
-
-
-        if(event.personal){
-
-            notification.classList.add(
-                "mh-personal"
-            );
+            notification.className=
+                "mh-notification mh-personal";
 
 
             notificationLabel.textContent=
-                "MINH HỒNG NHẮC BẠN";
+                "MINH HỒNG GỢI Ý";
 
 
             notificationIcon.textContent=
@@ -4985,7 +4733,7 @@ const MinhHongAssistant=
 
             notificationTitle.textContent=
                 event.title ||
-                "Gợi ý học tập";
+                "Lời khuyên dành cho bạn";
 
 
             notificationText.textContent=
@@ -4998,50 +4746,14 @@ const MinhHongAssistant=
 
 
             return;
-
         }
 
 
-        if(event.classPulse){
-
-            notification.classList.add(
-                "mh-personal"
-            );
-
-
-            notificationLabel.textContent=
-                "MINH HỒNG · NHỊP LỚP";
-
-
-            notificationIcon.textContent=
-                event.icon ||
-                ICONS.activity;
-
-
-            notificationTitle.textContent=
-                event.title ||
-                "Nhịp lớp học";
-
-
-            notificationText.textContent=
-                event.text ||
-                "";
-
-
-            notificationTime.textContent=
-                "20 bài nộp mới nhất";
-
-
-            return;
-
-        }
-
-
-        notification.classList.add(
+        notification.className=
+            "mh-notification "+
             getCommunityEventClass(
                 event
-            )
-        );
+            );
 
 
         notificationLabel.textContent=
@@ -5061,16 +4773,12 @@ const MinhHongAssistant=
             notificationTitle.textContent=
                 CONFIG.teacherName+
                 " vừa nhận xét bài của "+
-                clean(
-                    event.name
-                );
+                event.name;
 
         }else{
 
             notificationTitle.textContent=
-                clean(
-                    event.name
-                );
+                event.name;
 
         }
 
@@ -5089,75 +4797,29 @@ const MinhHongAssistant=
     }
 
 
-    function hideNotification(){
-
-        if(!notification){
-
-            return;
-        }
-
-
-        notification.classList.remove(
-            "mh-show"
-        );
-
-
-        if(hideTimer){
-
-            clearTimeout(
-                hideTimer
-            );
-
-
-            hideTimer=null;
-
-        }
-
-    }
-
-
-    function showNotification(){
+    function showNotification(event){
 
         if(
-            notificationsMuted ||
             panelOpen ||
-            !canShowActiveNotifications()
+            notificationsMuted ||
+            !event
         ){
-
-            return;
-        }
-
-
-        const list=
-            activeNotificationEvents();
-
-
-        if(!list.length){
 
             return;
         }
 
 
         if(
-            currentIndex>=
-            list.length
+            !isHomePage()
+            &&
+            !OCDStudentSession.isVerified()
         ){
 
-            currentIndex=0;
-
+            return;
         }
 
 
-        const event=
-            list[
-                currentIndex
-            ];
-
-
-        currentIndex++;
-
-
-        renderNotificationEvent(
+        renderNotification(
             event
         );
 
@@ -5175,161 +4837,191 @@ const MinhHongAssistant=
         );
 
 
-        if(hideTimer){
-
-            clearTimeout(
-                hideTimer
-            );
-
-        }
+        clearTimeout(
+            hideTimer
+        );
 
 
         hideTimer=
             setTimeout(
-                function(){
-
-                    hideNotification();
-
-
-                    scheduleNext(
-                        activeGapTime()
-                    );
-
-                },
+                hideNotification,
                 CONFIG.visibleTime
             );
 
     }
 
 
-    function clearNotificationTimers(){
+    function hideNotification(){
 
-        if(firstTimer){
+        if(!notification){
 
-            clearTimeout(
-                firstTimer
-            );
-
-
-            firstTimer=null;
-
+            return;
         }
 
 
-        if(nextTimer){
-
-            clearTimeout(
-                nextTimer
-            );
+        notification.classList.remove(
+            "mh-show"
+        );
 
 
-            nextTimer=null;
-
-        }
-
-
-        if(hideTimer){
-
-            clearTimeout(
-                hideTimer
-            );
+        clearTimeout(
+            hideTimer
+        );
 
 
-            hideTimer=null;
+        hideTimer=null;
 
-        }
+    }
+
+
+    function stopNotificationLoop(){
+
+        clearTimeout(
+            firstTimer
+        );
+
+
+        clearTimeout(
+            nextTimer
+        );
+
+
+        clearTimeout(
+            hideTimer
+        );
+
+
+        firstTimer=null;
+        nextTimer=null;
+        hideTimer=null;
+
+
+        hideNotification();
 
     }
 
 
     function scheduleNext(delay){
 
+        clearTimeout(
+            nextTimer
+        );
+
+
+        nextTimer=null;
+
+
+        const list=
+            activeEvents();
+
+
         if(
-            notificationsMuted ||
             panelOpen ||
-            !canShowActiveNotifications()
+            notificationsMuted ||
+            !list.length
         ){
 
             return;
         }
 
 
-        const list=
-            activeNotificationEvents();
-
-
-        if(!list.length){
+        if(
+            !isHomePage()
+            &&
+            !OCDStudentSession.isVerified()
+        ){
 
             return;
         }
 
 
-        if(nextTimer){
-
-            clearTimeout(
-                nextTimer
-            );
-
-        }
-
-
         nextTimer=
             setTimeout(
-                function(){
-
-                    nextTimer=null;
-
-
-                    showNotification();
-
-                },
+                nextNotification,
                 delay
             );
 
     }
 
 
-    function startNotificationLoop(){
+    function nextNotification(){
 
-        clearNotificationTimers();
-
-
-        hideNotification();
-
-
-        currentIndex=0;
+        const list=
+            activeEvents();
 
 
         if(
-            notificationsMuted ||
             panelOpen ||
-            !canShowActiveNotifications()
+            notificationsMuted ||
+            !list.length
         ){
 
             return;
         }
 
 
+        if(
+            currentIndex>=
+            list.length
+        ){
+
+            currentIndex=0;
+        }
+
+
+        showNotification(
+            list[
+                currentIndex
+            ]
+        );
+
+
+        currentIndex++;
+
+
+        scheduleNext(
+            CONFIG.visibleTime+
+            activeGapTime()
+        );
+
+    }
+
+
+    function startNotificationLoop(){
+
+        stopNotificationLoop();
+
+
         const list=
-            activeNotificationEvents();
+            activeEvents();
 
 
-        if(!list.length){
+        if(
+            notificationsMuted ||
+            panelOpen ||
+            !list.length
+        ){
 
             return;
         }
 
 
+        if(
+            !isHomePage()
+            &&
+            !OCDStudentSession.isVerified()
+        ){
+
+            return;
+        }
+
+
+        currentIndex=0;
+
+
         firstTimer=
             setTimeout(
-                function(){
-
-                    firstTimer=null;
-
-
-                    showNotification();
-
-                },
+                nextNotification,
                 activeFirstDelay()
             );
 
@@ -5355,14 +5047,6 @@ const MinhHongAssistant=
             :
             ICONS.bell;
 
-
-        muteButton.title=
-            notificationsMuted
-            ?
-            "Bật thông báo"
-            :
-            "Tắt thông báo";
-
     }
 
 
@@ -5374,8 +5058,7 @@ const MinhHongAssistant=
 
         Preferences.set({
 
-            notificationsMuted:
-                notificationsMuted
+            notificationsMuted
 
         });
 
@@ -5383,17 +5066,131 @@ const MinhHongAssistant=
         renderMuteButton();
 
 
-        if(notificationsMuted){
+        if(
+            notificationsMuted
+        ){
 
-            clearNotificationTimers();
+            stopNotificationLoop();
 
-            hideNotification();
+        }else if(
+            !panelOpen
+        ){
+
+            scheduleNext(
+                500
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       PANEL
+    ===================================================== */
+
+    function openPanel(){
+
+        panelOpen=true;
+
+
+        root.classList.add(
+            "mh-panel-open"
+        );
+
+
+        stopNotificationLoop();
+
+
+        renderPanel();
+
+    }
+
+
+    function closePanel(){
+
+        panelOpen=false;
+
+
+        root.classList.remove(
+            "mh-panel-open"
+        );
+
+
+        if(
+            !notificationsMuted
+        ){
+
+            scheduleNext(
+                800
+            );
+
+        }
+
+    }
+
+
+    function togglePanel(){
+
+        if(panelOpen){
+
+            closePanel();
 
         }else{
 
-            startNotificationLoop();
+            openPanel();
 
         }
+
+    }
+
+
+    function createActionButton(
+        text,
+        primary,
+        callback
+    ){
+
+        const button=
+            makeElement(
+                "button",
+                primary
+                ?
+                "mh-action-button mh-action-button-primary"
+                :
+                "mh-action-button"
+            );
+
+
+        button.type=
+            "button";
+
+
+        button.appendChild(
+            makeElement(
+                "span",
+                "",
+                text
+            )
+        );
+
+
+        button.appendChild(
+            makeElement(
+                "span",
+                "",
+                CHAR.arrow
+            )
+        );
+
+
+        button.addEventListener(
+            "click",
+            callback
+        );
+
+
+        return button;
 
     }
 
@@ -5402,63 +5199,51 @@ const MinhHongAssistant=
        COMMUNITY PANEL
     ===================================================== */
 
-    function appendCommunitySection(){
+    function appendCommunityActivityList(
+        container,
+        list,
+        max
+    ){
 
-        if(
-            !isCommunityContext()
-        ){
-
-            return;
-        }
-
-
-        const section=
-            makeElement(
-                "div",
-                "mh-section"
-            );
-
-
-        section.appendChild(
-            makeElement(
-                "div",
-                "mh-section-title",
-                ICONS.community+
-                " HOẠT ĐỘNG CỘNG ĐỒNG"
-            )
-        );
-
-
-        const list=
+        const wrap=
             makeElement(
                 "div",
                 "mh-activity-list"
             );
 
 
-        const events=
-            CommunityEngine
-            .getEvents()
-            .slice(
+        const items=
+            list.slice(
                 0,
-                6
+                max || 6
             );
 
 
-        if(!events.length){
+        if(!items.length){
 
-            list.appendChild(
+            wrap.appendChild(
                 makeElement(
                     "div",
                     "mh-empty",
-                    "Minh Hồng đang cập nhật hoạt động cộng đồng."
+                    CommunityEngine.isReady()
+                    ?
+                    "Hiện chưa có hoạt động cộng đồng mới."
+                    :
+                    "Minh Hồng đang chuẩn bị dữ liệu hoạt động..."
                 )
             );
 
+
+            container.appendChild(
+                wrap
+            );
+
+
+            return;
         }
 
 
-        events.forEach(
+        items.forEach(
             function(event){
 
                 const item=
@@ -5496,66 +5281,29 @@ const MinhHongAssistant=
                     );
 
 
-                if(
-                    event.type===
-                    "comment"
-                ){
-
-                    const strong=
-                        makeElement(
-                            "strong",
-                            "",
-                            CONFIG.teacherName+
-                            " nhận xét bài của "+
-                            clean(
-                                event.name
-                            )+
-                            ": "
-                        );
-
-
-                    main.appendChild(
-                        strong
+                const strong=
+                    document.createElement(
+                        "strong"
                     );
 
 
-                    main.appendChild(
-                        document.createTextNode(
-                            CHAR.quoteOpen+
-                            clean(
-                                event.comment
-                            )+
-                            CHAR.quoteClose
+                strong.textContent=
+                    event.name;
+
+
+                main.appendChild(
+                    strong
+                );
+
+
+                main.appendChild(
+                    document.createTextNode(
+                        " "+
+                        getCommunityEventText(
+                            event
                         )
-                    );
-
-                }else{
-
-                    const strong=
-                        makeElement(
-                            "strong",
-                            "",
-                            clean(
-                                event.name
-                            )+
-                            " "
-                        );
-
-
-                    main.appendChild(
-                        strong
-                    );
-
-
-                    main.appendChild(
-                        document.createTextNode(
-                            getCommunityEventText(
-                                event
-                            )
-                        )
-                    );
-
-                }
+                    )
+                );
 
 
                 content.appendChild(
@@ -5579,7 +5327,7 @@ const MinhHongAssistant=
                 );
 
 
-                list.appendChild(
+                wrap.appendChild(
                     item
                 );
 
@@ -5587,8 +5335,41 @@ const MinhHongAssistant=
         );
 
 
+        container.appendChild(
+            wrap
+        );
+
+    }
+
+
+    function appendCommunitySection(){
+
+        if(!isCommunityContext()){
+            return;
+        }
+
+
+        const section=
+            makeElement(
+                "div",
+                "mh-section"
+            );
+
+
         section.appendChild(
-            list
+            makeElement(
+                "div",
+                "mh-section-title",
+                ICONS.community+
+                " HOẠT ĐỘNG CỘNG ĐỒNG GẦN ĐÂY"
+            )
+        );
+
+
+        appendCommunityActivityList(
+            section,
+            CommunityEngine.getEvents(),
+            6
         );
 
 
@@ -5603,210 +5384,89 @@ const MinhHongAssistant=
        CLASS PULSE PANEL
     ===================================================== */
 
-    function appendClassPulseSection(){
-
-        if(
-            !isClassPulseContext()
-        ){
-
-            return;
-        }
-
-
-        const pulse=
-            readClassPulse();
-
-
-        const section=
-            makeElement(
-                "div",
-                "mh-insight-wrap"
-            );
-
-
-        section.appendChild(
-            makeElement(
-                "div",
-                "mh-insight-head",
-                ICONS.activity+
-                " NHỊP LỚP HỌC"
-            )
-        );
-
-
-        if(!pulse){
-
-            section.appendChild(
-                makeElement(
-                    "div",
-                    "mh-empty",
-                    "Đang chờ trang Tác phẩm học viên tổng hợp 20 bài nộp mới nhất. Minh Hồng không tải lại Sheet nên trang vẫn nhẹ."
-                )
-            );
-
-
-            panelBody.appendChild(
-                section
-            );
-
-
-            return;
-        }
-
-
-        const summary=
-            makeElement(
-                "div",
-                "mh-insight-summary"
-            );
-
-
-        function stat(
-            value,
-            label
-        ){
-
-            const box=
-                makeElement(
-                    "div",
-                    "mh-insight-stat"
-                );
-
-
-            box.appendChild(
-                makeElement(
-                    "div",
-                    "mh-insight-stat-value",
-                    String(
-                        value===
-                        undefined
-                        ||
-                        value===
-                        null
-                        ?
-                        "—"
-                        :
-                        value
-                    )
-                )
-            );
-
-
-            box.appendChild(
-                makeElement(
-                    "div",
-                    "mh-insight-stat-label",
-                    label
-                )
-            );
-
-
-            summary.appendChild(
-                box
-            );
-
-        }
-
-
-        stat(
-            pulse.total || 0,
-            "Bài mới nhất"
-        );
-
-
-        stat(
-            pulse.uniqueStudents || 0,
-            "Học viên hoạt động"
-        );
-
-
-        stat(
-            pulse.gradedCount || 0,
-            "Bài đã chấm"
-        );
-
-
-        panelBody.appendChild(
-            section
-        );
-
-
-        section.appendChild(
-            summary
-        );
-
-
-        const events=
-            normalizeClassPulseEvents(
-                pulse
-            );
-
-
-        if(!events.length){
-
-            section.appendChild(
-                makeElement(
-                    "div",
-                    "mh-empty",
-                    "Chưa có đủ dữ liệu để tạo thông báo Nhịp lớp học."
-                )
-            );
-
-
-            return;
-        }
-
-
-        events.forEach(
-            function(event){
-
-                const card=
-                    makeElement(
-                        "div",
-                        "mh-advice-card"
-                    );
-
-
-                const title=
-                    makeElement(
-                        "div",
-                        "mh-advice-title",
-                        (
-                            event.icon ||
-                            ICONS.activity
-                        )+
-                        " "+
-                        event.title
-                    );
-
-
-                const text=
-                    makeElement(
-                        "div",
-                        "mh-advice-text",
-                        event.text
-                    );
-
-
-                card.appendChild(
-                    title
-                );
-
-
-                card.appendChild(
-                    text
-                );
-
-
-                section.appendChild(
-                    card
-                );
-
+    function readClassPulse(){
+        try{
+            if(window.OCDClassPulse && typeof window.OCDClassPulse.getState==="function"){
+                return window.OCDClassPulse.getState() || null;
             }
-        );
-
+        }catch(error){}
+        return classPulseState;
     }
 
+    function normalizeClassPulseEvents(pulse){
+        if(!pulse || !Array.isArray(pulse.events)){
+            return [];
+        }
+
+        return pulse.events.slice(0,5).map(function(event){
+            return{
+                classPulse:true,
+                type:clean(event.type || "class-pulse"),
+                icon:event.icon || ICONS.activity,
+                title:clean(event.title || "Nhịp lớp học"),
+                text:clean(event.text || event.message || "")
+            };
+        }).filter(function(event){
+            return Boolean(event.text);
+        });
+    }
+
+    function setClassPulse(pulse){
+        classPulseState=pulse || readClassPulse();
+        classPulseNotificationEvents=normalizeClassPulseEvents(classPulseState);
+
+        if(isClassPulseContext()){
+            renderPanel();
+            if(!panelOpen && !notificationsMuted){
+                startNotificationLoop();
+            }
+        }
+    }
+
+    function appendClassPulseSection(){
+        if(!isClassPulseContext()){
+            return;
+        }
+
+        const pulse=readClassPulse();
+        const section=makeElement("div","mh-insight-wrap");
+        section.appendChild(makeElement("div","mh-insight-head",ICONS.activity+" NHỊP LỚP HỌC"));
+
+        if(!pulse){
+            section.appendChild(makeElement("div","mh-empty","Đang chờ trang Tác phẩm học viên tổng hợp 20 bài nộp mới nhất. Minh Hồng không tải lại Sheet nên trang vẫn nhẹ."));
+            panelBody.appendChild(section);
+            return;
+        }
+
+        const summary=makeElement("div","mh-insight-summary");
+        function stat(value,label){
+            const box=makeElement("div","mh-insight-stat");
+            box.appendChild(makeElement("div","mh-insight-stat-value",String(value===undefined || value===null ? "—" : value)));
+            box.appendChild(makeElement("div","mh-insight-stat-label",label));
+            summary.appendChild(box);
+        }
+
+        stat(pulse.total || 0,"Bài mới nhất");
+        stat(pulse.uniqueStudents || 0,"Học viên hoạt động");
+        stat(pulse.gradedCount || 0,"Bài đã chấm");
+        panelBody.appendChild(section);
+        section.appendChild(summary);
+
+        const events=normalizeClassPulseEvents(pulse);
+        if(!events.length){
+            section.appendChild(makeElement("div","mh-empty","Chưa có đủ dữ liệu để tạo thông báo Nhịp lớp học."));
+            return;
+        }
+
+        events.forEach(function(event){
+            const card=makeElement("div","mh-advice-card");
+            const title=makeElement("div","mh-advice-title",(event.icon || ICONS.activity)+" "+event.title);
+            const text=makeElement("div","mh-advice-text",event.text);
+            card.appendChild(title);
+            card.appendChild(text);
+            section.appendChild(card);
+        });
+    }
 
     /* =====================================================
        PERSONAL INSIGHT PANEL
@@ -5814,10 +5474,7 @@ const MinhHongAssistant=
 
     function appendPersonalInsight(){
 
-        if(
-            !isPersonalContext()
-        ){
-
+        if(!isPersonalContext()){
             return;
         }
 
@@ -5972,22 +5629,18 @@ const MinhHongAssistant=
 
 
             if(
-                data.trend.type===
-                "up"
+                data.trend.type==="up"
             ){
 
-                icon=
-                    ICONS.up;
+                icon=ICONS.up;
 
             }
 
             else if(
-                data.trend.type===
-                "down"
+                data.trend.type==="down"
             ){
 
-                icon=
-                    ICONS.down;
+                icon=ICONS.down;
 
             }
 
@@ -6131,7 +5784,9 @@ const MinhHongAssistant=
             );
 
         }
-               if(
+
+
+        if(
             data.priorityGift &&
             data.priorityGift.name
         ){
@@ -6816,18 +6471,12 @@ const MinhHongAssistant=
                 ?
                 (
                     isCommunityContext()
-                    ?
-                    "Mã học viên đã được xác minh. Tại Trang chủ, Minh Hồng sẽ ưu tiên cập nhật những hoạt động chung của cộng đồng."
-                    :
-                    isPersonalContext()
-                    ?
-                    "Mã học viên đã được xác minh. Ở trang Tra cứu, Minh Hồng ưu tiên những đề xuất liên quan trực tiếp đến bạn."
-                    :
-                    isClassPulseContext()
-                    ?
-                    "Mã học viên đã được xác minh. Ở trang Tác phẩm học viên, Minh Hồng tổng hợp Nhịp lớp từ 20 bài nộp mới nhất."
-                    :
-                    "Mã học viên đã được xác minh. Trang này không phát thông báo tự động."
+                    ? "Mã học viên đã được xác minh. Tại Trang chủ, Minh Hồng sẽ ưu tiên cập nhật những hoạt động chung của cộng đồng."
+                    : isPersonalContext()
+                    ? "Mã học viên đã được xác minh. Ở trang Tra cứu, Minh Hồng ưu tiên những đề xuất liên quan trực tiếp đến bạn."
+                    : isClassPulseContext()
+                    ? "Mã học viên đã được xác minh. Ở trang Tác phẩm học viên, Minh Hồng tổng hợp Nhịp lớp từ 20 bài nộp mới nhất."
+                    : "Mã học viên đã được xác minh. Trang này không phát thông báo tự động."
                 )
                 :
                 "Mã hiện đang được ghi nhớ nhưng chưa được một trang học viên xác minh."
@@ -6835,24 +6484,12 @@ const MinhHongAssistant=
         );
 
 
-        if(
-            isCommunityContext()
-        ){
-
+        if(isCommunityContext()){
             appendCommunitySection();
-
-        }else if(
-            isPersonalContext()
-        ){
-
+        }else if(isPersonalContext()){
             appendPersonalInsight();
-
-        }else if(
-            isClassPulseContext()
-        ){
-
+        }else if(isClassPulseContext()){
             appendClassPulseSection();
-
         }
 
 
@@ -7107,14 +6744,10 @@ const MinhHongAssistant=
 
 
     function refreshPersonalEvents(){
-
         personalNotificationEvents=
             isPersonalContext()
-            ?
-            buildPersonalNotificationEvents()
-            :
-            [];
-
+            ? buildPersonalNotificationEvents()
+            : [];
     }
 
 
@@ -7154,9 +6787,7 @@ const MinhHongAssistant=
             [];
 
 
-        if(
-            isCommunityContext()
-        ){
+        if(isCommunityContext()){
 
             renderPanel();
 
@@ -7177,10 +6808,7 @@ const MinhHongAssistant=
 
     function initializeCommunity(){
 
-        if(
-            !isCommunityContext()
-        ){
-
+        if(!isCommunityContext()){
             return;
         }
 
@@ -7238,7 +6866,9 @@ const MinhHongAssistant=
         );
 
     }
-       /* =====================================================
+
+
+    /* =====================================================
        EVENTS
     ===================================================== */
 
@@ -7288,10 +6918,7 @@ const MinhHongAssistant=
         "ocdCommunityActivityReady",
         function(event){
 
-            if(
-                !isCommunityContext()
-            ){
-
+            if(!isCommunityContext()){
                 return;
             }
 
@@ -7313,73 +6940,30 @@ const MinhHongAssistant=
     window.addEventListener(
         "ocdClassPulseReady",
         function(event){
-
-            const detail=
-                event.detail ||
-                null;
-
-
-            setClassPulse(
-                detail
-            );
-
+            const detail=event.detail || null;
+            setClassPulse(detail);
         }
     );
-
 
     window.addEventListener(
         "ocdMinhHongPageContextReady",
         function(event){
-
-            const detail=
-                event.detail ||
-                {};
-
-
-            const context=
-                normalizePageContext(
-                    detail.context
-                );
-
-
+            const detail=event.detail || {};
+            const context=normalizePageContext(detail.context);
             if(context){
-
-                window.OCDMinhHongPageContext=
-                    context;
-
+                window.OCDMinhHongPageContext=context;
             }
-
-
             refreshPersonalEvents();
-
-
-            if(
-                isClassPulseContext()
-            ){
-
-                setClassPulse(
-                    readClassPulse()
-                );
-
+            if(isClassPulseContext()){
+                setClassPulse(readClassPulse());
             }else{
-
                 renderPanel();
-
-
-                if(
-                    !panelOpen &&
-                    !notificationsMuted
-                ){
-
+                if(!panelOpen && !notificationsMuted){
                     startNotificationLoop();
-
                 }
-
             }
-
         }
     );
-
 
     window.addEventListener(
         "storage",
@@ -7412,21 +6996,13 @@ const MinhHongAssistant=
 
         refreshPersonalEvents();
 
-
-        if(
-            isClassPulseContext()
-        ){
-
-            setClassPulse(
-                readClassPulse()
-            );
-
+        if(isClassPulseContext()){
+            setClassPulse(readClassPulse());
         }
 
 
         if(
-            document.readyState===
-            "complete"
+            document.readyState==="complete"
         ){
 
             scheduleCommunityInitialization();
@@ -7446,14 +7022,10 @@ const MinhHongAssistant=
 
         if(
             !isCommunityContext()
-            &&
-            !isSilentContext()
-            &&
-            !notificationsMuted
+            && !isSilentContext()
+            && !notificationsMuted
         ){
-
             startNotificationLoop();
-
         }
 
 
@@ -7489,8 +7061,7 @@ const MinhHongAssistant=
 
 
     if(
-        document.readyState===
-        "loading"
+        document.readyState==="loading"
     ){
 
         document.addEventListener(
@@ -7594,3 +7165,5 @@ console.info(
 
 
 })();
+
+
