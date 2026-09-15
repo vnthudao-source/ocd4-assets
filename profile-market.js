@@ -3475,6 +3475,122 @@ function resetSubmissionUi(){
    SEARCH STUDENT
 ========================================================= */
  
+
+/* =========================================================
+   MINH HỒNG CONTEXT BRIDGE
+   Dùng dữ liệu Tra cứu đã có, không fetch thêm dữ liệu.
+========================================================= */
+function clearMinhHongContext(){
+    try{
+        if(window.OCDMinhHongContext &&
+           typeof window.OCDMinhHongContext.clear==="function"){
+            window.OCDMinhHongContext.clear("tra-cuu");
+        }
+    }catch(error){
+        console.warn("[Profile] Không thể xoá Minh Hồng Context:",error);
+    }
+}
+
+function syncMinhHongStudentContext(){
+    if(state.isAdmin || !state.student || !state.student.code) return;
+
+    const student=state.student;
+    const code=RS.normalizeCode(student.code);
+    const reward=state.reward || createEmptyStudentReward();
+    const gems=student.gems || {};
+    const submissionCount=Array.isArray(state.submissions)?state.submissions.length:0;
+    const averageScore=Number(student.averageScore||0);
+    const streak=Number(reward.longestStreak||0);
+    const highRun=Number(reward.bestHighRun||0);
+    const ownedItemTotal=getOwnedItemTotal(state.ownedItems||[]);
+
+    const latestSubmission=(state.submissions||[]).slice().sort(function(a,b){
+        const da=RS.parseVietnameseDate(a.timestamp);
+        const db=RS.parseVietnameseDate(b.timestamp);
+        return (db?db.getTime():0)-(da?da.getTime():0);
+    })[0] || null;
+
+    const latestComment=latestSubmission?clean(latestSubmission.comment):"";
+
+    const payload={
+        page:"TraCuu",
+        studentCode:code,
+        data:{
+            studentName:student.name||code,
+            group:student.group||"",
+            course:student.course||"",
+            averageScore:averageScore,
+            rankingScore:Number(student.rankingScore||0),
+            submissionCount:submissionCount,
+            deletedSubmissionCount:Number(state.deletedSubmissionCount||0),
+            streak:streak,
+            highRun:highRun,
+            ownedItemTotal:ownedItemTotal,
+            learningStatus:student.status&&student.status.title?student.status.title:"",
+            latestSubmissionTime:latestSubmission?(latestSubmission.timestamp||""):"",
+            latestTeacherComment:latestComment,
+            hoangNgoc:Number(gems.hoangNgoc||0),
+            haiLamNgoc:Number(gems.haiLamNgoc||0),
+            thachAnhTim:Number(gems.thachAnhTim||0),
+            lamBaoThach:Number(gems.lamBaoThach||0),
+            lucThach:Number(gems.lucThach||0),
+            hongNgoc:Number(gems.hongNgoc||0)
+        },
+        conditions:{
+            no_submission:submissionCount===0,
+            has_submission:submissionCount>0,
+            low_average:submissionCount>0 && averageScore>0 && averageScore<=2,
+            good_average:averageScore>=4,
+            good_streak:streak>=5,
+            strong_streak:streak>=14,
+            has_high_run:highRun>0,
+            has_items:ownedItemTotal>0,
+            has_gems:GEM_ORDER.some(function(key){return Number(gems[key]||0)>0;}),
+            has_teacher_comment:Boolean(latestComment),
+            submission_warning:Boolean(
+                student.status &&
+                (student.status.type==="warning" || student.status.type==="danger")
+            )
+        }
+    };
+
+    let attempts=0;
+    const maxAttempts=12;
+
+    function apply(){
+        attempts++;
+        let sessionReady=false;
+        let contextReady=false;
+
+        try{
+            if(window.OCDStudentSession &&
+               typeof window.OCDStudentSession.confirmStudent==="function"){
+                window.OCDStudentSession.confirmStudent(code,"tra-cuu");
+                sessionReady=true;
+            }
+        }catch(error){
+            console.warn("[Profile] Không thể đồng bộ Student Session:",error);
+        }
+
+        try{
+            if(window.OCDMinhHongContext &&
+               typeof window.OCDMinhHongContext.set==="function"){
+                window.OCDMinhHongContext.set(payload,"tra-cuu");
+                contextReady=true;
+            }
+        }catch(error){
+            console.warn("[Profile] Không thể đồng bộ Minh Hồng Context:",error);
+        }
+
+        if((!sessionReady||!contextReady) && attempts<maxAttempts){
+            setTimeout(apply,250);
+        }
+    }
+
+    apply();
+}
+
+
 async function searchStudent(){
  
     const code=
@@ -3495,6 +3611,9 @@ async function searchStudent(){
         return;
     }
  
+    /* Xoá Context cũ khi bắt đầu tra cứu mã mới. */
+    clearMinhHongContext();
+
     const button=
         el(
             "rxSearchButton"
@@ -3910,6 +4029,9 @@ async function searchStudent(){
             reward
         );
  
+        /* Đồng bộ mã đã xác minh và Context thật sang Minh Hồng. */
+        syncMinhHongStudentContext();
+
         resetSubmissionUi();
  
         if(
@@ -7412,3 +7534,5 @@ setMultitaskEffect(
  
 })();
  
+
+
