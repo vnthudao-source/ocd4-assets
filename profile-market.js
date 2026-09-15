@@ -1,6 +1,3 @@
-profile-market.js — v4.9L-R2
-Bản hoàn chỉnh để sao chép/thay thế file profile-market.js
- 
 (function(){
  
 "use strict";
