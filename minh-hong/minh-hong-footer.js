@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V152__
+    window.__OCD_MINH_HONG_FOOTER_V153__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V152__=
+window.__OCD_MINH_HONG_FOOTER_V153__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V152__=
 const CONFIG={
 
     version:
-        "1.5.2",
+        "1.5.3",
 
     enabled:
         true,
@@ -73,14 +73,14 @@ const CONFIG={
 
 
     /* =====================================================
-       MINH HỒNG CONTENT SHEET v1.5.2
+       MINH HỒNG CONTENT SHEET v1.5.3
     ===================================================== */
 
     contentSpreadsheetId:
         "1-J6sXAbiepK6C3Bx0JQ3916Y7JNfBIyGrxvQuJYqx74",
 
     contentCachePrefix:
-        "ocd_minh_hong_content_v152_",
+        "ocd_minh_hong_content_v153_",
 
     contentCacheTime:
         20*60*1000,
@@ -534,7 +534,7 @@ function isSilentContext(){ return getPageContext()==="silent"; }
 
 
 /* =========================================================
-   CONTENT TAB ROUTER v1.5.2
+   CONTENT TAB ROUTER v1.5.3
 
    Mục tiêu:
    - Khách chỉ tải nội dung của đúng trang đang xem.
@@ -1470,7 +1470,7 @@ const InsightStore=
 
 
 /* =========================================================
-   GUEST JOURNEY v1.5.2
+   GUEST JOURNEY v1.5.3
 
    - Ghi nhớ nhẹ hành trình của khách trong localStorage.
    - Kích hoạt đúng điều kiện first_visit / returning_guest.
@@ -1580,7 +1580,7 @@ const GuestJourney=
     }
 
     return {
-        version:"1.5.2",
+        version:"1.5.3",
         registerVisit:registerVisit,
         getContext:getContext,
         isSeen:isSeen,
@@ -1594,7 +1594,7 @@ window.OCDMinhHongGuestJourney=GuestJourney;
 
 
 /* =========================================================
-   CONTENT ENGINE v1.5.2
+   CONTENT ENGINE v1.5.3
 
    - Đọc nội dung điều khiển từ Google Sheet MinhHong
    - Chỉ tải tab được yêu cầu (lazy-load)
@@ -1820,27 +1820,106 @@ const MinhHongContentEngine=
         return (readCache(tab,false) || []).slice();
     }
 
+    /* =====================================================
+       AUDIENCE / CONDITION MATCHER v1.5.3
+
+       Guest:
+       - Đối tượng trống / all / guest
+       - always / first_visit / returning_guest
+
+       Student:
+       - Đối tượng trống / all / student
+       - Chỉ dùng khi Student Session đã VERIFIED
+       - always / verified_student
+
+       Các điều kiện dữ liệu học tập nâng cao sẽ được bổ sung
+       sau; Content Engine không tự trở thành Reward Core.
+    ===================================================== */
     function matches(item,context){
         context=context || {};
-        const audience=clean(item.audience).toLowerCase();
-        if(audience && audience!=="all" && audience!=="guest") return false;
 
-        const condition=clean(item.condition).toLowerCase();
-        if(!condition || condition==="always") return true;
-        if(condition==="first_visit") return Boolean(context.firstVisit);
-        if(condition==="returning_guest") return Boolean(context.returningGuest);
+        const mode=
+            clean(context.mode).toLowerCase() || "guest";
+
+        const audience=
+            clean(item.audience).toLowerCase();
+
+        if(mode==="student"){
+            if(
+                audience &&
+                audience!=="all" &&
+                audience!=="student"
+            ){
+                return false;
+            }
+        }else{
+            if(
+                audience &&
+                audience!=="all" &&
+                audience!=="guest"
+            ){
+                return false;
+            }
+        }
+
+        const condition=
+            clean(item.condition).toLowerCase();
+
+        if(!condition || condition==="always"){
+            return true;
+        }
+
+        if(mode==="student"){
+            if(condition==="verified_student"){
+                return Boolean(context.verified);
+            }
+            return false;
+        }
+
+        if(condition==="first_visit"){
+            return Boolean(context.firstVisit);
+        }
+
+        if(condition==="returning_guest"){
+            return Boolean(context.returningGuest);
+        }
+
         return false;
     }
 
     function getForGuest(tab,context){
-        return get(tab).filter(function(item){ return matches(item,context); });
+        context=Object.assign({},context || {},{
+            mode:"guest"
+        });
+
+        return get(tab).filter(function(item){
+            return matches(item,context);
+        });
+    }
+
+    function getForStudent(tab,context){
+        context=Object.assign({},context || {},{
+            mode:"student",
+            verified:Boolean(
+                context && context.verified
+            )
+        });
+
+        if(!context.verified){
+            return [];
+        }
+
+        return get(tab).filter(function(item){
+            return matches(item,context);
+        });
     }
 
     return {
-        version:"1.5.2",
+        version:"1.5.3",
         load:load,
         get:get,
         getForGuest:getForGuest,
+        getForStudent:getForStudent,
         tabs:ALLOWED_TABS.slice()
     };
 
@@ -6935,6 +7014,123 @@ const MinhHongAssistant=
        STUDENT PANEL
     ===================================================== */
 
+    /* =====================================================
+       STUDENT SHEET CONTENT v1.5.3
+       - Chỉ chạy khi session đã VERIFIED.
+       - Đọc đúng tab của trang hiện tại.
+       - Chỉ nhận Đối tượng student / all / trống.
+       - Không có nội dung phù hợp: không hiện section.
+       - Lỗi Sheet: không ảnh hưởng các chức năng Student cũ.
+    ===================================================== */
+    function appendStudentSheetContent(state){
+        if(!state || !state.verified) return;
+
+        const pageTab=getPageContentTab();
+        const section=makeElement("div","mh-section");
+        section.style.display="none";
+
+        function renderItems(items){
+            clearNode(section);
+
+            if(!items || !items.length){
+                section.style.display="none";
+                return;
+            }
+
+            section.style.display="";
+
+            section.appendChild(
+                makeElement(
+                    "div",
+                    "mh-section-title",
+                    ICONS.book+" GỢI Ý TRÊN TRANG NÀY"
+                )
+            );
+
+            items.forEach(function(item,index){
+                const card=makeElement("div","mh-guide-card");
+
+                card.appendChild(
+                    makeElement(
+                        "div",
+                        "mh-guide-title",
+                        item.title || ("Gợi ý "+(index+1))
+                    )
+                );
+
+                if(item.content){
+                    card.appendChild(
+                        makeElement(
+                            "div",
+                            "mh-guide-text",
+                            item.content
+                        )
+                    );
+                }
+
+                if(item.button){
+                    const button=createActionButton(
+                        item.button,
+                        false,
+                        function(){
+                            const link=clean(item.link);
+                            if(link && link!=="#"){
+                                window.location.href=link;
+                            }
+                        }
+                    );
+                    card.appendChild(button);
+                }
+
+                section.appendChild(card);
+            });
+        }
+
+        panelBody.appendChild(section);
+
+        const context={
+            verified:true,
+            code:state.code || "",
+            pageTab:pageTab
+        };
+
+        const cached=
+            MinhHongContentEngine.getForStudent(
+                pageTab,
+                context
+            );
+
+        if(cached.length){
+            renderItems(cached);
+        }
+
+        MinhHongContentEngine.load(pageTab).then(function(){
+            if(!panelOpen) return;
+
+            const current=
+                OCDStudentSession.getState();
+
+            if(
+                !current.verified ||
+                current.code!==state.code
+            ){
+                return;
+            }
+
+            renderItems(
+                MinhHongContentEngine.getForStudent(
+                    pageTab,
+                    {
+                        verified:true,
+                        code:current.code,
+                        pageTab:pageTab
+                    }
+                )
+            );
+        });
+    }
+
+
     function renderStudentPanel(state){
 
         panelBody.appendChild(
@@ -6993,6 +7189,12 @@ const MinhHongAssistant=
                 "Mã hiện đang được ghi nhớ nhưng chưa được một trang học viên xác minh."
             )
         );
+
+
+        /* Nội dung Google Sheet dành riêng cho học viên.
+           Đặt trước Community / Insight / Class Pulse để
+           không thay đổi logic của các engine cũ. */
+        appendStudentSheetContent(state);
 
 
         if(isCommunityContext()){
@@ -7594,7 +7796,7 @@ const MinhHongAssistant=
 
 
     /* =====================================================
-       CONTENT PRELOAD v1.5.2
+       CONTENT PRELOAD v1.5.3
        Khách chỉ preload đúng tab của trang hiện tại.
        Guest chỉ được tải sau nếu tab trang không có nội dung.
        Không chặn UI và không ảnh hưởng Student Mode.
