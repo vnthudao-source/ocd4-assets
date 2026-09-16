@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V156__
+    window.__OCD_MINH_HONG_FOOTER_V1561__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V156__=
+window.__OCD_MINH_HONG_FOOTER_V1561__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V156__=
 const CONFIG={
 
     version:
-        "1.5.6",
+        "1.5.6.1",
 
     enabled:
         true,
@@ -92,7 +92,7 @@ const CONFIG={
         120,
 
     /* =====================================================
-       CONTEXT SPEECH v1.5.5
+       CONTEXT SPEECH v1.5.6.1
     ===================================================== */
     speechCooldownKey:
         "ocd_minh_hong_speech_cooldown_v1",
@@ -5398,6 +5398,12 @@ const MinhHongAssistant=
                 context.data||{}
             );
 
+            /*
+               v1.5.6.1
+               Sheet đã sort theo priority giảm dần trong Content Engine.
+               Không chọn 1 câu rồi break nữa: đưa TOÀN BỘ speech/both
+               hợp lệ và chưa cooldown vào hàng đợi theo đúng thứ tự ưu tiên.
+            */
             const candidates=(
                 isVerifiedStudent
                 ? MinhHongContentEngine.getForStudent(pageTab,context)
@@ -5409,10 +5415,9 @@ const MinhHongAssistant=
 
             const cooldowns=readSpeechCooldowns();
             const now=Date.now();
-            let selected=null;
+            const queue=[];
 
-            for(let i=0;i<candidates.length;i++){
-                const item=candidates[i];
+            candidates.forEach(function(item){
                 const title=renderContextTemplate(
                     item.title || (isVerifiedStudent ? "Lời khuyên dành cho bạn" : "Minh Hồng chào bạn"),
                     templateData
@@ -5425,10 +5430,10 @@ const MinhHongAssistant=
                 const last=Number(cooldowns[key])||0;
 
                 if(now-last<CONFIG.speechCooldownTime){
-                    continue;
+                    return;
                 }
 
-                selected={
+                queue.push({
                     personal:true,
                     guestSpeech:!isVerifiedStudent,
                     contextSpeech:true,
@@ -5439,17 +5444,16 @@ const MinhHongAssistant=
                     contentId:item.id,
                     priority:item.priority||0,
                     speechKey:key
-                };
-                break;
-            }
+                });
+            });
 
-            contextSpeechEvents=selected?[selected]:[];
+            contextSpeechEvents=queue;
+            currentIndex=0;
 
-            if(selected){
-                cooldowns[selected.speechKey]=now;
-                saveSpeechCooldowns(cooldowns);
-            }
-
+            /*
+               Không ghi cooldown ở đây.
+               Cooldown chỉ được ghi khi câu thật sự xuất hiện trên màn hình.
+            */
             if(
                 !panelOpen &&
                 !notificationsMuted &&
@@ -5474,28 +5478,24 @@ const MinhHongAssistant=
         if(context==="community"){
             if(!OCDStudentSession.isVerified()){
                 return contextSpeechEvents
-                    .concat(communityNotificationEvents)
-                    .slice(0,CONFIG.maxPersonalNotifications);
+                    .concat(communityNotificationEvents.slice(0,CONFIG.maxPersonalNotifications));
             }
             return communityNotificationEvents;
         }
 
         if(context==="personal"){
+            /*
+               v1.5.6.1
+               Không cắt hàng đợi Sheet bằng maxPersonalNotifications.
+               Tất cả speech/both hợp lệ được nói trước; notification động theo sau.
+            */
             return contextSpeechEvents
-                .concat(personalNotificationEvents)
-                .slice(0,CONFIG.maxPersonalNotifications);
+                .concat(personalNotificationEvents.slice(0,CONFIG.maxPersonalNotifications));
         }
 
         if(context==="class-pulse"){
-            /*
-               FIX v1.5.5.1
-               TacPham trước đây chỉ phát Class Pulse nên lời thoại lấy từ
-               tab TacPham trong Sheet bị bỏ khỏi hàng đợi thông báo.
-               Context Sheet luôn đứng trước; Class Pulse vẫn giữ nguyên phía sau.
-            */
             return contextSpeechEvents
-                .concat(classPulseNotificationEvents)
-                .slice(0,CONFIG.maxPersonalNotifications);
+                .concat(classPulseNotificationEvents.slice(0,CONFIG.maxPersonalNotifications));
         }
 
         return [];
@@ -5774,40 +5774,56 @@ const MinhHongAssistant=
     }
 
 
+    function markContextSpeechShown(event){
+        if(!event || !event.contextSpeech || !event.speechKey){
+            return;
+        }
+
+        const cooldowns=readSpeechCooldowns();
+        cooldowns[event.speechKey]=Date.now();
+        saveSpeechCooldowns(cooldowns);
+
+        /*
+           Bỏ đúng câu vừa nói khỏi queue để câu ưu tiên kế tiếp
+           trở thành phần tử đầu tiên. Nhờ vậy không lặp lại câu cũ.
+        */
+        contextSpeechEvents=contextSpeechEvents.filter(function(item){
+            return item.speechKey!==event.speechKey;
+        });
+    }
+
+
     function nextNotification(){
 
-        const list=
-            activeEvents();
-
+        const list=activeEvents();
 
         if(
             panelOpen ||
             notificationsMuted ||
             !list.length
         ){
-
             return;
         }
 
-
-        if(
-            currentIndex>=
-            list.length
-        ){
-
+        if(currentIndex>=list.length){
             currentIndex=0;
         }
 
+        const event=list[currentIndex];
 
-        showNotification(
-            list[
-                currentIndex
-            ]
-        );
+        showNotification(event);
 
-
-        currentIndex++;
-
+        if(event && event.contextSpeech){
+            /*
+               v1.5.6.1
+               Chỉ bắt đầu cooldown sau khi câu đã thật sự được hiển thị.
+               Sau khi xóa câu vừa nói, câu Sheet tiếp theo nằm ở index 0.
+            */
+            markContextSpeechShown(event);
+            currentIndex=0;
+        }else{
+            currentIndex++;
+        }
 
         scheduleNext(
             CONFIG.visibleTime+
