@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V154__
+    window.__OCD_MINH_HONG_FOOTER_V155__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V154__=
+window.__OCD_MINH_HONG_FOOTER_V155__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V154__=
 const CONFIG={
 
     version:
-        "1.5.4",
+        "1.5.5",
 
     enabled:
         true,
@@ -80,7 +80,7 @@ const CONFIG={
         "1-J6sXAbiepK6C3Bx0JQ3916Y7JNfBIyGrxvQuJYqx74",
 
     contentCachePrefix:
-        "ocd_minh_hong_content_v154_",
+        "ocd_minh_hong_content_v155_",
 
     contentCacheTime:
         20*60*1000,
@@ -90,6 +90,18 @@ const CONFIG={
 
     guestJourneyMaxSeen:
         120,
+
+    /* =====================================================
+       CONTEXT SPEECH v1.5.5
+    ===================================================== */
+    speechCooldownKey:
+        "ocd_minh_hong_speech_cooldown_v1",
+
+    speechCooldownTime:
+        12*60*60*1000,
+
+    speechMaxHistory:
+        160,
 
 
     /* =====================================================
@@ -1774,7 +1786,8 @@ const MinhHongContentEngine=
             link:idx("Link"),
             priority:idx("Ưu tiên"),
             start:idx("Ngày bắt đầu"),
-            end:idx("Ngày kết thúc")
+            end:idx("Ngày kết thúc"),
+            display:idx("Hiển thị")
         };
 
         const now=Date.now();
@@ -1794,7 +1807,8 @@ const MinhHongContentEngine=
                 link:val(col.link),
                 priority:Number(val(col.priority)) || 0,
                 startAt:start,
-                endAt:end
+                endAt:end,
+                display:val(col.display).toLowerCase() || "panel"
             };
         }).filter(function(item){
             if(item.status && item.status!=="ON") return false;
@@ -1980,7 +1994,7 @@ const MinhHongContentEngine=
     }
 
     return {
-        version:"1.5.4",
+        version:"1.5.5",
         load:load,
         get:get,
         getForGuest:getForGuest,
@@ -4322,6 +4336,9 @@ const MinhHongAssistant=
 
     let classPulseNotificationEvents=[];
 
+    /* Context → chủ động nói, nhưng dùng chung notification UI cũ. */
+    let contextSpeechEvents=[];
+
     let classPulseState=null;
 
 
@@ -5258,6 +5275,159 @@ const MinhHongAssistant=
     }
 
 
+    /* =====================================================
+       CONTEXT SPEECH CONTROLLER v1.5.5
+
+       - Không tạo popup mới.
+       - Dùng notification/lời thoại Minh Hồng hiện có.
+       - Chỉ Student Session VERIFIED.
+       - Chỉ các dòng Hiển thị = speech / both.
+       - Mỗi lần chọn tối đa 1 lời thoại Context có ưu tiên cao nhất.
+       - Cooldown theo mã học viên + tab + ID + nội dung đã render.
+       - Dòng không có cột Hiển thị vẫn là panel để tương thích v1.5.4.
+    ===================================================== */
+    function speechDisplayMode(item){
+        const mode=clean(item&&item.display).toLowerCase();
+        if(mode==="speech" || mode==="both") return mode;
+        return "panel";
+    }
+
+    function speechHash(value){
+        let hash=2166136261;
+        const source=String(value||"");
+        for(let i=0;i<source.length;i++){
+            hash^=source.charCodeAt(i);
+            hash=Math.imul(hash,16777619);
+        }
+        return (hash>>>0).toString(36);
+    }
+
+    function readSpeechCooldowns(){
+        const raw=safeStorageGet(CONFIG.speechCooldownKey);
+        if(!raw) return {};
+        try{
+            const data=JSON.parse(raw);
+            return data && typeof data==="object" ? data : {};
+        }catch(error){
+            return {};
+        }
+    }
+
+    function saveSpeechCooldowns(data){
+        const entries=Object.keys(data||{}).map(function(key){
+            return [key,Number(data[key])||0];
+        }).sort(function(a,b){return b[1]-a[1];})
+          .slice(0,CONFIG.speechMaxHistory);
+
+        const compact={};
+        entries.forEach(function(pair){compact[pair[0]]=pair[1];});
+        safeStorageSet(CONFIG.speechCooldownKey,JSON.stringify(compact));
+    }
+
+    function speechKey(state,pageTab,item,title,text){
+        return [
+            normalizeCode(state.code),
+            pageTab,
+            clean(item.id),
+            speechHash(title+"|"+text)
+        ].join("|");
+    }
+
+    function buildSpeechContext(state){
+        const bridge=MinhHongContextStore.getForStudent(state.code);
+        return {
+            mode:"student",
+            verified:true,
+            code:state.code,
+            page:getPageContentTab(),
+            data:Object.assign({},bridge.data||{}),
+            conditions:Object.assign({},bridge.conditions||{})
+        };
+    }
+
+    function refreshContextSpeech(options){
+        options=options||{};
+
+        const state=OCDStudentSession.getState();
+        if(!state.verified || !state.code || isCommunityContext() || isSilentContext()){
+            contextSpeechEvents=[];
+            return Promise.resolve([]);
+        }
+
+        const pageTab=getPageContentTab();
+        const context=buildSpeechContext(state);
+
+        function select(){
+            const templateData=Object.assign(
+                {studentCode:state.code||"",page:pageTab},
+                context.data||{}
+            );
+
+            const candidates=MinhHongContentEngine
+                .getForStudent(pageTab,context)
+                .filter(function(item){
+                    const mode=speechDisplayMode(item);
+                    return mode==="speech" || mode==="both";
+                });
+
+            const cooldowns=readSpeechCooldowns();
+            const now=Date.now();
+            let selected=null;
+
+            for(let i=0;i<candidates.length;i++){
+                const item=candidates[i];
+                const title=renderContextTemplate(
+                    item.title||"Lời khuyên dành cho bạn",
+                    templateData
+                );
+                const body=renderContextTemplate(item.content||"",templateData);
+                const key=speechKey(state,pageTab,item,title,body);
+                const last=Number(cooldowns[key])||0;
+
+                if(now-last<CONFIG.speechCooldownTime){
+                    continue;
+                }
+
+                selected={
+                    personal:true,
+                    contextSpeech:true,
+                    type:"context-speech",
+                    icon:ICONS.tip,
+                    title:title,
+                    text:body,
+                    contentId:item.id,
+                    priority:item.priority||0,
+                    speechKey:key
+                };
+                break;
+            }
+
+            contextSpeechEvents=selected?[selected]:[];
+
+            if(selected){
+                cooldowns[selected.speechKey]=now;
+                saveSpeechCooldowns(cooldowns);
+            }
+
+            if(
+                !panelOpen &&
+                !notificationsMuted &&
+                contextSpeechEvents.length
+            ){
+                startNotificationLoop();
+            }
+
+            return contextSpeechEvents.slice();
+        }
+
+        if(options.cachedOnly){
+            return Promise.resolve(select());
+        }
+
+        return MinhHongContentEngine.load(pageTab).then(select);
+    }
+
+
     function activeEvents(){
         const context=getPageContext();
 
@@ -5266,7 +5436,9 @@ const MinhHongAssistant=
         }
 
         if(context==="personal"){
-            return personalNotificationEvents;
+            return contextSpeechEvents
+                .concat(personalNotificationEvents)
+                .slice(0,CONFIG.maxPersonalNotifications);
         }
 
         if(context==="class-pulse"){
@@ -7124,7 +7296,11 @@ const MinhHongAssistant=
 
         function renderItems(items,context){
             clearNode(section);
-            if(!items||!items.length){section.style.display="none";return;}
+            items=(items||[]).filter(function(item){
+                const mode=speechDisplayMode(item);
+                return mode==="panel" || mode==="both";
+            });
+            if(!items.length){section.style.display="none";return;}
             section.style.display="";
             section.appendChild(makeElement("div","mh-section-title",ICONS.book+" GỢI Ý TRÊN TRANG NÀY"));
 
@@ -7530,6 +7706,8 @@ const MinhHongAssistant=
 
         refreshPersonalEvents();
 
+        refreshContextSpeech();
+
 
         renderPanel();
 
@@ -7676,6 +7854,14 @@ const MinhHongAssistant=
 
 
     window.addEventListener(
+        "ocdMinhHongContextChanged",
+        function(){
+            refreshContextSpeech();
+        }
+    );
+
+
+    window.addEventListener(
         "ocdStudentSessionChanged",
         function(){
 
@@ -7770,6 +7956,10 @@ const MinhHongAssistant=
 
 
         refreshPersonalEvents();
+
+        if(OCDStudentSession.isVerified()){
+            refreshContextSpeech();
+        }
 
         if(isClassPulseContext()){
             setClassPulse(readClassPulse());
@@ -7925,6 +8115,9 @@ const MinhHongAssistant=
 
                     personalSuggestionCount:
                         personalNotificationEvents.length,
+
+                    contextSpeechCount:
+                        contextSpeechEvents.length,
 
                     classPulseEventCount:
                         classPulseNotificationEvents.length,
