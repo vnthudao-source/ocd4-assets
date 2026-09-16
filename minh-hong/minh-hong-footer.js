@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V155__
+    window.__OCD_MINH_HONG_FOOTER_V156__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V155__=
+window.__OCD_MINH_HONG_FOOTER_V156__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V155__=
 const CONFIG={
 
     version:
-        "1.5.5.1",
+        "1.5.6",
 
     enabled:
         true,
@@ -5361,26 +5361,51 @@ const MinhHongAssistant=
         options=options||{};
 
         const state=OCDStudentSession.getState();
-        if(!state.verified || !state.code || isCommunityContext() || isSilentContext()){
+
+        if(isSilentContext()){
             contextSpeechEvents=[];
             return Promise.resolve([]);
         }
 
         const pageTab=getPageContentTab();
-        const context=buildSpeechContext(state);
+        const isVerifiedStudent=Boolean(
+            state &&
+            state.mode==="student" &&
+            state.verified &&
+            state.code
+        );
+
+        const context=isVerifiedStudent
+            ? buildSpeechContext(state)
+            : Object.assign(
+                {
+                    mode:"guest",
+                    verified:false,
+                    code:"",
+                    page:pageTab,
+                    data:{},
+                    conditions:{}
+                },
+                GuestJourney.getContext(pageTab) || {}
+            );
 
         function select(){
             const templateData=Object.assign(
-                {studentCode:state.code||"",page:pageTab},
+                {
+                    studentCode:isVerifiedStudent ? (state.code||"") : "",
+                    page:pageTab
+                },
                 context.data||{}
             );
 
-            const candidates=MinhHongContentEngine
-                .getForStudent(pageTab,context)
-                .filter(function(item){
-                    const mode=speechDisplayMode(item);
-                    return mode==="speech" || mode==="both";
-                });
+            const candidates=(
+                isVerifiedStudent
+                ? MinhHongContentEngine.getForStudent(pageTab,context)
+                : MinhHongContentEngine.getForGuest(pageTab,context)
+            ).filter(function(item){
+                const mode=speechDisplayMode(item);
+                return mode==="speech" || mode==="both";
+            });
 
             const cooldowns=readSpeechCooldowns();
             const now=Date.now();
@@ -5389,11 +5414,14 @@ const MinhHongAssistant=
             for(let i=0;i<candidates.length;i++){
                 const item=candidates[i];
                 const title=renderContextTemplate(
-                    item.title||"Lời khuyên dành cho bạn",
+                    item.title || (isVerifiedStudent ? "Lời khuyên dành cho bạn" : "Minh Hồng chào bạn"),
                     templateData
                 );
                 const body=renderContextTemplate(item.content||"",templateData);
-                const key=speechKey(state,pageTab,item,title,body);
+                const speechState=isVerifiedStudent
+                    ? state
+                    : {code:"GUEST"};
+                const key=speechKey(speechState,pageTab,item,title,body);
                 const last=Number(cooldowns[key])||0;
 
                 if(now-last<CONFIG.speechCooldownTime){
@@ -5402,9 +5430,10 @@ const MinhHongAssistant=
 
                 selected={
                     personal:true,
+                    guestSpeech:!isVerifiedStudent,
                     contextSpeech:true,
-                    type:"context-speech",
-                    icon:ICONS.tip,
+                    type:isVerifiedStudent ? "context-speech" : "guest-speech",
+                    icon:isVerifiedStudent ? ICONS.tip : ICONS.user,
                     title:title,
                     text:body,
                     contentId:item.id,
@@ -5439,11 +5468,15 @@ const MinhHongAssistant=
         return MinhHongContentEngine.load(pageTab).then(select);
     }
 
-
     function activeEvents(){
         const context=getPageContext();
 
         if(context==="community"){
+            if(!OCDStudentSession.isVerified()){
+                return contextSpeechEvents
+                    .concat(communityNotificationEvents)
+                    .slice(0,CONFIG.maxPersonalNotifications);
+            }
             return communityNotificationEvents;
         }
 
@@ -5503,6 +5536,28 @@ const MinhHongAssistant=
 
             notificationTime.textContent=
                 "20 bài nộp mới nhất";
+
+            return;
+        }
+
+        if(event && event.guestSpeech){
+            notification.className=
+                "mh-notification mh-personal";
+
+            notificationLabel.textContent=
+                "MINH HỒNG CHÀO BẠN";
+
+            notificationIcon.textContent=
+                event.icon || ICONS.user;
+
+            notificationTitle.textContent=
+                event.title || "Thông tin dành cho bạn";
+
+            notificationText.textContent=
+                event.text || "";
+
+            notificationTime.textContent=
+                "Dành cho khách";
 
             return;
         }
@@ -5601,15 +5656,6 @@ const MinhHongAssistant=
             return;
         }
 
-
-        if(
-            !isHomePage()
-            &&
-            !OCDStudentSession.isVerified()
-        ){
-
-            return;
-        }
 
 
         renderNotification(
@@ -5718,15 +5764,6 @@ const MinhHongAssistant=
         }
 
 
-        if(
-            !isHomePage()
-            &&
-            !OCDStudentSession.isVerified()
-        ){
-
-            return;
-        }
-
 
         nextTimer=
             setTimeout(
@@ -5798,15 +5835,6 @@ const MinhHongAssistant=
             return;
         }
 
-
-        if(
-            !isHomePage()
-            &&
-            !OCDStudentSession.isVerified()
-        ){
-
-            return;
-        }
 
 
         currentIndex=0;
@@ -7688,6 +7716,8 @@ const MinhHongAssistant=
             session.mode==="student"
             &&
             session.code
+            &&
+            session.verified===true
         ){
 
             renderStudentPanel(
@@ -7988,7 +8018,7 @@ const MinhHongAssistant=
 
         refreshPersonalEvents();
 
-        if(OCDStudentSession.isVerified()){
+        if(!isSilentContext()){
             refreshContextSpeech();
         }
 
