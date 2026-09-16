@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V155__=
 const CONFIG={
 
     version:
-        "1.5.5",
+        "1.5.5.1",
 
     enabled:
         true,
@@ -5334,14 +5334,26 @@ const MinhHongAssistant=
     }
 
     function buildSpeechContext(state){
+        const pageTab=getPageContentTab();
         const bridge=MinhHongContextStore.getForStudent(state.code);
+        const bridgePage=normalizeContentTab(bridge&&bridge.page);
+
+        /*
+           FIX v1.5.5.1
+           Chỉ dùng Context do đúng trang hiện tại công bố.
+           Tránh dữ liệu/điều kiện cũ của một trang khác tác động tới
+           nội dung Sheet của TraCuu, TacPham, LamMo, ThuVien,
+           GiangDuong hoặc ThiTotNghiep.
+        */
+        const samePage=!bridgePage || bridgePage===pageTab;
+
         return {
             mode:"student",
             verified:true,
             code:state.code,
-            page:getPageContentTab(),
-            data:Object.assign({},bridge.data||{}),
-            conditions:Object.assign({},bridge.conditions||{})
+            page:pageTab,
+            data:samePage?Object.assign({},bridge.data||{}):{},
+            conditions:samePage?Object.assign({},bridge.conditions||{}):{}
         };
     }
 
@@ -5442,7 +5454,15 @@ const MinhHongAssistant=
         }
 
         if(context==="class-pulse"){
-            return classPulseNotificationEvents;
+            /*
+               FIX v1.5.5.1
+               TacPham trước đây chỉ phát Class Pulse nên lời thoại lấy từ
+               tab TacPham trong Sheet bị bỏ khỏi hàng đợi thông báo.
+               Context Sheet luôn đứng trước; Class Pulse vẫn giữ nguyên phía sau.
+            */
+            return contextSpeechEvents
+                .concat(classPulseNotificationEvents)
+                .slice(0,CONFIG.maxPersonalNotifications);
         }
 
         return [];
@@ -7856,7 +7876,17 @@ const MinhHongAssistant=
     window.addEventListener(
         "ocdMinhHongContextChanged",
         function(){
+            /*
+               FIX v1.5.5.1
+               Context mới phải cập nhật đồng thời lời thoại Sheet và panel.
+               Không để UI/engine cũ giữ nội dung trước đó khi trang con
+               vừa công bố trạng thái mới.
+            */
             refreshContextSpeech();
+
+            if(panelOpen){
+                renderPanel();
+            }
         }
     );
 
@@ -7915,6 +7945,7 @@ const MinhHongAssistant=
                 window.OCDMinhHongPageContext=context;
             }
             refreshPersonalEvents();
+            refreshContextSpeech();
             if(isClassPulseContext()){
                 setClassPulse(readClassPulse());
             }else{
