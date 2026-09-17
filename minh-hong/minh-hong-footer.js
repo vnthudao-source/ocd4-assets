@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V1561__
+    window.__OCD_MINH_HONG_FOOTER_V1562__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V1561__=
+window.__OCD_MINH_HONG_FOOTER_V1562__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1561__=
 const CONFIG={
 
     version:
-        "1.5.6.1",
+        "1.5.6.2",
 
     enabled:
         true,
@@ -275,7 +275,10 @@ const ICONS={
         String.fromCodePoint(0x1F4A1),
 
     fire:
-        String.fromCodePoint(0x1F525)
+        String.fromCodePoint(0x1F525),
+
+    sell:
+        String.fromCodePoint(0x1F4E6)
 
 };
 
@@ -4293,6 +4296,227 @@ window.OCDCommunityActivity=
 
 
 /* =========================================================
+   MINH HỒNG BUYBACK - CORE 4.0.0 BRIDGE
+   ---------------------------------------------------------
+   Minh Hồng chỉ là giao diện + nơi khởi tạo giao dịch.
+   Tài sản cuối cùng do StudentRewardSystem Core 4.0.0 tính.
+========================================================= */
+
+const MinhHongBuybackEngine=(function(){
+
+    const submissionByCode=new Map();
+
+    function getCore(){
+        return window.StudentRewardSystem || null;
+    }
+
+    function isReady(){
+        const RS=getCore();
+        return Boolean(
+            RS &&
+            String(RS.version || "").indexOf("4.") === 0 &&
+            typeof RS.getStudentRewardProfile === "function" &&
+            typeof RS.sellItemToMinhHong === "function" &&
+            typeof RS.refreshStudentRewardProfile === "function"
+        );
+    }
+
+    function requireCore(){
+        const RS=getCore();
+        if(!isReady()){
+            throw new Error(
+                "Reward Core 4.0.0 chưa sẵn sàng. Hãy bảo đảm student-reward-core.js v4 được nạp trước Minh Hồng."
+            );
+        }
+        return RS;
+    }
+
+    function decorateProfile(profile){
+        const RS=requireCore();
+
+        if(
+            !profile ||
+            !profile.minhHong ||
+            !Array.isArray(profile.minhHong.offers)
+        ){
+            return profile;
+        }
+
+        profile.minhHong.offers=
+            profile.minhHong.offers.map(function(offer){
+
+                const gemInfo=
+                    offer &&
+                    offer.gemType &&
+                    RS.GEM_TYPES
+                    ?
+                    RS.GEM_TYPES[offer.gemType] || null
+                    :
+                    null;
+
+                return Object.assign(
+                    {},
+                    offer,
+                    {
+                        maxSellQuantity:
+                            Math.max(
+                                0,
+                                Number(offer.maxQuantity || 0)
+                            ),
+
+                        gemInfo:
+                            gemInfo,
+
+                        gemImageUrl:
+                            gemInfo &&
+                            gemInfo.image &&
+                            typeof RS.convertDriveImageUrl === "function"
+                            ?
+                            RS.convertDriveImageUrl(
+                                gemInfo.image,
+                                96
+                            )
+                            :
+                            ""
+                    }
+                );
+            });
+
+        return profile;
+    }
+
+    async function getStudentProfile(
+        code,
+        submissionCsvText,
+        forceRefresh
+    ){
+        const RS=requireCore();
+        const studentCode=RS.normalizeCode(code);
+
+        if(submissionCsvText){
+            submissionByCode.set(
+                studentCode,
+                submissionCsvText
+            );
+        }
+
+        const csv=
+            submissionCsvText ||
+            submissionByCode.get(studentCode) ||
+            "";
+
+        const profile=
+            forceRefresh
+            ?
+            await RS.refreshStudentRewardProfile(
+                studentCode,
+                csv
+            )
+            :
+            await RS.getStudentRewardProfile(
+                studentCode,
+                csv
+            );
+
+        return decorateProfile(profile);
+    }
+
+    async function sell(
+        profile,
+        giftName,
+        quantity
+    ){
+        const RS=requireCore();
+
+        const code=
+            RS.normalizeCode(
+                profile &&
+                (
+                    profile.code ||
+                    profile.studentCode
+                )
+                ||
+                ""
+            );
+
+        if(!code){
+            throw new Error(
+                "Không xác định được mã học viên."
+            );
+        }
+
+        const result=
+            await RS.sellItemToMinhHong(
+                code,
+                giftName,
+                quantity,
+                submissionByCode.get(code) || ""
+            );
+
+        if(
+            !result ||
+            !result.profile
+        ){
+            return{
+                success:false,
+                message:
+                    "Giao dịch chưa được Core xác nhận."
+            };
+        }
+
+        decorateProfile(
+            result.profile
+        );
+
+        return{
+            success:true,
+            message:
+                "Giao dịch đã được xác nhận.",
+            request:
+                result.request || null,
+            sale:
+                result.sale || null,
+            profile:
+                result.profile
+        };
+    }
+
+    function clearCache(){
+        /*
+           Không còn cache tài sản riêng tại Minh Hồng.
+           Core 4.0.0 chịu trách nhiệm refresh/cache.
+        */
+        return true;
+    }
+
+    return{
+        version:
+            "4.0.0-bridge",
+
+        isReady:
+            isReady,
+
+        getStudentProfile:
+            getStudentProfile,
+
+        sell:
+            sell,
+
+        clearCache:
+            clearCache,
+
+        getCore:
+            getCore
+    };
+
+})();
+
+
+window.OCDMinhHongBuyback=
+    MinhHongBuybackEngine;
+
+
+/* =========================================================
    MINH HỒNG UI
 ========================================================= */
 
@@ -7430,6 +7654,551 @@ const MinhHongAssistant=
     }
 
 
+
+    /* =====================================================
+       RAO BÁN VẬT PHẨM - MINH HỒNG
+    ===================================================== */
+
+    function appendMinhHongBuybackSection(state){
+
+        const section=
+            makeElement(
+                "div",
+                "mh-section"
+            );
+
+        const title=
+            makeElement(
+                "div",
+                "mh-section-title",
+                ICONS.sell+
+                " RAO BÁN VẬT PHẨM"
+            );
+
+        const intro=
+            makeElement(
+                "div",
+                "mh-small-note",
+                "Minh Hồng chỉ hiển thị những vật phẩm bạn đang sở hữu và hiện có trong danh sách thu mua."
+            );
+
+        const actions=
+            makeElement(
+                "div",
+                "mh-actions"
+            );
+
+        const box=
+            makeElement(
+                "div",
+                "mh-inline-box"
+            );
+
+        box.style.display=
+            "none";
+
+        const openButton=
+            createActionButton(
+                "Rao bán vật phẩm",
+                false,
+                function(){
+
+                    box.style.display=
+                        box.style.display==="none"
+                        ?
+                        "block"
+                        :
+                        "none";
+
+                    if(
+                        box.style.display==="block"
+                        &&
+                        !box.dataset.loaded
+                    ){
+
+                        loadBuybackBox();
+
+                    }
+
+                }
+            );
+
+        actions.appendChild(
+            openButton
+        );
+
+        section.appendChild(
+            title
+        );
+
+        section.appendChild(
+            intro
+        );
+
+        section.appendChild(
+            actions
+        );
+
+        section.appendChild(
+            box
+        );
+
+        panelBody.appendChild(
+            section
+        );
+
+
+        async function loadBuybackBox(
+            forceRefresh
+        ){
+
+            clearNode(
+                box
+            );
+
+            box.dataset.loaded=
+                "1";
+
+            box.appendChild(
+                makeElement(
+                    "div",
+                    "mh-small-note",
+                    "Đang kiểm tra kho vật phẩm và danh sách thu mua..."
+                )
+            );
+
+            if(
+                !MinhHongBuybackEngine.isReady()
+            ){
+
+                clearNode(
+                    box
+                );
+
+                box.appendChild(
+                    makeElement(
+                        "div",
+                        "mh-small-note",
+                        "Reward Core chưa sẵn sàng. Hãy bảo đảm student-reward-core.js được nạp trước Minh Hồng."
+                    )
+                );
+
+                return;
+            }
+
+            try{
+
+                const submissionText=
+                    await fetch(
+                        CONFIG.csvUrl,
+                        {
+                            cache:"no-store"
+                        }
+                    )
+                    .then(
+                        function(response){
+
+                            if(!response.ok){
+
+                                throw new Error(
+                                    "Không tải được dữ liệu học tập."
+                                );
+
+                            }
+
+                            return response.text();
+
+                        }
+                    );
+
+                const profile=
+                    await MinhHongBuybackEngine
+                    .getStudentProfile(
+                        state.code,
+                        submissionText,
+                        Boolean(
+                            forceRefresh
+                        )
+                    );
+
+                renderOffers(
+                    profile
+                );
+
+            }catch(error){
+
+                clearNode(
+                    box
+                );
+
+                box.appendChild(
+                    makeElement(
+                        "div",
+                        "mh-small-note",
+                        "Chưa tải được dữ liệu thu mua. Bạn có thể đóng và mở lại mục này sau."
+                    )
+                );
+
+                console.warn(
+                    "[Minh Hồng] Buyback load error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        function renderOffers(profile){
+
+            clearNode(
+                box
+            );
+
+            const offers=
+                profile &&
+                profile.minhHong &&
+                Array.isArray(
+                    profile.minhHong.offers
+                )
+                ?
+                profile.minhHong.offers
+                :
+                [];
+
+            if(!offers.length){
+
+                box.appendChild(
+                    makeElement(
+                        "div",
+                        "mh-small-note",
+                        "Hiện bạn chưa có vật phẩm nào nằm trong danh sách Minh Hồng thu mua."
+                    )
+                );
+
+                return;
+            }
+
+            offers.forEach(
+                function(offer){
+
+                    const card=
+                        makeElement(
+                            "div",
+                            "mh-advice-card"
+                        );
+
+                    const header=
+                        makeElement(
+                            "div",
+                            "mh-advice-title"
+                        );
+
+                    if(
+                        offer.gemImageUrl
+                    ){
+
+                        const gemImage=
+                            document.createElement(
+                                "img"
+                            );
+
+                        gemImage.src=
+                            offer.gemImageUrl;
+
+                        gemImage.alt=
+                            offer.gemInfo
+                            ?
+                            offer.gemInfo.displayName
+                            :
+                            "Linh thạch";
+
+                        gemImage.loading=
+                            "lazy";
+
+                        gemImage.style.width=
+                            "28px";
+
+                        gemImage.style.height=
+                            "28px";
+
+                        gemImage.style.objectFit=
+                            "contain";
+
+                        gemImage.style.verticalAlign=
+                            "middle";
+
+                        gemImage.style.marginRight=
+                            "8px";
+
+                        header.appendChild(
+                            gemImage
+                        );
+
+                    }
+
+                    header.appendChild(
+                        document.createTextNode(
+                            offer.giftName
+                        )
+                    );
+
+                    card.appendChild(
+                        header
+                    );
+
+                    card.appendChild(
+                        makeElement(
+                            "div",
+                            "mh-advice-text",
+                            "Bạn có: "+
+                            offer.ownedQuantity+
+                            " "+
+                            CHAR.dot+
+                            " Giá: "+
+                            offer.price+
+                            " "+
+                            (
+                                offer.gemInfo
+                                ?
+                                offer.gemInfo.displayName
+                                :
+                                ""
+                            )+
+                            "/vật phẩm"+
+                            CHAR.dot+
+                            " Còn được bán hôm nay: "+
+                            offer.remainingToday
+                        )
+                    );
+
+                    if(
+                        !offer.available
+                    ){
+
+                        card.appendChild(
+                            makeElement(
+                                "div",
+                                "mh-small-note",
+                                "Bạn đã đạt giới hạn thu mua của vật phẩm này trong hôm nay."
+                            )
+                        );
+
+                        box.appendChild(
+                            card
+                        );
+
+                        return;
+                    }
+
+                    const controls=
+                        makeElement(
+                            "div",
+                            "mh-inline-box"
+                        );
+
+                    const quantity=
+                        makeElement(
+                            "input",
+                            "mh-code-input"
+                        );
+
+                    quantity.type=
+                        "number";
+
+                    quantity.min=
+                        "1";
+
+                    quantity.max=
+                        String(
+                            offer.maxSellQuantity
+                        );
+
+                    quantity.step=
+                        "1";
+
+                    quantity.value=
+                        "1";
+
+                    const confirm=
+                        makeElement(
+                            "button",
+                            "mh-code-submit",
+                            "XÁC NHẬN BÁN"
+                        );
+
+                    confirm.type=
+                        "button";
+
+                    const status=
+                        makeElement(
+                            "div",
+                            "mh-small-note",
+                            "Tối đa "+
+                            offer.maxSellQuantity+
+                            " trong lần này."
+                        );
+
+                    confirm.addEventListener(
+                        "click",
+                        async function(){
+
+                            const count=
+                                Math.max(
+                                    1,
+                                    Math.floor(
+                                        Number(
+                                            quantity.value ||
+                                            1
+                                        )
+                                    )
+                                );
+
+                            if(
+                                count>
+                                offer.maxSellQuantity
+                            ){
+
+                                status.textContent=
+                                    "Số lượng tối đa là "+
+                                    offer.maxSellQuantity+
+                                    ".";
+
+                                return;
+                            }
+
+                            const gemName=
+                                offer.gemInfo
+                                ?
+                                offer.gemInfo.displayName
+                                :
+                                "Linh thạch";
+
+                            const totalReward=
+                                count*
+                                offer.price;
+
+                            const accepted=
+                                window.confirm(
+                                    "Bạn xác nhận bán "+
+                                    count+
+                                    " "+
+                                    offer.giftName+
+                                    " cho Minh Hồng và nhận "+
+                                    totalReward+
+                                    " "+
+                                    gemName+
+                                    "?"
+                                );
+
+                            if(!accepted){
+                                return;
+                            }
+
+                            confirm.disabled=
+                                true;
+
+                            quantity.disabled=
+                                true;
+
+                            status.textContent=
+                                "Đang gửi phiếu và chờ xác nhận giao dịch...";
+
+                            try{
+
+                                const result=
+                                    await MinhHongBuybackEngine.sell(
+                                        profile,
+                                        offer.giftName,
+                                        count
+                                    );
+
+                                if(
+                                    !result.success
+                                ){
+
+                                    status.textContent=
+                                        result.message;
+
+                                    confirm.disabled=
+                                        false;
+
+                                    quantity.disabled=
+                                        false;
+
+                                    return;
+                                }
+
+                                status.textContent=
+                                    "Giao dịch thành công. Đang cập nhật lại kho và Linh Thạch...";
+
+                                MinhHongBuybackEngine.clearCache();
+
+                                setTimeout(
+                                    function(){
+
+                                        loadBuybackBox(
+                                            true
+                                        );
+
+                                    },
+                                    600
+                                );
+
+                            }catch(error){
+
+                                status.textContent=
+                                    error &&
+                                    error.message
+                                    ?
+                                    error.message
+                                    :
+                                    "Không hoàn thành được giao dịch.";
+
+                                confirm.disabled=
+                                    false;
+
+                                quantity.disabled=
+                                    false;
+
+                                console.warn(
+                                    "[Minh Hồng] Sell error:",
+                                    error
+                                );
+
+                            }
+
+                        }
+                    );
+
+                    controls.appendChild(
+                        quantity
+                    );
+
+                    controls.appendChild(
+                        confirm
+                    );
+
+                    controls.appendChild(
+                        status
+                    );
+
+                    card.appendChild(
+                        controls
+                    );
+
+                    box.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+
     function renderStudentPanel(state){
 
         panelBody.appendChild(
@@ -7502,6 +8271,19 @@ const MinhHongAssistant=
             appendPersonalInsight();
         }else if(isClassPulseContext()){
             appendClassPulseSection();
+        }
+
+
+        /*
+           Thu mua vật phẩm chỉ xuất hiện với học viên đã xác minh.
+           Tài sản được đọc từ Reward Core; Minh Hồng không tự tính số dư.
+        */
+        if(
+            state.verified===true
+        ){
+            appendMinhHongBuybackSection(
+                state
+            );
         }
 
 
@@ -8203,11 +8985,18 @@ const MinhHongAssistant=
                         Boolean(
                             InsightStore
                             .getForCurrentStudent()
-                        )
+                        ),
+
+                    buybackReady:
+                        MinhHongBuybackEngine
+                        .isReady()
 
                 };
 
-            }
+            },
+
+        buyback:
+            MinhHongBuybackEngine
 
     };
 
@@ -8225,7 +9014,7 @@ window.MinhHongAssistant=
 console.info(
     "[Minh Hồng] Footer v"+
     CONFIG.version+
-    " ready | mode:",
+    " ready | Core 4.0.0 unified buyback | mode:",
     getPageContext()
 );
 
