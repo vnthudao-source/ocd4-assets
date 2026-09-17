@@ -3,8 +3,8 @@
 "use strict";
  
 /* =========================================================
-   HỒ SƠ / CHỢ PHIÊN v4.9L-R2
-   MARKET RETRY / SELF-RECOVERY
+   HỒ SƠ / CHỢ PHIÊN v4.9L-R3
+   CORE CANONICAL ASSETS / MARKET SELF-RECOVERY
  
    GIỮ:
    - startWhenReady()
@@ -16,9 +16,16 @@
    - PhieuDoi thật
    - DEAL thật
    - XoaBai
-   - Reward Core v3.6.0+
+   - Reward Core 4.2+
+   - Core là nguồn sự thật duy nhất cho Linh Thạch / vật phẩm
  
-   SỬA:
+   KIẾN TRÚC R3:
+   - Core 4.2+ là nguồn sự thật duy nhất cho tài sản học viên
+   - gems / ownedItems / transactions lấy từ Reward Profile
+   - Minh Hồng / Quest / Event / Exam tương lai không cần vá trang này
+   - Chợ phiên chỉ tạo + xác minh DEAL, sau đó refresh Core
+
+   GIỮ RECOVERY:
    - Chợ phiên tự retry
    - Timeout từng request
    - Cache-busting khi retry
@@ -52,7 +59,8 @@ function startWhenReady(){
         typeof RS.loadSharedRewardData !== "function" ||
         typeof RS.mapGiftRows !== "function" ||
         typeof RS.calculateStudentRewardData !== "function" ||
-        typeof RS.processTransactions !== "function"
+        typeof RS.processTransactions !== "function" ||
+        typeof RS.getStudentRewardProfile !== "function"
     ){
  
         return false;
@@ -61,7 +69,7 @@ function startWhenReady(){
     started=true;
  
     console.log(
-        "[Profile Market v4.9L-R2] Reward Core:",
+        "[Profile Market v4.9L-R3] Reward Core:",
         RS.version
     );
  
@@ -120,7 +128,7 @@ if(
                             "rx-message error";
  
                         message.textContent=
-                            "Không tìm thấy Reward System Core v3.6.0 hoặc mới hơn.";
+                            "Không tìm thấy Reward System Core 4.2 hoặc mới hơn.";
                     }
                 }
  
@@ -256,6 +264,12 @@ const CONFIG={
 const state={
  
     student:null,
+ 
+    /* CSV bài nộp đã lọc XoaBai để Core tính đúng cùng Tra cứu. */
+    submissionCsvText:"",
+ 
+    /* Hồ sơ tài sản chuẩn cuối cùng do Core trả về. */
+    assetProfile:null,
  
     submissions:[],
  
@@ -441,6 +455,37 @@ function clean(value){
 }
  
  
+/* =========================================================
+   CSV FOR CANONICAL CORE PROFILE
+========================================================= */
+
+function csvEscapeCell(value){
+
+    const text=String(
+        value === undefined || value === null
+        ? ""
+        : value
+    );
+
+    return /[",\r\n]/.test(text)
+        ? '"'+text.replace(/"/g,'""')+'"'
+        : text;
+}
+
+
+function rowsToCsv(rows){
+
+    return (rows || [])
+    .map(function(row){
+
+        return (row || [])
+        .map(csvEscapeCell)
+        .join(",");
+    })
+    .join("\r\n");
+}
+
+
 function normalizeLocal(value){
  
     return clean(value)
@@ -3242,6 +3287,198 @@ function calculateStudentAccount(
  
  
 /* =========================================================
+   CANONICAL ASSET PROFILE - CORE 4.2+
+
+   QUY TẮC KIẾN TRÚC:
+   - Core là nguồn sự thật duy nhất cho tài sản học viên.
+   - Profile Market không tự replay PhieuDoi / QuaTangGVCN /
+     MinhHongGiaoDich để quyết định số dư cuối cùng.
+   - Module tương lai (Quest / Event / Exam / Achievement...)
+     chỉ cần tích hợp vào Core; trang này tiếp tục dùng cùng contract.
+========================================================= */
+
+function normalizeCanonicalProfile(profile){
+
+    profile=(
+        profile &&
+        typeof profile === "object"
+    )
+    ? profile
+    : {};
+
+    return{
+        raw:profile,
+
+        gems:
+            profile.gems ||
+            profile.balance ||
+            createEmptyGemsSafe(),
+
+        ownedItems:
+            Array.isArray(profile.ownedItems)
+            ? profile.ownedItems
+            : [],
+
+        rawTransactions:
+            Array.isArray(profile.rawTransactions)
+            ? profile.rawTransactions
+            : [],
+
+        transactions:
+            Array.isArray(profile.validTransactions)
+            ? profile.validTransactions
+            : (
+                Array.isArray(profile.transactions)
+                ? profile.transactions
+                : []
+            )
+    };
+}
+
+
+async function loadCanonicalStudentProfile(
+    code,
+    force
+){
+
+    if(
+        typeof RS.getStudentRewardProfile !==
+        "function"
+    ){
+
+        throw new Error(
+            "Reward Core chưa hỗ trợ hồ sơ tài sản thống nhất."
+        );
+    }
+
+    const profile=
+        await RS.getStudentRewardProfile(
+            RS.normalizeCode(code),
+            state.submissionCsvText || "",
+            Boolean(force)
+        );
+
+    if(!profile){
+
+        throw new Error(
+            "Reward Core không trả về hồ sơ tài sản."
+        );
+    }
+
+    return profile;
+}
+
+
+function applyCanonicalAssets(profile){
+
+    if(!state.student){
+        return null;
+    }
+
+    const canonical=
+        normalizeCanonicalProfile(
+            profile
+        );
+
+    state.assetProfile=
+        canonical.raw;
+
+    state.student.gems=
+        canonical.gems;
+
+    state.ownedItems=
+        canonical.ownedItems;
+
+    state.rawTransactions=
+        canonical.rawTransactions;
+
+    state.transactions=
+        canonical.transactions;
+
+    return canonical;
+}
+
+
+function renderCanonicalAssets(profile){
+
+    if(
+        !profile ||
+        !state.student
+    ){
+        return;
+    }
+
+    const currentPanel=
+        state.activeProfilePanel;
+
+    applyCanonicalAssets(
+        profile
+    );
+
+    renderProfile(
+        state.student,
+        state.ownedItems,
+        state.reward
+    );
+
+    closeProfilePanels();
+
+    if(currentPanel){
+
+        toggleProfilePanel(
+            currentPanel
+        );
+    }
+
+    if(state.marketLoaded){
+
+        renderMarket();
+    }
+
+    syncMinhHongStudentContext();
+}
+
+
+async function refreshCanonicalAssets(){
+
+    if(
+        !state.student ||
+        state.isAdmin
+    ){
+        return null;
+    }
+
+    let profile;
+
+    if(
+        typeof RS.refreshStudentRewardProfile ===
+        "function"
+    ){
+
+        profile=
+            await RS.refreshStudentRewardProfile(
+                state.student.code,
+                state.submissionCsvText || ""
+            );
+
+    }else{
+
+        profile=
+            await loadCanonicalStudentProfile(
+                state.student.code,
+                true
+            );
+    }
+
+    renderCanonicalAssets(
+        profile
+    );
+
+    return profile;
+}
+
+
+/* =========================================================
    ADMIN
 ========================================================= */
  
@@ -3286,6 +3523,9 @@ async function loadAdminAccount(
  
     state.isAdmin=
         true;
+ 
+    state.submissionCsvText="";
+    state.assetProfile=null;
  
     state.deletedSubmissionCount=
         0;
@@ -3656,6 +3896,9 @@ async function searchStudent(){
     state.submissionOpen=
         false;
  
+    state.submissionCsvText="";
+    state.assetProfile=null;
+ 
     setMultitaskEffect(
         false
     );
@@ -3960,28 +4203,43 @@ async function searchStudent(){
         state.reward=
             reward;
  
-        const account=
-            calculateStudentAccount(
-                reward,
-                shared,
-                code
-            );
- 
         const scoreData=
             calculateStudentScores(
                 submissions
             );
  
-        state.rawTransactions=
-            account.rawTransactions;
+        /*
+           Core nhận đúng cùng tập bài hợp lệ mà Tra cứu đang dùng.
+           Nhờ vậy XoaBai không bị đưa trở lại khi Core tính reward.
+        */
+        const filteredStudentRows=[
+            studentRows[0] || []
+        ];
  
-        state.transactions=
-            account.accounting
-            .validTransactions ||
-            [];
+        submissions.forEach(
+            function(item){
  
-        state.ownedItems=
-            account.ownedItems;
+                if(
+                    Number.isInteger(item.originalIndex) &&
+                    studentRows[item.originalIndex]
+                ){
+ 
+                    filteredStudentRows.push(
+                        studentRows[item.originalIndex]
+                    );
+                }
+            }
+        );
+ 
+        state.submissionCsvText=
+            rowsToCsv(
+                filteredStudentRows
+            );
+ 
+        state.assetProfile=null;
+        state.rawTransactions=[];
+        state.transactions=[];
+        state.ownedItems=[];
  
         state.student={
  
@@ -4020,13 +4278,27 @@ async function searchStudent(){
                 ),
  
             gems:
-                account.gems
+                createEmptyGemsSafe()
         };
+ 
+        /*
+           TÀI SẢN HỌC VIÊN: chỉ lấy từ Core.
+           Profile Market không tự tính số dư cuối cùng nữa.
+        */
+        const assetProfile=
+            await loadCanonicalStudentProfile(
+                code,
+                true
+            );
+ 
+        applyCanonicalAssets(
+            assetProfile
+        );
  
         renderProfile(
             state.student,
             state.ownedItems,
-            reward
+            state.reward
         );
  
         /* Đồng bộ mã đã xác minh và Context thật sang Minh Hồng. */
@@ -4063,7 +4335,7 @@ async function searchStudent(){
     }catch(error){
  
         console.error(
-            "[Profile v4.9L-R2]",
+            "[Profile v4.9L-R3]",
             error
         );
  
@@ -6625,85 +6897,73 @@ function findRawTransactionByDeal(
    REFRESH ACCOUNT
 ========================================================= */
  
-function rebuildStudentFromShared(shared){
- 
+async function rebuildStudentFromShared(shared){
+
     if(!state.student){
         return null;
     }
- 
-    const currentPanel=
-        state.activeProfilePanel;
- 
-    const reward=
-        state.isAdmin
-        ?
-        createAdminReward()
-        :
-        state.reward;
- 
-    if(!reward){
-        return null;
-    }
- 
-    const account=
-        calculateStudentAccount(
-            reward,
-            shared,
-            state.student.code
+
+    /*
+       ADMIN là ngoại lệ có vốn gốc 1000 Hồng Ngọc.
+       Giữ replay legacy riêng cho tài khoản kiểm thử này.
+    */
+    if(state.isAdmin){
+
+        const currentPanel=
+            state.activeProfilePanel;
+
+        const reward=
+            createAdminReward();
+
+        const account=
+            calculateStudentAccount(
+                reward,
+                shared,
+                state.student.code
+            );
+
+        state.reward=reward;
+        state.rawTransactions=account.rawTransactions;
+        state.transactions=
+            account.accounting.validTransactions || [];
+        state.ownedItems=account.ownedItems;
+        state.student.gems=account.gems;
+
+        if(shared && shared.gifts){
+            state.gifts=shared.gifts;
+            rebuildGiftMap();
+        }
+
+        renderProfile(
+            state.student,
+            state.ownedItems,
+            state.reward
         );
- 
-    state.reward=
-        reward;
- 
-    state.rawTransactions=
-        account.rawTransactions;
- 
-    state.transactions=
-        account.accounting
-        .validTransactions ||
-        [];
- 
-    state.ownedItems=
-        account.ownedItems;
- 
-    state.student.gems=
-        account.gems;
- 
-    if(shared.gifts){
- 
-        state.gifts=
-            shared.gifts;
- 
+
+        closeProfilePanels();
+
+        if(currentPanel){
+            toggleProfilePanel(currentPanel);
+        }
+
+        if(state.marketLoaded){
+            renderMarket();
+        }
+
+        return account;
+    }
+
+    /*
+       Học viên thật: Core dựng lại toàn bộ tài sản.
+       shared chỉ còn dùng để xác minh DEAL và metadata Chợ phiên.
+    */
+    if(shared && shared.gifts){
+        state.gifts=shared.gifts;
         rebuildGiftMap();
     }
- 
-    renderProfile(
-        state.student,
-        state.ownedItems,
-        state.reward
-    );
- 
-    closeProfilePanels();
- 
-    if(currentPanel){
- 
-        toggleProfilePanel(
-            currentPanel
-        );
-    }
- 
-    if(
-        state.marketLoaded
-    ){
- 
-        renderMarket();
-    }
- 
-    return account;
-}
- 
- 
-/* =========================================================
+
+    return await refreshCanonicalAssets();
+}/* =========================================================
    VERIFY EXCHANGE
 ========================================================= */
  
@@ -6743,7 +7003,7 @@ async function verifyDirectExchange(
  
             try{
  
-                rebuildStudentFromShared(
+                await rebuildStudentFromShared(
                     shared
                 );
  
@@ -7324,10 +7584,81 @@ function showMessage(
  
  
 /* =========================================================
+   CORE PROFILE CHANGE EVENT
+
+   Minh Hồng và các module tương lai chỉ cần refresh Core.
+   Nếu hồ sơ đang mở là cùng học viên, Tra cứu render ngay
+   canonical profile mới mà không tự biết công thức module đó.
+========================================================= */
+
+function handleRewardProfileChanged(event){
+
+    if(
+        !state.student ||
+        state.isAdmin
+    ){
+        return;
+    }
+
+    const detail=(
+        event &&
+        event.detail
+    )
+    ? event.detail
+    : {};
+
+    const changedCode=
+        RS.normalizeCode(
+            detail.code ||
+            (
+                detail.profile &&
+                detail.profile.code
+            ) ||
+            ""
+        );
+
+    const currentCode=
+        RS.normalizeCode(
+            state.student.code
+        );
+
+    if(
+        changedCode &&
+        changedCode !== currentCode
+    ){
+        return;
+    }
+
+    if(detail.profile){
+
+        renderCanonicalAssets(
+            detail.profile
+        );
+
+        return;
+    }
+
+    refreshCanonicalAssets()
+    .catch(function(error){
+
+        console.warn(
+            "[Profile] Không thể đồng bộ tài sản từ Core:",
+            error
+        );
+    });
+}
+
+
+/* =========================================================
    EVENTS
 ========================================================= */
  
 function bindEvents(){
+ 
+    window.addEventListener(
+        "ocdRewardProfileChanged",
+        handleRewardProfileChanged
+    );
  
     el("rxSearchButton")
     .addEventListener(
@@ -7534,5 +7865,6 @@ setMultitaskEffect(
  
 })();
  
+
 
 
