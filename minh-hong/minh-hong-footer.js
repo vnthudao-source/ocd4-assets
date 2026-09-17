@@ -8,12 +8,12 @@
 ========================================================= */
 
 if(
-    window.__OCD_MINH_HONG_FOOTER_V1562__
+    window.__OCD_MINH_HONG_FOOTER_V1563__
 ){
     return;
 }
 
-window.__OCD_MINH_HONG_FOOTER_V1562__=
+window.__OCD_MINH_HONG_FOOTER_V1563__=
     true;
 
 
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1562__=
 const CONFIG={
 
     version:
-        "1.5.6.2",
+        "1.5.6.3",
 
     enabled:
         true,
@@ -4296,43 +4296,216 @@ window.OCDCommunityActivity=
 
 
 /* =========================================================
-   MINH HỒNG BUYBACK - CORE 4.0.0 BRIDGE
+   MINH HỒNG BUYBACK - CORE 4.0.0 BRIDGE v1.5.6.3
    ---------------------------------------------------------
-   Minh Hồng chỉ là giao diện + nơi khởi tạo giao dịch.
-   Tài sản cuối cùng do StudentRewardSystem Core 4.0.0 tính.
+   - Không tự tính tài sản.
+   - Chờ Reward Core khởi tạo bất kể thứ tự tải script.
+   - Không khóa cứng theo chuỗi version.
+   - Hỗ trợ API Core 4 ở cả cấp StudentRewardSystem và
+     namespace StudentRewardSystem.MinhHongBuyback.
 ========================================================= */
 
 const MinhHongBuybackEngine=(function(){
 
     const submissionByCode=new Map();
 
+    const READY_EVENTS=[
+        "studentRewardCoreReady",
+        "ocdRewardCoreUpgraded"
+    ];
+
     function getCore(){
         return window.StudentRewardSystem || null;
     }
 
-    function isReady(){
+    function normalizeCode(RS,value){
+        if(RS && typeof RS.normalizeCode==="function"){
+            return RS.normalizeCode(value);
+        }
+        return String(value===undefined||value===null?"":value)
+            .trim()
+            .toUpperCase();
+    }
+
+    function getApi(){
         const RS=getCore();
-        return Boolean(
-            RS &&
-            String(RS.version || "").indexOf("4.") === 0 &&
-            typeof RS.getStudentRewardProfile === "function" &&
-            typeof RS.sellItemToMinhHong === "function" &&
-            typeof RS.refreshStudentRewardProfile === "function"
-        );
+
+        if(!RS){
+            return null;
+        }
+
+        const MH=
+            RS.MinhHongBuyback &&
+            typeof RS.MinhHongBuyback==="object"
+            ?
+            RS.MinhHongBuyback
+            :
+            null;
+
+        const getProfile=
+            typeof RS.getStudentRewardProfile==="function"
+            ?
+            RS.getStudentRewardProfile.bind(RS)
+            :
+            null;
+
+        const refreshProfile=
+            typeof RS.refreshStudentRewardProfile==="function"
+            ?
+            RS.refreshStudentRewardProfile.bind(RS)
+            :
+            getProfile;
+
+        const getOffers=
+            typeof RS.getMinhHongOffers==="function"
+            ?
+            RS.getMinhHongOffers.bind(RS)
+            :
+            MH && typeof MH.getOffers==="function"
+            ?
+            MH.getOffers.bind(MH)
+            :
+            null;
+
+        const sell=
+            typeof RS.sellItemToMinhHong==="function"
+            ?
+            RS.sellItemToMinhHong.bind(RS)
+            :
+            MH && typeof MH.sell==="function"
+            ?
+            MH.sell.bind(MH)
+            :
+            null;
+
+        if(
+            !getProfile ||
+            !getOffers ||
+            !sell
+        ){
+            return null;
+        }
+
+        return{
+            RS:RS,
+            MH:MH,
+            getProfile:getProfile,
+            refreshProfile:refreshProfile,
+            getOffers:getOffers,
+            sell:sell
+        };
+    }
+
+    function isReady(){
+        return Boolean(getApi());
+    }
+
+    function waitUntilReady(timeoutMs){
+        timeoutMs=
+            Math.max(
+                1000,
+                Number(timeoutMs || 15000)
+            );
+
+        const ready=getApi();
+
+        if(ready){
+            return Promise.resolve(ready);
+        }
+
+        return new Promise(function(resolve,reject){
+
+            let finished=false;
+            let timer=null;
+            let interval=null;
+
+            function cleanup(){
+                if(timer) clearTimeout(timer);
+                if(interval) clearInterval(interval);
+
+                READY_EVENTS.forEach(function(name){
+                    window.removeEventListener(
+                        name,
+                        onReady
+                    );
+                });
+            }
+
+            function finish(api){
+                if(finished) return;
+                finished=true;
+                cleanup();
+                resolve(api);
+            }
+
+            function fail(){
+                if(finished) return;
+                finished=true;
+                cleanup();
+
+                const RS=getCore();
+
+                reject(
+                    new Error(
+                        RS
+                        ?
+                        "Reward Core đã xuất hiện nhưng chưa có API Minh Hồng. Hãy kiểm tra đúng file Core 4.0.0 trên GitHub/jsDelivr."
+                        :
+                        "Chưa tìm thấy StudentRewardSystem. Hãy kiểm tra file Reward Core có được tải trên trang hay không."
+                    )
+                );
+            }
+
+            function check(){
+                const api=getApi();
+                if(api){
+                    finish(api);
+                }
+            }
+
+            function onReady(){
+                check();
+            }
+
+            READY_EVENTS.forEach(function(name){
+                window.addEventListener(
+                    name,
+                    onReady
+                );
+            });
+
+            interval=
+                setInterval(
+                    check,
+                    100
+                );
+
+            timer=
+                setTimeout(
+                    fail,
+                    timeoutMs
+                );
+
+            check();
+        });
     }
 
     function requireCore(){
-        const RS=getCore();
-        if(!isReady()){
+        const api=getApi();
+
+        if(!api){
             throw new Error(
-                "Reward Core 4.0.0 chưa sẵn sàng. Hãy bảo đảm student-reward-core.js v4 được nạp trước Minh Hồng."
+                "Reward Core chưa có API Minh Hồng."
             );
         }
-        return RS;
+
+        return api;
     }
 
-    function decorateProfile(profile){
-        const RS=requireCore();
+    function decorateProfile(profile,api){
+        api=api || requireCore();
+
+        const RS=api.RS;
 
         if(
             !profile ||
@@ -4354,6 +4527,20 @@ const MinhHongBuybackEngine=(function(){
                     :
                     null;
 
+                const rawMax=
+                    offer.maxSellQuantity!==undefined
+                    ?
+                    offer.maxSellQuantity
+                    :
+                    offer.maxQuantity!==undefined
+                    ?
+                    offer.maxQuantity
+                    :
+                    Math.min(
+                        Number(offer.ownedQuantity || 0),
+                        Number(offer.remainingToday || 0)
+                    );
+
                 return Object.assign(
                     {},
                     offer,
@@ -4361,7 +4548,9 @@ const MinhHongBuybackEngine=(function(){
                         maxSellQuantity:
                             Math.max(
                                 0,
-                                Number(offer.maxQuantity || 0)
+                                Math.floor(
+                                    Number(rawMax || 0)
+                                )
                             ),
 
                         gemInfo:
@@ -4370,7 +4559,7 @@ const MinhHongBuybackEngine=(function(){
                         gemImageUrl:
                             gemInfo &&
                             gemInfo.image &&
-                            typeof RS.convertDriveImageUrl === "function"
+                            typeof RS.convertDriveImageUrl==="function"
                             ?
                             RS.convertDriveImageUrl(
                                 gemInfo.image,
@@ -4390,8 +4579,16 @@ const MinhHongBuybackEngine=(function(){
         submissionCsvText,
         forceRefresh
     ){
-        const RS=requireCore();
-        const studentCode=RS.normalizeCode(code);
+        const api=
+            await waitUntilReady(
+                15000
+            );
+
+        const studentCode=
+            normalizeCode(
+                api.RS,
+                code
+            );
 
         if(submissionCsvText){
             submissionByCode.set(
@@ -4405,20 +4602,21 @@ const MinhHongBuybackEngine=(function(){
             submissionByCode.get(studentCode) ||
             "";
 
+        /*
+           Ưu tiên API getMinhHongOffers của Core.
+           API này buộc Core nạp chính sách thu mua và ledger Minh Hồng.
+        */
         const profile=
-            forceRefresh
-            ?
-            await RS.refreshStudentRewardProfile(
+            await api.getOffers(
                 studentCode,
-                csv
-            )
-            :
-            await RS.getStudentRewardProfile(
-                studentCode,
-                csv
+                csv,
+                Boolean(forceRefresh)
             );
 
-        return decorateProfile(profile);
+        return decorateProfile(
+            profile,
+            api
+        );
     }
 
     async function sell(
@@ -4426,10 +4624,14 @@ const MinhHongBuybackEngine=(function(){
         giftName,
         quantity
     ){
-        const RS=requireCore();
+        const api=
+            await waitUntilReady(
+                15000
+            );
 
         const code=
-            RS.normalizeCode(
+            normalizeCode(
+                api.RS,
                 profile &&
                 (
                     profile.code ||
@@ -4446,7 +4648,7 @@ const MinhHongBuybackEngine=(function(){
         }
 
         const result=
-            await RS.sellItemToMinhHong(
+            await api.sell(
                 code,
                 giftName,
                 quantity,
@@ -4460,12 +4662,15 @@ const MinhHongBuybackEngine=(function(){
             return{
                 success:false,
                 message:
-                    "Giao dịch chưa được Core xác nhận."
+                    "Giao dịch chưa được Core xác nhận.",
+                result:
+                    result || null
             };
         }
 
         decorateProfile(
-            result.profile
+            result.profile,
+            api
         );
 
         return{
@@ -4481,23 +4686,40 @@ const MinhHongBuybackEngine=(function(){
         };
     }
 
+    async function refresh(
+        code,
+        submissionCsvText
+    ){
+        return getStudentProfile(
+            code,
+            submissionCsvText,
+            true
+        );
+    }
+
     function clearCache(){
         /*
-           Không còn cache tài sản riêng tại Minh Hồng.
-           Core 4.0.0 chịu trách nhiệm refresh/cache.
+           Minh Hồng không giữ sổ tài sản riêng.
+           Việc refresh/cache thuộc Reward Core.
         */
         return true;
     }
 
     return{
         version:
-            "4.0.0-bridge",
+            "4.0.0-bridge.2",
 
         isReady:
             isReady,
 
+        waitUntilReady:
+            waitUntilReady,
+
         getStudentProfile:
             getStudentProfile,
+
+        refresh:
+            refresh,
 
         sell:
             sell,
@@ -4506,7 +4728,10 @@ const MinhHongBuybackEngine=(function(){
             clearCache,
 
         getCore:
-            getCore
+            getCore,
+
+        getApi:
+            getApi
     };
 
 })();
@@ -7767,26 +7992,18 @@ const MinhHongAssistant=
                 )
             );
 
-            if(
-                !MinhHongBuybackEngine.isReady()
-            ){
-
-                clearNode(
-                    box
-                );
-
-                box.appendChild(
-                    makeElement(
-                        "div",
-                        "mh-small-note",
-                        "Reward Core chưa sẵn sàng. Hãy bảo đảm student-reward-core.js được nạp trước Minh Hồng."
-                    )
-                );
-
-                return;
-            }
-
             try{
+
+                /*
+                   FIX v1.5.6.3:
+                   Không yêu cầu Core phải khởi tạo trước Minh Hồng.
+                   Chờ tối đa 15 giây và tự nhận event Core Ready/Upgraded.
+                */
+                await MinhHongBuybackEngine
+                    .waitUntilReady(
+                        15000
+                    );
+
 
                 const submissionText=
                     await fetch(
@@ -7835,6 +8052,10 @@ const MinhHongAssistant=
                     makeElement(
                         "div",
                         "mh-small-note",
+                        error && error.message
+                        ?
+                        error.message
+                        :
                         "Chưa tải được dữ liệu thu mua. Bạn có thể đóng và mở lại mục này sau."
                     )
                 );
