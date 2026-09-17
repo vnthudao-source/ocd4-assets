@@ -8,12 +8,12 @@
 ========================================================= */
  
 if(
-    window.__OCD_MINH_HONG_FOOTER_V1561_FIX1__
+    window.__OCD_MINH_HONG_FOOTER_V1570__
 ){
     return;
 }
  
-window.__OCD_MINH_HONG_FOOTER_V1561_FIX1__=
+window.__OCD_MINH_HONG_FOOTER_V1570__=
     true;
  
  
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1561_FIX1__=
 const CONFIG={
  
     version:
-        "1.5.6.1-fix1",
+        "1.5.7.0",
  
     enabled:
         true,
@@ -7557,6 +7557,237 @@ const MinhHongAssistant=
     }
  
  
+    /* =====================================================
+       MINH HỒNG THU MUA v1.5.7.0
+       - Core là nguồn sự thật duy nhất cho vật phẩm/Linh Thạch.
+       - Minh Hồng chỉ đọc offer và gửi yêu cầu SELL qua Core.
+       - Chỉ báo thành công sau khi SELL_ID xuất hiện trong Sheet.
+    ===================================================== */
+    const MinhHongSellPanel=(function(){
+        let submissionCsvPromise=null;
+        let selling=false;
+ 
+        function getCore(){
+            return window.StudentRewardSystem||null;
+        }
+ 
+        function coreReady(){
+            const RS=getCore();
+            return !!(
+                RS &&
+                typeof RS.getStudentRewardProfile==="function" &&
+                typeof RS.getMinhHongOffers==="function" &&
+                typeof RS.sellItemToMinhHong==="function" &&
+                typeof RS.refreshStudentRewardProfile==="function"
+            );
+        }
+ 
+        function waitCore(timeout){
+            timeout=Math.max(1000,Number(timeout||12000));
+            return new Promise(function(resolve,reject){
+                const start=Date.now();
+                (function check(){
+                    if(coreReady()) return resolve(getCore());
+                    if(Date.now()-start>=timeout){
+                        return reject(new Error("Reward Core chưa sẵn sàng."));
+                    }
+                    setTimeout(check,100);
+                })();
+            });
+        }
+ 
+        function loadSubmissionCsv(force){
+            if(!force && submissionCsvPromise) return submissionCsvPromise;
+            const sep=CONFIG.csvUrl.indexOf("?")>=0?"&":"?";
+            const url=CONFIG.csvUrl+sep+"_mh_sell="+Date.now();
+            submissionCsvPromise=fetch(url,{cache:"no-store",credentials:"omit"})
+                .then(function(r){
+                    if(!r.ok) throw new Error("Không thể tải dữ liệu học viên.");
+                    return r.text();
+                })
+                .catch(function(err){
+                    submissionCsvPromise=null;
+                    throw err;
+                });
+            return submissionCsvPromise;
+        }
+ 
+        function gemLabel(RS,key){
+            const info=RS.GEM_TYPES&&RS.GEM_TYPES[key];
+            return info&&info.displayName?info.displayName:key;
+        }
+ 
+        function injectStyle(){
+            if(document.getElementById("mhSellStyle1570")) return;
+            const style=document.createElement("style");
+            style.id="mhSellStyle1570";
+            style.textContent=`
+                .mh-sell-wrap{margin-top:10px}
+                .mh-sell-toggle{width:100%;border:1px solid rgba(121,83,55,.25);border-radius:12px;padding:11px 12px;background:#fffaf1;color:#5d4030;font-weight:700;cursor:pointer;text-align:left}
+                .mh-sell-box{margin-top:9px;border:1px solid rgba(121,83,55,.18);border-radius:12px;padding:10px;background:rgba(255,252,246,.82)}
+                .mh-sell-note{font-size:12px;line-height:1.55;opacity:.78;margin-bottom:8px}
+                .mh-sell-status{font-size:12px;line-height:1.55;padding:8px 9px;border-radius:9px;background:rgba(121,83,55,.07);margin-bottom:8px}
+                .mh-sell-item{padding:10px 0;border-top:1px solid rgba(121,83,55,.13)}
+                .mh-sell-item:first-of-type{border-top:0}
+                .mh-sell-name{font-weight:700;margin-bottom:4px}
+                .mh-sell-meta{font-size:12px;line-height:1.5;opacity:.78}
+                .mh-sell-actions{display:flex;gap:7px;align-items:center;margin-top:8px}
+                .mh-sell-qty{width:72px;min-width:72px;border:1px solid rgba(121,83,55,.25);border-radius:9px;padding:8px;background:#fff}
+                .mh-sell-btn{flex:1;border:0;border-radius:9px;padding:9px 10px;background:#765344;color:#fff;font-weight:700;cursor:pointer}
+                .mh-sell-btn:disabled,.mh-sell-qty:disabled{opacity:.5;cursor:not-allowed}
+            `;
+            document.head.appendChild(style);
+        }
+ 
+        function append(state){
+            if(!state||!state.verified) return;
+            injectStyle();
+ 
+            const section=makeElement("div","mh-section mh-sell-wrap");
+            const toggle=makeElement("button","mh-sell-toggle","Rao bán vật phẩm cho Minh Hồng");
+            toggle.type="button";
+            const box=makeElement("div","mh-sell-box");
+            box.style.display="none";
+            section.appendChild(toggle);
+            section.appendChild(box);
+            panelBody.appendChild(section);
+ 
+            let opened=false;
+            let loaded=false;
+ 
+            function status(text){
+                clearNode(box);
+                box.appendChild(makeElement("div","mh-sell-status",text));
+            }
+ 
+            async function render(force){
+                if(selling) return;
+                status("Đang tải vật phẩm và chính sách thu mua...");
+                try{
+                    const RS=await waitCore(12000);
+                    const csv=await loadSubmissionCsv(Boolean(force));
+                    const profile=await RS.getStudentRewardProfile(state.code,csv,Boolean(force));
+                    const offers=(profile&&profile.minhHong&&Array.isArray(profile.minhHong.offers))
+                        ? profile.minhHong.offers
+                        : await RS.getMinhHongOffers(state.code,csv,Boolean(force));
+ 
+                    clearNode(box);
+                    box.appendChild(makeElement(
+                        "div","mh-sell-note",
+                        "Minh Hồng chỉ hiển thị vật phẩm Core xác nhận bạn đang sở hữu và đang được thu mua. Tài sản chỉ thay đổi sau khi giao dịch được xác nhận."
+                    ));
+ 
+                    const available=(offers||[]).filter(function(o){
+                        return o && o.available && Number(o.maxQuantity||0)>0;
+                    });
+ 
+                    if(!available.length){
+                        box.appendChild(makeElement(
+                            "div","mh-sell-status",
+                            "Hiện chưa có vật phẩm phù hợp để rao bán, hoặc bạn đã đạt giới hạn thu mua hôm nay."
+                        ));
+                        loaded=true;
+                        return;
+                    }
+ 
+                    available.forEach(function(offer){
+                        const item=makeElement("div","mh-sell-item");
+                        item.appendChild(makeElement("div","mh-sell-name",offer.giftName||"Vật phẩm"));
+                        item.appendChild(makeElement(
+                            "div","mh-sell-meta",
+                            "Đang có: "+Number(offer.ownedQuantity||offer.quantity||0)+
+                            " · Có thể bán: "+Number(offer.maxQuantity||0)+
+                            " · Giá: "+Number(offer.price||0)+" "+gemLabel(RS,offer.gemType)+" / vật phẩm"
+                        ));
+ 
+                        const actions=makeElement("div","mh-sell-actions");
+                        const qty=document.createElement("input");
+                        qty.type="number";
+                        qty.className="mh-sell-qty";
+                        qty.min="1";
+                        qty.max=String(Math.max(1,Number(offer.maxQuantity||1)));
+                        qty.step="1";
+                        qty.value="1";
+                        qty.setAttribute("aria-label","Số lượng bán");
+ 
+                        const sell=makeElement("button","mh-sell-btn","BÁN VẬT PHẨM");
+                        sell.type="button";
+                        sell.addEventListener("click",async function(){
+                            if(selling) return;
+                            const q=Math.floor(Number(qty.value||0));
+                            const max=Math.floor(Number(offer.maxQuantity||0));
+                            if(!Number.isFinite(q)||q<1||q>max){
+                                qty.focus();
+                                return;
+                            }
+                            const reward=q*Number(offer.price||0);
+                            const ok=window.confirm(
+                                "Xác nhận bán "+q+" × "+offer.giftName+" cho Minh Hồng để nhận "+
+                                reward+" "+gemLabel(RS,offer.gemType)+"?"
+                            );
+                            if(!ok) return;
+ 
+                            selling=true;
+                            sell.disabled=true;
+                            qty.disabled=true;
+                            sell.textContent="ĐANG XÁC NHẬN...";
+                            try{
+                                const freshCsv=await loadSubmissionCsv(true);
+                                const result=await RS.sellItemToMinhHong(
+                                    state.code,offer.giftName,q,freshCsv
+                                );
+                                if(!result||!result.sale){
+                                    throw new Error("Giao dịch chưa được xác nhận.");
+                                }
+                                selling=false;
+                                await render(true);
+                                const success=makeElement(
+                                    "div","mh-sell-status",
+                                    "Đã bán thành công. Core đã cập nhật lại vật phẩm và Linh Thạch."
+                                );
+                                box.insertBefore(success,box.firstChild);
+                            }catch(err){
+                                selling=false;
+                                sell.disabled=false;
+                                qty.disabled=false;
+                                sell.textContent="BÁN VẬT PHẨM";
+                                window.alert(err&&err.message?err.message:"Không thể hoàn tất giao dịch. Vui lòng thử lại.");
+                            }
+                        });
+                        actions.appendChild(qty);
+                        actions.appendChild(sell);
+                        item.appendChild(actions);
+                        box.appendChild(item);
+                    });
+                    loaded=true;
+                }catch(err){
+                    status(err&&err.message?err.message:"Không thể tải hệ thống thu mua.");
+                }
+            }
+ 
+            toggle.addEventListener("click",function(){
+                opened=!opened;
+                box.style.display=opened?"":"none";
+                toggle.textContent=opened?"Đóng rao bán vật phẩm":"Rao bán vật phẩm cho Minh Hồng";
+                if(opened&&!loaded) render(false);
+            });
+ 
+            const onProfileChanged=function(event){
+                if(!opened||!document.body.contains(section)){
+                    if(!document.body.contains(section)) window.removeEventListener("ocdRewardProfileChanged",onProfileChanged);
+                    return;
+                }
+                const detail=event&&event.detail?event.detail:{};
+                if(!detail.code||String(detail.code).toUpperCase()===String(state.code).toUpperCase()){
+                    render(true);
+                }
+            };
+            window.addEventListener("ocdRewardProfileChanged",onProfileChanged);
+        }
+ 
+        return {append:append};
+    })();
+ 
     function renderStudentPanel(state){
  
         panelBody.appendChild(
@@ -7621,6 +7852,9 @@ const MinhHongAssistant=
            Đặt trước Community / Insight / Class Pulse để
            không thay đổi logic của các engine cũ. */
         appendStudentSheetContent(state);
+ 
+        /* Rao bán vật phẩm: chỉ hiện với học viên đã xác minh. */
+        MinhHongSellPanel.append(state);
  
  
         if(isCommunityContext()){
