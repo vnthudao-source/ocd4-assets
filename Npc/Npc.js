@@ -1,1791 +1,1252 @@
-(function(){
-
-"use strict";
-
-/* =========================================================
-   OCD NPC SYSTEM
-   Npc/Npc.js
-   v4.0.0
-
-   NPC:
-   - chỉ render vào #ocdNpcMount
-   - không floating
-   - không launcher
-   - mỗi trang một NPC
-========================================================= */
-
-
-/* =========================================================
-   GUARD
-========================================================= */
-
-if(window.OCDNpcSystemV4){
-    return;
-}
-
-window.OCDNpcSystemV4=true;
-
-
-/* =========================================================
-   CONFIG
-========================================================= */
-
-const CONFIG={
-
-    version:"4.0.0",
-
-    mountId:"ocdNpcMount",
-
-    /*
-       Sheet thương nhân Chợ phiên.
-    */
-    npcGid:"1348051654",
-
-    coreWaitMs:12000
-
-};
-
-
-/* =========================================================
-   URL MAP
-
-   QUAN TRỌNG:
-   Các URL chính xác biết chắc được đặt trước.
-
-   Những trang chưa biết URL chính xác
-   có aliases dự phòng phía dưới.
-========================================================= */
-
-const PAGE_MAP=[
-
-    /* -----------------------------------------------------
-       HOME
-    ----------------------------------------------------- */
-
-    {
-        id:"HOME",
-
-        npc:null,
-
-        place:"Trang chủ",
-
-        exact:[
-            "/",
-            "/index.html"
-        ],
-
-        contains:[],
-
-        questOnly:false
-    },
-
-
-    /* -----------------------------------------------------
-       TRIỂN LÃM
-       URL ĐÃ XÁC NHẬN
-    ----------------------------------------------------- */
-
-    {
-        id:"EXHIBITION",
-
-        npc:"Thư gia",
-
-        place:"Phòng triển lãm",
-
-        exact:[
-            "/p/trien-lam.html"
-        ],
-
-        contains:[
-            "/p/trien-lam"
-        ],
-
-        questOnly:false
-    },
-
-
-    /* -----------------------------------------------------
-       QUEST
-       URL ĐÃ XÁC ĐỊNH
-    ----------------------------------------------------- */
-
-    {
-        id:"QUEST",
-
-        npc:"Võ tướng",
-
-        place:"Trang nhiệm vụ",
-
-        exact:[
-            "/p/quest.html"
-        ],
-
-        contains:[
-            "/p/quest"
-        ],
-
-        questOnly:false
-    },
-
-
-    /* -----------------------------------------------------
-       GIẢNG ĐƯỜNG
-    ----------------------------------------------------- */
-
-    {
-        id:"LECTURE",
-
-        npc:"Thư gia",
-
-        place:"Giảng đường",
-
-        exact:[
-            "/p/giang-duong.html"
-        ],
-
-        contains:[
-            "/p/giang-duong"
-        ],
-
-        questOnly:false
-    },
-
-
-    /* -----------------------------------------------------
-       BẢNG XẾP HẠNG
-    ----------------------------------------------------- */
-
-    {
-        id:"RANKING",
-
-        npc:"Nghệ nhân",
-
-        place:"Bảng xếp hạng",
-
-        exact:[
-            "/p/bang-xep-hang.html"
-        ],
-
-        contains:[
-            "/p/bang-xep-hang",
-            "/p/xep-hang"
-        ],
-
-        questOnly:false
-    },
-
-
-    /* -----------------------------------------------------
-       THƯ VIỆN LÂM MÔ
-    ----------------------------------------------------- */
-
-    {
-        id:"LIBRARY",
-
-        npc:"Nông dân",
-
-        place:"Thư viện lâm mô",
-
-        exact:[
-            "/p/thu-vien-lam-mo.html"
-        ],
-
-        contains:[
-            "/p/thu-vien-lam-mo",
-            "/p/thu-vien"
-        ],
-
-        questOnly:false
-    },
-
-
-    /* -----------------------------------------------------
-       TRA CỨU / CHỢ PHIÊN
-
-       GIAN THƯƠNG CHỈ HIỆN KHI CÓ QUEST.
-    ----------------------------------------------------- */
-
-    {
-        id:"PROFILE",
-
-        npc:"Gian thương",
-
-        place:"Tra cứu hồ sơ / Chợ phiên",
-
-        exact:[
-            "/p/tra-cuu.html"
-        ],
-
-        contains:[
-            "/p/tra-cuu",
-            "/p/ho-so",
-            "/p/cho-phien"
-        ],
-
-        questOnly:true
-    }
-
-];
-
-
-/* =========================================================
-   STATE
-========================================================= */
-
-const state={
-
-    rule:null,
-
-    npcs:[],
-
-    npc:null,
-
-    questNpc:"",
-
-    quest:null,
-
-    dialogOpen:false
-
-};
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function str(value){
-
-    return String(
-        value == null ? "" : value
-    ).trim();
-
-}
-
-
-function norm(value){
-
-    let s=
-        str(value)
-        .toLowerCase();
-
-
-    try{
-
-        s=
-            s.normalize("NFD")
-            .replace(
-                /[\u0300-\u036f]/g,
-                ""
-            );
-
-    }catch(error){}
-
-
-    return s
-        .replace(/đ/g,"d")
-        .replace(/\s+/g," ")
-        .trim();
-
-}
-
-
-function esc(value){
-
-    return str(value)
-
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-
-}
-
-
-function path(){
-
-    let p=
-        String(
-            location.pathname || "/"
-        )
-        .toLowerCase();
-
-
-    if(
-        p.length > 1 &&
-        p.endsWith("/")
-    ){
-
-        p=
-            p.slice(0,-1);
-
-    }
-
-
-    return p;
-
-}
-
-
-/* =========================================================
-   PAGE DETECTION
-========================================================= */
-
-function detectPage(){
-
-    const current=
-        path();
-
-
-    /*
-       Exact URL ưu tiên tuyệt đối.
-    */
-
-    for(
-        const rule of PAGE_MAP
-    ){
-
-        if(
-            rule.exact.includes(
-                current
-            )
-        ){
-
-            return rule;
-
-        }
-
-    }
-
-
-    /*
-       Alias fallback.
-    */
-
-    for(
-        const rule of PAGE_MAP
-    ){
-
-        if(
-            rule.contains.some(
-                function(fragment){
-
-                    return(
-                        current.includes(
-                            fragment
-                        )
-                    );
-
-                }
-            )
-        ){
-
-            return rule;
-
-        }
-
-    }
-
-
-    return{
-
-        id:"NONE",
-
-        npc:null,
-
-        place:"",
-
-        exact:[],
-
-        contains:[],
-
-        questOnly:false
-
+(function () {
+    "use strict";
+
+    /* =========================================================
+       OCD NPC SYSTEM
+       Npc/Npc.js
+       v4.2.0 - CLEAN REBUILD
+
+       NGUYÊN TẮC:
+       - NPC chỉ render vào #ocdNpcMount
+       - Không launcher
+       - Không floating
+       - Không phụ thuộc Sheet để xuất hiện
+       - Sheet chỉ bổ sung ảnh + mô tả
+       - Mỗi trang có NPC riêng
+    ========================================================= */
+
+
+    /* =========================================================
+       CONFIG
+    ========================================================= */
+
+    var CONFIG = {
+        version: "4.2.0",
+        mountId: "ocdNpcMount",
+        npcGid: "1348051654"
     };
 
-}
 
-
-/* =========================================================
-   MOUNT
-
-   CHỈ CÓ MỘT VỊ TRÍ RENDER NPC.
-========================================================= */
-
-function mount(){
-
-    return(
-        document.getElementById(
-            CONFIG.mountId
-        )
-    );
-
-}
-
-
-function hideNpc(){
-
-    const target=
-        mount();
-
-
-    if(!target){
-        return;
-    }
-
-
-    target.innerHTML="";
-
-    target.style.display=
-        "none";
-
-
-    state.npc=null;
-
-}
-
-
-/* =========================================================
-   WAIT CORE
-========================================================= */
-
-function waitCore(){
-
-    return new Promise(
-        function(resolve){
-
-            const start=
-                Date.now();
-
-
-            function check(){
-
-                const RS=
-                    window.StudentRewardSystem;
-
-
-                if(
-                    RS &&
-                    typeof RS.sheetCsvUrl ===
-                    "function"
-                ){
-
-                    resolve(RS);
-
-                    return;
-
-                }
-
-
-                if(
-                    Date.now() - start >
-                    CONFIG.coreWaitMs
-                ){
-
-                    resolve(null);
-
-                    return;
-
-                }
-
-
-                setTimeout(
-                    check,
-                    100
-                );
-
-            }
-
-
-            check();
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   LOAD SHEET
-========================================================= */
-
-async function loadNpcSheet(){
-
-    const RS=
-        await waitCore();
-
-
-    if(!RS){
-
-        throw new Error(
-            "Reward Core chưa sẵn sàng."
-        );
-
-    }
-
-
-    const url=
-        RS.sheetCsvUrl(
-            CONFIG.npcGid
-        );
-
-
-    if(
-        typeof RS.fetchRows ===
-        "function"
-    ){
-
-        return(
-            await RS.fetchRows(
-                url+
-                (
-                    url.includes("?")
-                    ?
-                    "&"
-                    :
-                    "?"
-                )+
-                "_npcv4="+
-                Date.now()
-            )
-        );
-
-    }
-
-
-    throw new Error(
-        "Reward Core không có fetchRows()."
-    );
-
-}
-
-
-/* =========================================================
-   COLUMN
-========================================================= */
-
-function column(
-    headers,
-    aliases
-){
-
-    for(
-        const alias of aliases
-    ){
-
-        const exact=
-            headers.indexOf(
-                norm(alias)
-            );
-
-
-        if(exact >= 0){
-            return exact;
+    /* =========================================================
+       STATE
+    ========================================================= */
+
+    var state = {
+        page: null,
+        npc: null,
+        npcData: [],
+        questNpc: "",
+        quest: null,
+        dialogOpen: false
+    };
+
+
+    /* =========================================================
+       HELPERS
+    ========================================================= */
+
+    function clean(value) {
+        if (value === null || value === undefined) {
+            return "";
         }
 
+        return String(value).trim();
     }
 
 
-    for(
-        const alias of aliases
-    ){
+    function normalize(value) {
+        var source = clean(value).toLowerCase();
 
-        const key=
-            norm(alias);
+        try {
+            source = source
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+        } catch (error) {}
 
-
-        const index=
-            headers.findIndex(
-                function(header){
-
-                    return(
-                        header.includes(key)
-                    );
-
-                }
-            );
+        return source
+            .replace(/đ/g, "d")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
 
 
-        if(index >= 0){
-            return index;
+    function escapeHtml(value) {
+        return clean(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    function getMount() {
+        return document.getElementById(CONFIG.mountId);
+    }
+
+
+    function getPath() {
+        var path = window.location.pathname || "/";
+
+        path = path.toLowerCase();
+
+        if (path.length > 1 && path.charAt(path.length - 1) === "/") {
+            path = path.substring(0, path.length - 1);
         }
 
+        return path;
     }
 
 
-    return -1;
+    /* =========================================================
+       PAGE DETECTION
 
-}
+       NPC THEO YÊU CẦU HIỆN TẠI
+    ========================================================= */
+
+    function detectPage() {
+        var path = getPath();
 
 
-/* =========================================================
-   MAP NPC
-========================================================= */
+        /* -----------------------------------------------------
+           TRANG CHỦ
+        ----------------------------------------------------- */
 
-function mapNpcRows(rows){
+        if (
+            path === "/" ||
+            path === "/index.html"
+        ) {
+            return {
+                id: "HOME",
+                npc: "",
+                place: "Trang chủ",
+                questOnly: false
+            };
+        }
 
-    if(
-        !Array.isArray(rows) ||
-        rows.length < 2
-    ){
 
-        return [];
+        /* -----------------------------------------------------
+           PHÒNG TRIỂN LÃM
+        ----------------------------------------------------- */
 
+        if (
+            path === "/p/trien-lam.html" ||
+            path.indexOf("/p/trien-lam") !== -1
+        ) {
+            return {
+                id: "EXHIBITION",
+                npc: "Thư gia",
+                place: "Phòng triển lãm",
+                questOnly: false
+            };
+        }
+
+
+        /* -----------------------------------------------------
+           TRANG NHIỆM VỤ
+        ----------------------------------------------------- */
+
+        if (
+            path === "/p/quest.html" ||
+            path.indexOf("/p/quest") !== -1
+        ) {
+            return {
+                id: "QUEST",
+                npc: "Võ tướng",
+                place: "Trang nhiệm vụ",
+                questOnly: false
+            };
+        }
+
+
+        /* -----------------------------------------------------
+           GIẢNG ĐƯỜNG
+        ----------------------------------------------------- */
+
+        if (
+            path === "/p/giang-duong.html" ||
+            path.indexOf("giang-duong") !== -1
+        ) {
+            return {
+                id: "LECTURE",
+                npc: "Thư gia",
+                place: "Giảng đường",
+                questOnly: false
+            };
+        }
+
+
+        /* -----------------------------------------------------
+           BẢNG XẾP HẠNG
+        ----------------------------------------------------- */
+
+        if (
+            path.indexOf("bang-xep-hang") !== -1 ||
+            path.indexOf("xep-hang") !== -1 ||
+            path.indexOf("xephang") !== -1
+        ) {
+            return {
+                id: "RANKING",
+                npc: "Nghệ nhân",
+                place: "Bảng xếp hạng",
+                questOnly: false
+            };
+        }
+
+
+        /* -----------------------------------------------------
+           THƯ VIỆN LÂM MÔ
+        ----------------------------------------------------- */
+
+        if (
+            path.indexOf("thu-vien-lam-mo") !== -1 ||
+            path.indexOf("thu-vien") !== -1
+        ) {
+            return {
+                id: "LIBRARY",
+                npc: "Nông dân",
+                place: "Thư viện lâm mô",
+                questOnly: false
+            };
+        }
+
+
+        /* -----------------------------------------------------
+           TRA CỨU / CHỢ PHIÊN
+
+           Gian thương chỉ hiện khi Quest gọi.
+        ----------------------------------------------------- */
+
+        if (
+            path.indexOf("tra-cuu") !== -1 ||
+            path.indexOf("ho-so") !== -1 ||
+            path.indexOf("cho-phien") !== -1
+        ) {
+            return {
+                id: "PROFILE",
+                npc: "Gian thương",
+                place: "Tra cứu hồ sơ / Chợ phiên",
+                questOnly: true
+            };
+        }
+
+
+        /* -----------------------------------------------------
+           TRANG KHÁC
+        ----------------------------------------------------- */
+
+        return {
+            id: "OTHER",
+            npc: "",
+            place: "",
+            questOnly: false
+        };
     }
 
 
-    const headers=
-        rows[0].map(norm);
+    /* =========================================================
+       FALLBACK NPC
+
+       RẤT QUAN TRỌNG:
+       NPC phải xuất hiện kể cả Sheet chưa tải được.
+    ========================================================= */
+
+    function createFallbackNpc(name) {
+        return {
+            name: name,
+            key: normalize(name),
+            image: "",
+            description: getDefaultDialogue(name)
+        };
+    }
 
 
-    let iName=
-        column(
-            headers,
-            [
-                "Tên nhân vật",
-                "Tên NPC"
-            ]
+    function getDefaultDialogue(name) {
+        var key = normalize(name);
+
+
+        if (key === "thu gia") {
+            return "Chào bạn. Ta là Thư gia. Có lẽ hành trình hôm nay đã đưa bạn đến đây vì một lý do.";
+        }
+
+
+        if (key === "nghe nhan") {
+            return "Chào bạn. Ta vẫn đang quan sát những bước tiến của các học viên.";
+        }
+
+
+        if (key === "nong dan") {
+            return "Chào bạn. Nếu đang tìm một thứ cần thiết cho việc luyện tập, có lẽ ta có thể giúp.";
+        }
+
+
+        if (key === "vo tuong") {
+            return "Đã đến đây thì hãy xem nhiệm vụ nào đang chờ bạn.";
+        }
+
+
+        if (key === "gian thuong") {
+            return "Hừm... Có vẻ ngươi tìm ta vì một nhiệm vụ.";
+        }
+
+
+        return "Có chuyện gì cần ta giúp?";
+    }
+
+
+    /* =========================================================
+       SHOULD SHOW
+    ========================================================= */
+
+    function shouldShowNpc() {
+        if (!state.page) {
+            return false;
+        }
+
+
+        if (!state.page.npc) {
+            return false;
+        }
+
+
+        if (!state.page.questOnly) {
+            return true;
+        }
+
+
+        return (
+            normalize(state.questNpc) ===
+            normalize(state.page.npc)
         );
-
-
-    let iImage=
-        column(
-            headers,
-            [
-                "Hình ảnh",
-                "Icon",
-                "Ảnh"
-            ]
-        );
-
-
-    let iDescription=
-        column(
-            headers,
-            [
-                "Mô tả",
-                "Description"
-            ]
-        );
-
-
-    /*
-       Sheet Chợ phiên cũ.
-    */
-
-    if(iName < 0){
-        iName=0;
     }
 
 
-    if(iImage < 0){
-        iImage=1;
-    }
+    /* =========================================================
+       FIND REAL NPC DATA
+    ========================================================= */
+
+    function findNpcData(name) {
+        var target = normalize(name);
+        var i;
+        var npc;
 
 
-    if(iDescription < 0){
-        iDescription=2;
-    }
+        for (i = 0; i < state.npcData.length; i++) {
+            npc = state.npcData[i];
 
-
-    return rows
-        .slice(1)
-        .map(
-            function(row,index){
-
-                const name=
-                    str(
-                        row[iName]
-                    );
-
-
-                return{
-
-                    id:
-                        "NPC_"+index,
-
-                    name:name,
-
-                    key:norm(name),
-
-                    image:
-                        str(
-                            row[iImage]
-                        ),
-
-                    description:
-                        str(
-                            row[iDescription]
-                        )
-
-                };
-
+            if (npc.key === target) {
+                return npc;
             }
-        )
-        .filter(
-            function(item){
+        }
 
-                return Boolean(
-                    item.name
-                );
 
+        for (i = 0; i < state.npcData.length; i++) {
+            npc = state.npcData[i];
+
+            if (
+                npc.key.indexOf(target) !== -1 ||
+                target.indexOf(npc.key) !== -1
+            ) {
+                return npc;
             }
-        );
-
-}
+        }
 
 
-/* =========================================================
-   FIND NPC
-
-   Exact name first.
-========================================================= */
-
-function findNpc(name){
-
-    const key=
-        norm(name);
-
-
-    let result=
-        state.npcs.find(
-            function(item){
-
-                return(
-                    item.key === key
-                );
-
-            }
-        );
-
-
-    if(result){
-        return result;
+        return null;
     }
 
 
-    /*
-       Fallback cho Sheet có thêm chữ
-       phía trước/sau tên.
-    */
+    /* =========================================================
+       IMAGE URL
+    ========================================================= */
 
-    result=
-        state.npcs.find(
-            function(item){
-
-                return(
-                    item.key.includes(key)
-                    ||
-                    key.includes(
-                        item.key
-                    )
-                );
-
-            }
-        );
+    function convertImageUrl(url) {
+        var source = clean(url);
+        var RS;
+        var match;
 
 
-    return result || null;
-
-}
-
-
-/* =========================================================
-   IMAGE URL
-========================================================= */
-
-function imageUrl(url){
-
-    const source=
-        str(url);
+        if (!source) {
+            return "";
+        }
 
 
-    if(!source){
-        return "";
-    }
+        RS = window.StudentRewardSystem;
 
 
-    const RS=
-        window.StudentRewardSystem;
-
-
-    if(
-        RS &&
-        typeof RS.convertDriveImageUrl ===
-        "function"
-    ){
-
-        try{
-
-            return(
-                RS.convertDriveImageUrl(
+        if (
+            RS &&
+            typeof RS.convertDriveImageUrl === "function"
+        ) {
+            try {
+                return RS.convertDriveImageUrl(
                     source,
                     500
-                )
-            );
-
-        }catch(error){}
-
-    }
+                );
+            } catch (error) {}
+        }
 
 
-    let match=
-        source.match(
+        match = source.match(
             /\/file\/d\/([^/?]+)/
         );
 
 
-    if(!match){
-
-        match=
-            source.match(
+        if (!match) {
+            match = source.match(
                 /[?&]id=([^&]+)/
             );
+        }
 
+
+        if (match && match[1]) {
+            return (
+                "https://drive.google.com/thumbnail?id=" +
+                encodeURIComponent(match[1]) +
+                "&sz=w500"
+            );
+        }
+
+
+        return source;
     }
 
 
-    if(match){
+    /* =========================================================
+       RENDER NPC
 
-        return(
-            "https://drive.google.com/thumbnail?id="+
-            encodeURIComponent(
-                match[1]
-            )+
-            "&sz=w500"
-        );
+       CHỈ RENDER VÀO GADGET.
+    ========================================================= */
 
-    }
-
-
-    return source;
-
-}
-
-
-/* =========================================================
-   SHOULD SHOW
-========================================================= */
-
-function shouldShow(){
-
-    const rule=
-        state.rule;
+    function renderNpc() {
+        var mount = getMount();
+        var realNpc;
+        var npc;
+        var scene;
+        var actor;
+        var imageBox;
+        var img;
+        var fallback;
+        var mark;
+        var name;
+        var hint;
 
 
-    if(
-        !rule ||
-        !rule.npc
-    ){
-
-        return false;
-    }
+        if (!mount) {
+            return;
+        }
 
 
-    /*
-       Trang bình thường.
-    */
+        if (!shouldShowNpc()) {
+            mount.innerHTML = "";
+            mount.style.display = "none";
 
-    if(!rule.questOnly){
+            state.npc = null;
 
-        return true;
-
-    }
-
-
-    /*
-       Tra cứu / Chợ phiên.
-
-       Gian thương chỉ xuất hiện khi
-       Quest gọi đúng NPC.
-    */
-
-    return(
-        norm(
-            state.questNpc
-        )
-        ===
-        norm(
-            rule.npc
-        )
-    );
-
-}
+            return;
+        }
 
 
-/* =========================================================
-   RENDER
+        /*
+           Tìm dữ liệu thật.
 
-   TUYỆT ĐỐI KHÔNG APPEND VÀO BODY.
-========================================================= */
+           Nếu chưa có:
+           dùng fallback ngay.
+        */
 
-function render(){
-
-    const target=
-        mount();
-
-
-    if(!target){
-
-        console.warn(
-            "[NPC] Không tìm thấy #ocdNpcMount."
-        );
-
-        return;
-
-    }
-
-
-    if(!shouldShow()){
-
-        hideNpc();
-
-        return;
-
-    }
-
-
-    const npc=
-        findNpc(
-            state.rule.npc
+        realNpc = findNpcData(
+            state.page.npc
         );
 
 
-    if(!npc){
-
-        console.warn(
-            "[NPC] Sheet không tìm thấy nhân vật:",
-            state.rule.npc
-        );
-
-
-        hideNpc();
-
-        return;
-
-    }
-
-
-    state.npc=
-        npc;
-
-
-    target.style.display=
-        "block";
-
-
-    target.innerHTML="";
-
-
-    const scene=
-        document.createElement(
-            "div"
-        );
-
-
-    scene.className=
-        "ocd-npc-scene";
-
-
-    /*
-       Đây là button semantic để accessibility,
-       nhưng CSS biến nó thành nhân vật đứng,
-       không phải launcher tròn.
-    */
-
-    const actor=
-        document.createElement(
-            "button"
-        );
-
-
-    actor.type=
-        "button";
-
-
-    actor.className=
-        "ocd-npc-actor";
-
-
-    actor.setAttribute(
-        "aria-label",
-        "Trò chuyện với "+
-        npc.name
-    );
-
-
-    const picture=
-        document.createElement(
-            "span"
-        );
-
-
-    picture.className=
-        "ocd-npc-image";
-
-
-    if(npc.image){
-
-        const img=
-            document.createElement(
-                "img"
+        npc = realNpc ||
+            createFallbackNpc(
+                state.page.npc
             );
 
 
-        img.src=
-            imageUrl(
+        state.npc = npc;
+
+
+        mount.style.display = "block";
+        mount.innerHTML = "";
+
+
+        /* =====================================================
+           SCENE
+        ===================================================== */
+
+        scene = document.createElement("div");
+        scene.className = "ocd-npc-scene";
+
+
+        /* =====================================================
+           ACTOR
+        ===================================================== */
+
+        actor = document.createElement("button");
+
+        actor.type = "button";
+        actor.className = "ocd-npc-actor";
+
+        actor.setAttribute(
+            "aria-label",
+            "Trò chuyện với " + npc.name
+        );
+
+
+        /* =====================================================
+           IMAGE
+        ===================================================== */
+
+        imageBox = document.createElement("span");
+        imageBox.className = "ocd-npc-image";
+
+
+        if (npc.image) {
+            img = document.createElement("img");
+
+            img.src = convertImageUrl(
                 npc.image
             );
 
-
-        img.alt=
-            npc.name;
-
-
-        img.loading=
-            "lazy";
+            img.alt = npc.name;
+            img.loading = "lazy";
 
 
-        picture.appendChild(
-            img
-        );
+            img.onerror = function () {
+                imageBox.innerHTML = "";
 
-    }else{
+                fallback =
+                    document.createElement("span");
 
-        const fallback=
-            document.createElement(
-                "span"
+                fallback.className =
+                    "ocd-npc-fallback";
+
+                fallback.textContent =
+                    npc.name.substring(0, 1);
+
+                imageBox.appendChild(
+                    fallback
+                );
+            };
+
+
+            imageBox.appendChild(img);
+
+        } else {
+            fallback =
+                document.createElement("span");
+
+            fallback.className =
+                "ocd-npc-fallback";
+
+            fallback.textContent =
+                npc.name.substring(0, 1);
+
+            imageBox.appendChild(
+                fallback
             );
+        }
 
 
-        fallback.className=
-            "ocd-npc-fallback";
+        /* =====================================================
+           QUEST MARK
+        ===================================================== */
+
+        mark = document.createElement("span");
+        mark.className = "ocd-npc-symbol";
+        mark.textContent = "!";
+
+        imageBox.appendChild(mark);
 
 
-        fallback.textContent=
-            "NPC";
+        actor.appendChild(imageBox);
 
 
-        picture.appendChild(
-            fallback
-        );
+        /* =====================================================
+           NAME
+        ===================================================== */
 
+        name = document.createElement("span");
+        name.className = "ocd-npc-name";
+        name.textContent = npc.name;
+
+        actor.appendChild(name);
+
+
+        /* =====================================================
+           HINT
+        ===================================================== */
+
+        hint = document.createElement("span");
+        hint.className = "ocd-npc-talk";
+        hint.textContent = "Chạm để trò chuyện";
+
+        actor.appendChild(hint);
+
+
+        actor.onclick = function () {
+            openDialog();
+        };
+
+
+        scene.appendChild(actor);
+        mount.appendChild(scene);
     }
 
 
-    /*
-       Quest symbol.
-    */
+    /* =========================================================
+       DIALOG
+    ========================================================= */
 
-    const symbol=
-        document.createElement(
-            "span"
-        );
+    function ensureDialog() {
+        var existing =
+            document.getElementById(
+                "ocdNpcDialogRoot"
+            );
 
-
-    symbol.className=
-        "ocd-npc-symbol";
-
-
-    symbol.textContent=
-        "!";
+        var root;
 
 
-    picture.appendChild(
-        symbol
-    );
+        if (existing) {
+            return existing;
+        }
 
 
-    actor.appendChild(
-        picture
-    );
+        root = document.createElement("div");
+        root.id = "ocdNpcDialogRoot";
 
 
-    const name=
-        document.createElement(
-            "span"
-        );
+        root.innerHTML =
+            '<div class="ocd-npc-overlay" id="ocdNpcOverlay"></div>' +
+
+            '<div class="ocd-npc-dialog" id="ocdNpcDialog" aria-hidden="true">' +
+
+                '<div class="ocd-npc-dialog-header">' +
+
+                    '<div class="ocd-npc-dialog-picture" id="ocdNpcDialogPicture"></div>' +
+
+                    '<h3 class="ocd-npc-dialog-name" id="ocdNpcDialogName"></h3>' +
+
+                    '<div class="ocd-npc-dialog-place" id="ocdNpcDialogPlace"></div>' +
+
+                    '<button type="button" class="ocd-npc-close" id="ocdNpcClose">×</button>' +
+
+                '</div>' +
+
+                '<div class="ocd-npc-dialog-body" id="ocdNpcDialogBody"></div>' +
+
+            '</div>';
 
 
-    name.className=
-        "ocd-npc-name";
+        document.body.appendChild(root);
 
 
-    name.textContent=
-        npc.name;
-
-
-    actor.appendChild(
-        name
-    );
-
-
-    const talk=
-        document.createElement(
-            "span"
-        );
-
-
-    talk.className=
-        "ocd-npc-talk";
-
-
-    talk.textContent=
-        "Chạm để trò chuyện";
-
-
-    actor.appendChild(
-        talk
-    );
-
-
-    actor.addEventListener(
-        "click",
-        openDialog
-    );
-
-
-    scene.appendChild(
-        actor
-    );
-
-
-    /*
-       CHỈ append vào gadget.
-    */
-
-    target.appendChild(
-        scene
-    );
-
-}
-
-
-/* =========================================================
-   DIALOG
-========================================================= */
-
-function ensureDialog(){
-
-    let root=
         document.getElementById(
-            "ocdNpcDialogRoot"
-        );
+            "ocdNpcOverlay"
+        ).onclick = closeDialog;
 
 
-    if(root){
+        document.getElementById(
+            "ocdNpcClose"
+        ).onclick = closeDialog;
+
+
         return root;
     }
 
 
-    root=
-        document.createElement(
-            "div"
-        );
+    /* =========================================================
+       OPEN DIALOG
+    ========================================================= */
+
+    function openDialog() {
+        var npc = state.npc;
+        var picture;
+        var img;
+        var body;
+        var dialogue;
 
 
-    root.id=
-        "ocdNpcDialogRoot";
+        if (!npc) {
+            return;
+        }
 
 
-    root.innerHTML=`
-
-        <div
-            class="ocd-npc-overlay"
-            id="ocdNpcOverlay"
-        ></div>
+        ensureDialog();
 
 
-        <div
-            class="ocd-npc-dialog"
-            id="ocdNpcDialog"
-            aria-hidden="true"
-        >
-
-            <div
-                class="ocd-npc-dialog-header"
-            >
-
-                <div
-                    class="ocd-npc-dialog-picture"
-                    id="ocdNpcDialogPicture"
-                ></div>
-
-
-                <h3
-                    class="ocd-npc-dialog-name"
-                    id="ocdNpcDialogName"
-                ></h3>
-
-
-                <div
-                    class="ocd-npc-dialog-place"
-                    id="ocdNpcDialogPlace"
-                ></div>
-
-
-                <button
-                    type="button"
-                    class="ocd-npc-close"
-                    id="ocdNpcClose"
-                    aria-label="Đóng"
-                >
-                    ×
-                </button>
-
-            </div>
-
-
-            <div
-                class="ocd-npc-dialog-body"
-                id="ocdNpcDialogBody"
-            ></div>
-
-        </div>
-
-    `;
-
-
-    /*
-       Modal append body là đúng,
-       vì nó chỉ xuất hiện khi click.
-
-       NPC chính KHÔNG append body.
-    */
-
-    document.body.appendChild(
-        root
-    );
-
-
-    document.getElementById(
-        "ocdNpcOverlay"
-    )
-    .addEventListener(
-        "click",
-        closeDialog
-    );
-
-
-    document.getElementById(
-        "ocdNpcClose"
-    )
-    .addEventListener(
-        "click",
-        closeDialog
-    );
-
-
-    return root;
-
-}
-
-
-/* =========================================================
-   DEFAULT SPEECH
-========================================================= */
-
-function speech(){
-
-    if(
-        state.quest &&
-        str(
-            state.quest.dialogue
-        )
-    ){
-
-        return(
-            state.quest.dialogue
-        );
-
-    }
-
-
-    if(
-        state.npc &&
-        state.npc.description
-    ){
-
-        return(
-            state.npc.description
-        );
-
-    }
-
-
-    switch(
-        state.rule.id
-    ){
-
-        case "LECTURE":
-
-            return(
-                "Chào bạn. Đây là Giảng đường. Ta sẽ giúp bạn khi có nhiệm vụ cần hoàn thành tại đây."
+        picture =
+            document.getElementById(
+                "ocdNpcDialogPicture"
             );
 
 
-        case "EXHIBITION":
-
-            return(
-                "Đây là Phòng triển lãm. Hãy quan sát những tác phẩm được trưng bày và tìm điều bạn cần."
-            );
+        picture.innerHTML = "";
 
 
-        case "RANKING":
+        if (npc.image) {
+            img = document.createElement("img");
 
-            return(
-                "Ta đang theo dõi những bước tiến của các học viên. Thành tích chỉ là một dấu mốc trên hành trình."
-            );
+            img.src =
+                convertImageUrl(
+                    npc.image
+                );
 
+            img.alt =
+                npc.name;
 
-        case "LIBRARY":
-
-            return(
-                "Trong thư viện có nhiều tư liệu lâm mô. Hãy tìm đúng nội dung phù hợp với việc luyện tập của bạn."
-            );
-
-
-        case "QUEST":
-
-            return(
-                "Ta phụ trách những nhiệm vụ trong hành trình của bạn. Khi đã sẵn sàng, hãy xem việc gì đang chờ."
-            );
+            picture.appendChild(img);
+        }
 
 
-        case "PROFILE":
-
-            return(
-                "Ta biết vì sao ngươi tìm đến đây. Hãy xem nhiệm vụ của mình trước khi tiếp tục."
-            );
-
-
-        default:
-
-            return(
-                "Có chuyện gì cần ta giúp?"
-            );
-
-    }
-
-}
-
-
-/* =========================================================
-   OPEN DIALOG
-========================================================= */
-
-function openDialog(){
-
-    if(!state.npc){
-        return;
-    }
-
-
-    ensureDialog();
-
-
-    const picture=
         document.getElementById(
-            "ocdNpcDialogPicture"
-        );
+            "ocdNpcDialogName"
+        ).textContent = npc.name;
 
 
-    picture.innerHTML="";
-
-
-    if(state.npc.image){
-
-        const img=
-            document.createElement(
-                "img"
-            );
-
-
-        img.src=
-            imageUrl(
-                state.npc.image
-            );
-
-
-        img.alt=
-            state.npc.name;
-
-
-        picture.appendChild(
-            img
-        );
-
-    }
-
-
-    document.getElementById(
-        "ocdNpcDialogName"
-    )
-    .textContent=
-        state.npc.name;
-
-
-    document.getElementById(
-        "ocdNpcDialogPlace"
-    )
-    .textContent=
-        state.rule.place;
-
-
-    document.getElementById(
-        "ocdNpcDialogBody"
-    )
-    .innerHTML=`
-
-        <div class="ocd-npc-speech">
-            ${
-                esc(
-                    speech()
-                )
-            }
-        </div>
-
-        <div class="ocd-npc-dialog-note">
-            ${
-                state.quest
-                ?
-                "Nhân vật đang liên quan đến nhiệm vụ hiện tại của bạn."
-                :
-                "Hiện chưa có bước nhiệm vụ cần xác nhận tại nhân vật này."
-            }
-        </div>
-
-    `;
-
-
-    document.getElementById(
-        "ocdNpcOverlay"
-    )
-    .classList.add(
-        "is-open"
-    );
-
-
-    const dialog=
         document.getElementById(
-            "ocdNpcDialog"
-        );
+            "ocdNpcDialogPlace"
+        ).textContent =
+            state.page.place;
 
 
-    dialog.classList.add(
-        "is-open"
-    );
+        dialogue =
+            npc.description ||
+            getDefaultDialogue(
+                npc.name
+            );
 
 
-    dialog.setAttribute(
-        "aria-hidden",
-        "false"
-    );
+        if (
+            state.quest &&
+            state.quest.dialogue
+        ) {
+            dialogue =
+                state.quest.dialogue;
+        }
 
 
-    state.dialogOpen=true;
+        body =
+            document.getElementById(
+                "ocdNpcDialogBody"
+            );
 
 
-    window.dispatchEvent(
-        new CustomEvent(
-            "ocdAssistantPanelOpened",
-            {
-                detail:{
-                    source:"NPC",
-                    npc:
-                        state.npc.name,
-                    page:
-                        state.rule.id
-                }
-            }
-        )
-    );
+        body.innerHTML =
+            '<div class="ocd-npc-speech">' +
+                escapeHtml(dialogue) +
+            '</div>' +
 
-}
+            '<div class="ocd-npc-dialog-note">' +
+                (
+                    state.quest
+                    ?
+                    'Nhân vật này đang liên quan đến nhiệm vụ hiện tại của bạn.'
+                    :
+                    'Hiện chưa có bước nhiệm vụ cần xác nhận tại nhân vật này.'
+                ) +
+            '</div>';
 
 
-/* =========================================================
-   CLOSE
-========================================================= */
-
-function closeDialog(){
-
-    const overlay=
         document.getElementById(
             "ocdNpcOverlay"
+        ).classList.add(
+            "is-open"
         );
 
 
-    const dialog=
         document.getElementById(
             "ocdNpcDialog"
-        );
-
-
-    if(overlay){
-
-        overlay.classList.remove(
-            "is-open"
-        );
-
-    }
-
-
-    if(dialog){
-
-        dialog.classList.remove(
+        ).classList.add(
             "is-open"
         );
 
 
-        dialog.setAttribute(
-            "aria-hidden",
-            "true"
-        );
+        state.dialogOpen = true;
 
+
+        try {
+            window.dispatchEvent(
+                new CustomEvent(
+                    "ocdAssistantPanelOpened",
+                    {
+                        detail: {
+                            source: "NPC",
+                            npc: npc.name,
+                            page: state.page.id
+                        }
+                    }
+                )
+            );
+        } catch (error) {}
     }
 
 
-    state.dialogOpen=false;
+    /* =========================================================
+       CLOSE DIALOG
+    ========================================================= */
 
-}
+    function closeDialog() {
+        var overlay =
+            document.getElementById(
+                "ocdNpcOverlay"
+            );
 
-
-/* =========================================================
-   QUEST EVENTS
-========================================================= */
-
-window.addEventListener(
-    "ocdQuestNpcChanged",
-    function(event){
-
-        const detail=
-            event.detail || {};
-
-
-        state.questNpc=
-            str(
-                detail.npc ||
-                detail.npcName
+        var dialog =
+            document.getElementById(
+                "ocdNpcDialog"
             );
 
 
-        state.quest=
-            detail.quest ||
-            null;
+        if (overlay) {
+            overlay.classList.remove(
+                "is-open"
+            );
+        }
 
 
-        render();
+        if (dialog) {
+            dialog.classList.remove(
+                "is-open"
+            );
+        }
 
+
+        state.dialogOpen = false;
     }
-);
 
 
-window.addEventListener(
-    "ocdQuestCleared",
-    function(){
+    /* =========================================================
+       LOAD REAL SHEET IN BACKGROUND
 
-        state.questNpc="";
+       KHÔNG ĐƯỢC PHÉP CHẶN NPC.
+    ========================================================= */
 
-        state.quest=null;
+    function loadRealNpcData() {
+        var attempts = 0;
 
 
-        render();
+        function tryCore() {
+            var RS =
+                window.StudentRewardSystem;
 
+            var url;
+
+
+            attempts++;
+
+
+            if (
+                RS &&
+                typeof RS.sheetCsvUrl === "function" &&
+                typeof RS.fetchRows === "function"
+            ) {
+                try {
+                    url =
+                        RS.sheetCsvUrl(
+                            CONFIG.npcGid
+                        );
+
+
+                    RS.fetchRows(
+                        url +
+                        (
+                            url.indexOf("?") !== -1
+                            ?
+                            "&"
+                            :
+                            "?"
+                        ) +
+                        "_npc=" +
+                        Date.now()
+                    )
+                    .then(function (rows) {
+                        state.npcData =
+                            mapNpcRows(rows);
+
+                        /*
+                           Sheet đã về.
+                           Render lại để thay fallback
+                           bằng ảnh thật.
+                        */
+                        renderNpc();
+                    })
+                    .catch(function () {
+                        /*
+                           Sheet lỗi:
+                           giữ nguyên fallback.
+                        */
+                    });
+
+                } catch (error) {}
+
+                return;
+            }
+
+
+            /*
+               Chờ Core tối đa khoảng 10 giây.
+            */
+
+            if (attempts < 100) {
+                setTimeout(
+                    tryCore,
+                    100
+                );
+            }
+        }
+
+
+        tryCore();
     }
-);
 
 
-/* =========================================================
-   PUBLIC API
+    /* =========================================================
+       MAP SHEET
+    ========================================================= */
 
-   Có thêm hàm test không cần Console.
-========================================================= */
-
-window.OCDNpcSystem={
-
-    version:
-        CONFIG.version,
-
-
-    refresh:function(){
-
-        state.rule=
-            detectPage();
-
-        render();
-
-    },
+    function mapNpcRows(rows) {
+        var headers;
+        var nameIndex;
+        var imageIndex;
+        var descriptionIndex;
+        var result = [];
+        var i;
+        var row;
+        var name;
 
 
-    getPage:function(){
-
-        return(
-            Object.assign(
-                {},
-                state.rule
-            )
-        );
-
-    },
+        if (
+            !rows ||
+            !rows.length ||
+            rows.length < 2
+        ) {
+            return result;
+        }
 
 
-    getNpc:function(){
-
-        return(
-            state.npc
-            ?
-            Object.assign(
-                {},
-                state.npc
-            )
-            :
-            null
-        );
-
-    },
+        headers =
+            rows[0].map(
+                normalize
+            );
 
 
-    setQuestNpc:function(
-        npc,
+        nameIndex =
+            findColumn(
+                headers,
+                [
+                    "tên nhân vật",
+                    "ten nhan vat",
+                    "tên npc",
+                    "ten npc"
+                ]
+            );
+
+
+        imageIndex =
+            findColumn(
+                headers,
+                [
+                    "hình ảnh",
+                    "hinh anh",
+                    "icon",
+                    "ảnh",
+                    "anh"
+                ]
+            );
+
+
+        descriptionIndex =
+            findColumn(
+                headers,
+                [
+                    "mô tả",
+                    "mo ta",
+                    "description"
+                ]
+            );
+
+
+        if (nameIndex < 0) {
+            nameIndex = 0;
+        }
+
+
+        if (imageIndex < 0) {
+            imageIndex = 1;
+        }
+
+
+        if (descriptionIndex < 0) {
+            descriptionIndex = 2;
+        }
+
+
+        for (
+            i = 1;
+            i < rows.length;
+            i++
+        ) {
+            row = rows[i];
+
+            name =
+                clean(
+                    row[nameIndex]
+                );
+
+
+            if (!name) {
+                continue;
+            }
+
+
+            result.push({
+                name: name,
+
+                key:
+                    normalize(name),
+
+                image:
+                    clean(
+                        row[imageIndex]
+                    ),
+
+                description:
+                    clean(
+                        row[
+                            descriptionIndex
+                        ]
+                    )
+            });
+        }
+
+
+        return result;
+    }
+
+
+    /* =========================================================
+       FIND COLUMN
+    ========================================================= */
+
+    function findColumn(
+        headers,
+        aliases
+    ) {
+        var i;
+        var j;
+        var alias;
+
+
+        for (
+            i = 0;
+            i < aliases.length;
+            i++
+        ) {
+            alias =
+                normalize(
+                    aliases[i]
+                );
+
+
+            for (
+                j = 0;
+                j < headers.length;
+                j++
+            ) {
+                if (
+                    headers[j] === alias
+                ) {
+                    return j;
+                }
+            }
+        }
+
+
+        for (
+            i = 0;
+            i < aliases.length;
+            i++
+        ) {
+            alias =
+                normalize(
+                    aliases[i]
+                );
+
+
+            for (
+                j = 0;
+                j < headers.length;
+                j++
+            ) {
+                if (
+                    headers[j].indexOf(
+                        alias
+                    ) !== -1
+                ) {
+                    return j;
+                }
+            }
+        }
+
+
+        return -1;
+    }
+
+
+    /* =========================================================
+       QUEST API
+    ========================================================= */
+
+    function setQuestNpc(
+        npcName,
         quest
-    ){
+    ) {
+        state.questNpc =
+            clean(npcName);
 
-        state.questNpc=
-            str(npc);
-
-
-        state.quest=
+        state.quest =
             quest || null;
 
-
-        render();
-
-    },
-
-
-    clearQuest:function(){
-
-        state.questNpc="";
-
-        state.quest=null;
-
-
-        render();
-
-    },
-
-
-    close:
-        closeDialog
-
-};
-
-
-/* =========================================================
-   INIT
-========================================================= */
-
-async function init(){
-
-    const target=
-        mount();
-
-
-    /*
-       Nếu không có gadget thì KHÔNG tạo NPC
-       ở bất kỳ nơi nào khác.
-    */
-
-    if(!target){
-
-        console.warn(
-            "[NPC] Gadget #ocdNpcMount không tồn tại."
-        );
-
-        return;
-
+        renderNpc();
     }
 
 
-    state.rule=
-        detectPage();
+    function clearQuest() {
+        state.questNpc = "";
+        state.quest = null;
 
-
-    /*
-       Trang chủ / trang chưa khai báo:
-       dừng hoàn toàn.
-    */
-
-    if(
-        !state.rule.npc
-    ){
-
-        hideNpc();
-
-        return;
-
+        renderNpc();
     }
 
 
-    target.innerHTML=`
-        <div class="ocd-npc-loading">
-            Đang gọi nhân vật...
-        </div>
-    `;
+    /* =========================================================
+       QUEST EVENTS
+    ========================================================= */
+
+    window.addEventListener(
+        "ocdQuestNpcChanged",
+        function (event) {
+            var detail =
+                event.detail || {};
 
 
-    try{
-
-        const rows=
-            await loadNpcSheet();
-
-
-        state.npcs=
-            mapNpcRows(
-                rows
+            setQuestNpc(
+                detail.npc ||
+                detail.npcName ||
+                "",
+                detail.quest ||
+                null
             );
-
-
-        render();
-
-
-    }catch(error){
-
-        console.error(
-            "[NPC]",
-            error
-        );
-
-
-        hideNpc();
-
-    }
-
-}
-
-
-/* =========================================================
-   DOM READY
-========================================================= */
-
-if(
-    document.readyState ===
-    "loading"
-){
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        init,
-        {
-            once:true
         }
     );
 
-}else{
 
-    init();
+    window.addEventListener(
+        "ocdQuestCleared",
+        function () {
+            clearQuest();
+        }
+    );
 
-}
+
+    /* =========================================================
+       PUBLIC API
+
+       ĐƯỢC TẠO TRƯỚC KHI INIT.
+       Vì vậy test gadget luôn nhìn thấy API.
+    ========================================================= */
+
+    window.OCDNpcSystem = {
+        version: CONFIG.version,
+
+        refresh: function () {
+            state.page =
+                detectPage();
+
+            renderNpc();
+        },
+
+        setQuestNpc:
+            setQuestNpc,
+
+        clearQuest:
+            clearQuest,
+
+        close:
+            closeDialog,
+
+        getPage: function () {
+            return state.page;
+        },
+
+        getNpc: function () {
+            return state.npc;
+        }
+    };
+
+
+    /* =========================================================
+       INIT
+
+       QUAN TRỌNG:
+       RENDER FALLBACK TRƯỚC.
+       SHEET SAU.
+    ========================================================= */
+
+    function init() {
+        var mount =
+            getMount();
+
+
+        if (!mount) {
+            return;
+        }
+
+
+        state.page =
+            detectPage();
+
+
+        /*
+           Hiện NPC ngay lập tức.
+        */
+
+        renderNpc();
+
+
+        /*
+           Sau đó mới tải dữ liệu thật.
+        */
+
+        if (
+            state.page &&
+            state.page.npc
+        ) {
+            loadRealNpcData();
+        }
+    }
+
+
+    /* =========================================================
+       START
+    ========================================================= */
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+        document.addEventListener(
+            "DOMContentLoaded",
+            init,
+            {
+                once: true
+            }
+        );
+    } else {
+        init();
+    }
 
 })();
