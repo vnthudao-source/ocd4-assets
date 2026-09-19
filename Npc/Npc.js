@@ -1,7 +1,7 @@
 /* =========================================================
    OCD NPC DISPLAY
-   JS v5.3.1
-   EXTERNAL BUILD
+   JS v5.3.2
+   EXTERNAL HARDENED BUILD
 
    BASE:
    v5.3.0 INLINE - VERIFIED WORKING
@@ -12,7 +12,20 @@
    - Mã phải đúng NPC của đúng trang.
    - Sheet chỉ enrich ảnh/mô tả.
    - NPC không tự tính tài sản.
+   - Tự tạo mount nếu Blogger làm mất mount.
 ========================================================= */
+
+
+/* =========================================================
+   EXTERNAL EXECUTION PROBE
+========================================================= */
+
+window.OCD_NPC_EXTERNAL_PROBE = {
+    loaded: true,
+    version: "5.3.2",
+    time: Date.now()
+};
+
 
 (function(){
 
@@ -23,11 +36,11 @@
    DUPLICATE GUARD
 ========================================================= */
 
-if(window.OCD_NPC_DISPLAY_V531){
+if(window.OCD_NPC_DISPLAY_V532){
     return;
 }
 
-window.OCD_NPC_DISPLAY_V531 = true;
+window.OCD_NPC_DISPLAY_V532 = true;
 
 
 /* =========================================================
@@ -37,10 +50,13 @@ window.OCD_NPC_DISPLAY_V531 = true;
 var CONFIG = {
 
     version:
-        "5.3.1",
+        "5.3.2",
 
     mountId:
         "ocdNpcMount",
+
+    anchorId:
+        "ocdNpcAnchor",
 
     npcGid:
         "1348051654",
@@ -60,193 +76,67 @@ var CONFIG = {
 
 var PAGE_MAP = {
 
-
-    /* =====================================================
-       GIẢNG ĐƯỜNG
-    ===================================================== */
-
     "/p/giang-duong.html":{
-
-        id:
-            "LECTURE",
-
-        place:
-            "Giảng đường OCD",
-
-        npc:
-            "Thư gia",
-
-        questCode:
-            "thu-gia"
-
+        id:"LECTURE",
+        place:"Giảng đường OCD",
+        npc:"Thư gia",
+        questCode:"thu-gia"
     },
-
-
-    /* =====================================================
-       PHÒNG TRIỂN LÃM
-    ===================================================== */
 
     "/p/trien-lam.html":{
-
-        id:
-            "EXHIBITION",
-
-        place:
-            "Phòng triển lãm OCD",
-
-        npc:
-            "Nữ hoạ gia",
-
-        questCode:
-            "nu-hoa-gia"
-
+        id:"EXHIBITION",
+        place:"Phòng triển lãm OCD",
+        npc:"Nữ hoạ gia",
+        questCode:"nu-hoa-gia"
     },
-
-
-    /* =====================================================
-       BẢNG XẾP HẠNG
-    ===================================================== */
 
     "/p/ho-so.html":{
-
-        id:
-            "RANKING",
-
-        place:
-            "Bảng xếp hạng học viên",
-
-        npc:
-            "Nghệ nhân",
-
-        questCode:
-            "nghe-nhan"
-
+        id:"RANKING",
+        place:"Bảng xếp hạng học viên",
+        npc:"Nghệ nhân",
+        questCode:"nghe-nhan"
     },
-
-
-    /* =====================================================
-       THƯ VIỆN LÂM MÔ
-    ===================================================== */
 
     "/p/thu-vien-lam-mo.html":{
-
-        id:
-            "LIBRARY",
-
-        place:
-            "Thư viện lâm mô",
-
-        npc:
-            "Nông dân",
-
-        questCode:
-            "nong-dan"
-
+        id:"LIBRARY",
+        place:"Thư viện lâm mô",
+        npc:"Nông dân",
+        questCode:"nong-dan"
     },
-
-
-    /* =====================================================
-       NỘP BÀI
-    ===================================================== */
 
     "/p/nop-bai.html":{
-
-        id:
-            "SUBMISSION",
-
-        place:
-            "Nộp bài",
-
-        npc:
-            "Nông dân",
-
-        questCode:
-            "nong-dan"
-
+        id:"SUBMISSION",
+        place:"Nộp bài",
+        npc:"Nông dân",
+        questCode:"nong-dan"
     },
-
-
-    /* =====================================================
-       NHIỆM VỤ
-    ===================================================== */
 
     "/p/quest.html":{
-
-        id:
-            "QUEST",
-
-        place:
-            "Nhiệm vụ",
-
-        npc:
-            "Võ tướng",
-
-        questCode:
-            "vo-tuong"
-
+        id:"QUEST",
+        place:"Nhiệm vụ",
+        npc:"Võ tướng",
+        questCode:"vo-tuong"
     },
-
-
-    /* =====================================================
-       TÀI LIỆU TRẢ PHÍ
-    ===================================================== */
 
     "/p/tai-lieu.html":{
-
-        id:
-            "PREMIUM_LIBRARY",
-
-        place:
-            "Kho tài liệu trả phí",
-
-        npc:
-            "Con nghiện",
-
-        questCode:
-            "con-nghien"
-
+        id:"PREMIUM_LIBRARY",
+        place:"Kho tài liệu trả phí",
+        npc:"Con nghiện",
+        questCode:"con-nghien"
     },
-
-
-    /* =====================================================
-       SÁCH THƯ PHÁP
-    ===================================================== */
 
     "/p/sach-thu-phap.html":{
-
-        id:
-            "BOOK_STORE",
-
-        place:
-            "Sách Thư pháp Việt",
-
-        npc:
-            "Con bạc",
-
-        questCode:
-            "con-bac"
-
+        id:"BOOK_STORE",
+        place:"Sách Thư pháp Việt",
+        npc:"Con bạc",
+        questCode:"con-bac"
     },
 
-
-    /* =====================================================
-       TRA CỨU / CHỢ PHIÊN
-    ===================================================== */
-
     "/p/tra-cuu.html":{
-
-        id:
-            "PROFILE_MARKET",
-
-        place:
-            "Tra cứu / Chợ phiên",
-
-        npc:
-            "Gian thương",
-
-        questCode:
-            "gian-thuong"
-
+        id:"PROFILE_MARKET",
+        place:"Tra cứu / Chợ phiên",
+        npc:"Gian thương",
+        questCode:"gian-thuong"
     }
 
 };
@@ -258,156 +148,94 @@ var PAGE_MAP = {
 
 var state = {
 
-    page:
-        null,
+    page:null,
 
-    npc:
-        null,
+    npc:null,
 
-    sheetNpc:
-        [],
+    sheetNpc:[],
 
-    quest:
-        null,
+    quest:null,
 
-    questCode:
-        "",
+    questCode:"",
 
-    simulationActive:
-        false,
+    simulationActive:false,
 
-    dialogOpen:
-        false,
+    dialogOpen:false,
 
-    coreLoaded:
-        false
+    coreLoaded:false,
+
+    initialized:false
 
 };
 
 
 /* =========================================================
-   FALLBACK NPC DATA
+   FALLBACK NPC
 ========================================================= */
 
 var DEFAULT_NPCS = {
 
-
     "thu gia":{
-
-        name:
-            "Thư gia",
-
-        symbol:
-            "書",
-
+        name:"Thư gia",
+        symbol:"書",
         dialogue:
             "Chào bạn. Ta là Thư gia. Ta đang chờ người nhận nhiệm vụ tìm đến."
-
     },
-
 
     "nu hoa gia":{
-
-        name:
-            "Nữ hoạ gia",
-
-        symbol:
-            "畫",
-
+        name:"Nữ hoạ gia",
+        symbol:"畫",
         dialogue:
             "Mỗi tác phẩm đều lưu lại một phần hành trình của người viết. Hãy quan sát thật kỹ trước khi tiếp tục nhiệm vụ."
-
     },
-
 
     "nghe nhan":{
-
-        name:
-            "Nghệ nhân",
-
-        symbol:
-            "藝",
-
+        name:"Nghệ nhân",
+        symbol:"藝",
         dialogue:
             "Ngươi đã nhận nhiệm vụ nên mới tìm đến đây. Hãy xem lại thành quả và tiếp tục rèn luyện."
-
     },
-
 
     "nong dan":{
-
-        name:
-            "Nông dân",
-
-        symbol:
-            "田",
-
+        name:"Nông dân",
+        symbol:"田",
         dialogue:
             "Đã nhận nhiệm vụ rồi sao? Vậy thì bắt tay vào việc. Muốn thu hoạch thì trước hết phải chịu khó gieo trồng."
-
     },
-
 
     "vo tuong":{
-
-        name:
-            "Võ tướng",
-
-        symbol:
-            "武",
-
+        name:"Võ tướng",
+        symbol:"武",
         dialogue:
             "Nhiệm vụ đã bày ra trước mắt. Hãy xem kỹ yêu cầu rồi mới lên đường."
-
     },
-
 
     "con nghien":{
-
-        name:
-            "Con nghiện",
-
-        symbol:
-            "藏",
-
+        name:"Con nghiện",
+        symbol:"藏",
         dialogue:
             "Có nhiệm vụ dẫn ngươi tới kho tài liệu này sao? Vậy thì tìm cho kỹ, thứ ngươi cần có thể đang ở ngay trước mắt."
-
     },
-
 
     "con bac":{
-
-        name:
-            "Con bạc",
-
-        symbol:
-            "財",
-
+        name:"Con bạc",
+        symbol:"財",
         dialogue:
             "Nhiệm vụ dẫn ngươi tới đây à? Được thôi. Nhưng trước khi quyết định điều gì cũng phải xem cho kỹ."
-
     },
 
-
     "gian thuong":{
-
-        name:
-            "Gian thương",
-
-        symbol:
-            "商",
-
+        name:"Gian thương",
+        symbol:"商",
         dialogue:
             "Hừm... Có nhiệm vụ mới chịu tìm đến ta sao? Nói đi, ngươi cần thứ gì?"
-
     }
 
 };
 
 
 /* =========================================================
-   HELPERS
+   BASIC HELPERS
 ========================================================= */
 
 function clean(value){
@@ -430,7 +258,6 @@ function normalize(value){
         clean(value)
         .toLowerCase();
 
-
     try{
 
         text =
@@ -443,7 +270,6 @@ function normalize(value){
 
     }catch(error){}
 
-
     return text
         .replace(/đ/g,"d")
         .replace(/\s+/g," ")
@@ -454,11 +280,7 @@ function normalize(value){
 
 function normalizeQuestCode(value){
 
-    var text =
-        normalize(value);
-
-
-    return text
+    return normalize(value)
         .replace(/[^a-z0-9]+/g,"-")
         .replace(/^-+|-+$/g,"");
 
@@ -468,7 +290,6 @@ function normalizeQuestCode(value){
 function escapeHtml(value){
 
     return clean(value)
-
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
@@ -478,10 +299,97 @@ function escapeHtml(value){
 }
 
 
+/* =========================================================
+   ENSURE MOUNT
+========================================================= */
+
+function ensureMount(){
+
+    var mount =
+        document.getElementById(
+            CONFIG.mountId
+        );
+
+    var anchor;
+
+    if(mount){
+        return mount;
+    }
+
+
+    mount =
+        document.createElement(
+            "div"
+        );
+
+    mount.id =
+        CONFIG.mountId;
+
+
+    anchor =
+        document.getElementById(
+            CONFIG.anchorId
+        );
+
+
+    /*
+     * Ưu tiên đặt NPC ngay sau anchor
+     * trong Footer Gadget.
+     */
+
+    if(
+        anchor &&
+        anchor.parentNode
+    ){
+
+        if(anchor.nextSibling){
+
+            anchor.parentNode.insertBefore(
+                mount,
+                anchor.nextSibling
+            );
+
+        }else{
+
+            anchor.parentNode.appendChild(
+                mount
+            );
+
+        }
+
+        return mount;
+
+    }
+
+
+    /*
+     * Fallback cuối:
+     * gắn vào body.
+     */
+
+    if(document.body){
+
+        document.body.appendChild(
+            mount
+        );
+
+        return mount;
+
+    }
+
+
+    return null;
+
+}
+
+
 function getMount(){
 
-    return document.getElementById(
-        CONFIG.mountId
+    return (
+        document.getElementById(
+            CONFIG.mountId
+        ) ||
+        ensureMount()
     );
 
 }
@@ -523,14 +431,13 @@ function getPath(){
 
 
 /* =========================================================
-   QUEST CODE FROM URL
+   QUEST CODE
 ========================================================= */
 
 function getQuestCodeFromUrl(){
 
     var params;
     var value;
-
 
     try{
 
@@ -539,17 +446,14 @@ function getQuestCodeFromUrl(){
                 window.location.search
             );
 
-
         value =
             params.get(
                 CONFIG.questParam
             );
 
-
         return normalizeQuestCode(
             value
         );
-
 
     }catch(error){
 
@@ -569,7 +473,6 @@ function detectPage(){
     var path =
         getPath();
 
-
     if(
         Object.prototype.hasOwnProperty.call(
             PAGE_MAP,
@@ -580,7 +483,6 @@ function detectPage(){
         return PAGE_MAP[path];
 
     }
-
 
     return null;
 
@@ -601,17 +503,10 @@ function checkSimulation(){
         questCode;
 
 
-    if(!state.page){
-
-        state.simulationActive =
-            false;
-
-        return false;
-
-    }
-
-
-    if(!questCode){
+    if(
+        !state.page ||
+        !questCode
+    ){
 
         state.simulationActive =
             false;
@@ -644,7 +539,6 @@ function getFallbackNpc(name){
     var key =
         normalize(name);
 
-
     var source =
         DEFAULT_NPCS[key];
 
@@ -652,45 +546,27 @@ function getFallbackNpc(name){
     if(source){
 
         return {
-
-            name:
-                source.name,
-
-            symbol:
-                source.symbol,
-
-            image:
-                "",
-
-            dialogue:
-                source.dialogue
-
+            name:source.name,
+            symbol:source.symbol,
+            image:"",
+            dialogue:source.dialogue
         };
 
     }
 
 
     return {
-
-        name:
-            name || "NPC",
-
-        symbol:
-            "客",
-
-        image:
-            "",
-
-        dialogue:
-            "Có chuyện gì cần ta giúp?"
-
+        name:name || "NPC",
+        symbol:"客",
+        image:"",
+        dialogue:"Có chuyện gì cần ta giúp?"
     };
 
 }
 
 
 /* =========================================================
-   FIND NPC FROM SHEET
+   SHEET NPC LOOKUP
 ========================================================= */
 
 function findSheetNpc(name){
@@ -733,15 +609,12 @@ function getNpc(name){
     var fallback =
         getFallbackNpc(name);
 
-
     var sheet =
         findSheetNpc(name);
 
 
     if(!sheet){
-
         return fallback;
-
     }
 
 
@@ -777,7 +650,6 @@ function convertImageUrl(url){
         clean(url);
 
     var RS;
-
     var match;
 
 
@@ -916,7 +788,6 @@ function render(){
 
     var scene;
     var character;
-
     var bubble;
 
     var imageWrap;
@@ -924,7 +795,6 @@ function render(){
     var fallback;
 
     var mark;
-
     var name;
     var hint;
 
@@ -933,13 +803,6 @@ function render(){
         return;
     }
 
-
-    /*
-     * NPC chỉ được render nếu:
-     *
-     * 1. Đây là trang có mapping.
-     * 2. Quest Gate hợp lệ.
-     */
 
     if(
         !state.page ||
@@ -980,7 +843,6 @@ function render(){
             "div"
         );
 
-
     scene.className =
         "ocd-npc-scene";
 
@@ -994,22 +856,18 @@ function render(){
             "div"
         );
 
-
     character.className =
         "ocd-npc-character";
-
 
     character.setAttribute(
         "role",
         "button"
     );
 
-
     character.setAttribute(
         "tabindex",
         "0"
     );
-
 
     character.setAttribute(
         "aria-label",
@@ -1027,14 +885,11 @@ function render(){
             "div"
         );
 
-
     bubble.className =
         "ocd-npc-bubble";
 
-
     bubble.textContent =
         "Ta đang chờ ngươi.";
-
 
     character.appendChild(
         bubble
@@ -1049,7 +904,6 @@ function render(){
         document.createElement(
             "div"
         );
-
 
     imageWrap.className =
         "ocd-npc-image-wrap";
@@ -1066,20 +920,16 @@ function render(){
                 "img"
             );
 
-
         image.className =
             "ocd-npc-image";
-
 
         image.src =
             convertImageUrl(
                 npc.image
             );
 
-
         image.alt =
             npc.name;
-
 
         image.loading =
             "lazy";
@@ -1111,7 +961,6 @@ function render(){
                             npc
                         );
 
-
                     imageWrap.insertBefore(
                         fallback,
                         imageWrap.firstChild
@@ -1133,7 +982,6 @@ function render(){
                 npc
             );
 
-
         imageWrap.appendChild(
             fallback
         );
@@ -1150,14 +998,11 @@ function render(){
             "span"
         );
 
-
     mark.className =
         "ocd-npc-mark is-quest";
 
-
     mark.textContent =
         "!";
-
 
     imageWrap.appendChild(
         mark
@@ -1178,14 +1023,11 @@ function render(){
             "div"
         );
 
-
     name.className =
         "ocd-npc-name";
 
-
     name.textContent =
         npc.name;
-
 
     character.appendChild(
         name
@@ -1201,14 +1043,11 @@ function render(){
             "div"
         );
 
-
     hint.className =
         "ocd-npc-hint";
 
-
     hint.textContent =
         "Chạm vào nhân vật để tiếp tục nhiệm vụ";
-
 
     character.appendChild(
         hint
@@ -1257,7 +1096,7 @@ function render(){
 
 
 /* =========================================================
-   CREATE DIALOG
+   DIALOG
 ========================================================= */
 
 function ensureDialog(){
@@ -1285,48 +1124,23 @@ function ensureDialog(){
 
     root.innerHTML =
 
-        '<div ' +
-            'class="ocd-npc-overlay" ' +
-            'id="ocdNpcOverlay">' +
-        '</div>' +
+        '<div class="ocd-npc-overlay" id="ocdNpcOverlay"></div>' +
 
-        '<div ' +
-            'class="ocd-npc-dialog" ' +
-            'id="ocdNpcDialog" ' +
-            'role="dialog" ' +
-            'aria-modal="true">' +
+        '<div class="ocd-npc-dialog" id="ocdNpcDialog" role="dialog" aria-modal="true">' +
 
             '<div class="ocd-npc-dialog-header">' +
 
-                '<div ' +
-                    'class="ocd-npc-dialog-avatar" ' +
-                    'id="ocdNpcDialogAvatar">' +
-                '</div>' +
+                '<div class="ocd-npc-dialog-avatar" id="ocdNpcDialogAvatar"></div>' +
 
-                '<h3 ' +
-                    'class="ocd-npc-dialog-name" ' +
-                    'id="ocdNpcDialogName">' +
-                '</h3>' +
+                '<h3 class="ocd-npc-dialog-name" id="ocdNpcDialogName"></h3>' +
 
-                '<div ' +
-                    'class="ocd-npc-dialog-place" ' +
-                    'id="ocdNpcDialogPlace">' +
-                '</div>' +
+                '<div class="ocd-npc-dialog-place" id="ocdNpcDialogPlace"></div>' +
 
-                '<button ' +
-                    'type="button" ' +
-                    'class="ocd-npc-close" ' +
-                    'id="ocdNpcClose" ' +
-                    'aria-label="Đóng">' +
-                    '×' +
-                '</button>' +
+                '<button type="button" class="ocd-npc-close" id="ocdNpcClose" aria-label="Đóng">×</button>' +
 
             '</div>' +
 
-            '<div ' +
-                'class="ocd-npc-dialog-body" ' +
-                'id="ocdNpcDialogBody">' +
-            '</div>' +
+            '<div class="ocd-npc-dialog-body" id="ocdNpcDialogBody"></div>' +
 
         '</div>';
 
@@ -1374,14 +1188,8 @@ function openDialog(){
     var image;
 
     var dialogue;
-
     var body;
 
-
-    /*
-     * API open() cũng không được phép
-     * bỏ qua Quest Gate.
-     */
 
     if(
         !npc ||
@@ -1404,10 +1212,6 @@ function openDialog(){
         "";
 
 
-    /* =====================================================
-       AVATAR
-    ===================================================== */
-
     if(npc.image){
 
         image =
@@ -1415,12 +1219,10 @@ function openDialog(){
                 "img"
             );
 
-
         image.src =
             convertImageUrl(
                 npc.image
             );
-
 
         image.alt =
             npc.name;
@@ -1452,10 +1254,6 @@ function openDialog(){
     }
 
 
-    /* =====================================================
-       NAME
-    ===================================================== */
-
     document
         .getElementById(
             "ocdNpcDialogName"
@@ -1464,10 +1262,6 @@ function openDialog(){
             npc.name;
 
 
-    /* =====================================================
-       PLACE
-    ===================================================== */
-
     document
         .getElementById(
             "ocdNpcDialogPlace"
@@ -1475,10 +1269,6 @@ function openDialog(){
         .textContent =
             state.page.place;
 
-
-    /* =====================================================
-       DIALOGUE
-    ===================================================== */
 
     dialogue =
         npc.dialogue;
@@ -1518,10 +1308,6 @@ function openDialog(){
         '</div>';
 
 
-    /* =====================================================
-       OPEN
-    ===================================================== */
-
     document
         .getElementById(
             "ocdNpcOverlay"
@@ -1544,10 +1330,6 @@ function openDialog(){
         true;
 
 
-    /* =====================================================
-       COORDINATION EVENT
-    ===================================================== */
-
     try{
 
         window.dispatchEvent(
@@ -1555,23 +1337,12 @@ function openDialog(){
             new CustomEvent(
                 "ocdAssistantPanelOpened",
                 {
-
                     detail:{
-
-                        source:
-                            "NPC",
-
-                        npc:
-                            npc.name,
-
-                        page:
-                            state.page.id,
-
-                        questCode:
-                            state.questCode
-
+                        source:"NPC",
+                        npc:npc.name,
+                        page:state.page.id,
+                        questCode:state.questCode
                     }
-
                 }
             )
 
@@ -1592,7 +1363,6 @@ function closeDialog(){
         document.getElementById(
             "ocdNpcOverlay"
         );
-
 
     var dialog =
         document.getElementById(
@@ -1625,7 +1395,7 @@ function closeDialog(){
 
 
 /* =========================================================
-   FIND COLUMN
+   SHEET HELPERS
 ========================================================= */
 
 function findColumn(
@@ -1635,7 +1405,6 @@ function findColumn(
 
     var i;
     var j;
-
     var target;
 
 
@@ -1676,7 +1445,7 @@ function findColumn(
 
 
 /* =========================================================
-   MAP NPC SHEET
+   MAP NPC ROWS
 ========================================================= */
 
 function mapNpcRows(rows){
@@ -1748,10 +1517,7 @@ function mapNpcRows(rows){
 
 
     if(nameIndex < 0){
-
-        nameIndex =
-            0;
-
+        nameIndex = 0;
     }
 
 
@@ -1795,9 +1561,7 @@ function mapNpcRows(rows){
                 imageIndex >= 0
                 ?
                 clean(
-                    row[
-                        imageIndex
-                    ]
+                    row[imageIndex]
                 )
                 :
                 "",
@@ -1806,9 +1570,7 @@ function mapNpcRows(rows){
                 descriptionIndex >= 0
                 ?
                 clean(
-                    row[
-                        descriptionIndex
-                    ]
+                    row[descriptionIndex]
                 )
                 :
                 ""
@@ -1824,9 +1586,7 @@ function mapNpcRows(rows){
 
 
 /* =========================================================
-   LOAD SHEET NPC
-
-   NPC KHÔNG PHỤ THUỘC SHEET ĐỂ HIỂN THỊ.
+   LOAD NPC SHEET
 ========================================================= */
 
 function loadSheetNpc(){
@@ -1883,12 +1643,6 @@ function loadSheetNpc(){
                             state.sheetNpc =
                                 mapped;
 
-
-                            /*
-                             * Render lại để thay fallback
-                             * bằng ảnh + mô tả thật.
-                             */
-
                             render();
 
                         }
@@ -1896,14 +1650,7 @@ function loadSheetNpc(){
                     }
                 )
                 .catch(
-                    function(){
-
-                        /*
-                         * Sheet lỗi:
-                         * giữ fallback.
-                         */
-
-                    }
+                    function(){}
                 );
 
 
@@ -1917,13 +1664,10 @@ function loadSheetNpc(){
 
         if(
             Date.now() -
-            started
-            >=
+            started >=
             CONFIG.coreWait
         ){
-
             return;
-
         }
 
 
@@ -1941,7 +1685,7 @@ function loadSheetNpc(){
 
 
 /* =========================================================
-   QUEST HOOK
+   QUEST API
 ========================================================= */
 
 function setQuest(quest){
@@ -1949,7 +1693,6 @@ function setQuest(quest){
     state.quest =
         quest ||
         null;
-
 
     render();
 
@@ -1960,7 +1703,6 @@ function clearQuest(){
 
     state.quest =
         null;
-
 
     render();
 
@@ -1989,8 +1731,7 @@ window.addEventListener(
             normalize(
                 detail.npc ||
                 detail.npcName
-            )
-            ===
+            ) ===
             normalize(
                 state.page.npc
             )
@@ -2018,7 +1759,7 @@ window.addEventListener(
 
 
 /* =========================================================
-   ESC CLOSE
+   ESC
 ========================================================= */
 
 document.addEventListener(
@@ -2039,6 +1780,67 @@ document.addEventListener(
 
 
 /* =========================================================
+   REFRESH
+========================================================= */
+
+function refresh(){
+
+    ensureMount();
+
+
+    state.page =
+        detectPage();
+
+
+    checkSimulation();
+
+
+    render();
+
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+function init(){
+
+    ensureMount();
+
+
+    state.page =
+        detectPage();
+
+
+    checkSimulation();
+
+
+    state.initialized =
+        true;
+
+
+    if(
+        !state.page ||
+        !state.simulationActive
+    ){
+
+        hideNpc();
+
+        return;
+
+    }
+
+
+    render();
+
+
+    loadSheetNpc();
+
+}
+
+
+/* =========================================================
    PUBLIC API
 ========================================================= */
 
@@ -2049,18 +1851,7 @@ window.OCDNpcSystem = {
 
 
     refresh:
-        function(){
-
-            state.page =
-                detectPage();
-
-
-            checkSimulation();
-
-
-            render();
-
-        },
+        refresh,
 
 
     open:
@@ -2081,17 +1872,13 @@ window.OCDNpcSystem = {
 
     getPage:
         function(){
-
             return state.page;
-
         },
 
 
     getNpc:
         function(){
-
             return state.npc;
-
         },
 
 
@@ -2102,6 +1889,9 @@ window.OCDNpcSystem = {
 
                 version:
                     CONFIG.version,
+
+                initialized:
+                    state.initialized,
 
                 path:
                     getPath(),
@@ -2125,7 +1915,17 @@ window.OCDNpcSystem = {
                     state.coreLoaded,
 
                 sheetNpcCount:
-                    state.sheetNpc.length
+                    state.sheetNpc.length,
+
+                mountExists:
+                    !!document.getElementById(
+                        CONFIG.mountId
+                    ),
+
+                anchorExists:
+                    !!document.getElementById(
+                        CONFIG.anchorId
+                    )
 
             };
 
@@ -2135,90 +1935,8 @@ window.OCDNpcSystem = {
 
 
 /* =========================================================
-   INIT
+   BOOTSTRAP API
 ========================================================= */
-
-function init(){
-
-    var root =
-        getMount();
-
-
-    /*
-     * Gadget chưa có mount:
-     * không chạy.
-     */
-
-    if(!root){
-        return;
-    }
-
-
-    /*
-     * 1. Exact page mapping.
-     */
-
-    state.page =
-        detectPage();
-
-
-    /*
-     * 2. Quest Gate.
-     */
-
-    checkSimulation();
-
-
-    /*
-     * 3. Không có quest hợp lệ:
-     *    ẩn hoàn toàn.
-     */
-
-    if(!state.simulationActive){
-
-        hideNpc();
-
-        return;
-
-    }
-
-
-    /*
-     * 4. Quest hợp lệ:
-     *    render ngay.
-     */
-
-    render();
-
-
-    /*
-     * 5. Sau đó mới enrich dữ liệu Sheet.
-     */
-
-    loadSheetNpc();
-
-}
-
-
-/* =========================================================
-   START
-========================================================= */
-
-function start(){
-
-    /*
-     * Cho phép gadget gọi start an toàn
-     * sau khi external JS tải xong.
-     */
-
-    init();
-
-}
-
-
-/*
- * Export bootstrap riêng.
- */
 
 window.OCDNpcBootstrap = {
 
@@ -2226,18 +1944,14 @@ window.OCDNpcBootstrap = {
         CONFIG.version,
 
     start:
-        start
+        init
 
 };
 
 
-/*
- * External JS có thể được tải:
- * - trước DOMContentLoaded
- * - sau DOMContentLoaded
- *
- * Xử lý cả hai trường hợp.
- */
+/* =========================================================
+   START
+========================================================= */
 
 if(
     document.readyState ===
@@ -2246,7 +1960,7 @@ if(
 
     document.addEventListener(
         "DOMContentLoaded",
-        start,
+        init,
         {
             once:true
         }
@@ -2254,7 +1968,7 @@ if(
 
 }else{
 
-    start();
+    init();
 
 }
 
