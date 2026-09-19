@@ -8,12 +8,12 @@
 ========================================================= */
  
 if(
-    window.__OCD_MINH_HONG_FOOTER_V1570__
+    window.__OCD_MINH_HONG_FOOTER_V1571__
 ){
     return;
 }
  
-window.__OCD_MINH_HONG_FOOTER_V1570__=
+window.__OCD_MINH_HONG_FOOTER_V1571__=
     true;
  
  
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1570__=
 const CONFIG={
  
     version:
-        "1.5.7.0",
+        "1.5.7.1",
  
     enabled:
         true,
@@ -44,6 +44,18 @@ const CONFIG={
  
     csvUrl:
         "https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?output=csv",
+ 
+    /* =====================================================
+       STUDENT VERIFICATION SOURCE 2 - HocVien
+       Chỉ dùng để xác minh mã học viên.
+       Không thay thế COMMUNITY CSV và không đổi logic module khác.
+    ===================================================== */
+ 
+    studentSpreadsheetId:
+        "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
+ 
+    studentSheetName:
+        "HocVien",
  
     teacherName:
         "Thầy Thanh Phong",
@@ -4271,17 +4283,25 @@ const CommunityEngine=
     }
  
  
-    /* =====================================================
-       STUDENT CODE VERIFICATION - FIX1
  
-       Minh Hồng tự xác minh mã trực tiếp từ nguồn CSV.
-       Không phụ thuộc localStorage cũ, trang Tra cứu hay Reward Core.
-       Vì vậy hoạt động cả trong tab ẩn danh / thiết bị mới.
+ 
+    /* =====================================================
+       STUDENT CODE VERIFICATION - FIX2 / DUAL SOURCE
+
+       GIỮ NGUYÊN nguồn xác minh cũ:
+       - CONFIG.csvUrl (COMMUNITY CSV / tab đầu tiên)
+
+       BỔ SUNG nguồn xác minh thứ hai:
+       - NopBaiLuyenTap > HocVien
+
+       Mã xuất hiện ở MỘT TRONG HAI nguồn => xác minh thành công.
+       Hai nguồn được kiểm tra độc lập; một nguồn lỗi vẫn cho phép
+       nguồn còn lại xác minh học viên.
     ===================================================== */
     async function verifyStudentCode(code){
- 
+
         const wanted=normalizeCode(code);
- 
+
         if(!wanted){
             return {
                 ok:false,
@@ -4290,55 +4310,161 @@ const CommunityEngine=
                 reason:"empty"
             };
         }
- 
-        const separator=
-            CONFIG.csvUrl.indexOf("?")>=0
-            ? "&"
-            : "?";
- 
-        const response=await fetch(
-            CONFIG.csvUrl+separator+"mh_verify="+Date.now(),
-            {
-                cache:"no-store",
-                credentials:"omit"
+
+
+        function findStudentInRows(rows,sourceName){
+
+            if(!rows || rows.length<2){
+                return null;
             }
-        );
- 
-        if(!response.ok){
-            throw new Error("Không thể tải dữ liệu học viên.");
+
+            const columns=getColumns(rows);
+
+            if(columns.codeIndex<0){
+                return null;
+            }
+
+            for(let i=1;i<rows.length;i++){
+
+                const row=rows[i] || [];
+                const rowCode=normalizeCode(row[columns.codeIndex]);
+
+                if(rowCode===wanted){
+
+                    return {
+                        ok:true,
+                        code:wanted,
+                        name:columns.nameIndex>=0
+                            ? clean(row[columns.nameIndex])
+                            : "",
+                        reason:"found",
+                        source:sourceName
+                    };
+                }
+            }
+
+            return null;
         }
- 
-        const csv=await response.text();
-        const rows=parseCSV(csv);
- 
-        if(!rows || rows.length<2){
-            throw new Error("Nguồn dữ liệu học viên đang trống.");
+
+
+        async function loadOriginalVerificationSource(){
+
+            const separator=
+                CONFIG.csvUrl.indexOf("?")>=0
+                ? "&"
+                : "?";
+
+            const response=await fetch(
+                CONFIG.csvUrl+separator+"mh_verify="+Date.now(),
+                {
+                    cache:"no-store",
+                    credentials:"omit"
+                }
+            );
+
+            if(!response.ok){
+                throw new Error("Không thể tải nguồn xác minh học viên hiện tại.");
+            }
+
+            const csv=await response.text();
+
+            return parseCSV(csv);
         }
- 
-        const columns=getColumns(rows);
- 
-        if(columns.codeIndex<0){
-            throw new Error("Không tìm thấy cột Mã học viên trong nguồn dữ liệu.");
+
+
+        async function loadHocVienVerificationSource(){
+
+            const url=
+                "https://docs.google.com/spreadsheets/d/"
+                +CONFIG.studentSpreadsheetId
+                +"/gviz/tq?tqx=out:csv&sheet="
+                +encodeURIComponent(CONFIG.studentSheetName)
+                +"&mh_verify="
+                +Date.now();
+
+            const response=await fetch(
+                url,
+                {
+                    cache:"no-store",
+                    credentials:"omit"
+                }
+            );
+
+            if(!response.ok){
+                throw new Error("Không thể tải tab HocVien.");
+            }
+
+            const csv=await response.text();
+
+            return parseCSV(csv);
         }
- 
-        for(let i=1;i<rows.length;i++){
- 
-            const row=rows[i] || [];
-            const rowCode=normalizeCode(row[columns.codeIndex]);
- 
-            if(rowCode===wanted){
- 
-                return {
-                    ok:true,
-                    code:wanted,
-                    name:columns.nameIndex>=0
-                        ? clean(row[columns.nameIndex])
-                        : "",
-                    reason:"found"
-                };
+
+
+        const results=await Promise.allSettled([
+            loadOriginalVerificationSource(),
+            loadHocVienVerificationSource()
+        ]);
+
+
+        if(results[0].status==="fulfilled"){
+
+            const foundOriginal=
+                findStudentInRows(
+                    results[0].value,
+                    "community"
+                );
+
+            if(foundOriginal){
+                return foundOriginal;
             }
         }
- 
+
+
+        if(results[1].status==="fulfilled"){
+
+            const foundHocVien=
+                findStudentInRows(
+                    results[1].value,
+                    "HocVien"
+                );
+
+            if(foundHocVien){
+                return foundHocVien;
+            }
+        }
+
+
+        if(
+            results[0].status==="rejected"
+            &&
+            results[1].status==="rejected"
+        ){
+
+            console.warn(
+                "[Minh Hồng] Cả hai nguồn xác minh học viên đều lỗi.",
+                results[0].reason,
+                results[1].reason
+            );
+
+            throw new Error("Không thể tải dữ liệu xác minh học viên.");
+        }
+
+
+        if(results[0].status==="rejected"){
+            console.warn(
+                "[Minh Hồng] Nguồn xác minh hiện tại tạm lỗi:",
+                results[0].reason
+            );
+        }
+
+        if(results[1].status==="rejected"){
+            console.warn(
+                "[Minh Hồng] Tab HocVien tạm lỗi:",
+                results[1].reason
+            );
+        }
+
+
         return {
             ok:false,
             code:wanted,
@@ -4346,8 +4472,8 @@ const CommunityEngine=
             reason:"not-found"
         };
     }
- 
- 
+
+
     return{
  
         load,
