@@ -3,24 +3,19 @@
 "use strict";
 
 /* =========================================================
-   OCD NPC QUEST SYSTEM
-   npc-quest.js
-   v1.0.0
+   OCD NPC SYSTEM
+   Npc/Npc.js
+   v3.0.0
 
-   MỤC TIÊU:
-   - Gadget NPC dùng chung toàn website
-   - Sẵn sàng đồng bộ Minh Hồng
-   - Quest/NPC ưu tiên dữ liệu Google Sheet
-   - Không hard-code nghiệp vụ vào từng trang
-   - Không tự cộng Linh Thạch
-   - Reward Core vẫn là nguồn tài sản chuẩn
-   - Có API công khai cho các module khác
-
-   PHIÊN BẢN 1.0:
-   - SAFE MODE
-   - Có dữ liệu demo để dựng giao diện
-   - Chưa ghi giao dịch thật
-   - Chưa nối Sheet thật
+   KIẾN TRÚC
+   ---------------------------------------------------------
+   - Gadget ở đâu -> NPC xuất hiện ở đó.
+   - KHÔNG cần chèn NPC vào từng trang.
+   - KHÔNG fixed.
+   - Trang hiện tại quyết định NPC.
+   - Ảnh NPC lấy từ Sheet thương nhân Chợ phiên.
+   - Trang chủ không có NPC.
+   - Profile/Market: Gian thương chỉ xuất hiện khi Quest gọi.
 ========================================================= */
 
 
@@ -28,7 +23,7 @@
    DUPLICATE GUARD
 ========================================================= */
 
-if(window.OCDNpcQuestSystem){
+if(window.OCDNpcSystem){
     return;
 }
 
@@ -39,62 +34,243 @@ if(window.OCDNpcQuestSystem){
 
 const CONFIG={
 
-    version:"1.0.0",
-
-    timezone:
-        "Asia/Ho_Chi_Minh",
-
-    rootId:
-        "ocdNpcQuestRoot",
+    version:"3.0.0",
 
     /*
-       true:
-       dùng dữ liệu mẫu phía dưới.
-
-       Khi Google Sheet hoàn chỉnh:
-       đổi thành false.
+       Sheet thương nhân thật
+       đang dùng trong Chợ phiên.
     */
-    demoMode:true,
+    npcGid:"1348051654",
 
-    /*
-       SAFE MODE:
-       không phát thưởng thật.
-    */
-    rewardWriteEnabled:false,
+    fetchTimeout:12000,
 
-    /*
-       Sau này điền endpoint / CSV / GViz
-       của Google Sheet.
-    */
-    sheets:{
+    mountId:"ocdNpcMount",
 
-        npc:"",
-        quest:"",
-        progress:"",
-        questCode:""
-
-    },
-
-    /*
-       Dùng cho nhận diện trang hiện tại.
-    */
-    pageAliases:{
-
-        "/":
-            "HOME",
-
-        "/p/giang-duong.html":
-            "GIANG_DUONG",
-
-        "/p/thu-vien.html":
-            "THU_VIEN",
-
-        "/p/tra-cuu.html":
-            "CHO_PHIEN"
-
-    }
+    dialogRootId:"ocdNpcDialogRoot"
 
 };
+
+
+/* =========================================================
+   PAGE RULES
+
+   ĐÂY LÀ BẢNG PHÂN NPC CHO TỪNG TRANG.
+========================================================= */
+
+const PAGE_RULES=[
+
+    /* =====================================================
+       TRANG CHỦ
+       Không NPC.
+    ===================================================== */
+
+    {
+        id:"HOME",
+
+        test:function(path){
+
+            return(
+                path === "/" ||
+                path === ""
+            );
+
+        },
+
+        npc:null,
+
+        place:"Trang chủ",
+
+        mode:"NONE"
+    },
+
+
+    /* =====================================================
+       PHÒNG TRIỂN LÃM
+    ===================================================== */
+
+    {
+        id:"EXHIBITION",
+
+        test:function(path){
+
+            return(
+                path === "/p/trien-lam.html" ||
+                path.includes(
+                    "/p/trien-lam"
+                )
+            );
+
+        },
+
+        npc:"Thư gia",
+
+        place:"Phòng triển lãm",
+
+        mode:"ALWAYS"
+    },
+
+
+    /* =====================================================
+       TRANG XEM NHIỆM VỤ
+    ===================================================== */
+
+    {
+        id:"QUEST",
+
+        test:function(path){
+
+            return(
+                path === "/p/quest.html" ||
+                path.includes(
+                    "/p/quest"
+                )
+            );
+
+        },
+
+        npc:"Võ tướng",
+
+        place:"Nhiệm vụ",
+
+        mode:"ALWAYS"
+    },
+
+
+    /* =====================================================
+       GIẢNG ĐƯỜNG
+
+       Hỗ trợ nhiều URL có thể đang dùng.
+    ===================================================== */
+
+    {
+        id:"LECTURE_HALL",
+
+        test:function(path){
+
+            return(
+                path.includes(
+                    "giang-duong"
+                )
+                ||
+                path.includes(
+                    "lecture"
+                )
+            );
+
+        },
+
+        npc:"Thư gia",
+
+        place:"Giảng đường",
+
+        mode:"ALWAYS"
+    },
+
+
+    /* =====================================================
+       BẢNG XẾP HẠNG
+    ===================================================== */
+
+    {
+        id:"RANKING",
+
+        test:function(path){
+
+            return(
+                path.includes(
+                    "bang-xep-hang"
+                )
+                ||
+                path.includes(
+                    "xep-hang"
+                )
+                ||
+                path.includes(
+                    "xephang"
+                )
+            );
+
+        },
+
+        npc:"Nghệ nhân",
+
+        place:"Bảng xếp hạng",
+
+        mode:"ALWAYS"
+    },
+
+
+    /* =====================================================
+       THƯ VIỆN LÂM MÔ
+    ===================================================== */
+
+    {
+        id:"LIBRARY",
+
+        test:function(path){
+
+            return(
+                path.includes(
+                    "thu-vien"
+                )
+                ||
+                path.includes(
+                    "thu-vien-lam-mo"
+                )
+                ||
+                path.includes(
+                    "library"
+                )
+            );
+
+        },
+
+        npc:"Nông dân",
+
+        place:"Thư viện lâm mô",
+
+        mode:"ALWAYS"
+    },
+
+
+    /* =====================================================
+       TRA CỨU / HỒ SƠ / CHỢ PHIÊN
+
+       Gian thương KHÔNG tự xuất hiện.
+
+       Chỉ xuất hiện khi Quest Engine báo:
+       NPC cần gặp = Gian thương.
+    ===================================================== */
+
+    {
+        id:"PROFILE_MARKET",
+
+        test:function(path){
+
+            return(
+                path.includes(
+                    "tra-cuu"
+                )
+                ||
+                path.includes(
+                    "ho-so"
+                )
+                ||
+                path.includes(
+                    "cho-phien"
+                )
+            );
+
+        },
+
+        npc:"Gian thương",
+
+        place:"Tra cứu hồ sơ / Chợ phiên",
+
+        mode:"QUEST_ONLY"
+    }
+
+];
 
 
 /* =========================================================
@@ -103,161 +279,23 @@ const CONFIG={
 
 const state={
 
-    ready:false,
-
-    open:false,
+    initialized:false,
 
     loading:false,
 
-    studentCode:"",
-
-    student:null,
-
-    currentPage:"",
+    npcRowsLoaded:false,
 
     npcs:[],
 
-    quests:[],
+    pageRule:null,
 
-    progress:[],
+    currentNpc:null,
 
-    questCodes:[],
+    dialogOpen:false,
 
-    activeNpc:null,
+    questNpc:"",
 
-    activeQuest:null,
-
-    message:null
-
-};
-
-
-/* =========================================================
-   DEMO DATA
-
-   CHỈ ĐỂ DỰNG GIAO DIỆN.
-
-   Sau này toàn bộ khối này có thể bỏ
-   mà không phải sửa Quest Engine/UI.
-========================================================= */
-
-const DEMO={
-
-    npcs:[
-
-        {
-            npcId:"NPC_GIANGDUONG",
-
-            name:"Thư Sinh",
-
-            role:"Người giữ Giảng đường",
-
-            image:"",
-
-            description:
-                "Một thư sinh thường xuất hiện tại Giảng đường.",
-
-            page:"GIANG_DUONG",
-
-            enabled:true
-        },
-
-        {
-            npcId:"NPC_THUVIEN",
-
-            name:"Thủ Thư",
-
-            role:"Người giữ Thư viện",
-
-            image:"",
-
-            description:
-                "Người trông coi những tài liệu trong Thư viện.",
-
-            page:"THU_VIEN",
-
-            enabled:true
-        },
-
-        {
-            npcId:"NPC_CHO",
-
-            name:"Nghệ Nhân",
-
-            role:"Khách của Chợ phiên",
-
-            image:"",
-
-            description:
-                "Một nghệ nhân thường xuất hiện giữa Chợ phiên.",
-
-            page:"CHO_PHIEN",
-
-            enabled:true
-        }
-
-    ],
-
-
-    quests:[
-
-        {
-            questId:"Q001",
-
-            title:
-                "Lời nhắn nơi Giảng đường",
-
-            description:
-                "Minh Hồng muốn bạn đến Giảng đường và tìm gặp Thư Sinh.",
-
-            objective:
-                "Đến Giảng đường, gặp Thư Sinh và nhận mật lệnh.",
-
-            targetPage:
-                "GIANG_DUONG",
-
-            npcId:
-                "NPC_GIANGDUONG",
-
-            rewardType:
-                "hoangNgoc",
-
-            rewardAmount:
-                2,
-
-            rewardLabel:
-                "2 Hoàng Ngọc",
-
-            enabled:true
-        }
-
-    ],
-
-
-    progress:[
-
-        /*
-        {
-            studentCode:"OCD401",
-            questId:"Q001",
-            status:"ACTIVE"
-        }
-        */
-
-    ],
-
-
-    questCodes:[
-
-        /*
-        {
-            studentCode:"OCD401",
-            questId:"Q001",
-            code:"GD-7K2P"
-        }
-        */
-
-    ]
+    questData:null
 
 };
 
@@ -266,7 +304,7 @@ const DEMO={
    HELPERS
 ========================================================= */
 
-function cleanText(value){
+function text(value){
 
     return String(
         value == null
@@ -274,111 +312,260 @@ function cleanText(value){
         ""
         :
         value
-    )
-    .trim();
+    ).trim();
 
 }
 
 
-function normalizeCode(value){
+function normalize(value){
 
-    return cleanText(value)
-        .toUpperCase()
-        .replace(/\s+/g,"");
+    let source=
+        text(value)
+        .toLowerCase();
+
+
+    try{
+
+        source=
+            source
+            .normalize("NFD")
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            );
+
+    }catch(error){}
+
+
+    return source
+        .replace(/đ/g,"d")
+        .replace(/\s+/g," ")
+        .trim();
 
 }
 
 
 function escapeHtml(value){
 
-    return cleanText(value)
+    return text(value)
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
 
 
-function getCurrentPage(){
-
-    const path=
-        window.location.pathname
-        .replace(/\/+$/,"")
-        ||
-        "/";
-
-    if(
-        CONFIG.pageAliases[
-            path
-        ]
-    ){
-
-        return(
-            CONFIG.pageAliases[
-                path
-            ]
-        );
-
-    }
+function getPath(){
 
     return(
-        path
-        .replace(/^\/+/,"")
-        .replace(/[^a-zA-Z0-9]+/g,"_")
-        .toUpperCase()
+        String(
+            window.location.pathname ||
+            "/"
+        )
+        .toLowerCase()
+        .replace(/\/+$/,"")
         ||
-        "UNKNOWN"
+        "/"
     );
 
 }
 
 
 /* =========================================================
-   GOOGLE DRIVE IMAGE
+   PAGE DETECTION
 ========================================================= */
 
-function convertDriveImageUrl(
-    url,
-    size
-){
+function detectPage(){
 
-    const raw=
-        cleanText(url);
+    const path=
+        getPath();
 
-    if(!raw){
-        return "";
+
+    for(
+        let i=0;
+        i<PAGE_RULES.length;
+        i++
+    ){
+
+        const rule=
+            PAGE_RULES[i];
+
+
+        try{
+
+            if(
+                rule.test(
+                    path
+                )
+            ){
+
+                return rule;
+
+            }
+
+        }catch(error){
+
+            console.warn(
+                "[OCD NPC] PAGE_RULE error:",
+                rule.id,
+                error
+            );
+
+        }
+
     }
 
 
     /*
-       Ưu tiên dùng hàm chuẩn từ Reward Core
-       nếu đang tồn tại.
+       Trang không được khai báo
+       -> không hiện NPC.
     */
+
+    return{
+
+        id:"UNKNOWN",
+
+        npc:null,
+
+        place:"",
+
+        mode:"NONE"
+
+    };
+
+}
+
+
+/* =========================================================
+   MOUNT
+========================================================= */
+
+function getMount(){
+
+    return(
+        document.getElementById(
+            CONFIG.mountId
+        )
+    );
+
+}
+
+
+function clearMount(){
+
+    const mount=
+        getMount();
+
+
+    if(mount){
+
+        mount.innerHTML="";
+
+        mount.style.display=
+            "none";
+
+    }
+
+
+    state.currentNpc=null;
+
+}
+
+
+/* =========================================================
+   COLUMN HELPERS
+========================================================= */
+
+function findColumn(
+    headers,
+    candidates
+){
+
+    const normalizedCandidates=
+        candidates.map(
+            normalize
+        );
+
+
+    for(
+        let i=0;
+        i<normalizedCandidates.length;
+        i++
+    ){
+
+        const exact=
+            headers.indexOf(
+                normalizedCandidates[i]
+            );
+
+
+        if(exact >= 0){
+            return exact;
+        }
+
+    }
+
+
+    for(
+        let i=0;
+        i<normalizedCandidates.length;
+        i++
+    ){
+
+        const found=
+            headers.findIndex(
+                function(header){
+
+                    return(
+                        header.includes(
+                            normalizedCandidates[i]
+                        )
+                    );
+
+                }
+            );
+
+
+        if(found >= 0){
+            return found;
+        }
+
+    }
+
+
+    return -1;
+
+}
+
+
+/* =========================================================
+   DRIVE IMAGE
+========================================================= */
+
+function convertImageUrl(
+    url,
+    size
+){
+
+    const source=
+        text(url);
+
+
+    if(!source){
+        return "";
+    }
+
 
     const RS=
         window.StudentRewardSystem;
+
+
+    /*
+       Ưu tiên hàm của Core nếu có.
+    */
 
     if(
         RS &&
@@ -390,35 +577,31 @@ function convertDriveImageUrl(
 
             return(
                 RS.convertDriveImageUrl(
-                    raw,
-                    size || 400
+                    source,
+                    size || 500
                 )
             );
 
-        }catch(error){
-
-            console.warn(
-                "[NPC Quest] Core image converter:",
-                error
-            );
-
-        }
+        }catch(error){}
 
     }
 
 
-    /*
-       Fallback riêng.
-    */
-
-    const match=
-        raw.match(
-            /\/d\/([^/]+)/
-        )
-        ||
-        raw.match(
-            /[?&]id=([^&]+)/
+    let match=
+        source.match(
+            /\/file\/d\/([^/?]+)/i
         );
+
+
+    if(!match){
+
+        match=
+            source.match(
+                /[?&]id=([^&]+)/i
+            );
+
+    }
+
 
     if(match && match[1]){
 
@@ -429,670 +612,1061 @@ function convertDriveImageUrl(
             )+
             "&sz=w"+
             Number(
-                size || 400
+                size || 500
             )
         );
 
     }
 
-    return raw;
+
+    return source;
 
 }
 
 
 /* =========================================================
-   STUDENT CONTEXT
-
-   Không tự tạo một hệ đăng nhập mới.
-
-   Ưu tiên nhận context từ:
-   - Minh Hồng
-   - module OCD dùng chung
-   - event
-   - API setStudent()
-
+   CREATE IMAGE
 ========================================================= */
 
-function detectStudentContext(){
+function createNpcImage(
+    npc
+){
 
-    /*
-       Các hook này là điểm chờ.
-       Không phụ thuộc cứng vào một phiên bản
-       Minh Hồng cụ thể.
-    */
+    if(!npc.image){
 
-    const possible=[
+        const fallback=
+            document.createElement(
+                "span"
+            );
 
-        window.OCDStudentContext,
 
-        window.OCDAssistant &&
-        window.OCDAssistant.student,
+        fallback.className=
+            "ocd-npc-avatar-fallback";
 
-        window.MinhHong &&
-        window.MinhHong.student
 
-    ];
+        fallback.textContent=
+            "NPC";
+
+
+        return fallback;
+
+    }
+
+
+    const img=
+        document.createElement(
+            "img"
+        );
+
+
+    img.src=
+        convertImageUrl(
+            npc.image,
+            500
+        );
+
+
+    img.alt=
+        npc.name;
+
+
+    img.loading=
+        "lazy";
+
+
+    img.decoding=
+        "async";
+
+
+    img.addEventListener(
+        "error",
+        function(){
+
+            const fallback=
+                document.createElement(
+                    "span"
+                );
+
+
+            fallback.className=
+                "ocd-npc-avatar-fallback";
+
+
+            fallback.textContent=
+                "NPC";
+
+
+            if(img.parentNode){
+
+                img.parentNode
+                .replaceChild(
+                    fallback,
+                    img
+                );
+
+            }
+
+        },
+        {
+            once:true
+        }
+    );
+
+
+    return img;
+
+}
+
+
+/* =========================================================
+   WAIT REWARD CORE
+========================================================= */
+
+function waitForCore(){
+
+    return new Promise(
+        function(resolve){
+
+            const existing=
+                window.StudentRewardSystem;
+
+
+            if(
+                existing &&
+                typeof existing.sheetCsvUrl ===
+                "function"
+            ){
+
+                resolve(
+                    existing
+                );
+
+                return;
+
+            }
+
+
+            let attempts=0;
+
+
+            const timer=
+                setInterval(
+                    function(){
+
+                        attempts++;
+
+
+                        const RS=
+                            window.StudentRewardSystem;
+
+
+                        if(
+                            RS &&
+                            typeof RS.sheetCsvUrl ===
+                            "function"
+                        ){
+
+                            clearInterval(
+                                timer
+                            );
+
+
+                            resolve(
+                                RS
+                            );
+
+
+                            return;
+
+                        }
+
+
+                        if(attempts >= 200){
+
+                            clearInterval(
+                                timer
+                            );
+
+
+                            resolve(
+                                null
+                            );
+
+                        }
+
+                    },
+                    50
+                );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   LOAD NPC SHEET
+
+   Dùng chính cơ chế Core đang dùng cho Chợ phiên.
+========================================================= */
+
+async function loadNpcRows(){
+
+    const RS=
+        await waitForCore();
+
+
+    if(
+        !RS ||
+        typeof RS.sheetCsvUrl !==
+        "function"
+    ){
+
+        throw new Error(
+            "Không tìm thấy Reward Core."
+        );
+
+    }
+
+
+    const baseUrl=
+        RS.sheetCsvUrl(
+            CONFIG.npcGid
+        );
+
+
+    const url=
+        baseUrl+
+        (
+            baseUrl.includes("?")
+            ?
+            "&"
+            :
+            "?"
+        )+
+        "_npc="+
+        Date.now();
+
+
+    if(
+        typeof RS.fetchRows ===
+        "function"
+    ){
+
+        return(
+            await RS.fetchRows(
+                url
+            )
+        );
+
+    }
+
+
+    const controller=
+        new AbortController();
+
+
+    const timer=
+        setTimeout(
+            function(){
+
+                controller.abort();
+
+            },
+            CONFIG.fetchTimeout
+        );
+
+
+    try{
+
+        const response=
+            await fetch(
+                url,
+                {
+                    cache:"no-store",
+                    credentials:"omit",
+                    signal:
+                        controller.signal
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Không tải được Sheet NPC."
+            );
+
+        }
+
+
+        const csv=
+            await response.text();
+
+
+        return parseCsv(
+            csv
+        );
+
+
+    }finally{
+
+        clearTimeout(
+            timer
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CSV FALLBACK
+========================================================= */
+
+function parseCsv(csv){
+
+    const rows=[];
+
+    let row=[];
+    let cell="";
+    let quoted=false;
+
+
+    const source=
+        String(csv || "")
+        .replace(/^\uFEFF/,"");
 
 
     for(
         let i=0;
-        i<possible.length;
+        i<source.length;
         i++
     ){
 
-        const item=
-            possible[i];
+        const char=
+            source[i];
+
+        const next=
+            source[i+1];
+
 
         if(
-            item &&
+            char === '"' &&
+            quoted &&
+            next === '"'
+        ){
+
+            cell+='"';
+
+            i++;
+
+            continue;
+
+        }
+
+
+        if(char === '"'){
+
+            quoted=!quoted;
+
+            continue;
+
+        }
+
+
+        if(
+            char === "," &&
+            !quoted
+        ){
+
+            row.push(cell);
+
+            cell="";
+
+            continue;
+
+        }
+
+
+        if(
             (
-                item.code ||
-                item.studentCode
+                char === "\n" ||
+                char === "\r"
             )
+            &&
+            !quoted
         ){
-
-            return{
-
-                code:
-                    normalizeCode(
-                        item.code ||
-                        item.studentCode
-                    ),
-
-                name:
-                    cleanText(
-                        item.name
-                    ),
-
-                course:
-                    cleanText(
-                        item.course
-                    )
-
-            };
-
-        }
-
-    }
-
-    return null;
-
-}
-
-
-/* =========================================================
-   DATA ADAPTER
-
-   Đây là lớp DUY NHẤT sau này cần thay đổi
-   để nối Google Sheet thật.
-========================================================= */
-
-const DataAdapter={
-
-
-    async loadNpc(){
-
-        if(CONFIG.demoMode){
-
-            return(
-                DEMO.npcs.slice()
-            );
-
-        }
-
-        return(
-            await loadNpcFromSheet()
-        );
-
-    },
-
-
-    async loadQuests(){
-
-        if(CONFIG.demoMode){
-
-            return(
-                DEMO.quests.slice()
-            );
-
-        }
-
-        return(
-            await loadQuestFromSheet()
-        );
-
-    },
-
-
-    async loadProgress(
-        studentCode
-    ){
-
-        if(CONFIG.demoMode){
-
-            return(
-                DEMO.progress
-                .filter(
-                    function(item){
-
-                        return(
-                            normalizeCode(
-                                item.studentCode
-                            )
-                            ===
-                            normalizeCode(
-                                studentCode
-                            )
-                        );
-
-                    }
-                )
-            );
-
-        }
-
-        return(
-            await loadProgressFromSheet(
-                studentCode
-            )
-        );
-
-    },
-
-
-    async loadQuestCodes(
-        studentCode
-    ){
-
-        if(CONFIG.demoMode){
-
-            return(
-                DEMO.questCodes
-                .filter(
-                    function(item){
-
-                        return(
-                            normalizeCode(
-                                item.studentCode
-                            )
-                            ===
-                            normalizeCode(
-                                studentCode
-                            )
-                        );
-
-                    }
-                )
-            );
-
-        }
-
-        return(
-            await loadQuestCodeFromSheet(
-                studentCode
-            )
-        );
-
-    }
-
-};
-
-
-/* =========================================================
-   GOOGLE SHEET PLACEHOLDERS
-
-   Cố tình chưa viết URL giả.
-
-   Khi có Sheet thật:
-   chúng ta chỉ hoàn thiện 4 hàm này.
-========================================================= */
-
-async function loadNpcFromSheet(){
-
-    if(!CONFIG.sheets.npc){
-
-        throw new Error(
-            "Chưa cấu hình nguồn dữ liệu NPC."
-        );
-
-    }
-
-    return [];
-
-}
-
-
-async function loadQuestFromSheet(){
-
-    if(!CONFIG.sheets.quest){
-
-        throw new Error(
-            "Chưa cấu hình nguồn dữ liệu Quest."
-        );
-
-    }
-
-    return [];
-
-}
-
-
-async function loadProgressFromSheet(){
-
-    if(!CONFIG.sheets.progress){
-
-        throw new Error(
-            "Chưa cấu hình nguồn tiến độ Quest."
-        );
-
-    }
-
-    return [];
-
-}
-
-
-async function loadQuestCodeFromSheet(){
-
-    if(!CONFIG.sheets.questCode){
-
-        throw new Error(
-            "Chưa cấu hình nguồn mã Quest."
-        );
-
-    }
-
-    return [];
-
-}
-
-
-/* =========================================================
-   QUEST ENGINE
-========================================================= */
-
-const QuestEngine={
-
-
-    getProgress(
-        questId
-    ){
-
-        return(
-            state.progress
-            .find(
-                function(item){
-
-                    return(
-                        cleanText(
-                            item.questId
-                        )
-                        ===
-                        cleanText(
-                            questId
-                        )
-                    );
-
-                }
-            )
-            ||
-            null
-        );
-
-    },
-
-
-    getQuestCode(
-        questId
-    ){
-
-        const found=
-            state.questCodes
-            .find(
-                function(item){
-
-                    return(
-                        cleanText(
-                            item.questId
-                        )
-                        ===
-                        cleanText(
-                            questId
-                        )
-                    );
-
-                }
-            );
-
-        return(
-            found
-            ?
-            cleanText(
-                found.code
-            )
-            :
-            ""
-        );
-
-    },
-
-
-    getActiveQuest(){
-
-        /*
-           ACTIVE hoặc CODE_RECEIVED
-        */
-
-        for(
-            let i=0;
-            i<state.progress.length;
-            i++
-        ){
-
-            const progress=
-                state.progress[i];
-
-            const status=
-                cleanText(
-                    progress.status
-                )
-                .toUpperCase();
 
             if(
-                status !== "ACTIVE" &&
-                status !== "CODE_RECEIVED"
+                char === "\r" &&
+                next === "\n"
             ){
-                continue;
+
+                i++;
+
             }
 
-            const quest=
-                state.quests
-                .find(
-                    function(item){
+
+            row.push(cell);
+
+
+            if(
+                row.some(
+                    function(value){
 
                         return(
-                            cleanText(
-                                item.questId
-                            )
-                            ===
-                            cleanText(
-                                progress.questId
-                            )
+                            text(value) !== ""
                         );
 
                     }
+                )
+            ){
+
+                rows.push(
+                    row
                 );
 
-            if(quest){
-                return quest;
             }
+
+
+            row=[];
+            cell="";
+
+            continue;
 
         }
 
-        return null;
 
-    },
+        cell+=char;
+
+    }
 
 
-    getNpcForPage(){
+    if(
+        cell !== "" ||
+        row.length
+    ){
 
-        const activeQuest=
-            this.getActiveQuest();
+        row.push(cell);
 
-        /*
-           Quest đang yêu cầu NPC ở trang này
-           thì NPC đó có ưu tiên cao nhất.
-        */
 
         if(
-            activeQuest &&
-            activeQuest.targetPage ===
-            state.currentPage
-        ){
-
-            const questNpc=
-                state.npcs
-                .find(
-                    function(npc){
-
-                        return(
-                            npc.npcId ===
-                            activeQuest.npcId
-                        );
-
-                    }
-                );
-
-            if(questNpc){
-                return questNpc;
-            }
-
-        }
-
-
-        /*
-           Nếu không có Quest phù hợp,
-           lấy NPC mặc định của trang.
-        */
-
-        return(
-            state.npcs
-            .find(
-                function(npc){
+            row.some(
+                function(value){
 
                     return(
-                        npc.enabled !== false &&
-                        npc.page ===
-                        state.currentPage
+                        text(value) !== ""
                     );
 
                 }
             )
-            ||
-            null
-        );
-
-    },
-
-
-    canNpcRevealCode(
-        npc,
-        quest
-    ){
-
-        if(
-            !state.studentCode ||
-            !npc ||
-            !quest
         ){
-            return false;
-        }
 
-        if(
-            quest.npcId !==
-            npc.npcId
-        ){
-            return false;
-        }
-
-        if(
-            quest.targetPage !==
-            state.currentPage
-        ){
-            return false;
-        }
-
-        const progress=
-            this.getProgress(
-                quest.questId
+            rows.push(
+                row
             );
 
-        if(!progress){
-            return false;
         }
-
-        const status=
-            cleanText(
-                progress.status
-            )
-            .toUpperCase();
-
-        return(
-            status === "ACTIVE" ||
-            status === "CODE_RECEIVED"
-        );
-
-    },
-
-
-    validateReturnCode(
-        quest,
-        input
-    ){
-
-        if(
-            !quest ||
-            !state.studentCode
-        ){
-
-            return{
-                ok:false,
-                reason:
-                    "Không có nhiệm vụ đang hoạt động."
-            };
-
-        }
-
-        const expected=
-            normalizeCode(
-                this.getQuestCode(
-                    quest.questId
-                )
-            );
-
-        const received=
-            normalizeCode(
-                input
-            );
-
-        if(!expected){
-
-            return{
-                ok:false,
-                reason:
-                    "Chưa có mã xác nhận dành cho nhiệm vụ này."
-            };
-
-        }
-
-        if(
-            expected !==
-            received
-        ){
-
-            return{
-                ok:false,
-                reason:
-                    "Mã nhiệm vụ chưa chính xác."
-            };
-
-        }
-
-        return{
-            ok:true,
-            reason:
-                "Mã nhiệm vụ hợp lệ."
-        };
 
     }
 
-};
+
+    return rows;
+
+}
 
 
 /* =========================================================
-   REWARD BRIDGE
+   MAP NPC SHEET
 
-   TUYỆT ĐỐI KHÔNG:
-   gems += reward
-
-   Quest chỉ phát event.
+   Tương thích Sheet thương nhân Chợ phiên:
+   - Tên nhân vật / Tên NPC
+   - Hình ảnh / Icon
+   - Mô tả
 ========================================================= */
 
-function emitQuestCompleted(
-    quest
+function mapNpcRows(rows){
+
+    if(
+        !Array.isArray(rows) ||
+        rows.length < 2
+    ){
+
+        return [];
+
+    }
+
+
+    const headers=
+        rows[0]
+        .map(
+            normalize
+        );
+
+
+    let nameIndex=
+        findColumn(
+            headers,
+            [
+                "tên nhân vật",
+                "ten nhan vat",
+                "tên npc",
+                "ten npc"
+            ]
+        );
+
+
+    let imageIndex=
+        findColumn(
+            headers,
+            [
+                "hình ảnh",
+                "hinh anh",
+                "icon",
+                "ảnh",
+                "anh"
+            ]
+        );
+
+
+    let descriptionIndex=
+        findColumn(
+            headers,
+            [
+                "mô tả",
+                "mo ta",
+                "description"
+            ]
+        );
+
+
+    /*
+       Fallback tương thích Sheet cũ.
+    */
+
+    if(nameIndex < 0){
+        nameIndex=0;
+    }
+
+
+    if(imageIndex < 0){
+        imageIndex=1;
+    }
+
+
+    if(descriptionIndex < 0){
+        descriptionIndex=2;
+    }
+
+
+    return rows
+        .slice(1)
+        .map(
+            function(row,index){
+
+                const name=
+                    text(
+                        row[
+                            nameIndex
+                        ]
+                    );
+
+
+                return{
+
+                    id:
+                        "NPC_"+index,
+
+                    name:
+                        name,
+
+                    key:
+                        normalize(
+                            name
+                        ),
+
+                    image:
+                        text(
+                            row[
+                                imageIndex
+                            ]
+                        ),
+
+                    description:
+                        text(
+                            row[
+                                descriptionIndex
+                            ]
+                        )
+
+                };
+
+            }
+        )
+        .filter(
+            function(npc){
+
+                return Boolean(
+                    npc.name
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   FIND NPC BY NAME
+========================================================= */
+
+function findNpc(
+    npcName
 ){
 
-    const detail={
-
-        source:
-            "NPC_QUEST",
-
-        event:
-            "QUEST_COMPLETED",
-
-        studentCode:
-            state.studentCode,
-
-        questId:
-            quest.questId,
-
-        reward:{
-
-            type:
-                quest.rewardType,
-
-            amount:
-                Number(
-                    quest.rewardAmount || 0
-                )
-
-        },
-
-        timestamp:
-            new Date()
-            .toISOString()
-
-    };
+    const key=
+        normalize(
+            npcName
+        );
 
 
-    window.dispatchEvent(
-        new CustomEvent(
-            "ocdQuestCompleted",
-            {
-                detail
+    if(!key){
+        return null;
+    }
+
+
+    /*
+       Exact trước.
+    */
+
+    let npc=
+        state.npcs.find(
+            function(item){
+
+                return(
+                    item.key ===
+                    key
+                );
+
             }
+        );
+
+
+    if(npc){
+        return npc;
+    }
+
+
+    /*
+       Partial fallback.
+    */
+
+    npc=
+        state.npcs.find(
+            function(item){
+
+                return(
+                    item.key.includes(
+                        key
+                    )
+                    ||
+                    key.includes(
+                        item.key
+                    )
+                );
+
+            }
+        );
+
+
+    return(
+        npc ||
+        null
+    );
+
+}
+
+
+/* =========================================================
+   QUEST NPC CHECK
+
+   PROFILE/MARKET chỉ hiện Gian thương
+   nếu Quest hiện tại yêu cầu Gian thương.
+========================================================= */
+
+function isQuestNpcActive(
+    npcName
+){
+
+    const target=
+        normalize(
+            npcName
+        );
+
+
+    if(!target){
+        return false;
+    }
+
+
+    /*
+       Nguồn 1:
+       state được Quest Engine gửi trực tiếp.
+    */
+
+    if(
+        normalize(
+            state.questNpc
+        )
+        ===
+        target
+    ){
+
+        return true;
+
+    }
+
+
+    /*
+       Nguồn 2:
+       API Quest Engine tương lai.
+
+       Không phụ thuộc bắt buộc.
+    */
+
+    const QE=
+        window.OCDQuestEngine;
+
+
+    if(QE){
+
+        try{
+
+            if(
+                typeof QE.getActiveQuest ===
+                "function"
+            ){
+
+                const quest=
+                    QE.getActiveQuest();
+
+
+                if(
+                    quest &&
+                    normalize(
+                        quest.npc ||
+                        quest.npcName
+                    )
+                    ===
+                    target
+                ){
+
+                    state.questData=
+                        quest;
+
+
+                    return true;
+
+                }
+
+            }
+
+        }catch(error){
+
+            console.warn(
+                "[OCD NPC] Quest check:",
+                error
+            );
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   SHOULD DISPLAY
+========================================================= */
+
+function shouldDisplay(
+    rule
+){
+
+    if(
+        !rule ||
+        !rule.npc ||
+        rule.mode === "NONE"
+    ){
+
+        return false;
+    }
+
+
+    if(
+        rule.mode ===
+        "ALWAYS"
+    ){
+
+        return true;
+    }
+
+
+    if(
+        rule.mode ===
+        "QUEST_ONLY"
+    ){
+
+        return(
+            isQuestNpcActive(
+                rule.npc
+            )
+        );
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   RENDER NPC AT GADGET POSITION
+========================================================= */
+
+function renderNpc(){
+
+    const mount=
+        getMount();
+
+
+    if(!mount){
+        return;
+    }
+
+
+    state.pageRule=
+        detectPage();
+
+
+    if(
+        !shouldDisplay(
+            state.pageRule
+        )
+    ){
+
+        clearMount();
+
+        return;
+
+    }
+
+
+    const npc=
+        findNpc(
+            state.pageRule.npc
+        );
+
+
+    if(!npc){
+
+        /*
+           Không hiển thị NPC giả nếu
+           Sheet không có đúng nhân vật.
+        */
+
+        clearMount();
+
+
+        console.warn(
+            "[OCD NPC] Không tìm thấy:",
+            state.pageRule.npc
+        );
+
+
+        return;
+
+    }
+
+
+    state.currentNpc=
+        npc;
+
+
+    mount.style.display=
+        "";
+
+
+    mount.innerHTML="";
+
+
+    const area=
+        document.createElement(
+            "div"
+        );
+
+
+    area.className=
+        "ocd-npc-area";
+
+
+    const character=
+        document.createElement(
+            "button"
+        );
+
+
+    character.type=
+        "button";
+
+
+    character.className=
+        "ocd-npc-character";
+
+
+    character.setAttribute(
+        "aria-label",
+        "Trò chuyện với "+
+        npc.name
+    );
+
+
+    const avatarWrap=
+        document.createElement(
+            "span"
+        );
+
+
+    avatarWrap.className=
+        "ocd-npc-avatar-wrap";
+
+
+    const avatar=
+        document.createElement(
+            "span"
+        );
+
+
+    avatar.className=
+        "ocd-npc-avatar";
+
+
+    avatar.appendChild(
+        createNpcImage(
+            npc
         )
     );
 
 
+    avatarWrap.appendChild(
+        avatar
+    );
+
+
     /*
-       Chưa ghi Reward Core trong v1.
+       Dấu nhiệm vụ.
     */
 
-    if(
-        CONFIG.rewardWriteEnabled
-    ){
-
-        console.warn(
-            "[NPC Quest] Reward write chưa được triển khai.",
-            detail
+    const mark=
+        document.createElement(
+            "span"
         );
 
-    }
+
+    mark.className=
+        "ocd-npc-mark";
+
+
+    mark.textContent=
+        "!";
+
+
+    avatarWrap.appendChild(
+        mark
+    );
+
+
+    character.appendChild(
+        avatarWrap
+    );
+
+
+    const name=
+        document.createElement(
+            "span"
+        );
+
+
+    name.className=
+        "ocd-npc-name";
+
+
+    name.textContent=
+        npc.name;
+
+
+    character.appendChild(
+        name
+    );
+
+
+    const hint=
+        document.createElement(
+            "span"
+        );
+
+
+    hint.className=
+        "ocd-npc-hint";
+
+
+    hint.textContent=
+        "Chạm để trò chuyện";
+
+
+    character.appendChild(
+        hint
+    );
+
+
+    character.addEventListener(
+        "click",
+        function(){
+
+            openDialog();
+
+        }
+    );
+
+
+    area.appendChild(
+        character
+    );
+
+
+    mount.appendChild(
+        area
+    );
 
 }
 
 
 /* =========================================================
-   UI CREATE
+   DIALOG ROOT
 ========================================================= */
 
-function createRoot(){
+function ensureDialogRoot(){
 
     let root=
         document.getElementById(
-            CONFIG.rootId
+            CONFIG.dialogRootId
         );
+
 
     if(root){
         return root;
@@ -1104,100 +1678,62 @@ function createRoot(){
             "div"
         );
 
+
     root.id=
-        CONFIG.rootId;
+        CONFIG.dialogRootId;
 
 
     root.innerHTML=`
 
-        <button
-            class="nq-launcher"
-            id="nqLauncher"
-            type="button"
-            aria-label="Mở NPC"
-        >
-
-            <span
-                class="nq-launcher-avatar"
-                id="nqLauncherAvatar"
-            >
-                <span
-                    class="nq-launcher-fallback"
-                >
-                    NPC
-                </span>
-            </span>
-
-            <span
-                class="nq-launcher-badge"
-                id="nqLauncherBadge"
-            >
-                1
-            </span>
-
-        </button>
-
-
         <div
-            class="nq-overlay"
-            id="nqOverlay"
+            class="ocd-npc-overlay"
+            id="ocdNpcOverlay"
         ></div>
 
 
         <section
-            class="nq-panel"
-            id="nqPanel"
+            class="ocd-npc-dialog"
+            id="ocdNpcDialog"
             aria-hidden="true"
         >
 
             <header
-                class="nq-head"
+                class="ocd-npc-dialog-head"
             >
 
                 <div
-                    class="nq-avatar-wrap"
-                >
-
-                    <div
-                        class="nq-avatar"
-                        id="nqAvatar"
-                    >
-                        <span
-                            class="nq-avatar-fallback"
-                        >
-                            NPC
-                        </span>
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="nq-role"
-                    id="nqRole"
-                >
-                    NHÂN VẬT
-                </div>
-
-
-                <h3
-                    class="nq-name"
-                    id="nqName"
-                >
-                    NPC
-                </h3>
-
-
-                <div
-                    class="nq-location"
-                    id="nqLocation"
+                    class="ocd-npc-dialog-avatar"
+                    id="ocdNpcDialogAvatar"
                 ></div>
 
 
+                <div>
+
+                    <div
+                        class="ocd-npc-dialog-label"
+                    >
+                        NHÂN VẬT
+                    </div>
+
+
+                    <h3
+                        class="ocd-npc-dialog-name"
+                        id="ocdNpcDialogName"
+                    ></h3>
+
+
+                    <div
+                        class="ocd-npc-dialog-place"
+                        id="ocdNpcDialogPlace"
+                    ></div>
+
+                </div>
+
+
                 <button
-                    class="nq-close"
-                    id="nqClose"
                     type="button"
+                    class="ocd-npc-close"
+                    id="ocdNpcDialogClose"
                     aria-label="Đóng"
                 >
                     ×
@@ -1207,8 +1743,8 @@ function createRoot(){
 
 
             <div
-                class="nq-body"
-                id="nqBody"
+                class="ocd-npc-dialog-body"
+                id="ocdNpcDialogBody"
             ></div>
 
         </section>
@@ -1221,735 +1757,131 @@ function createRoot(){
     );
 
 
+    document.getElementById(
+        "ocdNpcOverlay"
+    )
+    .addEventListener(
+        "click",
+        closeDialog
+    );
+
+
+    document.getElementById(
+        "ocdNpcDialogClose"
+    )
+    .addEventListener(
+        "click",
+        closeDialog
+    );
+
+
     return root;
 
 }
 
 
 /* =========================================================
-   AVATAR
+   OPEN DIALOG
 ========================================================= */
 
-function renderAvatar(
-    element,
-    npc
-){
-
-    if(!element){
-        return;
-    }
-
-
-    element.innerHTML="";
-
-
-    if(
-        npc &&
-        npc.image
-    ){
-
-        const img=
-            document.createElement(
-                "img"
-            );
-
-        img.src=
-            convertDriveImageUrl(
-                npc.image,
-                400
-            );
-
-        img.alt=
-            npc.name || "NPC";
-
-        img.loading=
-            "lazy";
-
-        img.decoding=
-            "async";
-
-
-        img.addEventListener(
-            "error",
-            function(){
-
-                element.innerHTML=
-                    '<span class="nq-avatar-fallback">NPC</span>';
-
-            }
-        );
-
-
-        element.appendChild(
-            img
-        );
-
-        return;
-
-    }
-
-
-    element.innerHTML=
-        '<span class="nq-avatar-fallback">NPC</span>';
-
-}
-
-
-/* =========================================================
-   UI MESSAGE
-========================================================= */
-
-function messageHtml(){
-
-    if(!state.message){
-        return "";
-    }
-
-    return(
-        '<div class="nq-message visible '+
-        escapeHtml(
-            state.message.type || "info"
-        )+
-        '">'+
-        escapeHtml(
-            state.message.text
-        )+
-        '</div>'
-    );
-
-}
-
-
-function setMessage(
-    text,
-    type
-){
-
-    state.message={
-
-        text:
-            cleanText(text),
-
-        type:
-            type || "info"
-
-    };
-
-    render();
-
-}
-
-
-/* =========================================================
-   RENDER
-========================================================= */
-
-function render(){
-
-    const body=
-        document.getElementById(
-            "nqBody"
-        );
-
-    if(!body){
-        return;
-    }
-
-
-    if(state.loading){
-
-        body.innerHTML=
-            '<div class="nq-loading">'+
-            'Đang kiểm tra nhiệm vụ...'+
-            '</div>';
-
-        return;
-    }
-
+function openDialog(){
 
     const npc=
-        state.activeNpc;
+        state.currentNpc;
 
 
-    if(!npc){
+    const rule=
+        state.pageRule;
 
-        body.innerHTML=`
-
-            <div
-                class="nq-empty"
-            >
-                Hiện chưa có NPC nào
-                cần gặp tại khu vực này.
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    renderHeader(
-        npc
-    );
-
-
-    /*
-       Chưa có học viên.
-    */
-
-    if(!state.studentCode){
-
-        body.innerHTML=`
-
-            <div
-                class="nq-speech"
-            >
-                Chào bạn.
-                Khi mã học viên được xác minh,
-                tôi sẽ biết liệu có nhiệm vụ
-                nào dành cho bạn tại đây hay không.
-            </div>
-
-            <div
-                class="nq-status"
-            >
-
-                <span
-                    class="nq-status-dot"
-                ></span>
-
-                Chưa xác định học viên
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    const quest=
-        state.activeQuest;
-
-
-    /*
-       Không có Quest tại NPC này.
-    */
 
     if(
-        !quest ||
-        quest.npcId !==
-        npc.npcId
+        !npc ||
+        !rule
     ){
 
-        body.innerHTML=`
-
-            <div
-                class="nq-speech"
-            >
-                ${escapeHtml(
-                    npc.description ||
-                    "Hôm nay chưa có việc gì cần trao đổi."
-                )}
-            </div>
-
-            <div
-                class="nq-status"
-            >
-
-                <span
-                    class="nq-status-dot"
-                ></span>
-
-                Không có nhiệm vụ tại đây
-
-            </div>
-
-            ${messageHtml()}
-
-        `;
-
         return;
+
     }
 
 
-    const progress=
-        QuestEngine.getProgress(
-            quest.questId
+    ensureDialogRoot();
+
+
+    const avatar=
+        document.getElementById(
+            "ocdNpcDialogAvatar"
         );
 
 
-    const status=
-        progress
-        ?
-        cleanText(
-            progress.status
+    avatar.innerHTML="";
+
+
+    avatar.appendChild(
+        createNpcImage(
+            npc
         )
-        .toUpperCase()
-        :
-        "";
-
-
-    const canReveal=
-        QuestEngine.canNpcRevealCode(
-            npc,
-            quest
-        );
-
-
-    const code=
-        canReveal
-        ?
-        QuestEngine.getQuestCode(
-            quest.questId
-        )
-        :
-        "";
-
-
-    body.innerHTML=`
-
-        <div
-            class="nq-speech"
-        >
-            Minh Hồng đã nhắc tôi về bạn.
-            Có vẻ bạn đang tìm thứ liên quan
-            đến nhiệm vụ này.
-        </div>
-
-
-        <div
-            class="nq-status ${
-                status === "COMPLETED"
-                ?
-                "completed"
-                :
-                "active"
-            }"
-        >
-
-            <span
-                class="nq-status-dot"
-            ></span>
-
-            ${
-                status === "COMPLETED"
-                ?
-                "Nhiệm vụ đã hoàn thành"
-                :
-                "Nhiệm vụ đang thực hiện"
-            }
-
-        </div>
-
-
-        <article
-            class="nq-quest"
-        >
-
-            <div
-                class="nq-quest-head"
-            >
-
-                <div
-                    class="nq-quest-kicker"
-                >
-                    ${escapeHtml(
-                        quest.questId
-                    )}
-                </div>
-
-                <h4
-                    class="nq-quest-title"
-                >
-                    ${escapeHtml(
-                        quest.title
-                    )}
-                </h4>
-
-            </div>
-
-
-            <div
-                class="nq-quest-content"
-            >
-
-                <div
-                    class="nq-quest-description"
-                >
-                    ${escapeHtml(
-                        quest.description
-                    )}
-                </div>
-
-
-                <div
-                    class="nq-objective"
-                >
-
-                    <span
-                        class="nq-objective-title"
-                    >
-                        Mục tiêu
-                    </span>
-
-                    ${escapeHtml(
-                        quest.objective
-                    )}
-
-                </div>
-
-
-                ${
-                    quest.rewardLabel
-                    ?
-                    `
-
-                    <div
-                        class="nq-reward"
-                    >
-
-                        <div
-                            class="nq-reward-label"
-                        >
-                            Phần thưởng
-                        </div>
-
-                        <div
-                            class="nq-reward-list"
-                        >
-
-                            <span
-                                class="nq-reward-chip"
-                            >
-                                ${escapeHtml(
-                                    quest.rewardLabel
-                                )}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    `
-                    :
-                    ""
-                }
-
-
-                ${
-                    code
-                    ?
-                    `
-
-                    <div
-                        class="nq-code-box"
-                    >
-
-                        <div
-                            class="nq-code-label"
-                        >
-                            Mật lệnh của bạn
-                        </div>
-
-                        <div
-                            class="nq-code"
-                            id="nqQuestCode"
-                        >
-                            ${escapeHtml(
-                                code
-                            )}
-                        </div>
-
-                        <div
-                            class="nq-actions"
-                        >
-
-                            <button
-                                class="nq-btn secondary"
-                                id="nqCopyCode"
-                                type="button"
-                            >
-                                SAO CHÉP MÃ
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    `
-                    :
-                    ""
-                }
-
-                ${messageHtml()}
-
-            </div>
-
-        </article>
-
-    `;
-
-
-    bindDynamicEvents();
-
-}
-
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-function renderHeader(
-    npc
-){
-
-    const name=
-        document.getElementById(
-            "nqName"
-        );
-
-    const role=
-        document.getElementById(
-            "nqRole"
-        );
-
-    const location=
-        document.getElementById(
-            "nqLocation"
-        );
-
-
-    if(name){
-
-        name.textContent=
-            npc.name ||
-            "NPC";
-
-    }
-
-
-    if(role){
-
-        role.textContent=
-            npc.role ||
-            "NHÂN VẬT";
-
-    }
-
-
-    if(location){
-
-        location.textContent=
-            getPageLabel(
-                state.currentPage
-            );
-
-    }
-
-
-    renderAvatar(
-        document.getElementById(
-            "nqAvatar"
-        ),
-        npc
     );
 
 
-    renderAvatar(
-        document.getElementById(
-            "nqLauncherAvatar"
-        ),
-        npc
+    document.getElementById(
+        "ocdNpcDialogName"
+    )
+    .textContent=
+        npc.name;
+
+
+    document.getElementById(
+        "ocdNpcDialogPlace"
+    )
+    .textContent=
+        rule.place ||
+        document.title;
+
+
+    renderDialogBody();
+
+
+    document.getElementById(
+        "ocdNpcOverlay"
+    )
+    .classList.add(
+        "visible"
     );
 
-}
+
+    const dialog=
+        document.getElementById(
+            "ocdNpcDialog"
+        );
 
 
-/* =========================================================
-   PAGE LABEL
-========================================================= */
-
-function getPageLabel(
-    page
-){
-
-    const labels={
-
-        HOME:
-            "Thanh Phong Thư Môn",
-
-        GIANG_DUONG:
-            "Giảng đường",
-
-        THU_VIEN:
-            "Thư viện",
-
-        CHO_PHIEN:
-            "Chợ phiên"
-
-    };
-
-    return(
-        labels[page] ||
-        "OCD"
+    dialog.classList.add(
+        "visible"
     );
 
-}
+
+    dialog.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 
 
-/* =========================================================
-   DYNAMIC EVENTS
-========================================================= */
-
-function bindDynamicEvents(){
-
-    const copy=
-        document.getElementById(
-            "nqCopyCode"
-        );
-
-    if(copy){
-
-        copy.addEventListener(
-            "click",
-            copyQuestCode
-        );
-
-    }
-
-}
+    state.dialogOpen=true;
 
 
-/* =========================================================
-   COPY
-========================================================= */
-
-async function copyQuestCode(){
-
-    if(!state.activeQuest){
-        return;
-    }
-
-    const code=
-        QuestEngine.getQuestCode(
-            state.activeQuest.questId
-        );
-
-    if(!code){
-        return;
-    }
-
-
-    try{
-
-        await navigator.clipboard
-        .writeText(
-            code
-        );
-
-        setMessage(
-            "Đã sao chép mật lệnh. Hãy mang mã này về gặp Minh Hồng.",
-            "success"
-        );
-
-        window.dispatchEvent(
-            new CustomEvent(
-                "ocdQuestCodeCopied",
-                {
-                    detail:{
-
-                        studentCode:
-                            state.studentCode,
-
-                        questId:
-                            state.activeQuest.questId,
-
-                        npcId:
-                            state.activeNpc
-                            ?
-                            state.activeNpc.npcId
-                            :
-                            "",
-
-                        code:
-                            code
-
-                    }
-                }
-            )
-        );
-
-    }catch(error){
-
-        console.error(
-            "[NPC Quest] Copy:",
-            error
-        );
-
-        setMessage(
-            "Không thể tự sao chép. Bạn có thể chọn và sao chép mã thủ công.",
-            "error"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   OPEN / CLOSE
-
-   Phát event để Minh Hồng có thể
-   đóng popup của mình khi NPC mở.
-========================================================= */
-
-function openPanel(){
-
-    state.open=true;
-
-
-    const panel=
-        document.getElementById(
-            "nqPanel"
-        );
-
-    const overlay=
-        document.getElementById(
-            "nqOverlay"
-        );
-
-
-    if(panel){
-
-        panel.classList.add(
-            "visible"
-        );
-
-        panel.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-    }
-
-
-    if(overlay){
-
-        overlay.classList.add(
-            "visible"
-        );
-
-    }
-
+    /*
+       Cho Minh Hồng biết NPC đã mở.
+       Minh Hồng có thể đóng popup của mình.
+    */
 
     window.dispatchEvent(
         new CustomEvent(
             "ocdAssistantPanelOpened",
             {
                 detail:{
-                    source:
-                        "NPC_QUEST"
+                    source:"NPC",
+                    npc:npc.name,
+                    page:rule.id
                 }
             }
         )
@@ -1958,34 +1890,254 @@ function openPanel(){
 }
 
 
-function closePanel(){
+/* =========================================================
+   DIALOG CONTENT
+========================================================= */
 
-    state.open=false;
+function renderDialogBody(){
 
-
-    const panel=
+    const body=
         document.getElementById(
-            "nqPanel"
+            "ocdNpcDialogBody"
         );
+
+
+    const npc=
+        state.currentNpc;
+
+
+    const rule=
+        state.pageRule;
+
+
+    if(
+        !body ||
+        !npc ||
+        !rule
+    ){
+
+        return;
+
+    }
+
+
+    let html=`
+
+        <div
+            class="ocd-npc-speech"
+        >
+            ${
+                escapeHtml(
+                    npc.description ||
+                    getDefaultDialogue(
+                        rule,
+                        npc
+                    )
+                )
+            }
+        </div>
+
+    `;
+
+
+    /*
+       Nếu Quest Engine đã truyền Quest,
+       hiển thị nhiệm vụ.
+    */
+
+    if(state.questData){
+
+        const quest=
+            state.questData;
+
+
+        const title=
+            text(
+                quest.title ||
+                quest.name ||
+                quest.questName
+            );
+
+
+        const content=
+            text(
+                quest.npcDialogue ||
+                quest.dialogue ||
+                quest.description
+            );
+
+
+        if(
+            title ||
+            content
+        ){
+
+            html+=`
+
+                <div
+                    class="ocd-npc-quest-box"
+                >
+
+                    <div
+                        class="ocd-npc-quest-head"
+                    >
+
+                        <div
+                            class="ocd-npc-quest-label"
+                        >
+                            NHIỆM VỤ ĐANG THỰC HIỆN
+                        </div>
+
+
+                        <h4
+                            class="ocd-npc-quest-title"
+                        >
+                            ${
+                                escapeHtml(
+                                    title ||
+                                    "Nhiệm vụ"
+                                )
+                            }
+                        </h4>
+
+                    </div>
+
+
+                    ${
+                        content
+                        ?
+                        `
+
+                        <div
+                            class="ocd-npc-quest-content"
+                        >
+                            ${
+                                escapeHtml(
+                                    content
+                                )
+                            }
+                        </div>
+
+                        `
+                        :
+                        ""
+                    }
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    /*
+       Tạm thời chưa tự thưởng / tự hoàn thành Quest.
+    */
+
+    html+=`
+
+        <div
+            class="ocd-npc-status"
+        >
+            Hãy trò chuyện với nhân vật để tiếp tục
+            hành trình nhiệm vụ của bạn.
+        </div>
+
+    `;
+
+
+    body.innerHTML=
+        html;
+
+}
+
+
+/* =========================================================
+   DEFAULT DIALOGUE
+========================================================= */
+
+function getDefaultDialogue(
+    rule,
+    npc
+){
+
+    switch(rule.id){
+
+        case "LECTURE_HALL":
+
+            return(
+                "Chào bạn. Đây là Giảng đường. Nếu có việc cần hoàn thành tại đây, ta sẽ hướng dẫn bạn."
+            );
+
+
+        case "EXHIBITION":
+
+            return(
+                "Phòng triển lãm lưu giữ những bài viết nổi bật. Hãy xem thật kỹ trước khi tiếp tục hành trình."
+            );
+
+
+        case "RANKING":
+
+            return(
+                "Thành tích chỉ là một dấu mốc. Điều quan trọng hơn là bạn tiến bộ thế nào qua từng bài viết."
+            );
+
+
+        case "LIBRARY":
+
+            return(
+                "Thư viện có nhiều tư liệu lâm mô. Hãy tìm đúng nội dung bạn đang cần luyện tập."
+            );
+
+
+        case "QUEST":
+
+            return(
+                "Ta phụ trách việc dẫn đường cho những nhiệm vụ đang chờ bạn."
+            );
+
+
+        case "PROFILE_MARKET":
+
+            return(
+                "Có vẻ bạn tìm ta vì một nhiệm vụ. Đừng vội, hãy xem mình cần mang gì trở về."
+            );
+
+
+        default:
+
+            return(
+                npc.description ||
+                "Có chuyện gì cần ta giúp?"
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   CLOSE DIALOG
+========================================================= */
+
+function closeDialog(){
+
+    state.dialogOpen=false;
+
 
     const overlay=
         document.getElementById(
-            "nqOverlay"
+            "ocdNpcOverlay"
         );
 
 
-    if(panel){
-
-        panel.classList.remove(
-            "visible"
+    const dialog=
+        document.getElementById(
+            "ocdNpcDialog"
         );
-
-        panel.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-    }
 
 
     if(overlay){
@@ -1997,13 +2149,27 @@ function closePanel(){
     }
 
 
+    if(dialog){
+
+        dialog.classList.remove(
+            "visible"
+        );
+
+
+        dialog.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+    }
+
+
     window.dispatchEvent(
         new CustomEvent(
             "ocdAssistantPanelClosed",
             {
                 detail:{
-                    source:
-                        "NPC_QUEST"
+                    source:"NPC"
                 }
             }
         )
@@ -2013,705 +2179,251 @@ function closePanel(){
 
 
 /* =========================================================
-   LOAD DATA
+   QUEST EVENT
+
+   Quest Engine sau này chỉ cần phát:
+
+   window.dispatchEvent(
+       new CustomEvent(
+           "ocdQuestNpcChanged",
+           {
+               detail:{
+                   npc:"Gian thương",
+                   quest:{...}
+               }
+           }
+       )
+   );
+
 ========================================================= */
 
-async function refresh(){
+window.addEventListener(
+    "ocdQuestNpcChanged",
+    function(event){
+
+        const detail=
+            (
+                event &&
+                event.detail
+            )
+            ||
+            {};
+
+
+        state.questNpc=
+            text(
+                detail.npc ||
+                detail.npcName
+            );
+
+
+        state.questData=
+            detail.quest ||
+            null;
+
+
+        renderNpc();
+
+    }
+);
+
+
+/* =========================================================
+   QUEST CLEARED
+========================================================= */
+
+window.addEventListener(
+    "ocdQuestCleared",
+    function(){
+
+        state.questNpc="";
+
+        state.questData=null;
+
+
+        renderNpc();
+
+    }
+);
+
+
+/* =========================================================
+   ESC
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key ===
+            "Escape" &&
+            state.dialogOpen
+        ){
+
+            closeDialog();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LOAD NPC DATA
+========================================================= */
+
+async function loadNpcData(){
+
+    if(state.loading){
+        return;
+    }
+
 
     state.loading=true;
-
-    render();
 
 
     try{
 
-        const results=
-            await Promise.all([
-
-                DataAdapter.loadNpc(),
-
-                DataAdapter.loadQuests(),
-
-                state.studentCode
-                ?
-                DataAdapter.loadProgress(
-                    state.studentCode
-                )
-                :
-                Promise.resolve([]),
-
-                state.studentCode
-                ?
-                DataAdapter.loadQuestCodes(
-                    state.studentCode
-                )
-                :
-                Promise.resolve([])
-
-            ]);
+        const rows=
+            await loadNpcRows();
 
 
         state.npcs=
-            results[0] || [];
-
-        state.quests=
-            results[1] || [];
-
-        state.progress=
-            results[2] || [];
-
-        state.questCodes=
-            results[3] || [];
+            mapNpcRows(
+                rows
+            );
 
 
-        state.activeQuest=
-            QuestEngine
-            .getActiveQuest();
+        state.npcRowsLoaded=
+            true;
 
 
-        state.activeNpc=
-            QuestEngine
-            .getNpcForPage();
+        if(!state.npcs.length){
+
+            throw new Error(
+                "Sheet thương nhân không có dữ liệu NPC hợp lệ."
+            );
+
+        }
 
 
-        updateLauncher();
+        renderNpc();
+
+
+        window.dispatchEvent(
+            new CustomEvent(
+                "ocdNpcReady",
+                {
+                    detail:{
+                        version:
+                            CONFIG.version,
+
+                        count:
+                            state.npcs.length,
+
+                        page:
+                            state.pageRule
+                            ?
+                            state.pageRule.id
+                            :
+                            ""
+                    }
+                }
+            )
+        );
+
 
     }catch(error){
 
         console.error(
-            "[NPC Quest]",
+            "[OCD NPC]",
             error
         );
 
-        state.message={
 
-            type:"error",
+        clearMount();
 
-            text:
-                error.message ||
-                "Không thể tải dữ liệu NPC."
-
-        };
 
     }finally{
 
         state.loading=false;
 
-        render();
-
     }
 
 }
 
 
 /* =========================================================
-   LAUNCHER
+   REFRESH
 ========================================================= */
 
-function updateLauncher(){
+function refresh(){
 
-    const launcher=
-        document.getElementById(
-            "nqLauncher"
-        );
+    state.pageRule=
+        detectPage();
 
-    const badge=
-        document.getElementById(
-            "nqLauncherBadge"
-        );
 
-
-    if(!launcher){
-        return;
-    }
-
-
-    /*
-       Không có NPC ở trang này:
-       ẩn launcher.
-    */
-
-    if(!state.activeNpc){
-
-        launcher.style.display=
-            "none";
-
-        return;
-
-    }
-
-
-    launcher.style.display=
-        "";
-
-
-    const quest=
-        state.activeQuest;
-
-
-    const hasQuestHere=
-        Boolean(
-            quest &&
-            quest.npcId ===
-            state.activeNpc.npcId &&
-            quest.targetPage ===
-            state.currentPage
-        );
-
-
-    if(badge){
-
-        badge.classList.toggle(
-            "visible",
-            hasQuestHere
-        );
-
-        badge.textContent=
-            hasQuestHere
-            ?
-            "!"
-            :
-            "";
-
-    }
-
-
-    renderAvatar(
-        document.getElementById(
-            "nqLauncherAvatar"
-        ),
-        state.activeNpc
-    );
-
-}
-
-
-/* =========================================================
-   SET STUDENT
-
-   Đây là API quan trọng nhất để
-   Minh Hồng truyền context sang NPC.
-========================================================= */
-
-async function setStudent(
-    student
-){
-
-    if(!student){
-
-        state.student=null;
-        state.studentCode="";
-
-        await refresh();
-
-        return;
-
-    }
-
-
-    const code=
-        normalizeCode(
-            student.code ||
-            student.studentCode
-        );
-
-
-    if(!code){
-
-        return;
-
-    }
-
-
-    state.student={
-
-        code,
-
-        name:
-            cleanText(
-                student.name
-            ),
-
-        course:
-            cleanText(
-                student.course
-            )
-
-    };
-
-
-    state.studentCode=
-        code;
-
-
-    await refresh();
-
-}
-
-
-/* =========================================================
-   QUEST RETURN API
-
-   Minh Hồng sẽ gọi hàm này khi học viên
-   nhập mã trả nhiệm vụ.
-
-   NPC gadget không cần chứa form trả Quest
-   nếu Minh Hồng là Quest Master.
-========================================================= */
-
-function validateQuestCode(
-    questId,
-    code
-){
-
-    const quest=
-        state.quests
-        .find(
-            function(item){
-
-                return(
-                    cleanText(
-                        item.questId
-                    )
-                    ===
-                    cleanText(
-                        questId
-                    )
-                );
-
-            }
-        );
-
-
-    if(!quest){
-
-        return{
-
-            ok:false,
-
-            reason:
-                "Không tìm thấy nhiệm vụ."
-
-        };
-
-    }
-
-
-    return(
-        QuestEngine
-        .validateReturnCode(
-            quest,
-            code
-        )
-    );
-
-}
-
-
-/* =========================================================
-   COMPLETE API
-
-   Chưa ghi Sheet thật trong v1.
-========================================================= */
-
-function completeQuest(
-    questId,
-    code
-){
-
-    const result=
-        validateQuestCode(
-            questId,
-            code
-        );
-
-
-    if(!result.ok){
-
-        return result;
-
-    }
-
-
-    const quest=
-        state.quests
-        .find(
-            function(item){
-
-                return(
-                    item.questId ===
-                    questId
-                );
-
-            }
-        );
-
-
-    /*
-       Sau này:
-       1. server xác minh
-       2. ghi COMPLETED
-       3. chống duplicate
-       4. tạo Reward Transaction
-       5. Core refresh
-
-       v1 chỉ phát event.
-    */
-
-    emitQuestCompleted(
-        quest
-    );
-
-
-    return{
-
-        ok:true,
-
-        reason:
-            "Nhiệm vụ hợp lệ.",
-
-        quest:
-            quest
-
-    };
-
-}
-
-
-/* =========================================================
-   GLOBAL EVENTS
-========================================================= */
-
-function bindGlobalEvents(){
-
-    /*
-       Launcher
-    */
-
-    const launcher=
-        document.getElementById(
-            "nqLauncher"
-        );
-
-    const close=
-        document.getElementById(
-            "nqClose"
-        );
-
-    const overlay=
-        document.getElementById(
-            "nqOverlay"
-        );
-
-
-    if(launcher){
-
-        launcher.addEventListener(
-            "click",
-            openPanel
-        );
-
-    }
-
-
-    if(close){
-
-        close.addEventListener(
-            "click",
-            closePanel
-        );
-
-    }
-
-
-    if(overlay){
-
-        overlay.addEventListener(
-            "click",
-            closePanel
-        );
-
-    }
-
-
-    /*
-       ESC
-    */
-
-    document.addEventListener(
-        "keydown",
-        function(event){
-
-            if(
-                event.key ===
-                "Escape" &&
-                state.open
-            ){
-
-                closePanel();
-
-            }
-
-        }
-    );
-
-
-    /*
-       Context học viên do Minh Hồng
-       hoặc module khác gửi tới.
-    */
-
-    window.addEventListener(
-        "ocdStudentContextChanged",
-        function(event){
-
-            const detail=
-                event.detail;
-
-            if(detail){
-
-                setStudent(
-                    detail
-                );
-
-            }
-
-        }
-    );
-
-
-    /*
-       Khi panel khác của hệ trợ giảng mở,
-       NPC tự đóng để tránh chồng popup.
-    */
-
-    window.addEventListener(
-        "ocdAssistantPanelOpened",
-        function(event){
-
-            const source=
-                event.detail &&
-                event.detail.source;
-
-            if(
-                source &&
-                source !==
-                "NPC_QUEST"
-            ){
-
-                closePanel();
-
-            }
-
-        }
-    );
-
-
-    /*
-       Reward Core thay đổi profile.
-       NPC không tự tính lại tài sản,
-       nhưng có thể refresh context Quest.
-    */
-
-    window.addEventListener(
-        "ocdRewardProfileChanged",
-        function(event){
-
-            const detail=
-                event.detail || {};
-
-            const changedCode=
-                normalizeCode(
-                    detail.studentCode ||
-                    detail.code
-                );
-
-            if(
-                changedCode &&
-                changedCode ===
-                state.studentCode
-            ){
-
-                /*
-                   Không cần reload ngay
-                   ở demo mode.
-
-                   Khi Progress Sheet hoạt động,
-                   có thể refresh ở đây.
-                */
-
-                window.dispatchEvent(
-                    new CustomEvent(
-                        "ocdNpcQuestRewardContextChanged",
-                        {
-                            detail:{
-                                studentCode:
-                                    changedCode
-                            }
-                        }
-                    )
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   DEMO HELPER
-
-   Chỉ dùng để test UI trước khi Sheet hoạt động.
-========================================================= */
-
-function demoStartQuest(
-    studentCode
-){
-
-    if(!CONFIG.demoMode){
-        return;
-    }
-
-
-    const code=
-        normalizeCode(
-            studentCode
-        );
-
-    if(!code){
-        return;
-    }
-
-
-    DEMO.progress=
-        DEMO.progress.filter(
-            function(item){
-
-                return !(
-                    normalizeCode(
-                        item.studentCode
-                    )
-                    ===
-                    code
-                    &&
-                    item.questId ===
-                    "Q001"
-                );
-
-            }
-        );
-
-
-    DEMO.progress.push({
-
-        studentCode:
-            code,
-
-        questId:
-            "Q001",
-
-        status:
-            "ACTIVE"
-
-    });
-
-
-    DEMO.questCodes=
-        DEMO.questCodes.filter(
-            function(item){
-
-                return !(
-                    normalizeCode(
-                        item.studentCode
-                    )
-                    ===
-                    code
-                    &&
-                    item.questId ===
-                    "Q001"
-                );
-
-            }
-        );
-
-
-    DEMO.questCodes.push({
-
-        studentCode:
-            code,
-
-        questId:
-            "Q001",
-
-        code:
-            "GD-"+
-            simpleCode(
-                code+
-                "|Q001"
-            )
-
-    });
-
-
-    setStudent({
-
-        code:
-            code
-
-    });
-
-}
-
-
-/* =========================================================
-   SIMPLE DEMO CODE
-
-   KHÔNG dùng làm cơ chế bảo mật thật.
-========================================================= */
-
-function simpleCode(
-    text
-){
-
-    let hash=0;
-
-    const source=
-        cleanText(text);
-
-    for(
-        let i=0;
-        i<source.length;
-        i++
+    if(
+        !state.npcRowsLoaded
     ){
 
-        hash=
-            (
-                (
-                    hash << 5
-                )
-                -
-                hash
-            )
-            +
-            source.charCodeAt(i);
-
-        hash|=0;
+        return(
+            loadNpcData()
+        );
 
     }
 
 
-    return(
-        Math.abs(hash)
-        .toString(36)
-        .toUpperCase()
-        .slice(0,5)
-        .padStart(
-            5,
-            "0"
-        )
-    );
+    renderNpc();
+
+}
+
+
+/* =========================================================
+   PUBLIC QUEST API
+
+   Cho phép test ngay bằng Console:
+
+   OCDNpcSystem.setQuestNpc(
+       "Gian thương",
+       {
+           title:"Gặp Gian thương",
+           description:"Hãy hỏi hắn về mật lệnh."
+       }
+   );
+
+========================================================= */
+
+function setQuestNpc(
+    npcName,
+    quest
+){
+
+    state.questNpc=
+        text(
+            npcName
+        );
+
+
+    state.questData=
+        quest ||
+        null;
+
+
+    renderNpc();
+
+}
+
+
+function clearQuestNpc(){
+
+    state.questNpc="";
+
+    state.questData=null;
+
+
+    renderNpc();
 
 }
 
@@ -2722,51 +2434,48 @@ function simpleCode(
 
 async function init(){
 
-    if(state.ready){
+    if(state.initialized){
         return;
     }
 
 
-    state.currentPage=
-        getCurrentPage();
+    state.initialized=true;
 
 
-    createRoot();
+    state.pageRule=
+        detectPage();
 
-    bindGlobalEvents();
 
+    /*
+       Trang không có NPC:
+       dừng sớm.
 
-    const detected=
-        detectStudentContext();
+       Đặc biệt Trang chủ sẽ không tải
+       Sheet NPC vô ích.
+    */
 
-    if(detected){
+    if(
+        !state.pageRule ||
+        state.pageRule.mode ===
+        "NONE"
+    ){
 
-        state.student=
-            detected;
+        clearMount();
 
-        state.studentCode=
-            detected.code;
+        return;
 
     }
 
 
-    state.ready=true;
+    /*
+       Profile Market QUEST_ONLY vẫn cần hệ thống
+       để Quest có thể gọi Gian thương sau đó.
+    */
+
+    ensureDialogRoot();
 
 
-    await refresh();
-
-
-    window.dispatchEvent(
-        new CustomEvent(
-            "ocdNpcQuestReady",
-            {
-                detail:{
-                    version:
-                        CONFIG.version
-                }
-            }
-        )
-    );
+    await loadNpcData();
 
 }
 
@@ -2775,7 +2484,7 @@ async function init(){
    PUBLIC API
 ========================================================= */
 
-window.OCDNpcQuestSystem={
+window.OCDNpcSystem={
 
     version:
         CONFIG.version,
@@ -2785,89 +2494,76 @@ window.OCDNpcQuestSystem={
         init,
 
 
-    open:
-        openPanel,
-
-
-    close:
-        closePanel,
-
-
     refresh:
         refresh,
 
 
-    setStudent:
-        setStudent,
+    close:
+        closeDialog,
 
 
-    getStudent:function(){
+    setQuestNpc:
+        setQuestNpc,
+
+
+    clearQuestNpc:
+        clearQuestNpc,
+
+
+    getCurrentPage:function(){
 
         return(
-            state.student
-            ?
             Object.assign(
                 {},
-                state.student
+                state.pageRule ||
+                detectPage()
             )
-            :
-            null
         );
 
     },
 
 
-    getActiveQuest:function(){
+    getCurrentNpc:function(){
+
+        if(!state.currentNpc){
+            return null;
+        }
+
 
         return(
-            state.activeQuest
-            ?
             Object.assign(
                 {},
-                state.activeQuest
+                state.currentNpc
             )
-            :
-            null
         );
 
     },
 
 
-    getActiveNpc:function(){
+    getNpcs:function(){
 
         return(
-            state.activeNpc
-            ?
-            Object.assign(
-                {},
-                state.activeNpc
+            state.npcs.map(
+                function(npc){
+
+                    return(
+                        Object.assign(
+                            {},
+                            npc
+                        )
+                    );
+
+                }
             )
-            :
-            null
         );
 
-    },
-
-
-    validateQuestCode:
-        validateQuestCode,
-
-
-    completeQuest:
-        completeQuest,
-
-
-    /*
-       Chỉ phục vụ test phiên bản v1.
-    */
-    demoStartQuest:
-        demoStartQuest
+    }
 
 };
 
 
 /* =========================================================
-   AUTO START
+   AUTO INIT
 ========================================================= */
 
 if(
