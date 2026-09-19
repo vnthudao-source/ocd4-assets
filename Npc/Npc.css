@@ -1,435 +1,428 @@
 /* =========================================================
-   OCD NPC SYSTEM
-   Npc/Npc.css
-   v4.0.0
+   OCD NPC DISPLAY
+   CSS v5.3.1
+   EXTERNAL BUILD
 
-   NPC LÀ MỘT PHẦN CỦA DOCUMENT FLOW.
-   TUYỆT ĐỐI KHÔNG FIXED / FLOATING.
+   - NPC nằm trong document flow tại Footer Gadget
+   - Không floating launcher
+   - Chỉ modal sử dụng position:fixed
+   - Mobile responsive
 ========================================================= */
 
 
 /* =========================================================
-   MOUNT
+   ROOT
 ========================================================= */
 
 #ocdNpcMount{
-    --npc-ink:#302923;
-    --npc-muted:#786f66;
-    --npc-brown:#765344;
-    --npc-dark:#51372d;
-    --npc-gold:#b58440;
     --npc-paper:#fffdf8;
-    --npc-line:#e4d6c3;
+    --npc-paper-2:#f8f1e5;
+    --npc-ink:#342a22;
+    --npc-muted:#766b61;
+    --npc-brown:#765344;
+    --npc-brown-dark:#51372d;
+    --npc-gold:#b58440;
+    --npc-red:#963333;
+
+    width:100%;
+    max-width:1100px;
+    margin:28px auto;
+    padding:0 14px;
 
     position:relative !important;
 
-    display:block;
-
-    width:100%;
-    max-width:100%;
-
-    margin:0;
-    padding:0;
-
-    clear:both;
-
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
-
-    color:var(--npc-ink);
-
-    /*
-       QUAN TRỌNG:
-       Không cho CSS launcher cũ ảnh hưởng.
-    */
-    left:auto !important;
-    right:auto !important;
     top:auto !important;
+    right:auto !important;
     bottom:auto !important;
+    left:auto !important;
 
     transform:none !important;
-}
+    z-index:auto !important;
 
+    box-sizing:border-box;
 
-#ocdNpcMount:empty{
+    font-family:
+        Arial,
+        "Helvetica Neue",
+        sans-serif;
+
+    /*
+     * Mặc định ẩn.
+     * JS chỉ mở khi Quest Gate hợp lệ.
+     */
     display:none;
 }
 
 
-#ocdNpcMount *{
-    box-sizing:border-box;
-}
-
-
-/* =========================================================
-   NPC SCENE
-   NẰM TRỰC TIẾP TẠI GADGET
-========================================================= */
-
-#ocdNpcMount .ocd-npc-scene{
-    position:relative !important;
-
-    left:auto !important;
-    right:auto !important;
-    top:auto !important;
-    bottom:auto !important;
-
-    transform:none !important;
-
-    width:100%;
-    max-width:1100px;
-
-    min-height:190px;
-
-    margin:18px auto 10px;
-
-    padding:20px 16px 12px;
-
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-
-    overflow:hidden;
-
-    background:
-        radial-gradient(
-            ellipse at 50% 100%,
-            rgba(181,132,64,.13),
-            transparent 58%
-        );
-
-    border-top:
-        1px solid
-        rgba(181,132,64,.18);
-}
-
-
-/* nền đất */
-
-#ocdNpcMount .ocd-npc-scene::after{
-    content:"";
-
-    position:absolute;
-
-    left:50%;
-    bottom:8px;
-
-    width:190px;
-    height:25px;
-
-    transform:
-        translateX(-50%);
-
-    border-radius:50%;
-
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(52,38,27,.18),
-            transparent 70%
-        );
-
-    pointer-events:none;
-}
-
-
-/* =========================================================
-   NPC ACTOR
-
-   Không phải launcher.
-   Không phải avatar tròn.
-========================================================= */
-
-#ocdNpcMount .ocd-npc-actor{
-    position:relative !important;
-
-    z-index:2;
-
-    left:auto !important;
-    right:auto !important;
-    top:auto !important;
-    bottom:auto !important;
-
-    transform:none;
-
-    width:170px;
-
-    margin:0;
-    padding:0;
-
-    border:0;
-    outline:0;
-
-    background:transparent;
-
-    cursor:pointer;
-
-    text-align:center;
-
-    -webkit-tap-highlight-color:
-        transparent;
-}
-
-
-/* =========================================================
-   FULL NPC IMAGE
-========================================================= */
-
-#ocdNpcMount .ocd-npc-image{
-    position:relative;
-
-    width:138px;
-    height:138px;
-
-    margin:0 auto;
-
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-
-    overflow:visible;
-
-    transition:
-        transform .18s ease;
-}
-
-
-#ocdNpcMount
-.ocd-npc-actor:hover
-.ocd-npc-image{
-    transform:
-        translateY(-4px);
-}
-
-
-#ocdNpcMount .ocd-npc-image img{
-    display:block;
-
-    width:100%;
-    height:100%;
-
-    object-fit:contain;
-
-    object-position:
-        center bottom;
-
-    filter:
-        drop-shadow(
-            0 8px 7px
-            rgba(49,35,25,.18)
-        );
-}
-
-
-#ocdNpcMount .ocd-npc-fallback{
-    width:110px;
-    height:110px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    border-radius:50%;
-
-    background:#eee0ca;
-
-    color:var(--npc-brown);
-
-    font-family:Arial,sans-serif;
-    font-weight:900;
-}
-
-
-/* =========================================================
-   QUEST SYMBOL
-========================================================= */
-
-#ocdNpcMount .ocd-npc-symbol{
-    position:absolute;
-
-    z-index:5;
-
-    top:-4px;
-    right:7px;
-
-    width:31px;
-    height:31px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    border:
-        3px solid #fff;
-
-    border-radius:50%;
-
-    background:
-        var(--npc-gold);
-
-    color:#fff;
-
-    box-shadow:
-        0 4px 10px
-        rgba(50,35,25,.20);
-
-    font-family:Arial,sans-serif;
-    font-size:18px;
-    font-weight:900;
-}
-
-
-/* =========================================================
-   NPC NAME
-========================================================= */
-
-#ocdNpcMount .ocd-npc-name{
-    position:relative;
-    z-index:3;
-
-    display:inline-block;
-
-    margin-top:-2px;
-
-    padding:
-        5px 11px;
-
-    border:
-        1px solid
-        rgba(181,132,64,.35);
-
-    border-radius:999px;
-
-    background:
-        rgba(255,253,248,.95);
-
-    color:
-        var(--npc-dark);
-
-    box-shadow:
-        0 3px 9px
-        rgba(50,35,25,.08);
-
-    font-size:14px;
-    font-weight:700;
-}
-
-
-#ocdNpcMount .ocd-npc-talk{
-    display:block;
-
-    margin-top:5px;
-
-    color:
-        var(--npc-muted);
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size:9px;
-}
-
-
-/* =========================================================
-   DIALOG
-   CHỈ MODAL NÀY MỚI FIXED
-========================================================= */
-
-#ocdNpcDialogRoot{
-    position:relative;
-
-    z-index:2147482000;
-
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
-}
-
-
+#ocdNpcMount *,
 #ocdNpcDialogRoot *{
     box-sizing:border-box;
 }
 
 
+/* =========================================================
+   SCENE
+========================================================= */
+
+#ocdNpcMount .ocd-npc-scene{
+    width:100%;
+
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+
+    position:relative;
+
+    padding:20px 10px 8px;
+}
+
+
+/* =========================================================
+   CHARACTER
+========================================================= */
+
+#ocdNpcMount .ocd-npc-character{
+    position:relative;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+
+    width:min(100%,260px);
+
+    padding:0;
+    margin:0;
+
+    border:0;
+    background:none;
+
+    cursor:pointer;
+    user-select:none;
+
+    -webkit-tap-highlight-color:transparent;
+
+    outline:none;
+}
+
+
+#ocdNpcMount .ocd-npc-character:focus-visible{
+    outline:2px solid var(--npc-gold);
+    outline-offset:7px;
+
+    border-radius:18px;
+}
+
+
+/* =========================================================
+   SPEECH BUBBLE
+========================================================= */
+
+#ocdNpcMount .ocd-npc-bubble{
+    position:relative;
+
+    max-width:230px;
+
+    margin-bottom:10px;
+    padding:10px 14px;
+
+    border:1px solid #dfd0b8;
+    border-radius:14px;
+
+    background:rgba(255,253,248,.98);
+
+    color:var(--npc-ink);
+
+    font-size:13px;
+    line-height:1.5;
+    text-align:center;
+
+    box-shadow:
+        0 6px 20px rgba(70,52,30,.08);
+}
+
+
+#ocdNpcMount .ocd-npc-bubble:after{
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+    bottom:-7px;
+
+    width:12px;
+    height:12px;
+
+    background:var(--npc-paper);
+
+    border-right:1px solid #dfd0b8;
+    border-bottom:1px solid #dfd0b8;
+
+    transform:
+        translateX(-50%)
+        rotate(45deg);
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+#ocdNpcMount .ocd-npc-image-wrap{
+    position:relative;
+
+    width:150px;
+    height:170px;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+
+#ocdNpcMount .ocd-npc-image{
+    display:block;
+
+    max-width:150px;
+    max-height:170px;
+
+    width:auto;
+    height:auto;
+
+    object-fit:contain;
+    object-position:center bottom;
+
+    filter:
+        drop-shadow(
+            0 8px 7px rgba(55,40,25,.18)
+        );
+}
+
+
+/* =========================================================
+   FALLBACK
+========================================================= */
+
+#ocdNpcMount .ocd-npc-fallback{
+    width:128px;
+    height:150px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:1px solid #d9c39d;
+
+    border-radius:
+        60px 60px 22px 22px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f6ead4,
+            #e5cfaa
+        );
+
+    color:var(--npc-brown-dark);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:56px;
+    font-weight:700;
+
+    box-shadow:
+        0 10px 25px rgba(80,55,30,.12);
+}
+
+
+/* =========================================================
+   QUEST MARK
+========================================================= */
+
+#ocdNpcMount .ocd-npc-mark{
+    position:absolute;
+
+    top:-5px;
+    right:35px;
+
+    min-width:34px;
+    height:34px;
+
+    padding:0 8px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:3px solid #fff;
+    border-radius:999px;
+
+    background:var(--npc-red);
+
+    color:#fff;
+
+    font-size:20px;
+    font-weight:800;
+
+    box-shadow:
+        0 5px 14px rgba(80,55,30,.25);
+}
+
+
+/* =========================================================
+   NAME
+========================================================= */
+
+#ocdNpcMount .ocd-npc-name{
+    position:relative;
+
+    margin-top:-3px;
+
+    padding:7px 17px;
+
+    border:1px solid #d6bd91;
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fffdf8,
+            #f3e5cd
+        );
+
+    color:var(--npc-brown-dark);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:17px;
+    font-weight:700;
+    line-height:1.2;
+
+    box-shadow:
+        0 5px 16px rgba(70,52,30,.10);
+}
+
+
+/* =========================================================
+   HINT
+========================================================= */
+
+#ocdNpcMount .ocd-npc-hint{
+    margin-top:7px;
+
+    color:var(--npc-muted);
+
+    font-size:12px;
+    line-height:1.4;
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+@media (hover:hover){
+
+    #ocdNpcMount
+    .ocd-npc-character:hover
+    .ocd-npc-image-wrap{
+        transform:translateY(-3px);
+
+        transition:
+            transform .18s ease;
+    }
+
+}
+
+
+/* =========================================================
+   DIALOG ROOT
+========================================================= */
+
+#ocdNpcDialogRoot{
+    font-family:
+        Arial,
+        "Helvetica Neue",
+        sans-serif;
+}
+
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+
 #ocdNpcDialogRoot .ocd-npc-overlay{
+    display:none;
+
     position:fixed;
 
     inset:0;
 
-    display:none;
+    z-index:999998;
 
     background:
-        rgba(35,27,21,.50);
+        rgba(30,24,20,.48);
 
-    backdrop-filter:
-        blur(2px);
+    backdrop-filter:blur(2px);
 
-    -webkit-backdrop-filter:
-        blur(2px);
+    -webkit-backdrop-filter:blur(2px);
 }
 
 
-#ocdNpcDialogRoot
-.ocd-npc-overlay.is-open{
+#ocdNpcDialogRoot .ocd-npc-overlay.is-open{
     display:block;
 }
 
 
+/* =========================================================
+   DIALOG
+========================================================= */
+
 #ocdNpcDialogRoot .ocd-npc-dialog{
+    display:none;
+
     position:fixed;
+
+    z-index:999999;
 
     left:50%;
     top:50%;
 
     width:
         min(
-            520px,
-            calc(100vw - 24px)
+            calc(100% - 28px),
+            520px
         );
 
     max-height:
-        calc(100vh - 28px);
+        min(
+            82vh,
+            680px
+        );
 
-    overflow:hidden;
+    transform:
+        translate(-50%,-50%);
 
-    display:flex;
-    flex-direction:column;
+    overflow:auto;
 
-    border:
-        1px solid #e4d6c3;
-
-    border-radius:22px;
+    border:1px solid #dbc9aa;
+    border-radius:20px;
 
     background:#fffdf8;
 
     box-shadow:
-        0 25px 70px
-        rgba(31,22,16,.30);
-
-    opacity:0;
-    visibility:hidden;
-
-    transform:
-        translate(-50%,-47%)
-        scale(.98);
-
-    transition:
-        .18s ease;
+        0 24px 70px rgba(25,18,12,.28);
 }
 
 
-#ocdNpcDialogRoot
-.ocd-npc-dialog.is-open{
-    opacity:1;
-    visibility:visible;
-
-    transform:
-        translate(-50%,-50%)
-        scale(1);
+#ocdNpcDialogRoot .ocd-npc-dialog.is-open{
+    display:block;
 }
 
 
@@ -437,99 +430,107 @@
    DIALOG HEADER
 ========================================================= */
 
-.ocd-npc-dialog-header{
+#ocdNpcDialogRoot .ocd-npc-dialog-header{
     position:relative;
 
-    min-height:120px;
-
     padding:
-        18px
-        50px
-        16px
-        118px;
+        22px 55px
+        18px 22px;
 
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
+    display:grid;
+
+    grid-template-columns:
+        72px 1fr;
+
+    column-gap:14px;
+
+    align-items:center;
 
     border-bottom:
-        1px solid #e4d6c3;
+        1px solid #e5d9c8;
 
     background:
-        radial-gradient(
-            circle at 10% 0,
-            rgba(181,132,64,.20),
-            transparent 40%
-        ),
         linear-gradient(
             135deg,
             #fffaf1,
-            #f2e3cd
+            #f5e9d5
         );
 }
 
 
-.ocd-npc-dialog-picture{
-    position:absolute;
+#ocdNpcDialogRoot .ocd-npc-dialog-avatar{
+    grid-row:1 / span 2;
 
-    left:18px;
-    bottom:0;
-
-    width:82px;
-    height:105px;
-
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-}
-
-
-.ocd-npc-dialog-picture img{
-    width:100%;
-    height:100%;
-
-    object-fit:contain;
-
-    object-position:
-        center bottom;
-}
-
-
-.ocd-npc-dialog-name{
-    margin:0;
-
-    color:#51372d;
-
-    font-size:22px;
-    line-height:1.2;
-}
-
-
-.ocd-npc-dialog-place{
-    margin-top:5px;
-
-    color:#786f66;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size:10px;
-}
-
-
-.ocd-npc-close{
-    position:absolute;
-
-    right:12px;
-    top:12px;
-
-    width:35px;
-    height:35px;
+    width:72px;
+    height:72px;
 
     display:flex;
     align-items:center;
     justify-content:center;
+
+    overflow:hidden;
+
+    border:1px solid #d5bd95;
+    border-radius:50%;
+
+    background:#efe0c5;
+
+    color:#604326;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:30px;
+    font-weight:700;
+}
+
+
+#ocdNpcDialogRoot .ocd-npc-dialog-avatar img{
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+
+#ocdNpcDialogRoot .ocd-npc-dialog-name{
+    margin:0;
+
+    color:#51372d;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:22px;
+    line-height:1.25;
+}
+
+
+#ocdNpcDialogRoot .ocd-npc-dialog-place{
+    margin-top:4px;
+
+    color:#7a6d62;
+
+    font-size:12px;
+}
+
+
+/* =========================================================
+   CLOSE
+========================================================= */
+
+#ocdNpcDialogRoot .ocd-npc-close{
+    position:absolute;
+
+    top:13px;
+    right:13px;
+
+    width:36px;
+    height:36px;
 
     padding:0;
 
@@ -537,13 +538,14 @@
     border-radius:50%;
 
     background:
-        rgba(255,255,255,.8);
+        rgba(255,255,255,.75);
 
-    color:#786f66;
+    color:#604326;
 
     cursor:pointer;
 
-    font-size:20px;
+    font-size:25px;
+    line-height:36px;
 }
 
 
@@ -551,54 +553,37 @@
    DIALOG BODY
 ========================================================= */
 
-.ocd-npc-dialog-body{
-    overflow-y:auto;
-
-    padding:17px;
+#ocdNpcDialogRoot .ocd-npc-dialog-body{
+    padding:22px;
 }
 
 
-.ocd-npc-speech{
-    padding:
-        14px 15px;
+#ocdNpcDialogRoot .ocd-npc-dialog-speech{
+    padding:16px 17px;
 
-    border:
-        1px solid #e4d6c3;
+    border:1px solid #e1d2bb;
+    border-radius:14px;
 
-    border-radius:
-        4px
-        15px
-        15px
-        15px;
+    background:#faf5ec;
 
-    background:#fff;
+    color:#392f28;
 
-    color:#51473f;
-
-    font-size:14px;
-    line-height:1.65;
+    font-size:15px;
+    line-height:1.7;
 }
 
 
-.ocd-npc-dialog-note{
-    margin-top:12px;
+#ocdNpcDialogRoot .ocd-npc-dialog-note{
+    margin-top:15px;
+    padding-top:14px;
 
-    padding:
-        10px 12px;
+    border-top:
+        1px dashed #ded1bf;
 
-    border-radius:10px;
+    color:#7b7067;
 
-    background:#f6efe5;
-
-    color:#786f66;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size:10px;
-
-    line-height:1.55;
+    font-size:12px;
+    line-height:1.6;
 }
 
 
@@ -608,58 +593,56 @@
 
 @media(max-width:600px){
 
-    #ocdNpcMount .ocd-npc-scene{
-        min-height:160px;
+    #ocdNpcMount{
+        margin:20px auto;
 
-        margin-top:12px;
+        padding:0 8px;
+    }
 
-        padding-top:13px;
+
+    #ocdNpcMount .ocd-npc-image-wrap{
+        width:132px;
+        height:150px;
     }
 
 
     #ocdNpcMount .ocd-npc-image{
+        max-width:132px;
+        max-height:150px;
+    }
+
+
+    #ocdNpcMount .ocd-npc-fallback{
         width:112px;
-        height:112px;
+        height:132px;
+
+        font-size:48px;
     }
 
 
-    #ocdNpcMount .ocd-npc-actor{
-        width:145px;
-    }
-
-
-    #ocdNpcDialogRoot .ocd-npc-dialog{
-        width:
-            calc(100vw - 16px);
-
-        max-height:
-            calc(100vh - 16px);
-
-        border-radius:18px;
-    }
-
-
-    .ocd-npc-dialog-header{
-        min-height:105px;
+    #ocdNpcDialogRoot .ocd-npc-dialog-header{
+        grid-template-columns:
+            58px 1fr;
 
         padding:
-            15px
-            44px
-            14px
-            100px;
+            18px 50px
+            16px 17px;
     }
 
 
-    .ocd-npc-dialog-picture{
-        left:13px;
-
-        width:72px;
-        height:91px;
+    #ocdNpcDialogRoot .ocd-npc-dialog-avatar{
+        width:58px;
+        height:58px;
     }
 
 
-    .ocd-npc-dialog-name{
-        font-size:20px;
+    #ocdNpcDialogRoot .ocd-npc-dialog-name{
+        font-size:19px;
+    }
+
+
+    #ocdNpcDialogRoot .ocd-npc-dialog-body{
+        padding:17px;
     }
 
 }
