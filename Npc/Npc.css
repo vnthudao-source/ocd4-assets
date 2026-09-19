@@ -1,93 +1,181 @@
 /* =========================================================
-   OCD NPC QUEST SYSTEM
-   npc-quest.css
-   v1.0.0
+   OCD NPC SYSTEM
+   Npc/Npc.css
+   v3.0.0
 
-   - Gadget dùng chung toàn website
-   - Phong cách đồng bộ Hồ sơ / Chợ phiên
-   - Mobile first
-   - Không dùng HTML entity làm icon
-   - Không can thiệp CSS Minh Hồng
+   - NPC nằm đúng vị trí gadget #ocdNpcMount
+   - KHÔNG floating như Minh Hồng
+   - Click NPC mới mở cửa sổ giao tiếp
 ========================================================= */
 
+#ocdNpcMount,
+#ocdNpcDialogRoot{
+    --npc-ink:#302923;
+    --npc-muted:#786f66;
+    --npc-brown:#765344;
+    --npc-dark:#51372d;
+    --npc-gold:#b58440;
+    --npc-paper:#fffdf8;
+    --npc-paper2:#f7efe2;
+    --npc-line:#e4d6c3;
+    --npc-red:#963333;
+    --npc-green:#527257;
 
-/* =========================================================
-   ROOT VARIABLES
-========================================================= */
-
-#ocdNpcQuestRoot{
-    --nq-paper:#fffdf8;
-    --nq-paper-2:#f8f2e7;
-
-    --nq-ink:#302923;
-    --nq-muted:#786f66;
-
-    --nq-brown:#765344;
-    --nq-brown-dark:#51372d;
-
-    --nq-gold:#b58440;
-    --nq-gold-soft:#f5ead6;
-
-    --nq-red:#963333;
-    --nq-green:#4f6f52;
-
-    --nq-line:#e7ded3;
-
-    --nq-shadow:
-        0 14px 38px rgba(72,52,35,.16);
-
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
-
-    color:var(--nq-ink);
+    font-family:Georgia,"Times New Roman",serif;
+    color:var(--npc-ink);
 }
 
-
-#ocdNpcQuestRoot,
-#ocdNpcQuestRoot *{
+#ocdNpcMount *,
+#ocdNpcDialogRoot *{
     box-sizing:border-box;
 }
 
-
-#ocdNpcQuestRoot button,
-#ocdNpcQuestRoot input{
+#ocdNpcMount button,
+#ocdNpcDialogRoot button{
     font:inherit;
 }
 
 
 /* =========================================================
-   NPC FLOAT BUTTON
+   MOUNT
+
+   Chính vị trí gadget quyết định vị trí NPC.
 ========================================================= */
 
-#ocdNpcQuestRoot .nq-launcher{
-    position:fixed;
-
-    right:18px;
-    bottom:92px;
-
-    width:66px;
-    height:66px;
-
+#ocdNpcMount{
+    width:100%;
+    margin:0;
     padding:0;
+}
 
-    border:2px solid rgba(181,132,64,.8);
+#ocdNpcMount:empty{
+    display:none;
+}
+
+
+/* =========================================================
+   NPC AREA
+========================================================= */
+
+.ocd-npc-area{
+    position:relative;
+
+    width:100%;
+    max-width:1100px;
+
+    min-height:170px;
+
+    margin:20px auto;
+    padding:18px 16px 12px;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+
+    overflow:hidden;
+
+    border-top:1px solid rgba(181,132,64,.22);
+
+    background:
+        radial-gradient(
+            ellipse at center bottom,
+            rgba(181,132,64,.12),
+            transparent 58%
+        );
+}
+
+
+/* bóng dưới chân NPC */
+
+.ocd-npc-area::after{
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+    bottom:8px;
+
+    width:135px;
+    height:22px;
+
+    transform:translateX(-50%);
+
     border-radius:50%;
 
     background:
-        linear-gradient(
-            145deg,
-            #fffdf8,
-            #f2e4ca
+        radial-gradient(
+            ellipse,
+            rgba(54,38,26,.18),
+            transparent 70%
         );
 
-    box-shadow:
-        0 8px 26px rgba(66,45,28,.24);
+    pointer-events:none;
+}
+
+
+/* =========================================================
+   NPC CHARACTER
+========================================================= */
+
+.ocd-npc-character{
+    position:relative;
+    z-index:2;
+
+    width:145px;
+
+    padding:0;
+
+    border:0;
+    outline:0;
+
+    background:transparent;
 
     cursor:pointer;
 
-    z-index:2147482500;
+    text-align:center;
+
+    -webkit-tap-highlight-color:transparent;
+}
+
+
+/* =========================================================
+   NPC IMAGE
+========================================================= */
+
+.ocd-npc-avatar-wrap{
+    position:relative;
+
+    width:116px;
+    height:116px;
+
+    margin:0 auto 7px;
+}
+
+
+.ocd-npc-avatar{
+    width:116px;
+    height:116px;
+
+    overflow:hidden;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:3px solid rgba(255,255,255,.96);
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle at 50% 30%,
+            #fff,
+            #ead8bb
+        );
+
+    box-shadow:
+        0 7px 22px
+        rgba(63,43,28,.20);
 
     transition:
         transform .18s ease,
@@ -95,89 +183,138 @@
 }
 
 
-#ocdNpcQuestRoot .nq-launcher:hover{
-    transform:translateY(-2px);
+.ocd-npc-character:hover
+.ocd-npc-avatar{
+    transform:translateY(-4px);
 
     box-shadow:
-        0 12px 30px rgba(66,45,28,.28);
+        0 10px 27px
+        rgba(63,43,28,.25);
 }
 
 
-#ocdNpcQuestRoot .nq-launcher:active{
-    transform:scale(.96);
+.ocd-npc-character:active
+.ocd-npc-avatar{
+    transform:
+        translateY(-1px)
+        scale(.98);
 }
 
 
-#ocdNpcQuestRoot .nq-launcher-avatar{
-    position:absolute;
+.ocd-npc-avatar img{
+    display:block;
 
-    inset:4px;
-
-    overflow:hidden;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    border-radius:50%;
-
-    background:
-        radial-gradient(
-            circle at 50% 35%,
-            #fff,
-            #efe0c5
-        );
-}
-
-
-#ocdNpcQuestRoot .nq-launcher-avatar img{
     width:100%;
     height:100%;
-
-    display:block;
 
     object-fit:cover;
 }
 
 
-#ocdNpcQuestRoot .nq-launcher-fallback{
-    font-size:27px;
-    font-weight:700;
+.ocd-npc-avatar-fallback{
+    color:var(--npc-brown);
 
-    color:var(--nq-brown);
+    font-family:Arial,sans-serif;
+    font-size:17px;
+    font-weight:900;
 }
 
 
-#ocdNpcQuestRoot .nq-launcher-badge{
+/* =========================================================
+   QUEST MARK
+========================================================= */
+
+.ocd-npc-mark{
     position:absolute;
 
     right:-2px;
-    top:-2px;
+    top:-7px;
 
-    min-width:20px;
-    height:20px;
+    z-index:5;
 
-    padding:0 5px;
+    width:31px;
+    height:31px;
 
-    display:none;
+    display:flex;
     align-items:center;
     justify-content:center;
 
-    border:2px solid #fff;
-    border-radius:999px;
+    border:3px solid #fff;
 
-    background:var(--nq-red);
+    border-radius:50%;
+
+    background:var(--npc-gold);
 
     color:#fff;
 
+    box-shadow:
+        0 4px 12px
+        rgba(63,43,28,.20);
+
     font-family:Arial,sans-serif;
-    font-size:10px;
-    font-weight:800;
+    font-size:18px;
+    font-weight:900;
 }
 
 
-#ocdNpcQuestRoot .nq-launcher-badge.visible{
-    display:flex;
+.ocd-npc-mark.complete{
+    background:var(--npc-green);
+}
+
+
+/* =========================================================
+   NPC NAME
+========================================================= */
+
+.ocd-npc-name{
+    display:block;
+
+    color:var(--npc-dark);
+
+    font-size:15px;
+    font-weight:700;
+    line-height:1.25;
+}
+
+
+.ocd-npc-hint{
+    display:block;
+
+    margin-top:3px;
+
+    color:var(--npc-muted);
+
+    font-family:Arial,sans-serif;
+    font-size:9px;
+    line-height:1.4;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.ocd-npc-loading{
+    width:100%;
+
+    padding:16px;
+
+    color:var(--npc-muted);
+
+    text-align:center;
+
+    font-family:Arial,sans-serif;
+    font-size:10px;
+}
+
+
+/* =========================================================
+   DIALOG ROOT
+========================================================= */
+
+#ocdNpcDialogRoot{
+    position:relative;
+    z-index:2147482400;
 }
 
 
@@ -185,87 +322,74 @@
    OVERLAY
 ========================================================= */
 
-#ocdNpcQuestRoot .nq-overlay{
+.ocd-npc-overlay{
     position:fixed;
 
     inset:0;
 
     display:none;
 
-    background:
-        rgba(35,28,23,.35);
+    background:rgba(36,27,21,.52);
 
     backdrop-filter:blur(2px);
     -webkit-backdrop-filter:blur(2px);
-
-    z-index:2147482501;
 }
 
 
-#ocdNpcQuestRoot .nq-overlay.visible{
+.ocd-npc-overlay.visible{
     display:block;
 }
 
 
 /* =========================================================
-   MAIN PANEL
+   DIALOG
 ========================================================= */
 
-#ocdNpcQuestRoot .nq-panel{
+.ocd-npc-dialog{
     position:fixed;
 
-    right:18px;
-    bottom:18px;
+    left:50%;
+    top:50%;
 
-    width:min(
-        420px,
-        calc(100vw - 24px)
-    );
+    width:min(520px,calc(100vw - 24px));
 
-    max-height:
-        min(
-            720px,
-            calc(100vh - 32px)
-        );
+    max-height:min(700px,calc(100vh - 24px));
+
+    overflow:hidden;
 
     display:flex;
     flex-direction:column;
 
-    overflow:hidden;
-
-    border:
-        1px solid var(--nq-line);
+    border:1px solid var(--npc-line);
 
     border-radius:22px;
 
-    background:
-        var(--nq-paper);
+    background:var(--npc-paper);
 
     box-shadow:
-        var(--nq-shadow);
+        0 25px 70px
+        rgba(31,22,16,.32);
 
     opacity:0;
     visibility:hidden;
 
     transform:
-        translateY(18px)
+        translate(-50%,-47%)
         scale(.98);
 
     transition:
-        opacity .2s ease,
-        transform .2s ease,
-        visibility .2s;
-
-    z-index:2147482502;
+        opacity .18s ease,
+        transform .18s ease,
+        visibility .18s;
 }
 
 
-#ocdNpcQuestRoot .nq-panel.visible{
+.ocd-npc-dialog.visible{
     opacity:1;
     visibility:visible;
 
     transform:
-        translateY(0)
+        translate(-50%,-50%)
         scale(1);
 }
 
@@ -274,64 +398,45 @@
    HEADER
 ========================================================= */
 
-#ocdNpcQuestRoot .nq-head{
+.ocd-npc-dialog-head{
     position:relative;
 
-    min-height:116px;
+    min-height:118px;
 
     padding:
         18px
         50px
         16px
-        112px;
+        116px;
 
     display:flex;
     flex-direction:column;
     justify-content:center;
 
-    border-bottom:
-        1px solid var(--nq-line);
+    border-bottom:1px solid var(--npc-line);
 
     background:
         radial-gradient(
-            circle at 12% 0%,
-            rgba(181,132,64,.18),
-            transparent 36%
+            circle at 10% 0,
+            rgba(181,132,64,.22),
+            transparent 40%
         ),
         linear-gradient(
             135deg,
-            #fffaf0,
-            #f5ead8
+            #fffaf1,
+            #f2e3cd
         );
 }
 
 
-#ocdNpcQuestRoot .nq-avatar-wrap{
+.ocd-npc-dialog-avatar{
     position:absolute;
 
     left:18px;
-    top:16px;
+    top:17px;
 
-    width:78px;
-    height:78px;
-
-    padding:4px;
-
-    border:
-        1px solid rgba(181,132,64,.65);
-
-    border-radius:50%;
-
-    background:#fff;
-
-    box-shadow:
-        0 5px 16px rgba(70,48,31,.14);
-}
-
-
-#ocdNpcQuestRoot .nq-avatar{
-    width:100%;
-    height:100%;
+    width:80px;
+    height:80px;
 
     overflow:hidden;
 
@@ -339,80 +444,71 @@
     align-items:center;
     justify-content:center;
 
+    border:3px solid #fff;
+
     border-radius:50%;
 
-    background:
-        radial-gradient(
-            circle at 50% 35%,
-            #fff,
-            #efe1c9
-        );
+    background:#f1e2cb;
+
+    box-shadow:
+        0 6px 18px
+        rgba(65,44,28,.18);
 }
 
 
-#ocdNpcQuestRoot .nq-avatar img{
+.ocd-npc-dialog-avatar img{
+    display:block;
+
     width:100%;
     height:100%;
-
-    display:block;
 
     object-fit:cover;
 }
 
 
-#ocdNpcQuestRoot .nq-avatar-fallback{
-    font-size:30px;
-    font-weight:700;
+.ocd-npc-dialog-label{
+    margin-bottom:3px;
 
-    color:var(--nq-brown);
-}
-
-
-#ocdNpcQuestRoot .nq-role{
-    margin-bottom:4px;
-
-    color:var(--nq-gold);
+    color:var(--npc-gold);
 
     font-family:Arial,sans-serif;
     font-size:9px;
     font-weight:900;
 
-    letter-spacing:1.2px;
+    letter-spacing:1px;
 
     text-transform:uppercase;
 }
 
 
-#ocdNpcQuestRoot .nq-name{
+.ocd-npc-dialog-name{
     margin:0;
 
-    color:var(--nq-brown-dark);
+    color:var(--npc-dark);
 
     font-size:23px;
-    font-weight:700;
-
-    line-height:1.15;
+    line-height:1.2;
 }
 
 
-#ocdNpcQuestRoot .nq-location{
+.ocd-npc-dialog-place{
     margin-top:5px;
 
-    color:var(--nq-muted);
+    color:var(--npc-muted);
 
     font-family:Arial,sans-serif;
-    font-size:11px;
+    font-size:10px;
 }
 
 
-#ocdNpcQuestRoot .nq-close{
+.ocd-npc-close{
     position:absolute;
 
     right:12px;
     top:12px;
 
-    width:34px;
-    height:34px;
+    width:35px;
+    height:35px;
 
     padding:0;
 
@@ -421,25 +517,17 @@
     justify-content:center;
 
     border:0;
+
     border-radius:50%;
 
-    background:
-        rgba(255,255,255,.68);
+    background:rgba(255,255,255,.76);
 
-    color:var(--nq-muted);
+    color:var(--npc-muted);
 
     cursor:pointer;
 
     font-family:Arial,sans-serif;
     font-size:20px;
-    line-height:1;
-}
-
-
-#ocdNpcQuestRoot .nq-close:hover{
-    background:#fff;
-
-    color:var(--nq-brown-dark);
 }
 
 
@@ -447,41 +535,21 @@
    BODY
 ========================================================= */
 
-#ocdNpcQuestRoot .nq-body{
+.ocd-npc-dialog-body{
     overflow-y:auto;
+
+    padding:17px;
+
     overscroll-behavior:contain;
-
-    padding:16px;
 }
 
 
-#ocdNpcQuestRoot .nq-body::-webkit-scrollbar{
-    width:5px;
-}
-
-
-#ocdNpcQuestRoot .nq-body::-webkit-scrollbar-thumb{
-    border-radius:999px;
-
-    background:#d6c7b4;
-}
-
-
-/* =========================================================
-   NPC SPEECH
-========================================================= */
-
-#ocdNpcQuestRoot .nq-speech{
+.ocd-npc-speech{
     position:relative;
 
-    margin-bottom:14px;
+    padding:14px 15px;
 
-    padding:
-        14px
-        15px;
-
-    border:
-        1px solid var(--nq-line);
+    border:1px solid var(--npc-line);
 
     border-radius:
         4px
@@ -491,424 +559,74 @@
 
     background:#fff;
 
-    color:var(--nq-ink);
+    color:#51473f;
 
     font-size:14px;
     line-height:1.65;
 }
 
 
-#ocdNpcQuestRoot .nq-speech strong{
-    color:var(--nq-brown-dark);
-}
-
-
 /* =========================================================
-   STATUS
+   QUEST BOX
 ========================================================= */
 
-#ocdNpcQuestRoot .nq-status{
-    margin-bottom:12px;
+.ocd-npc-quest-box{
+    margin-top:13px;
 
-    padding:
-        9px
-        11px;
-
-    display:flex;
-    align-items:center;
-
-    gap:8px;
-
-    border-radius:10px;
-
-    background:#f7f2e9;
-
-    color:var(--nq-muted);
-
-    font-family:Arial,sans-serif;
-    font-size:11px;
-    font-weight:700;
-}
-
-
-#ocdNpcQuestRoot .nq-status-dot{
-    width:8px;
-    height:8px;
-
-    flex:0 0 8px;
-
-    border-radius:50%;
-
-    background:#aaa;
-}
-
-
-#ocdNpcQuestRoot .nq-status.active
-.nq-status-dot{
-    background:var(--nq-gold);
-}
-
-
-#ocdNpcQuestRoot .nq-status.completed
-.nq-status-dot{
-    background:var(--nq-green);
-}
-
-
-/* =========================================================
-   QUEST CARD
-========================================================= */
-
-#ocdNpcQuestRoot .nq-quest{
     overflow:hidden;
 
-    margin-top:12px;
+    border:1px solid #dfd0bb;
 
-    border:
-        1px solid #ddcfbb;
-
-    border-radius:16px;
+    border-radius:15px;
 
     background:
         linear-gradient(
             180deg,
-            #fffdf9,
-            #faf4e9
+            #fffdf8,
+            #f8f0e3
         );
 }
 
 
-#ocdNpcQuestRoot .nq-quest-head{
-    padding:
-        13px
-        14px;
+.ocd-npc-quest-head{
+    padding:11px 13px;
 
-    border-bottom:
-        1px solid #e9dece;
+    border-bottom:1px solid #e7dac8;
 
-    background:
-        rgba(181,132,64,.08);
+    background:rgba(181,132,64,.08);
 }
 
 
-#ocdNpcQuestRoot .nq-quest-kicker{
-    margin-bottom:4px;
-
-    color:var(--nq-gold);
-
-    font-family:Arial,sans-serif;
-    font-size:9px;
-    font-weight:900;
-
-    letter-spacing:1px;
-
-    text-transform:uppercase;
-}
-
-
-#ocdNpcQuestRoot .nq-quest-title{
-    margin:0;
-
-    color:var(--nq-brown-dark);
-
-    font-size:18px;
-    line-height:1.35;
-}
-
-
-#ocdNpcQuestRoot .nq-quest-content{
-    padding:14px;
-}
-
-
-#ocdNpcQuestRoot .nq-quest-description{
-    margin-bottom:13px;
-
-    color:#554b43;
-
-    font-size:13px;
-    line-height:1.65;
-}
-
-
-#ocdNpcQuestRoot .nq-objective{
-    margin-bottom:12px;
-
-    padding:
-        11px
-        12px;
-
-    border-left:
-        3px solid var(--nq-gold);
-
-    background:#fff;
-
-    color:#554b43;
-
-    font-family:Arial,sans-serif;
-    font-size:12px;
-    line-height:1.55;
-}
-
-
-#ocdNpcQuestRoot .nq-objective-title{
-    display:block;
-
+.ocd-npc-quest-label{
     margin-bottom:3px;
 
-    color:var(--nq-brown-dark);
-
-    font-size:10px;
-    font-weight:900;
-
-    text-transform:uppercase;
-}
-
-
-/* =========================================================
-   REWARD
-========================================================= */
-
-#ocdNpcQuestRoot .nq-reward{
-    margin-top:10px;
-
-    padding-top:11px;
-
-    border-top:
-        1px dashed #ddcfbb;
-}
-
-
-#ocdNpcQuestRoot .nq-reward-label{
-    margin-bottom:7px;
-
-    color:var(--nq-muted);
+    color:var(--npc-gold);
 
     font-family:Arial,sans-serif;
     font-size:9px;
     font-weight:900;
 
     letter-spacing:.7px;
-
-    text-transform:uppercase;
 }
 
 
-#ocdNpcQuestRoot .nq-reward-list{
-    display:flex;
-    flex-wrap:wrap;
+.ocd-npc-quest-title{
+    margin:0;
 
-    gap:6px;
+    color:var(--npc-dark);
+
+    font-size:17px;
+    line-height:1.35;
 }
 
 
-#ocdNpcQuestRoot .nq-reward-chip{
-    padding:
-        6px
-        9px;
+.ocd-npc-quest-content{
+    padding:13px;
 
-    border:
-        1px solid #e0d0b6;
+    color:#554a41;
 
-    border-radius:999px;
-
-    background:#fffaf0;
-
-    color:var(--nq-brown-dark);
-
-    font-family:Arial,sans-serif;
-    font-size:10px;
-    font-weight:800;
-}
-
-
-/* =========================================================
-   QUEST CODE
-========================================================= */
-
-#ocdNpcQuestRoot .nq-code-box{
-    margin-top:13px;
-
-    padding:12px;
-
-    border:
-        1px dashed #c7aa7c;
-
-    border-radius:12px;
-
-    background:#fffaf1;
-
-    text-align:center;
-}
-
-
-#ocdNpcQuestRoot .nq-code-label{
-    margin-bottom:6px;
-
-    color:var(--nq-muted);
-
-    font-family:Arial,sans-serif;
-    font-size:9px;
-    font-weight:900;
-
-    letter-spacing:.8px;
-
-    text-transform:uppercase;
-}
-
-
-#ocdNpcQuestRoot .nq-code{
-    color:var(--nq-brown-dark);
-
-    font-family:
-        "Courier New",
-        monospace;
-
-    font-size:19px;
-    font-weight:900;
-
-    letter-spacing:1px;
-
-    word-break:break-all;
-}
-
-
-/* =========================================================
-   CODE INPUT
-========================================================= */
-
-#ocdNpcQuestRoot .nq-return{
-    margin-top:13px;
-}
-
-
-#ocdNpcQuestRoot .nq-return-label{
-    display:block;
-
-    margin-bottom:6px;
-
-    color:var(--nq-brown-dark);
-
-    font-family:Arial,sans-serif;
-    font-size:10px;
-    font-weight:900;
-}
-
-
-#ocdNpcQuestRoot .nq-input{
-    width:100%;
-
-    min-height:44px;
-
-    padding:
-        10px
-        12px;
-
-    border:
-        1px solid #d9ccba;
-
-    border-radius:10px;
-
-    outline:none;
-
-    background:#fff;
-
-    color:var(--nq-ink);
-
-    font-family:
-        "Courier New",
-        monospace;
-
-    font-size:14px;
-    font-weight:700;
-
-    text-transform:uppercase;
-}
-
-
-#ocdNpcQuestRoot .nq-input:focus{
-    border-color:var(--nq-gold);
-
-    box-shadow:
-        0 0 0 3px
-        rgba(181,132,64,.10);
-}
-
-
-/* =========================================================
-   BUTTONS
-========================================================= */
-
-#ocdNpcQuestRoot .nq-actions{
-    display:flex;
-    flex-wrap:wrap;
-
-    gap:8px;
-
-    margin-top:13px;
-}
-
-
-#ocdNpcQuestRoot .nq-btn{
-    min-height:42px;
-
-    flex:1 1 120px;
-
-    padding:
-        9px
-        13px;
-
-    border:
-        1px solid var(--nq-brown);
-
-    border-radius:10px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #85604c,
-            #674636
-        );
-
-    color:#fff;
-
-    cursor:pointer;
-
-    font-family:Arial,sans-serif;
-    font-size:11px;
-    font-weight:900;
-
-    transition:
-        transform .15s ease,
-        opacity .15s ease;
-}
-
-
-#ocdNpcQuestRoot .nq-btn:hover{
-    transform:translateY(-1px);
-}
-
-
-#ocdNpcQuestRoot .nq-btn:active{
-    transform:translateY(0);
-}
-
-
-#ocdNpcQuestRoot .nq-btn.secondary{
-    border-color:#d7c7b1;
-
-    background:#fff;
-
-    color:var(--nq-brown-dark);
-}
-
-
-#ocdNpcQuestRoot .nq-btn:disabled{
-    opacity:.5;
-
-    cursor:not-allowed;
-
-    transform:none;
+    font-size:13px;
+    line-height:1.65;
 }
 
 
@@ -916,82 +634,20 @@
    MESSAGE
 ========================================================= */
 
-#ocdNpcQuestRoot .nq-message{
-    display:none;
+.ocd-npc-status{
+    margin-top:12px;
 
-    margin-top:11px;
+    padding:11px 12px;
 
-    padding:
-        10px
-        11px;
+    border-radius:10px;
 
-    border-radius:9px;
+    background:#f5efe5;
 
-    font-family:Arial,sans-serif;
-    font-size:11px;
-    line-height:1.5;
-}
-
-
-#ocdNpcQuestRoot .nq-message.visible{
-    display:block;
-}
-
-
-#ocdNpcQuestRoot .nq-message.info{
-    background:#f4efe8;
-
-    color:#65584d;
-}
-
-
-#ocdNpcQuestRoot .nq-message.success{
-    background:#edf6ee;
-
-    color:#3e6843;
-}
-
-
-#ocdNpcQuestRoot .nq-message.error{
-    background:#fbebea;
-
-    color:#913b35;
-}
-
-
-/* =========================================================
-   EMPTY
-========================================================= */
-
-#ocdNpcQuestRoot .nq-empty{
-    padding:
-        22px
-        14px;
-
-    text-align:center;
-
-    color:var(--nq-muted);
-
-    font-size:13px;
-    line-height:1.65;
-}
-
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-#ocdNpcQuestRoot .nq-loading{
-    padding:
-        22px
-        14px;
-
-    text-align:center;
-
-    color:var(--nq-muted);
+    color:var(--npc-muted);
 
     font-family:Arial,sans-serif;
-    font-size:11px;
+    font-size:10px;
+    line-height:1.55;
 }
 
 
@@ -1001,61 +657,66 @@
 
 @media(max-width:600px){
 
-    #ocdNpcQuestRoot .nq-launcher{
-        right:12px;
-        bottom:82px;
+    .ocd-npc-area{
+        min-height:145px;
 
-        width:58px;
-        height:58px;
+        margin:14px auto;
+
+        padding:
+            14px
+            10px
+            9px;
     }
 
 
-    #ocdNpcQuestRoot .nq-panel{
-        right:8px;
-        bottom:8px;
+    .ocd-npc-character{
+        width:120px;
+    }
 
-        width:
-            calc(100vw - 16px);
 
-        max-height:
-            calc(100vh - 16px);
+    .ocd-npc-avatar-wrap,
+    .ocd-npc-avatar{
+        width:94px;
+        height:94px;
+    }
+
+
+    .ocd-npc-dialog{
+        width:calc(100vw - 16px);
+
+        max-height:calc(100vh - 16px);
 
         border-radius:18px;
     }
 
 
-    #ocdNpcQuestRoot .nq-head{
+    .ocd-npc-dialog-head{
         min-height:104px;
 
         padding:
             15px
-            45px
+            43px
             14px
-            96px;
+            99px;
     }
 
 
-    #ocdNpcQuestRoot .nq-avatar-wrap{
+    .ocd-npc-dialog-avatar{
         left:14px;
         top:15px;
 
-        width:68px;
-        height:68px;
+        width:70px;
+        height:70px;
     }
 
 
-    #ocdNpcQuestRoot .nq-name{
+    .ocd-npc-dialog-name{
         font-size:20px;
     }
 
 
-    #ocdNpcQuestRoot .nq-body{
+    .ocd-npc-dialog-body{
         padding:13px;
-    }
-
-
-    #ocdNpcQuestRoot .nq-speech{
-        font-size:13px;
     }
 
 }
@@ -1067,10 +728,8 @@
 
 @media(prefers-reduced-motion:reduce){
 
-    #ocdNpcQuestRoot *,
-    #ocdNpcQuestRoot *::before,
-    #ocdNpcQuestRoot *::after{
-        scroll-behavior:auto !important;
+    #ocdNpcMount *,
+    #ocdNpcDialogRoot *{
         transition:none !important;
         animation:none !important;
     }
