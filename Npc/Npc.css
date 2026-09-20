@@ -1,30 +1,40 @@
 /* =========================================================
    OCD NPC FIXED
-   NPC.css v5.4.1
+   Npc.css v5.4.2
 
-   BASE:
-   v5.4.0 CLEAN INLINE BUILD
+   CLEAN EXTERNAL CSS
 
-   VỊ TRÍ:
-   - Desktop: trái 18px / dưới 96px
-   - Mobile: trái 11px / dưới 105px
-   - Đối xứng với vị trí Minh Hồng
+   NGUYÊN TẮC:
+   - CSS KHÔNG quyết định NPC hiện / ẩn.
+   - Không có display:none trên NPC root.
+   - JS là nơi duy nhất điều khiển trạng thái hiển thị.
+   - NPC cố định góc trái màn hình.
+   - Vị trí cân đối với Minh Hồng.
+   - Namespace riêng để hạn chế xung đột Blogger.
 
-   NAMESPACE:
-   #ocdNpcFixedApp
-   #ocdNpcFixedOverlay
-   #ocdNpcFixedDialog
-   .ocd53-*
+   DESKTOP:
+   left:18px
+   bottom:96px
+
+   MOBILE:
+   left:11px
+   bottom:105px
 ========================================================= */
 
 
 /* =========================================================
-   ROOT
+   NPC ROOT
+
+   QUAN TRỌNG:
+   KHÔNG thêm display:none ở đây.
+   KHÔNG thêm display:block ở đây.
+
+   JS sẽ tự điều khiển:
+   root.style.display = "none"
+   root.style.display = "block"
 ========================================================= */
 
 #ocdNpcFixedApp{
-    all:initial;
-
     position:fixed !important;
 
     left:18px !important;
@@ -32,13 +42,20 @@
 
     z-index:2147483000 !important;
 
-    display:none;
-
     width:auto !important;
     height:auto !important;
 
+    max-width:none !important;
+    max-height:none !important;
+
     margin:0 !important;
     padding:0 !important;
+
+    border:0 !important;
+
+    background:transparent !important;
+
+    box-shadow:none !important;
 
     pointer-events:none;
 
@@ -46,8 +63,14 @@
         Arial,
         Helvetica,
         sans-serif !important;
+
+    line-height:normal !important;
 }
 
+
+/* =========================================================
+   BOX MODEL RESET CHỈ TRONG NPC
+========================================================= */
 
 #ocdNpcFixedApp,
 #ocdNpcFixedApp *{
@@ -63,27 +86,34 @@
     position:relative !important;
 
     display:flex !important;
+
     flex-direction:column !important;
     align-items:flex-start !important;
+    justify-content:flex-end !important;
 
     width:150px !important;
 
+    min-width:0 !important;
+    max-width:150px !important;
+
     margin:0 !important;
     padding:0 !important;
+
+    border:0 !important;
+
+    background:transparent !important;
+
+    box-shadow:none !important;
 
     pointer-events:auto !important;
 
     cursor:pointer !important;
 
-    background:transparent !important;
-
-    border:0 !important;
-
-    box-shadow:none !important;
-
     outline:0;
 
     user-select:none;
+
+    -webkit-user-select:none;
 
     -webkit-tap-highlight-color:
         transparent;
@@ -93,7 +123,8 @@
 #ocdNpcFixedApp
 .ocd53-character:focus-visible{
     outline:
-        2px solid #b58440 !important;
+        2px solid
+        #b58440 !important;
 
     outline-offset:
         4px !important;
@@ -112,6 +143,9 @@
 
     display:block !important;
 
+    width:auto !important;
+
+    min-width:0 !important;
     max-width:150px !important;
 
     margin:
@@ -166,14 +200,21 @@
     letter-spacing:
         normal !important;
 
+    white-space:
+        normal !important;
+
     box-shadow:
         0 4px 14px
         rgba(65,45,28,.12) !important;
 }
 
 
+/* =========================================================
+   SPEECH BUBBLE ARROW
+========================================================= */
+
 #ocdNpcFixedApp
-.ocd53-bubble:after{
+.ocd53-bubble::after{
     content:"" !important;
 
     position:absolute !important;
@@ -184,8 +225,13 @@
     width:10px !important;
     height:10px !important;
 
+    margin:0 !important;
+    padding:0 !important;
+
     background:
         #fffdf8 !important;
+
+    border:0 !important;
 
     border-right:
         1px solid
@@ -215,15 +261,25 @@
     width:105px !important;
     height:105px !important;
 
+    min-width:105px !important;
+    min-height:105px !important;
+
+    max-width:105px !important;
+    max-height:105px !important;
+
     margin:0 !important;
     padding:0 !important;
+
+    border:0 !important;
 
     background:
         transparent !important;
 
-    border:0 !important;
+    box-shadow:
+        none !important;
 
-    overflow:visible !important;
+    overflow:
+        visible !important;
 }
 
 
@@ -232,25 +288,26 @@
 ========================================================= */
 
 #ocdNpcFixedApp .ocd53-avatar{
+    position:relative !important;
+
     display:block !important;
 
     width:105px !important;
     height:105px !important;
 
-    min-width:0 !important;
-    max-width:none !important;
+    min-width:105px !important;
+    min-height:105px !important;
 
-    min-height:0 !important;
-    max-height:none !important;
+    max-width:105px !important;
+    max-height:105px !important;
 
     margin:0 !important;
     padding:0 !important;
 
-    object-fit:contain !important;
-    object-position:center bottom !important;
-
     border:0 !important;
-    border-radius:0 !important;
+
+    border-radius:
+        0 !important;
 
     background:
         transparent !important;
@@ -258,9 +315,20 @@
     box-shadow:
         none !important;
 
-    opacity:1 !important;
+    object-fit:
+        contain !important;
 
-    transform:none !important;
+    object-position:
+        center bottom !important;
+
+    opacity:
+        1 !important;
+
+    visibility:
+        visible !important;
+
+    transform:
+        none !important;
 }
 
 
@@ -269,6 +337,8 @@
 ========================================================= */
 
 #ocdNpcFixedApp .ocd53-fallback{
+    position:relative !important;
+
     display:flex !important;
 
     align-items:center !important;
@@ -276,6 +346,12 @@
 
     width:88px !important;
     height:88px !important;
+
+    min-width:88px !important;
+    min-height:88px !important;
+
+    max-width:88px !important;
+    max-height:88px !important;
 
     margin:0 !important;
     padding:0 !important;
@@ -303,6 +379,9 @@
 
     font-weight:
         700 !important;
+
+    font-style:
+        normal !important;
 
     line-height:
         1 !important;
@@ -334,12 +413,15 @@
     width:29px !important;
     height:29px !important;
 
+    min-width:29px !important;
+    min-height:29px !important;
+
     margin:0 !important;
     padding:0 !important;
 
     border:
         2px solid
-        #fff !important;
+        #ffffff !important;
 
     border-radius:
         50% !important;
@@ -348,7 +430,7 @@
         #a54135 !important;
 
     color:
-        #fff !important;
+        #ffffff !important;
 
     font-family:
         Arial,
@@ -365,7 +447,7 @@
         normal !important;
 
     line-height:
-        1 !important;
+        25px !important;
 
     text-align:
         center !important;
@@ -373,6 +455,9 @@
     box-shadow:
         0 3px 10px
         rgba(0,0,0,.20) !important;
+
+    pointer-events:
+        none !important;
 }
 
 
@@ -381,9 +466,14 @@
 ========================================================= */
 
 #ocdNpcFixedApp .ocd53-name{
+    position:relative !important;
+
     display:block !important;
 
     width:105px !important;
+
+    min-width:0 !important;
+    max-width:105px !important;
 
     margin:
         4px
@@ -392,6 +482,11 @@
         0 !important;
 
     padding:0 !important;
+
+    border:0 !important;
+
+    background:
+        transparent !important;
 
     color:
         #51372d !important;
@@ -425,6 +520,9 @@
     letter-spacing:
         normal !important;
 
+    white-space:
+        normal !important;
+
     text-shadow:
         0 1px 2px
         rgba(255,255,255,.9) !important;
@@ -432,12 +530,15 @@
 
 
 /* =========================================================
-   OVERLAY
+   DIALOG OVERLAY
+
+   Modal có quyền dùng display:none vì trạng thái
+   modal được điều khiển bằng class .ocd53-open.
+
+   Điều này KHÔNG liên quan tới root NPC.
 ========================================================= */
 
 #ocdNpcFixedOverlay{
-    all:initial;
-
     position:fixed !important;
 
     inset:0 !important;
@@ -446,6 +547,14 @@
         2147483001 !important;
 
     display:none;
+
+    width:auto !important;
+    height:auto !important;
+
+    margin:0 !important;
+    padding:0 !important;
+
+    border:0 !important;
 
     background:
         rgba(31,24,19,.56) !important;
@@ -462,8 +571,6 @@
 ========================================================= */
 
 #ocdNpcFixedDialog{
-    all:initial;
-
     position:fixed !important;
 
     left:50% !important;
@@ -483,13 +590,14 @@
     max-height:
         calc(100vh - 40px) !important;
 
-    overflow:auto !important;
+    margin:0 !important;
+    padding:0 !important;
+
+    overflow:
+        auto !important;
 
     transform:
         translate(-50%,-50%) !important;
-
-    margin:0 !important;
-    padding:0 !important;
 
     border:
         1px solid
@@ -538,6 +646,8 @@
 .ocd53-dialog-header{
     position:relative !important;
 
+    display:block !important;
+
     min-height:
         90px !important;
 
@@ -548,6 +658,8 @@
         54px
         16px
         18px !important;
+
+    border:0 !important;
 
     border-bottom:
         1px solid
@@ -564,6 +676,8 @@
 
 #ocdNpcFixedDialog
 .ocd53-dialog-avatar{
+    position:relative !important;
+
     float:left !important;
 
     display:flex !important;
@@ -574,6 +688,9 @@
     width:66px !important;
     height:66px !important;
 
+    min-width:66px !important;
+    min-height:66px !important;
+
     margin:
         0
         13px
@@ -582,7 +699,8 @@
 
     padding:0 !important;
 
-    overflow:hidden !important;
+    overflow:
+        hidden !important;
 
     border:
         1px solid
@@ -608,10 +726,17 @@
     font-weight:
         700 !important;
 
+    font-style:
+        normal !important;
+
     line-height:
         1 !important;
 }
 
+
+/* =========================================================
+   DIALOG AVATAR IMAGE
+========================================================= */
 
 #ocdNpcFixedDialog
 .ocd53-dialog-avatar img{
@@ -629,16 +754,28 @@
     margin:0 !important;
     padding:0 !important;
 
+    border:0 !important;
+
+    border-radius:
+        0 !important;
+
+    background:
+        transparent !important;
+
     object-fit:
         cover !important;
 
     object-position:
         center !important;
 
-    border:0 !important;
-    border-radius:0 !important;
+    box-shadow:
+        none !important;
 
-    box-shadow:none !important;
+    opacity:
+        1 !important;
+
+    visibility:
+        visible !important;
 }
 
 
@@ -648,6 +785,8 @@
 
 #ocdNpcFixedDialog
 .ocd53-dialog-name{
+    display:block !important;
+
     margin:
         5px
         0
@@ -655,6 +794,11 @@
         0 !important;
 
     padding:0 !important;
+
+    border:0 !important;
+
+    background:
+        transparent !important;
 
     color:
         #51372d !important;
@@ -687,8 +831,15 @@
 
 #ocdNpcFixedDialog
 .ocd53-dialog-place{
+    display:block !important;
+
     margin:0 !important;
     padding:0 !important;
+
+    border:0 !important;
+
+    background:
+        transparent !important;
 
     color:
         #8b7767 !important;
@@ -704,8 +855,14 @@
     font-weight:
         400 !important;
 
+    font-style:
+        normal !important;
+
     line-height:
         1.5 !important;
+
+    text-transform:
+        none !important;
 }
 
 
@@ -727,6 +884,9 @@
 
     width:34px !important;
     height:34px !important;
+
+    min-width:34px !important;
+    min-height:34px !important;
 
     margin:0 !important;
     padding:0 !important;
@@ -755,10 +915,20 @@
     font-weight:
         400 !important;
 
+    font-style:
+        normal !important;
+
     line-height:
         1 !important;
 
-    box-shadow:none !important;
+    text-align:
+        center !important;
+
+    box-shadow:
+        none !important;
+
+    appearance:none !important;
+    -webkit-appearance:none !important;
 }
 
 
@@ -768,12 +938,18 @@
 
 #ocdNpcFixedDialog
 .ocd53-dialog-body{
+    position:relative !important;
+
     clear:both !important;
+
+    display:block !important;
 
     margin:0 !important;
 
     padding:
         18px !important;
+
+    border:0 !important;
 
     background:
         transparent !important;
@@ -786,6 +962,8 @@
 
 #ocdNpcFixedDialog
 .ocd53-speech{
+    display:block !important;
+
     margin:0 !important;
 
     padding:
@@ -822,19 +1000,31 @@
     line-height:
         1.65 !important;
 
-    text-align:left !important;
+    text-align:
+        left !important;
+
+    text-decoration:
+        none !important;
 
     text-transform:
         none !important;
+
+    letter-spacing:
+        normal !important;
+
+    white-space:
+        normal !important;
 }
 
 
 /* =========================================================
-   NOTE
+   DIALOG NOTE
 ========================================================= */
 
 #ocdNpcFixedDialog
 .ocd53-note{
+    display:block !important;
+
     margin:
         11px
         0
@@ -842,6 +1032,11 @@
         0 !important;
 
     padding:0 !important;
+
+    border:0 !important;
+
+    background:
+        transparent !important;
 
     color:
         #8b7767 !important;
@@ -857,14 +1052,28 @@
     font-weight:
         400 !important;
 
+    font-style:
+        normal !important;
+
     line-height:
         1.5 !important;
+
+    text-align:
+        left !important;
 }
 
 
 /* =========================================================
    MOBILE
-   Đồng bộ độ cao với Minh Hồng
+
+   Cùng độ cao với Minh Hồng:
+   Minh Hồng:
+   right:11px;
+   bottom:105px;
+
+   NPC:
+   left:11px;
+   bottom:105px;
 ========================================================= */
 
 @media(max-width:600px){
@@ -878,6 +1087,9 @@
     #ocdNpcFixedApp
     .ocd53-character{
         width:125px !important;
+
+        max-width:
+            125px !important;
     }
 
 
@@ -885,6 +1097,12 @@
     .ocd53-avatar-wrap{
         width:90px !important;
         height:90px !important;
+
+        min-width:90px !important;
+        min-height:90px !important;
+
+        max-width:90px !important;
+        max-height:90px !important;
     }
 
 
@@ -892,6 +1110,12 @@
     .ocd53-avatar{
         width:90px !important;
         height:90px !important;
+
+        min-width:90px !important;
+        min-height:90px !important;
+
+        max-width:90px !important;
+        max-height:90px !important;
     }
 
 
@@ -899,6 +1123,12 @@
     .ocd53-fallback{
         width:76px !important;
         height:76px !important;
+
+        min-width:76px !important;
+        min-height:76px !important;
+
+        max-width:76px !important;
+        max-height:76px !important;
 
         font-size:
             32px !important;
@@ -908,6 +1138,9 @@
     #ocdNpcFixedApp
     .ocd53-name{
         width:90px !important;
+
+        max-width:
+            90px !important;
 
         font-size:
             12px !important;
@@ -921,6 +1154,15 @@
 
         font-size:
             11px !important;
+    }
+
+
+    #ocdNpcFixedDialog{
+        width:
+            calc(100% - 20px) !important;
+
+        max-height:
+            calc(100dvh - 24px) !important;
     }
 
 }
