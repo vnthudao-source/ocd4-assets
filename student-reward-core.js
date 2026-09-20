@@ -2,60 +2,25 @@
 
 "use strict";
 
-/* =========================================================
-   OCD KNOWLEDGE ENGINE
-   v1.1.0
-
-   KIẾN TRÚC:
-   ---------------------------------------------------------
-   NopBaiLuyenTap
-        ↓
-   Submission Adapter
-        ↓
-   Normalizer
-        ↓
-   Exercise / Curriculum Resolver
-        ↓
-   Evidence Engine
-        ↓
-   Error Engine
-        ↓
-   Mastery Engine
-        ↓
-   Student Knowledge State
-        ↓
-   Minh Hồng / Tra cứu / Quest
-
-   NGUYÊN TẮC:
-   ---------------------------------------------------------
-   - KHÔNG sửa StudentRewardSystem.
-   - KHÔNG cộng/trừ Linh Thạch.
-   - KHÔNG quản lý vật phẩm.
-   - KHÔNG ghi Google Sheet.
-   - Reward Core vẫn là nguồn sự thật tài sản.
-   - Knowledge Engine là nguồn sự thật học tập.
-========================================================= */
-
 
 /* =========================================================
-   GUARD
+   KHÔNG KHỞI TẠO LẶP
 ========================================================= */
 
 if(
-    window.OCD &&
-    window.OCD.knowledge &&
-    window.OCD.knowledge.version
+    window.StudentRewardSystem &&
+    window.StudentRewardSystem.version
 ){
 
     try{
 
         window.dispatchEvent(
             new CustomEvent(
-                "ocdKnowledgeEngineReady",
+                "studentRewardCoreReady",
                 {
                     detail:{
                         version:
-                            window.OCD.knowledge.version
+                            window.StudentRewardSystem.version
                     }
                 }
             )
@@ -71,7 +36,8 @@ if(
    VERSION
 ========================================================= */
 
-const VERSION="1.1.0";
+const VERSION=
+    "3.6.0";
 
 
 /* =========================================================
@@ -80,204 +46,393 @@ const VERSION="1.1.0";
 
 const CONFIG={
 
-    /*
-       FILE NopBaiLuyenTap thật.
-    */
     spreadsheetId:
-        "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
+        "1-IkcpEkKQtIavl5DIf6Sbwx3p0aAfnSS4HjT6dn1u_E",
 
-    submissionSheetName:
-        "Form Responses 1",
+    giftGid:
+        "0",
 
-    gradingSheetName:
-        "ChamDiem",
+    npcGid:
+        "1348051654",
+
+
+    /*
+       Giao dịch Chợ phiên.
+    */
+    formSheetName:
+        "PhieuDoi",
+
+
+    /*
+       Quà giáo viên tặng.
+    */
+    teacherGiftSheetName:
+        "QuaTangGVCN",
+
+
+    formConfirmValue:
+        "Tôi xác nhận đổi món quà này",
+
+    studentCsv:
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?output=csv",
 
     timeZone:
         "Asia/Ho_Chi_Minh",
 
+    marketCurrency:
+        "hongNgoc",
+
+    avatarGiftPrefix:
+        "Thẻ đổi Avatar",
+
+    avatarFramePrefix:
+        "Khung ",
+
+    profileBackgroundPrefix:
+        "Nền hồ sơ ",
+
+    multitaskPotionGiftName:
+        "Thuốc đa nhiệm",
+
+    mysteryBoxGiftName:
+        "Hộp quà bí ẩn",
+
+    mysteryRewardColumn:
+        "Quà nhận được",
+
     cacheTtl:
-        30000,
+        15000
+};
 
-    maxEvidencePerNode:
-        5,
 
-    recencyWeights:[
-        1.00,
-        0.85,
-        0.70,
-        0.55,
-        0.40
-    ],
+/* =========================================================
+   CONSTANT
+========================================================= */
 
-    evidenceWeights:{
+const ONE_DAY=
+    24 * 60 * 60 * 1000;
 
-        PRIMARY:1.00,
 
-        SECONDARY:0.50,
+/* =========================================================
+   ICONS
+========================================================= */
 
-        INCIDENTAL:0.25
+const ICONS={
+
+    user:
+        String.fromCodePoint(
+            0x1F464
+        ),
+
+    gift:
+        String.fromCodePoint(
+            0x1F381
+        ),
+
+    seed:
+        String.fromCodePoint(
+            0x1F331
+        ),
+
+    medal:
+        String.fromCodePoint(
+            0x1F3C5
+        ),
+
+    tree:
+        String.fromCodePoint(
+            0x1F333
+        ),
+
+    fire:
+        String.fromCodePoint(
+            0x1F525
+        ),
+
+    star:
+        String.fromCodePoint(
+            0x2B50
+        ),
+
+    target:
+        String.fromCodePoint(
+            0x1F3AF
+        ),
+
+    rocket:
+        String.fromCodePoint(
+            0x1F680
+        ),
+
+    sparkles:
+        String.fromCodePoint(
+            0x2728
+        ),
+
+    eagle:
+        String.fromCodePoint(
+            0x1F985
+        ),
+
+    crown:
+        String.fromCodePoint(
+            0x1F451
+        ),
+
+    box:
+        String.fromCodePoint(
+            0x1F4E6
+        ),
+
+    gem:
+        String.fromCodePoint(
+            0x1F48E
+        )
+};
+
+
+/* =========================================================
+   GEM TYPES
+========================================================= */
+
+const GEM_TYPES={
+
+    hoangNgoc:{
+
+        key:"hoangNgoc",
+
+        displayName:
+            "Hoàng Ngọc",
+
+        className:
+            "gem-hoang",
+
+        image:
+            "1w28sOWzHppnD9AzudfcwxLK9T7-DJMfp"
     },
 
-    confidenceWeights:{
 
-        VERY_HIGH:1.00,
+    haiLamNgoc:{
 
-        HIGH:0.90,
+        key:"haiLamNgoc",
 
-        MEDIUM:0.70,
+        displayName:
+            "Hải Lam Ngọc",
 
-        LOW:0.40
+        className:
+            "gem-hailam",
+
+        image:
+            "1ZMMPqWp5Qi-qUU5_rZoJXz7CnxUsmBV0"
+    },
+
+
+    thachAnhTim:{
+
+        key:"thachAnhTim",
+
+        displayName:
+            "Thạch Anh Tím",
+
+        className:
+            "gem-thachanh",
+
+        image:
+            "1fFkMfitQcIj5lSBthnIttyEw3B1MwStw"
+    },
+
+
+    lamBaoThach:{
+
+        key:"lamBaoThach",
+
+        displayName:
+            "Lam Bảo Thạch",
+
+        className:
+            "gem-lambao",
+
+        image:
+            "1aCYy67a4Zw-buU_Q6CaZH_zBtvRyM2AE"
+    },
+
+
+    lucThach:{
+
+        key:"lucThach",
+
+        displayName:
+            "Lục Thạch",
+
+        className:
+            "gem-luc",
+
+        image:
+            "1xGRw4wu4YhavP57uN8VJuJkEWKQnQaq3"
+    },
+
+
+    hongNgoc:{
+
+        key:"hongNgoc",
+
+        displayName:
+            "Hồng Ngọc",
+
+        className:
+            "gem-hong",
+
+        image:
+            "1H7QqdmKcZl-S39T8r7Kp8Vql2aKgHXVn"
     }
 };
 
 
+const GEM_ORDER=[
+
+    "hoangNgoc",
+    "haiLamNgoc",
+    "thachAnhTim",
+    "lamBaoThach",
+    "lucThach",
+    "hongNgoc"
+
+];
+
+
 /* =========================================================
-   STATES
+   RARITY
 ========================================================= */
 
-const MASTERY_STATES={
+const RARITY_TYPES={
 
-    LOCKED:"LOCKED",
+    phoThong:{
 
-    AVAILABLE:"AVAILABLE",
+        key:"phoThong",
 
-    LEARNING:"LEARNING",
+        displayName:
+            "Phổ thông",
 
-    PRACTICING:"PRACTICING",
+        gemType:
+            "hoangNgoc",
 
-    ACHIEVED:"ACHIEVED",
+        rank:1
+    },
 
-    STABLE:"STABLE",
 
-    MASTERED:"MASTERED",
+    trungPham:{
 
-    REVIEW:"REVIEW"
+        key:"trungPham",
+
+        displayName:
+            "Trung phẩm",
+
+        gemType:
+            "haiLamNgoc",
+
+        rank:2
+    },
+
+
+    trungThuongPham:{
+
+        key:"trungThuongPham",
+
+        displayName:
+            "Trung thượng phẩm",
+
+        gemType:
+            "thachAnhTim",
+
+        rank:3
+    },
+
+
+    thuongPham:{
+
+        key:"thuongPham",
+
+        displayName:
+            "Thượng phẩm",
+
+        gemType:
+            "lamBaoThach",
+
+        rank:4
+    },
+
+
+    caoCap:{
+
+        key:"caoCap",
+
+        displayName:
+            "Cao cấp",
+
+        gemType:
+            "lucThach",
+
+        rank:5
+    },
+
+
+    cucPham:{
+
+        key:"cucPham",
+
+        displayName:
+            "Cực phẩm",
+
+        gemType:
+            "hongNgoc",
+
+        rank:6
+    }
 };
 
 
-const MASTERY_RANK={
+const RARITY_ORDER=[
 
-    LOCKED:0,
+    "phoThong",
+    "trungPham",
+    "trungThuongPham",
+    "thuongPham",
+    "caoCap",
+    "cucPham"
 
-    AVAILABLE:1,
-
-    LEARNING:2,
-
-    PRACTICING:3,
-
-    ACHIEVED:4,
-
-    STABLE:5,
-
-    MASTERED:6,
-
-    REVIEW:3
-};
+];
 
 
-const QUALITY_STATES={
+/* =========================================================
+   GEM CONVERSION
 
-    NOT_PERFORMED:"NOT_PERFORMED",
+   GIỮ ĐÚNG CÔNG THỨC HỆ THỐNG
+========================================================= */
 
-    INITIAL:"INITIAL",
+const GEM_CONVERSION={
 
-    FORMING:"FORMING",
+    hoangNgocToLuc:
+        5,
 
-    UNSTABLE:"UNSTABLE",
+    haiLamNgocToLuc:
+        4,
 
-    BASIC:"BASIC",
+    thachAnhTimToLuc:
+        3,
 
-    DEVELOPING:"DEVELOPING",
+    lamBaoThachToLuc:
+        2,
 
-    GOOD:"GOOD",
-
-    VERY_GOOD:"VERY_GOOD",
-
-    EXCELLENT:"EXCELLENT",
-
-    OUTSTANDING:"OUTSTANDING"
-};
-
-
-const TREND_STATES={
-
-    STRONG_IMPROVEMENT:
-        "STRONG_IMPROVEMENT",
-
-    IMPROVING:
-        "IMPROVING",
-
-    STABLE:
-        "STABLE",
-
-    FLUCTUATING:
-        "FLUCTUATING",
-
-    DECLINING:
-        "DECLINING",
-
-    UNKNOWN:
-        "UNKNOWN"
-};
-
-
-const STABILITY_STATES={
-
-    LOW:"LOW",
-
-    DEVELOPING:"DEVELOPING",
-
-    MODERATE:"MODERATE",
-
-    HIGH:"HIGH",
-
-    VERY_HIGH:"VERY_HIGH"
-};
-
-
-const CONFIDENCE_STATES={
-
-    LOW:"LOW",
-
-    MEDIUM:"MEDIUM",
-
-    HIGH:"HIGH",
-
-    VERY_HIGH:"VERY_HIGH"
-};
-
-
-const ERROR_SEVERITIES={
-
-    MINOR:"MINOR",
-
-    MEDIUM:"MEDIUM",
-
-    MAJOR:"MAJOR",
-
-    BLOCKING:"BLOCKING"
-};
-
-
-const ERROR_LIFECYCLE={
-
-    NEW:"NEW",
-
-    REPEATED:"REPEATED",
-
-    PERSISTENT:"PERSISTENT",
-
-    IMPROVING:"IMPROVING",
-
-    RESOLVED:"RESOLVED"
+    lucThachToHong:
+        3
 };
 
 
 /* =========================================================
-   BASIC FALLBACK UTILITIES
+   BASIC
 ========================================================= */
 
-function fallbackNormalizeText(value){
+function normalizeText(value){
 
     return String(
         value === undefined ||
@@ -297,18 +452,13 @@ function fallbackNormalizeText(value){
         "d"
     )
     .replace(
-        /[^a-z0-9\s\-]/g,
-        " "
-    )
-    .replace(
         /\s+/g,
         " "
-    )
-    .trim();
+    );
 }
 
 
-function fallbackNormalizeCode(value){
+function normalizeCode(value){
 
     return String(
         value === undefined ||
@@ -321,72 +471,74 @@ function fallbackNormalizeCode(value){
 }
 
 
-function normalizeText(value){
-
-    const RS=
-        window.StudentRewardSystem;
+function parseNumber(value){
 
     if(
-        RS &&
-        typeof RS.normalizeText ===
-        "function"
+        value === null ||
+        value === undefined ||
+        value === ""
     ){
 
-        return RS.normalizeText(value);
+        return 0;
     }
 
-    return fallbackNormalizeText(value);
-}
 
+    let text=
+        String(value)
+        .trim()
+        .replace(
+            /\s+/g,
+            ""
+        );
 
-function normalizeCode(value){
-
-    const RS=
-        window.StudentRewardSystem;
 
     if(
-        RS &&
-        typeof RS.normalizeCode ===
-        "function"
+        text.includes(",") &&
+        !text.includes(".")
     ){
 
-        return RS.normalizeCode(value);
+        text=
+            text.replace(
+                ",",
+                "."
+            );
     }
 
-    return fallbackNormalizeCode(value);
+
+    const number=
+        Number(text);
+
+
+    return Number.isFinite(number)
+        ? number
+        : 0;
 }
 
 
 function parseScore(value){
 
-    const RS=
-        window.StudentRewardSystem;
-
-    if(
-        RS &&
-        typeof RS.parseScore ===
-        "function"
-    ){
-
-        return RS.parseScore(value);
-    }
-
-
     if(
         value === null ||
-        value === undefined ||
-        String(value).trim() === ""
+        value === undefined
     ){
 
         return null;
     }
 
 
+    const text=
+        String(value)
+        .trim();
+
+
+    if(!text){
+
+        return null;
+    }
+
+
     const number=
-        Number(
-            String(value)
-            .replace(",",".")
-        );
+        parseNumber(text);
 
 
     return Number.isFinite(number)
@@ -395,188 +547,42 @@ function parseScore(value){
 }
 
 
-function parseDate(value){
+function formatNumber(value){
 
-    const RS=
-        window.StudentRewardSystem;
-
-    if(
-        RS &&
-        typeof RS.parseVietnameseDate ===
-        "function"
-    ){
-
-        return RS.parseVietnameseDate(value);
-    }
-
-
-    const date=
-        new Date(value);
-
-
-    return Number.isNaN(
-        date.getTime()
-    )
-        ? null
-        : date;
-}
-
-
-function round(
-    value,
-    decimals
-){
-
-    const factor=
-        Math.pow(
-            10,
-            decimals === undefined
-                ? 2
-                : decimals
+    const number=
+        Number(
+            value || 0
         );
 
 
-    return Math.round(
-        Number(value || 0) *
-        factor
-    ) / factor;
-}
+    if(
+        Number.isInteger(number)
+    ){
+
+        return String(number);
+    }
 
 
-function clamp(
-    value,
-    min,
-    max
-){
-
-    return Math.max(
-        min,
-        Math.min(
-            max,
-            value
-        )
+    return String(
+        Math.round(
+            number * 100
+        ) / 100
     );
 }
 
 
 /* =========================================================
-   CSV / SHEET
+   COLUMN
 ========================================================= */
-
-function sheetUrl(sheetName){
-
-    const RS=
-        window.StudentRewardSystem;
-
-
-    if(
-        RS &&
-        typeof RS.sheetNameCsvUrl ===
-        "function"
-    ){
-
-        return RS.sheetNameCsvUrl(
-            sheetName,
-            CONFIG.spreadsheetId
-        );
-    }
-
-
-    return(
-        "https://docs.google.com/spreadsheets/d/"
-        +
-        encodeURIComponent(
-            CONFIG.spreadsheetId
-        )
-        +
-        "/gviz/tq?tqx=out:csv&sheet="
-        +
-        encodeURIComponent(
-            sheetName
-        )
-    );
-}
-
-
-async function fetchRows(sheetName){
-
-    const RS=
-        window.StudentRewardSystem;
-
-
-    if(
-        RS &&
-        typeof RS.fetchRows ===
-        "function"
-    ){
-
-        return RS.fetchRows(
-            sheetUrl(sheetName)
-        );
-    }
-
-
-    const response=
-        await fetch(
-            sheetUrl(sheetName),
-            {
-                cache:"no-store"
-            }
-        );
-
-
-    if(!response.ok){
-
-        throw new Error(
-            "Không tải được dữ liệu Knowledge Engine."
-        );
-    }
-
-
-    const text=
-        await response.text();
-
-
-    if(
-        RS &&
-        typeof RS.parseCSV ===
-        "function"
-    ){
-
-        return RS.parseCSV(text);
-    }
-
-
-    throw new Error(
-        "StudentRewardSystem.parseCSV chưa sẵn sàng."
-    );
-}
-
 
 function findColumn(
     headers,
     aliases
 ){
 
-    const RS=
-        window.StudentRewardSystem;
-
-
-    if(
-        RS &&
-        typeof RS.findColumn ===
-        "function"
-    ){
-
-        return RS.findColumn(
-            headers,
-            aliases
-        );
-    }
-
-
-    const normalized=
-        headers.map(
+    const normalizedHeaders=
+        (headers || [])
+        .map(
             normalizeText
         );
 
@@ -594,13 +600,50 @@ function findColumn(
 
 
         const exact=
-            normalized.indexOf(
+            normalizedHeaders
+            .indexOf(
                 wanted
             );
 
 
-        if(exact >= 0){
+        if(
+            exact >= 0
+        ){
+
             return exact;
+        }
+    }
+
+
+    for(
+        let i=0;
+        i<aliases.length;
+        i++
+    ){
+
+        const wanted=
+            normalizeText(
+                aliases[i]
+            );
+
+
+        const found=
+            normalizedHeaders
+            .findIndex(
+                function(header){
+
+                    return header.includes(
+                        wanted
+                    );
+                }
+            );
+
+
+        if(
+            found >= 0
+        ){
+
+            return found;
         }
     }
 
@@ -610,2702 +653,1183 @@ function findColumn(
 
 
 /* =========================================================
-   KNOWLEDGE REGISTRY
-   45 NODES
+   CSV
 ========================================================= */
 
-const KNOWLEDGE_NODES=[
-
-/* K01 */
-
-{
-    id:"K01.01",
-    domain:"K01",
-    name:"Khái niệm thư pháp",
-    prerequisites:[]
-},
-
-{
-    id:"K01.02",
-    domain:"K01",
-    name:"Viết và vẽ chữ",
-    prerequisites:["K01.01"]
-},
-
-{
-    id:"K01.03",
-    domain:"K01",
-    name:"Hình – Kỹ – Ý – Thần",
-    prerequisites:["K01.01"]
-},
-
-{
-    id:"K01.04",
-    domain:"K01",
-    name:"Tính tự nhiên",
-    prerequisites:["K01.02","K01.03"]
-},
-
-
-/* K02 */
-
-{
-    id:"K02.01",
-    domain:"K02",
-    name:"Bút lông",
-    prerequisites:[]
-},
-
-{
-    id:"K02.02",
-    domain:"K02",
-    name:"Mực",
-    prerequisites:[]
-},
-
-{
-    id:"K02.03",
-    domain:"K02",
-    name:"Giấy",
-    prerequisites:[]
-},
-
-{
-    id:"K02.04",
-    domain:"K02",
-    name:"Phối hợp bút–mực–giấy",
-    prerequisites:[
-        "K02.01",
-        "K02.02",
-        "K02.03"
-    ]
-},
-
-
-/* K03 */
-
-{
-    id:"K03.01",
-    domain:"K03",
-    name:"Cầm bút",
-    prerequisites:[]
-},
-
-{
-    id:"K03.02",
-    domain:"K03",
-    name:"Khởi bút",
-    prerequisites:["K03.01"]
-},
-
-{
-    id:"K03.03",
-    domain:"K03",
-    name:"Hành bút",
-    prerequisites:["K03.01"]
-},
-
-{
-    id:"K03.04",
-    domain:"K03",
-    name:"Thu bút",
-    prerequisites:[
-        "K03.02",
-        "K03.03"
-    ]
-},
-
-{
-    id:"K03.05",
-    domain:"K03",
-    name:"Điều phong",
-    prerequisites:[
-        "K03.02",
-        "K03.03"
-    ]
-},
-
-{
-    id:"K03.06",
-    domain:"K03",
-    name:"Bút lực",
-    prerequisites:["K03.03"]
-},
-
-{
-    id:"K03.07",
-    domain:"K03",
-    name:"Chuyển hướng",
-    prerequisites:[
-        "K03.03",
-        "K03.05"
-    ]
-},
-
-
-/* K04 */
-
-{
-    id:"K04.01",
-    domain:"K04",
-    name:"Lộ phong",
-    prerequisites:[
-        "K03.02",
-        "K03.05"
-    ]
-},
-
-{
-    id:"K04.02",
-    domain:"K04",
-    name:"Tàng phong",
-    prerequisites:[
-        "K03.02",
-        "K03.05"
-    ]
-},
-
-{
-    id:"K04.03",
-    domain:"K04",
-    name:"Viên bút",
-    prerequisites:[
-        "K03.05",
-        "K03.06"
-    ]
-},
-
-{
-    id:"K04.04",
-    domain:"K04",
-    name:"Phương bút",
-    prerequisites:[
-        "K03.05",
-        "K03.06"
-    ]
-},
-
-{
-    id:"K04.05",
-    domain:"K04",
-    name:"Liên tục đường bút",
-    prerequisites:[
-        "K03.03",
-        "K03.07"
-    ]
-},
-
-{
-    id:"K04.06",
-    domain:"K04",
-    name:"Biến hóa bút pháp",
-    prerequisites:[
-        "K04.01",
-        "K04.02",
-        "K04.03",
-        "K04.04"
-    ]
-},
-
-
-/* K05 */
-
-{
-    id:"K05.01",
-    domain:"K05",
-    name:"Tỷ lệ chữ",
-    prerequisites:[]
-},
-
-{
-    id:"K05.02",
-    domain:"K05",
-    name:"Trọng tâm",
-    prerequisites:["K05.01"]
-},
-
-{
-    id:"K05.03",
-    domain:"K05",
-    name:"Kết cấu chữ",
-    prerequisites:[
-        "K05.01",
-        "K05.02"
-    ]
-},
-
-{
-    id:"K05.04",
-    domain:"K05",
-    name:"Biến hóa hình thái",
-    prerequisites:["K05.03"]
-},
-
-
-/* K06 */
-
-{
-    id:"K06.01",
-    domain:"K06",
-    name:"Quan sát mẫu",
-    prerequisites:[]
-},
-
-{
-    id:"K06.02",
-    domain:"K06",
-    name:"Lâm hình",
-    prerequisites:[
-        "K06.01",
-        "K05.01"
-    ]
-},
-
-{
-    id:"K06.03",
-    domain:"K06",
-    name:"Lâm bút pháp",
-    prerequisites:[
-        "K06.01",
-        "K03.05"
-    ]
-},
-
-{
-    id:"K06.04",
-    domain:"K06",
-    name:"Lâm ý",
-    prerequisites:[
-        "K06.02",
-        "K06.03"
-    ]
-},
-
-
-/* K07 */
-
-{
-    id:"K07.01",
-    domain:"K07",
-    name:"Đường cơ sở",
-    prerequisites:[]
-},
-
-{
-    id:"K07.02",
-    domain:"K07",
-    name:"Khoảng cách chữ",
-    prerequisites:["K07.01"]
-},
-
-{
-    id:"K07.03",
-    domain:"K07",
-    name:"Kích thước chữ",
-    prerequisites:["K05.01"]
-},
-
-{
-    id:"K07.04",
-    domain:"K07",
-    name:"Trục chữ",
-    prerequisites:["K05.02"]
-},
-
-{
-    id:"K07.05",
-    domain:"K07",
-    name:"Cân bằng động–tĩnh",
-    prerequisites:[
-        "K07.02",
-        "K07.03",
-        "K07.04"
-    ]
-},
-
-{
-    id:"K07.06",
-    domain:"K07",
-    name:"Bố cục tác phẩm",
-    prerequisites:[
-        "K07.01",
-        "K07.02",
-        "K07.03",
-        "K07.04",
-        "K07.05"
-    ]
-},
-
-
-/* K08 */
-
-{
-    id:"K08.01",
-    domain:"K08",
-    name:"Khô–nhuận",
-    prerequisites:["K02.04"]
-},
-
-{
-    id:"K08.02",
-    domain:"K08",
-    name:"Tốc độ hành bút",
-    prerequisites:["K03.03"]
-},
-
-{
-    id:"K08.03",
-    domain:"K08",
-    name:"Tiết tấu",
-    prerequisites:[
-        "K08.02",
-        "K03.07"
-    ]
-},
-
-{
-    id:"K08.04",
-    domain:"K08",
-    name:"Phi bạch",
-    prerequisites:[
-        "K08.01",
-        "K08.02"
-    ]
-},
-
-
-/* K09 */
-
-{
-    id:"K09.01",
-    domain:"K09",
-    name:"Tự nhiên trong nét",
-    prerequisites:[
-        "K03.05",
-        "K03.06"
-    ]
-},
-
-{
-    id:"K09.02",
-    domain:"K09",
-    name:"Biểu đạt",
-    prerequisites:[
-        "K01.03",
-        "K09.01"
-    ]
-},
-
-{
-    id:"K09.03",
-    domain:"K09",
-    name:"Thần thái",
-    prerequisites:[
-        "K09.01",
-        "K09.02"
-    ]
-},
-
-
-/* K10 */
-
-{
-    id:"K10.01",
-    domain:"K10",
-    name:"Sáng tác chữ đơn",
-    prerequisites:[
-        "K05.03",
-        "K04.06"
-    ]
-},
-
-{
-    id:"K10.02",
-    domain:"K10",
-    name:"Sáng tác cụm chữ",
-    prerequisites:[
-        "K10.01",
-        "K07.02"
-    ]
-},
-
-{
-    id:"K10.03",
-    domain:"K10",
-    name:"Tác phẩm hoàn chỉnh",
-    prerequisites:[
-        "K10.02",
-        "K07.06",
-        "K09.03"
-    ]
-},
-
-{
-    id:"K10.04",
-    domain:"K10",
-    name:"Tự đánh giá",
-    prerequisites:["K10.01"]
-},
-
-{
-    id:"K10.05",
-    domain:"K10",
-    name:"Đánh giá tác phẩm",
-    prerequisites:[
-        "K10.03",
-        "K10.04"
-    ]
-}
-
-];
-
-
-/* =========================================================
-   KNOWLEDGE MAP
-========================================================= */
-
-const KNOWLEDGE_MAP=
-    new Map();
-
-
-KNOWLEDGE_NODES.forEach(
-    function(node){
-
-        KNOWLEDGE_MAP.set(
-            node.id,
-            Object.assign(
-                {
-                    questEligible:true,
-
-                    questTypes:[
-                        "learn",
-                        "practice",
-                        "improve",
-                        "master"
-                    ]
-                },
-                node
-            )
+function parseCSV(text){
+
+    text=
+        String(
+            text || ""
         );
-    }
-);
 
 
-/* =========================================================
-   EXERCISE REGISTRY
-   37 STANDARD EXERCISES
-========================================================= */
+    const rows=[];
 
-const EXERCISES=[
+    let row=[];
+    let value="";
+    let quoted=false;
 
-{
- id:"EX03-01",
- name:"Cầm bút",
- primary:["K03.01"],
- secondary:[],
- aliases:[
-    "cam but",
-    "bai cam but"
- ]
-},
 
-{
- id:"EX03-02",
- name:"Khởi–hành–thu bút",
- primary:[
-    "K03.02",
-    "K03.03"
- ],
- secondary:["K03.04"],
- aliases:[
-    "khoi hanh thu but",
-    "khoi but hanh but thu but"
- ]
-},
-
-{
- id:"EX03-03",
- name:"Điều phong",
- primary:["K03.05"],
- secondary:["K03.03"],
- aliases:[
-    "dieu phong",
-    "bai dieu phong"
- ]
-},
-
-{
- id:"EX03-04",
- name:"Bút lực",
- primary:["K03.06"],
- secondary:["K03.03"],
- aliases:[
-    "but luc",
-    "bai but luc"
- ]
-},
-
-{
- id:"EX03-05",
- name:"Thu bút",
- primary:["K03.04"],
- secondary:[],
- aliases:[
-    "thu but",
-    "bai thu but"
- ]
-},
-
-
-{
- id:"EX04-01",
- name:"Lộ phong",
- primary:["K04.01"],
- secondary:[
-    "K03.02",
-    "K03.05"
- ],
- aliases:[
-    "lo phong",
-    "bai lo phong",
-    "nop bai lo phong"
- ]
-},
-
-{
- id:"EX04-02",
- name:"Tàng phong",
- primary:["K04.02"],
- secondary:[
-    "K03.02",
-    "K03.05"
- ],
- aliases:[
-    "tang phong",
-    "bai tang phong",
-    "nop bai tang phong"
- ]
-},
-
-{
- id:"EX04-03",
- name:"Viên bút",
- primary:["K04.03"],
- secondary:[
-    "K03.05",
-    "K03.06"
- ],
- aliases:[
-    "vien but",
-    "bai vien but",
-    "bai tap vien but",
-    "bai tap ve nha cu vien but"
- ]
-},
-
-{
- id:"EX04-04",
- name:"Phương bút",
- primary:["K04.04"],
- secondary:[
-    "K03.05",
-    "K03.06"
- ],
- aliases:[
-    "phuong but",
-    "bai phuong but"
- ]
-},
-
-{
- id:"EX04-05",
- name:"Chuyển hướng",
- primary:["K03.07"],
- secondary:[
-    "K04.05"
- ],
- aliases:[
-    "chuyen huong",
-    "bai chuyen huong"
- ]
-},
-
-{
- id:"EX04-06",
- name:"Phối hợp bút pháp",
- primary:["K04.06"],
- secondary:[
-    "K04.01",
-    "K04.02",
-    "K04.03",
-    "K04.04"
- ],
- aliases:[
-    "phoi hop but phap",
-    "but phap tong hop"
- ]
-},
-
-
-{
- id:"EX05-01",
- name:"Tỷ lệ chữ",
- primary:["K05.01"],
- secondary:[],
- aliases:[
-    "ty le chu"
- ]
-},
-
-{
- id:"EX05-02",
- name:"Trọng tâm chữ",
- primary:["K05.02"],
- secondary:[],
- aliases:[
-    "trong tam",
-    "trong tam chu"
- ]
-},
-
-{
- id:"EX05-03",
- name:"Kết cấu chữ",
- primary:["K05.03"],
- secondary:[],
- aliases:[
-    "ket cau",
-    "ket cau chu"
- ]
-},
-
-{
- id:"EX05-04",
- name:"Biến hóa hình thái",
- primary:["K05.04"],
- secondary:[],
- aliases:[
-    "bien hoa hinh thai"
- ]
-},
-
-
-{
- id:"EX06-01",
- name:"Lâm mô chữ đơn",
- primary:[
-    "K06.01",
-    "K06.02"
- ],
- secondary:["K05.03"],
- aliases:[
-    "lam mo chu don"
- ]
-},
-
-{
- id:"EX06-02",
- name:"Lâm mô bút pháp",
- primary:["K06.03"],
- secondary:[
-    "K03.05",
-    "K04.06"
- ],
- aliases:[
-    "lam mo but phap"
- ]
-},
-
-{
- id:"EX06-03",
- name:"Lâm mô cụm chữ",
- primary:[
-    "K06.02",
-    "K07.02"
- ],
- secondary:[
-    "K07.03",
-    "K07.04"
- ],
- aliases:[
-    "lam mo cum chu"
- ]
-},
-
-{
- id:"EX06-04",
- name:"Lâm mô tổng hợp",
- primary:[
-    "K06.04"
- ],
- secondary:[
-    "K06.02",
-    "K06.03",
-    "K07.06"
- ],
- aliases:[
-    "lam mo tong hop"
- ]
-},
-
-
-{
- id:"EX07-01",
- name:"Đường cơ sở",
- primary:["K07.01"],
- secondary:[],
- aliases:[
-    "duong co so"
- ]
-},
-
-{
- id:"EX07-02",
- name:"Khoảng cách chữ",
- primary:["K07.02"],
- secondary:[],
- aliases:[
-    "khoang cach chu"
- ]
-},
-
-{
- id:"EX07-03",
- name:"Lớn nhỏ",
- primary:["K07.03"],
- secondary:["K05.01"],
- aliases:[
-    "lon nho",
-    "kich thuoc chu"
- ]
-},
-
-{
- id:"EX07-04",
- name:"Trục chữ",
- primary:["K07.04"],
- secondary:["K05.02"],
- aliases:[
-    "truc chu"
- ]
-},
-
-{
- id:"EX07-05",
- name:"Bố cục ngắn",
- primary:["K07.06"],
- secondary:[
-    "K07.01",
-    "K07.02",
-    "K07.03",
-    "K07.04"
- ],
- aliases:[
-    "bo cuc",
-    "bo cuc ngan"
- ]
-},
-
-{
- id:"EX07-06",
- name:"Cân bằng động–tĩnh",
- primary:["K07.05"],
- secondary:["K07.06"],
- aliases:[
-    "can bang dong tinh"
- ]
-},
-
-
-{
- id:"EX08-01",
- name:"Khô–nhuận",
- primary:["K08.01"],
- secondary:["K02.04"],
- aliases:[
-    "kho nhuan"
- ]
-},
-
-{
- id:"EX08-02",
- name:"Nhanh–chậm",
- primary:["K08.02"],
- secondary:["K03.03"],
- aliases:[
-    "nhanh cham",
-    "toc do"
- ]
-},
-
-{
- id:"EX08-03",
- name:"Tiết tấu",
- primary:["K08.03"],
- secondary:["K08.02"],
- aliases:[
-    "tiet tau"
- ]
-},
-
-{
- id:"EX08-04",
- name:"Phi bạch",
- primary:["K08.04"],
- secondary:[
-    "K08.01",
-    "K08.02"
- ],
- aliases:[
-    "phi bach"
- ]
-},
-
-
-{
- id:"EX09-01",
- name:"Tự nhiên trong nét",
- primary:["K09.01"],
- secondary:[
-    "K03.05",
-    "K03.06"
- ],
- aliases:[
-    "tu nhien trong net"
- ]
-},
-
-{
- id:"EX09-02",
- name:"Hình và ý",
- primary:["K09.02"],
- secondary:["K01.03"],
- aliases:[
-    "hinh va y"
- ]
-},
-
-{
- id:"EX09-03",
- name:"Thần thái",
- primary:["K09.03"],
- secondary:["K09.02"],
- aliases:[
-    "than thai"
- ]
-},
-
-
-{
- id:"EX10-01",
- name:"Sáng tác chữ đơn",
- primary:["K10.01"],
- secondary:[],
- aliases:[
-    "sang tac chu don"
- ]
-},
-
-{
- id:"EX10-02",
- name:"Sáng tác cụm chữ",
- primary:["K10.02"],
- secondary:[
-    "K07.02"
- ],
- aliases:[
-    "sang tac cum chu"
- ]
-},
-
-{
- id:"EX10-03",
- name:"Sáng tác tác phẩm",
- primary:["K10.03"],
- secondary:[
-    "K07.06",
-    "K09.03"
- ],
- aliases:[
-    "sang tac tac pham"
- ]
-},
-
-{
- id:"EX10-04",
- name:"Tự phẩm bình",
- primary:["K10.04"],
- secondary:[],
- aliases:[
-    "tu pham binh"
- ]
-},
-
-{
- id:"EX10-05",
- name:"Phẩm bình tác phẩm",
- primary:["K10.05"],
- secondary:["K10.04"],
- aliases:[
-    "pham binh tac pham"
- ]
-}
-
-];
-
-
-/* =========================================================
-   EXERCISE MAP
-========================================================= */
-
-const EXERCISE_MAP=
-    new Map();
-
-
-EXERCISES.forEach(
-    function(exercise){
-
-        EXERCISE_MAP.set(
-            exercise.id,
-            exercise
-        );
-    }
-);
-
-
-/* =========================================================
-   PRACTICE UNITS
-========================================================= */
-
-const PRACTICE_UNITS=[
-
-{
- id:"PU-NET-CHAM",
- name:"Nét chấm",
- aliases:[
-    "net cham",
-    "cham"
- ],
- exercises:[
-    "EX03-02",
-    "EX03-03"
- ]
-},
-
-{
- id:"PU-NET-LUON",
- name:"Nét lượn",
- aliases:[
-    "net luon",
-    "bt net luon"
- ],
- exercises:[
-    "EX04-05",
-    "EX03-03"
- ]
-},
-
-{
- id:"PU-NET-MOC",
- name:"Nét móc",
- aliases:[
-    "net moc",
-    "moc"
- ],
- exercises:[
-    "EX04-05",
-    "EX03-03"
- ]
-},
-
-{
- id:"PU-NET-HAT",
- name:"Nét hất",
- aliases:[
-    "net hat",
-    "hat"
- ],
- exercises:[
-    "EX04-05",
-    "EX03-03"
- ]
-},
-
-{
- id:"PU-NET-CONG",
- name:"Nét cong-vòng",
- aliases:[
-    "net cong vong",
-    "net cong",
-    "net vong"
- ],
- exercises:[
-    "EX04-05",
-    "EX03-03"
- ]
-},
-
-{
- id:"PU-AM-GHEP",
- name:"Âm ghép",
- aliases:[
-    "am ghep",
-    "bai tap am ghep"
- ],
- exercises:[
-    "EX05-03",
-    "EX07-02"
- ]
-},
-
-{
- id:"PU-CHU-GHEP",
- name:"Chữ ghép",
- aliases:[
-    "chu ghep",
-    "bai tap chu ghep"
- ],
- exercises:[
-    "EX05-03",
-    "EX07-02"
- ]
-},
-
-{
- id:"PU-CHU-THUONG",
- name:"Bảng chữ cái thường",
- aliases:[
-    "bang chu cai thuong",
-    "chu viet thuong"
- ],
- exercises:[
-    "EX05-01",
-    "EX05-03"
- ]
-},
-
-{
- id:"PU-CHU-HOA",
- name:"Bảng chữ cái in hoa",
- aliases:[
-    "bang chu cai in hoa",
-    "chu viet hoa",
-    "viet chu hoa"
- ],
- exercises:[
-    "EX05-01",
-    "EX05-03"
- ]
-}
-
-];
-
-
-/* =========================================================
-   CURRICULUM MAP
-========================================================= */
-
-const CURRICULUM_MAP={
-
-    3:{
-        practiceNames:[
-            "Vô vi"
-        ],
-        exercises:[
-            "EX06-03"
-        ]
-    },
-
-    4:{
-        practiceNames:[
-            "Bền bỉ"
-        ],
-        exercises:[
-            "EX06-03"
-        ]
-    },
-
-    5:{
-        practiceNames:[
-            "Biển học vô bờ"
-        ],
-        exercises:[
-            "EX06-03"
-        ]
-    },
-
-    7:{
-        practiceNames:[
-            "Ân sư vĩnh ký"
-        ],
-        exercises:[
-            "EX06-03"
-        ]
-    },
-
-    8:{
-        practiceNames:[
-            "Độc lập tự do"
-        ],
-        exercises:[
-            "EX06-03"
-        ]
-    },
-
-    9:{
-        practiceNames:[
-            "Chữ viết hoa"
-        ],
-        exercises:[
-            "EX05-01",
-            "EX05-03"
-        ]
-    },
-
-    10:{
-        practiceNames:[
-            "Chữ viết thường"
-        ],
-        exercises:[
-            "EX05-01",
-            "EX05-03"
-        ]
-    },
-
-    11:{
-        practiceNames:[
-            "Phật"
-        ],
-        exercises:[
-            "EX06-01"
-        ]
-    },
-
-    12:{
-        practiceNames:[
-            "Căn bản"
-        ],
-        exercises:[
-            "EX06-03"
-        ]
-    },
-
-    15:{
-        practiceNames:[
-            "Nét chấm",
-            "Vạn sự thuận lợi"
-        ],
-        exercises:[
-            "EX03-02",
-            "EX03-03",
-            "EX06-03"
-        ]
-    },
-
-    17:{
-        practiceNames:[
-            "Nét móc",
-            "Nét hất",
-            "Vạn sự như ý"
-        ],
-        exercises:[
-            "EX04-05",
-            "EX03-03",
-            "EX06-03"
-        ]
-    },
-
-    19:{
-        practiceNames:[
-            "Nét lượn",
-            "Ôn hoà nhẫn nại"
-        ],
-        exercises:[
-            "EX04-05",
-            "EX03-03",
-            "EX06-03"
-        ]
-    }
-};
-
-
-/* =========================================================
-   LÂM MÔ TITLES
-========================================================= */
-
-const LAM_MO_TITLES=[
-
-    "van su nhu y",
-    "van su thuan loi",
-    "gia hoa van su hung",
-    "am thuy tu nguyen",
-    "doc lap tu do",
-    "on hoa nhan nai",
-    "bien hoc vo bo",
-    "an su vinh ky",
-    "ben bi",
-    "vo vi",
-    "tet doan vien",
-    "an khang thinh vuong",
-    "ton su trong dao"
-];
-
-
-/* =========================================================
-   ERROR MAP
-   v1.1
-========================================================= */
-
-const ERROR_MAP={};
-
-
-/* =========================================================
-   REGISTER ERROR
-========================================================= */
-
-function registerErrors(
-    exerciseId,
-    knowledgeId,
-    definitions
-){
-
-    definitions.forEach(
-        function(definition){
-
-            ERROR_MAP[
-                definition[0]
-            ]={
-
-                id:
-                    definition[0],
-
-                name:
-                    definition[1],
-
-                exerciseId,
-
-                knowledgeId,
-
-                severity:
-                    definition[2] ||
-                    ERROR_SEVERITIES.MEDIUM,
-
-                keywords:
-                    definition[3] ||
-                    []
-            };
-        }
-    );
-}
-
-
-/* =========================================================
-   E03
-========================================================= */
-
-registerErrors(
-"EX03-01",
-"K03.01",
-[
-["GRIP01","Sai vị trí cầm","MAJOR",
- ["sai vi tri cam","cam but sai"]],
-
-["GRIP02","Cầm bút quá chặt","MEDIUM",
- ["cam qua chat","but qua chat"]],
-
-["GRIP03","Cầm bút quá lỏng","MEDIUM",
- ["cam qua long"]],
-
-["GRIP04","Cổ tay gượng","MEDIUM",
- ["co tay guong","co tay cung"]],
-
-["GRIP05","Góc bút không phù hợp","MEDIUM",
- ["goc but","do nghieng but"]]
-]
-);
-
-
-registerErrors(
-"EX03-02",
-"K03.02",
-[
-["STK01","Khởi bút lỗi","MEDIUM",
- ["khoi but chua dung","khoi but sai"]],
-
-["STK02","Hành bút mất kiểm soát","MAJOR",
- ["hanh but mat kiem soat"]],
-
-["STK03","Thu bút đột ngột","MEDIUM",
- ["thu but dot ngot"]],
-
-["STK04","Đường bút đứt","MEDIUM",
- ["duong but dut","net dut"]],
-
-["STK05","Dừng không cần thiết","MEDIUM",
- ["dung qua lau","dung khong can thiet"]]
-]
-);
-
-
-registerErrors(
-"EX03-03",
-"K03.05",
-[
-["FNG01","Đầu bút tán","MEDIUM",
- ["dau but tan","but tan"]],
-
-["FNG02","Không thu phong","MAJOR",
- ["khong thu phong"]],
-
-["FNG03","Mất trung tâm","MAJOR",
- ["mat trung tam","mat trung phong"]],
-
-["FNG04","Điều chỉnh quá nhiều","MEDIUM",
- ["dieu chinh qua nhieu"]],
-
-["FNG05","Mất phong khi đổi hướng","MAJOR",
- ["mat phong khi doi huong"]]
-]
-);
-
-
-registerErrors(
-"EX03-04",
-"K03.06",
-[
-["PWR01","Nét yếu","MEDIUM",
- ["net yeu","luc yeu","thieu luc"]],
-
-["PWR02","Ấn quá mạnh","MEDIUM",
- ["an qua manh","luc qua manh"]],
-
-["PWR03","Lực không đều","MEDIUM",
- ["luc khong deu"]],
-
-["PWR04","Lực cứng","MEDIUM",
- ["luc cung","net cung"]],
-
-["PWR05","Thiếu biến hóa lực","MINOR",
- ["thieu bien hoa luc"]]
-]
-);
-
-
-registerErrors(
-"EX03-05",
-"K03.04",
-[
-["END01","Dừng đột ngột","MEDIUM",
- ["dung dot ngot"]],
-
-["END02","Kéo đuôi","MEDIUM",
- ["keo duoi"]],
-
-["END03","Tụ mực cuối nét","MEDIUM",
- ["tu muc cuoi"]],
-
-["END04","Thu quá gấp","MEDIUM",
- ["thu qua gap"]],
-
-["END05","Tô sửa cuối nét","BLOCKING",
- ["to sua cuoi","sua cuoi net"]]
-]
-);
-
-
-/* =========================================================
-   E04
-========================================================= */
-
-registerErrors(
-"EX04-01",
-"K04.01",
-[
-["LF01","Đầu nét không rõ","MEDIUM",
- ["dau net khong ro"]],
-
-["LF02","Sai hướng vào","MAJOR",
- ["sai huong vao","dau net sai huong"]],
-
-["LF03","Thừa mực đầu nét","MEDIUM",
- ["thua muc dau","du muc dau"]],
-
-["LF04","Đầu nét thiếu lực","MEDIUM",
- ["dau net thieu luc"]],
-
-["LF05","Tô sửa","BLOCKING",
- ["to sua","sua net"]],
-
-["LF06","Khởi bút ngập ngừng","MEDIUM",
- ["khoi but ngap ngung","ngap ngung"]]
-]
-);
-
-
-registerErrors(
-"EX04-02",
-"K04.02",
-[
-["TF01","Lộ đầu bút","MAJOR",
- ["lo dau but"]],
-
-["TF02","Hồi phong quá mạnh","MEDIUM",
- ["hoi phong qua manh"]],
-
-["TF03","Đầu nét phình","MEDIUM",
- ["dau net phinh"]],
-
-["TF04","Thao tác gượng","MEDIUM",
- ["thao tac guong"]],
-
-["TF05","Mất phong","MAJOR",
- ["mat phong"]]
-]
-);
-
-
-registerErrors(
-"EX04-03",
-"K04.03",
-[
-["VB01","Viên bút bị bẹt","MEDIUM",
- ["vien but bet","net bet","con bet"]],
-
-["VB02","Viên bút méo","MEDIUM",
- ["vien but meo","net meo"]],
-
-["VB03","Viên bút thiếu lực","MEDIUM",
- ["vien but thieu luc","luc yeu"]],
-
-["VB04","Đầu bút tán","MAJOR",
- ["dau but tan"]],
-
-["VB05","Độ dày bất thường","MEDIUM",
- ["do day khong deu","do day bat thuong"]]
-]
-);
-
-
-registerErrors(
-"EX04-04",
-"K04.04",
-[
-["PB01","Góc mờ","MEDIUM",
- ["goc mo"]],
-
-["PB02","Góc quá cứng","MEDIUM",
- ["goc qua cung"]],
-
-["PB03","Sai hướng","MAJOR",
- ["sai huong"]],
-
-["PB04","Đầu nét méo","MEDIUM",
- ["dau net meo"]],
-
-["PB05","Cố tạo góc bằng tô","BLOCKING",
- ["tao goc bang to","to goc"]]
-]
-);
-
-
-registerErrors(
-"EX04-05",
-"K03.07",
-[
-["TURN01","Gãy nét","MAJOR",
- ["gay net"]],
-
-["TURN02","Dừng lâu","MEDIUM",
- ["dung lau"]],
-
-["TURN03","Tụ mực","MEDIUM",
- ["tu muc"]],
-
-["TURN04","Mất phong","MAJOR",
- ["mat phong"]],
-
-["TURN05","Đổi hướng quá cứng","MEDIUM",
- ["doi huong qua cung"]]
-]
-);
-
-
-registerErrors(
-"EX04-06",
-"K04.06",
-[
-["COMB01","Kỹ thuật rời rạc","MEDIUM",
- ["ky thuat roi rac"]],
-
-["COMB02","Lạm dụng kỹ thuật","MEDIUM",
- ["lam dung ky thuat"]],
-
-["COMB03","Thiếu nhất quán","MEDIUM",
- ["thieu nhat quan"]],
-
-["COMB04","Chuyển kỹ thuật gượng","MEDIUM",
- ["chuyen ky thuat guong"]],
-
-["COMB05","Kỹ thuật lấn át nội dung","MAJOR",
- ["ky thuat lan at noi dung"]]
-]
-);
-
-
-/* =========================================================
-   E05
-========================================================= */
-
-registerErrors(
-"EX05-01",
-"K05.01",
-[
-["PROP01","Chữ quá cao","MEDIUM",["chu qua cao"]],
-["PROP02","Chữ quá rộng","MEDIUM",["chu qua rong"]],
-["PROP03","Co kéo chữ","MEDIUM",["co keo"]],
-["PROP04","Tỷ lệ không nhất quán","MEDIUM",
- ["ty le khong nhat quan","ty le chua dung"]]
-]
-);
-
-
-registerErrors(
-"EX05-02",
-"K05.02",
-[
-["CTR01","Lệch trọng tâm","MAJOR",
- ["lech trong tam","trong tam lech"]],
-
-["CTR02","Chữ đổ","MEDIUM",["chu do"]],
-
-["CTR03","Nặng một phía","MEDIUM",
- ["nang mot phia"]],
-
-["CTR04","Cân bằng quá cứng","MINOR",
- ["can bang qua cung"]]
-]
-);
-
-
-registerErrors(
-"EX05-03",
-"K05.03",
-[
-["STR01","Bộ phận rời","MEDIUM",
- ["bo phan roi"]],
-
-["STR02","Khoảng trong sai","MEDIUM",
- ["khoang trong sai"]],
-
-["STR03","Phân bố trọng lượng sai","MAJOR",
- ["phan bo trong luong sai"]],
-
-["STR04","Cấu trúc cứng","MEDIUM",
- ["cau truc cung"]]
-]
-);
-
-
-registerErrors(
-"EX05-04",
-"K05.04",
-[
-["VAR01","Biến dạng quá mức","MAJOR",
- ["bien dang qua muc"]],
-
-["VAR02","Mất nhận diện","BLOCKING",
- ["mat nhan dien"]],
-
-["VAR03","Biến hóa tùy tiện","MAJOR",
- ["bien hoa tuy tien"]],
-
-["VAR04","Lặp hình thái","MINOR",
- ["lap hinh thai"]],
-
-["VAR05","Gượng ép","MEDIUM",
- ["guong ep"]]
-]
-);
-
-
-/* =========================================================
-   E06
-========================================================= */
-
-registerErrors(
-"EX06-01",
-"K06.02",
-[
-["COPY01","Nhìn sai tỷ lệ","MEDIUM",
- ["sai ty le"]],
-
-["COPY02","Bỏ đặc điểm chính","MAJOR",
- ["bo dac diem chinh"]],
-
-["COPY03","Sao chép máy móc","MEDIUM",
- ["sao chep may moc"]],
-
-["COPY04","Chỉ nhìn đường viền","MEDIUM",
- ["chi nhin duong vien"]]
-]
-);
-
-
-registerErrors(
-"EX06-02",
-"K06.03",
-[
-["COPYB01","Giống hình nhưng sai bút","MAJOR",
- ["giong hinh nhung sai but"]],
-
-["COPYB02","Sai khởi bút","MAJOR",
- ["sai khoi but"]],
-
-["COPYB03","Sai tốc độ","MEDIUM",
- ["sai toc do"]],
-
-["COPYB04","Tô để giống mẫu","BLOCKING",
- ["to de giong mau"]]
-]
-);
-
-
-registerErrors(
-"EX06-03",
-"K06.02",
-[
-["COPYG01","Sai khoảng cách","MEDIUM",
- ["sai khoang cach"]],
-
-["COPYG02","Sai lớn nhỏ","MEDIUM",
- ["sai lon nho"]],
-
-["COPYG03","Sai trục","MEDIUM",
- ["sai truc"]],
-
-["COPYG04","Từng chữ đúng nhưng tổng thể sai","MAJOR",
- ["tong the sai"]]
-]
-);
-
-
-registerErrors(
-"EX06-04",
-"K06.04",
-[
-["COPYX01","Chép máy móc","MEDIUM",
- ["chep may moc"]],
-
-["COPYX02","Chỉ giống hình","MEDIUM",
- ["chi giong hinh"]],
-
-["COPYX03","Mất tiết tấu","MEDIUM",
- ["mat tiet tau"]],
-
-["COPYX04","Mất thần thái","MAJOR",
- ["mat than thai"]]
-]
-);
-
-
-/* =========================================================
-   E07
-========================================================= */
-
-registerErrors(
-"EX07-01",
-"K07.01",
-[
-["BASE01","Lên xuống vô thức","MEDIUM",
- ["duong co so","len xuong vo thuc"]],
-
-["BASE02","Đường chữ nghiêng","MEDIUM",
- ["duong chu nghieng"]],
-
-["BASE03","Đường cơ sở quá cứng","MINOR",
- ["duong co so qua cung"]]
-]
-);
-
-
-registerErrors(
-"EX07-02",
-"K07.02",
-[
-["SPACE01","Khoảng cách quá sát","MEDIUM",
- ["qua sat"]],
-
-["SPACE02","Khoảng cách quá xa","MEDIUM",
- ["qua xa"]],
-
-["SPACE03","Khoảng cách đều máy móc","MINOR",
- ["deu may moc"]],
-
-["SPACE04","Khoảng trống vô nghĩa","MEDIUM",
- ["khoang trong vo nghia"]]
-]
-);
-
-
-registerErrors(
-"EX07-03",
-"K07.03",
-[
-["SIZE01","Lớn nhỏ tùy tiện","MEDIUM",
- ["lon nho tuy tien"]],
-
-["SIZE02","Tất cả bằng nhau","MINOR",
- ["tat ca bang nhau"]],
-
-["SIZE03","Tương phản quá mạnh","MEDIUM",
- ["tuong phan qua manh"]]
-]
-);
-
-
-registerErrors(
-"EX07-04",
-"K07.04",
-[
-["AXIS01","Trục đổ","MEDIUM",
- ["truc do"]],
-
-["AXIS02","Trục đơn điệu","MINOR",
- ["truc don dieu"]],
-
-["AXIS03","Đổi trục vô lý","MEDIUM",
- ["doi truc vo ly"]]
-]
-);
-
-
-registerErrors(
-"EX07-05",
-"K07.06",
-[
-["LAY01","Lệch bố cục","MAJOR",
- ["lech bo cuc"]],
-
-["LAY02","Khoảng trống chết","MEDIUM",
- ["khoang trong chet"]],
-
-["LAY03","Dồn một phía","MEDIUM",
- ["don mot phia"]],
-
-["LAY04","Thiếu điểm nhấn","MINOR",
- ["thieu diem nhan"]]
-]
-);
-
-
-registerErrors(
-"EX07-06",
-"K07.05",
-[
-["BAL01","Quá tĩnh","MINOR",["qua tinh"]],
-["BAL02","Quá động","MINOR",["qua dong"]],
-["BAL03","Tương phản gượng","MEDIUM",
- ["tuong phan guong"]],
-["BAL04","Thiếu điểm nghỉ","MEDIUM",
- ["thieu diem nghi"]]
-]
-);
-
-
-/* =========================================================
-   E08
-========================================================= */
-
-registerErrors(
-"EX08-01",
-"K08.01",
-[
-["INK01","Quá ướt","MEDIUM",["qua uot"]],
-["INK02","Quá khô","MEDIUM",["qua kho"]],
-["INK03","Tụ mực","MEDIUM",["tu muc"]],
-["INK04","Thay đổi vô thức","MEDIUM",
- ["thay doi vo thuc"]]
-]
-);
-
-
-registerErrors(
-"EX08-02",
-"K08.02",
-[
-["SPD01","Quá nhanh","MEDIUM",["qua nhanh"]],
-["SPD02","Quá chậm","MEDIUM",["qua cham"]],
-["SPD03","Đều máy móc","MINOR",["deu may moc"]],
-["SPD04","Đổi tốc độ vô lý","MEDIUM",
- ["doi toc do vo ly"]]
-]
-);
-
-
-registerErrors(
-"EX08-03",
-"K08.03",
-[
-["RHY01","Đều đều","MINOR",["deu deu"]],
-["RHY02","Nhịp vụn","MEDIUM",["nhip vun"]],
-["RHY03","Tương phản quá mức","MEDIUM",
- ["tuong phan qua muc"]],
-["RHY04","Thiếu điểm nghỉ","MEDIUM",
- ["thieu diem nghi"]]
-]
-);
-
-
-registerErrors(
-"EX08-04",
-"K08.04",
-[
-["DRY01","Phi bạch giả","MAJOR",
- ["phi bach gia"]],
-
-["DRY02","Quá khô","MEDIUM",
- ["qua kho"]],
-
-["DRY03","Cào giấy","MAJOR",
- ["cao giay"]],
-
-["DRY04","Phi bạch vô cớ","MEDIUM",
- ["phi bach vo co"]],
-
-["DRY05","Cố tạo bằng sửa nét","BLOCKING",
- ["sua net","co tao phi bach"]]
-]
-);
-
-
-/* =========================================================
-   E09
-========================================================= */
-
-registerErrors(
-"EX09-01",
-"K09.01",
-[
-["NAT01","Tô sửa","BLOCKING",["to sua"]],
-["NAT02","Ngập ngừng","MEDIUM",["ngap ngung"]],
-["NAT03","Cố tạo hiệu ứng","MAJOR",
- ["co tao hieu ung"]],
-["NAT04","Thao tác phô diễn","MEDIUM",
- ["thao tac pho dien"]]
-]
-);
-
-
-registerErrors(
-"EX09-02",
-"K09.02",
-[
-["IDEA01","Chỉ chú trọng hình","MEDIUM",
- ["chi chu trong hinh"]],
-
-["IDEA02","Ý áp đặt","MEDIUM",
- ["y ap dat"]],
-
-["IDEA03","Kỹ thuật không phục vụ nội dung","MAJOR",
- ["ky thuat khong phuc vu noi dung"]]
-]
-);
-
-
-registerErrors(
-"EX09-03",
-"K09.03",
-[
-["SPIRIT01","Nét rời","MEDIUM",["net roi"]],
-["SPIRIT02","Phong cách bất nhất","MEDIUM",
- ["phong cach bat nhat"]],
-["SPIRIT03","Hiệu ứng lấn át","MEDIUM",
- ["hieu ung lan at"]],
-["SPIRIT04","Giả tạo","BLOCKING",["gia tao"]]
-]
-);
-
-
-/* =========================================================
-   E10
-========================================================= */
-
-registerErrors(
-"EX10-01",
-"K10.01",
-[
-["CRE01","Lệ thuộc mẫu","MEDIUM",
- ["le thuoc mau"]],
-["CRE02","Kỹ thuật rời rạc","MEDIUM",
- ["ky thuat roi rac"]],
-["CRE03","Tạo hình tùy tiện","MAJOR",
- ["tao hinh tuy tien"]]
-]
-);
-
-
-registerErrors(
-"EX10-02",
-"K10.02",
-[
-["CREG01","Chữ không liên hệ","MEDIUM",
- ["chu khong lien he"]],
-["CREG02","Khoảng cách sai","MEDIUM",
- ["khoang cach sai"]],
-["CREG03","Thiếu nhịp","MEDIUM",
- ["thieu nhip"]]
-]
-);
-
-
-registerErrors(
-"EX10-03",
-"K10.03",
-[
-["WORK01","Thiếu tổng thể","MAJOR",
- ["thieu tong the"]],
-["WORK02","Điểm nhấn yếu","MEDIUM",
- ["diem nhan yeu"]],
-["WORK03","Bố cục/mực/bút xung đột","MAJOR",
- ["bo cuc muc but xung dot"]],
-["WORK04","Quá nhiều hiệu ứng","MEDIUM",
- ["qua nhieu hieu ung"]]
-]
-);
-
-
-registerErrors(
-"EX10-04",
-"K10.04",
-[
-["SELF01","Chỉ nói đẹp/xấu","MEDIUM",
- ["chi noi dep xau"]],
-["SELF02","Không chỉ ra nguyên nhân","MEDIUM",
- ["khong chi ra nguyen nhan"]],
-["SELF03","Không đề xuất sửa","MEDIUM",
- ["khong de xuat sua"]]
-]
-);
-
-
-registerErrors(
-"EX10-05",
-"K10.05",
-[
-["CRIT01","Chỉ dựa sở thích","MEDIUM",
- ["dua so thich"]],
-["CRIT02","Chỉ nhìn hình","MEDIUM",
- ["chi nhin hinh"]],
-["CRIT03","Bỏ bút pháp","MEDIUM",
- ["bo but phap"]],
-["CRIT04","Kết luận không có bằng chứng","MAJOR",
- ["khong co bang chung"]]
-]
-);
-
-
-/* =========================================================
-   GENERIC TEACHER FEEDBACK
-========================================================= */
-
-const GENERAL_FEEDBACK_RULES=[
-
-{
-    id:"GENERAL_BASELINE",
-
-    keywords:[
-        "duong co so"
-    ],
-
-    knowledgeId:
-        "K07.01",
-
-    errorId:
-        "BASE01"
-},
-
-{
-    id:"GENERAL_ACCURACY",
-
-    keywords:[
-        "chuan xac duong net",
-        "su chuan xac cua duong net",
-        "chu y duong net"
-    ],
-
-    knowledgeId:null,
-
-    errorId:null
-}
-
-];
-
-
-/* =========================================================
-   SCORE RUBRIC
-========================================================= */
-
-function qualityFromScore(score){
-
-    if(
-        score === null ||
-        score === undefined
+    for(
+        let i=0;
+        i<text.length;
+        i++
     ){
 
-        return QUALITY_STATES
-            .NOT_PERFORMED;
-    }
+        const char=
+            text[i];
 
 
-    const rounded=
-        Math.max(
-            1,
-            Math.min(
-                10,
-                Math.round(score)
-            )
-        );
+        if(
+            char === '"'
+        ){
 
+            if(
+                quoted &&
+                text[i+1] === '"'
+            ){
 
-    const map={
+                value += '"';
+                i++;
 
-        1:"NOT_PERFORMED",
+            }else{
 
-        2:"INITIAL",
-
-        3:"FORMING",
-
-        4:"UNSTABLE",
-
-        5:"BASIC",
-
-        6:"DEVELOPING",
-
-        7:"GOOD",
-
-        8:"VERY_GOOD",
-
-        9:"EXCELLENT",
-
-        10:"OUTSTANDING"
-    };
-
-
-    return map[rounded];
-}
-
-
-/* =========================================================
-   RESOLUTION
-========================================================= */
-
-function detectWeek(text){
-
-    const normalized=
-        normalizeText(text);
-
-
-    const match=
-        normalized.match(
-            /(?:tuan|week)\s*(\d{1,2})/
-        );
-
-
-    if(!match){
-        return null;
-    }
-
-
-    const week=
-        Number(match[1]);
-
-
-    return Number.isFinite(week)
-        ? week
-        : null;
-}
-
-
-/* =========================================================
-   FIND PRACTICE UNITS
-========================================================= */
-
-function findPracticeUnits(text){
-
-    const normalized=
-        normalizeText(text);
-
-
-    const result=[];
-
-
-    PRACTICE_UNITS.forEach(
-        function(unit){
-
-            const found=
-                unit.aliases.some(
-                    function(alias){
-
-                        return normalized.includes(
-                            normalizeText(alias)
-                        );
-                    }
-                );
-
-
-            if(found){
-
-                result.push(unit);
+                quoted=
+                    !quoted;
             }
+
+
+            continue;
         }
-    );
 
 
-    return result;
-}
+        if(
+            char === "," &&
+            !quoted
+        ){
+
+            row.push(
+                value
+            );
+
+            value="";
+
+            continue;
+        }
 
 
-/* =========================================================
-   FIND EXACT EXERCISES
-========================================================= */
+        if(
+            (
+                char === "\n" ||
+                char === "\r"
+            )
+            &&
+            !quoted
+        ){
 
-function findExercisesByAlias(text){
+            if(
+                char === "\r" &&
+                text[i+1] === "\n"
+            ){
 
-    const normalized=
-        normalizeText(text);
+                i++;
+            }
 
 
-    const result=[];
-
-
-    EXERCISES.forEach(
-        function(exercise){
-
-            const names=[
-                exercise.name
-            ]
-            .concat(
-                exercise.aliases || []
+            row.push(
+                value
             );
 
 
-            const found=
-                names.some(
-                    function(alias){
-
-                        const key=
-                            normalizeText(alias);
+            rows.push(
+                row
+            );
 
 
-                        return(
-                            normalized === key
-                            ||
-                            normalized.includes(key)
-                        );
-                    }
-                );
+            row=[];
+            value="";
 
-
-            if(found){
-
-                result.push(exercise);
-            }
+            continue;
         }
-    );
 
 
-    return result;
-}
-
-
-/* =========================================================
-   DETECT LÂM MÔ
-========================================================= */
-
-function detectLamMo(text){
-
-    const normalized=
-        normalizeText(text);
-
-
-    if(
-        !normalized.includes(
-            "lam mo"
-        )
-    ){
-
-        return null;
+        value += char;
     }
 
 
-    const knownTitle=
-        LAM_MO_TITLES.find(
-            function(title){
+    if(
+        value.length ||
+        row.length
+    ){
 
-                return normalized.includes(
-                    title
-                );
+        row.push(
+            value
+        );
+
+        rows.push(
+            row
+        );
+    }
+
+
+    return rows.filter(
+        function(item){
+
+            return item.some(
+                function(cell){
+
+                    return String(
+                        cell || ""
+                    )
+                    .trim() !== "";
+                }
+            );
+        }
+    );
+}
+
+
+async function fetchCSV(url){
+
+    const response=
+        await fetch(
+            url,
+            {
+                cache:"no-store"
             }
         );
 
 
-    return{
+    if(
+        !response.ok
+    ){
 
-        detected:true,
+        throw new Error(
+            "Không tải được dữ liệu CSV."
+        );
+    }
 
-        title:
-            knownTitle || "",
 
-        exerciseId:
-            knownTitle
-            ?
-            "EX06-03"
-            :
-            "EX06-04",
+    return response.text();
+}
 
-        confidence:
-            knownTitle
-            ?
-            "HIGH"
-            :
-            "MEDIUM"
-    };
+
+async function fetchRows(url){
+
+    return parseCSV(
+        await fetchCSV(url)
+    );
 }
 
 
 /* =========================================================
-   GENERIC DESCRIPTIONS
+   SHEETS
 ========================================================= */
 
-function isGenericDescription(text){
+function sheetCsvUrl(
+    gid,
+    spreadsheetId
+){
 
-    const normalized=
-        normalizeText(text);
+    const id=
+        spreadsheetId ||
+        CONFIG.spreadsheetId;
 
 
-    return[
+    return(
+        "https://docs.google.com/spreadsheets/d/"
+        +
+        encodeURIComponent(id)
+        +
+        "/gviz/tq?tqx=out:csv&gid="
+        +
+        encodeURIComponent(
+            String(gid)
+        )
+    );
+}
 
-        "",
-        ".",
-        "bai tap",
-        "bt",
-        "luyen tap",
-        "da nop",
-        "bai tap bo sung"
 
-    ].includes(normalized);
+function sheetNameCsvUrl(
+    sheetName,
+    spreadsheetId
+){
+
+    const id=
+        spreadsheetId ||
+        CONFIG.spreadsheetId;
+
+
+    return(
+        "https://docs.google.com/spreadsheets/d/"
+        +
+        encodeURIComponent(id)
+        +
+        "/gviz/tq?tqx=out:csv&sheet="
+        +
+        encodeURIComponent(
+            sheetName
+        )
+    );
 }
 
 
 /* =========================================================
-   RESOLVE DESCRIPTION
+   DRIVE
 ========================================================= */
 
-function resolveDescription(rawDescription){
+function extractDriveFileId(value){
 
-    const raw=
+    const text=
         String(
-            rawDescription || ""
+            value || ""
         )
         .trim();
 
 
-    const normalized=
-        normalizeText(raw);
+    if(!text){
+        return "";
+    }
 
 
     if(
-        isGenericDescription(raw)
+        /^[a-zA-Z0-9_-]{20,}$/
+        .test(text)
     ){
 
-        return{
-
-            rawDescription:
-                raw,
-
-            normalizedDescription:
-                normalized,
-
-            resolutionType:
-                "UNKNOWN",
-
-            confidence:
-                "LOW",
-
-            week:null,
-
-            practiceUnits:[],
-
-            exercises:[],
-
-            knowledgeEvidence:[]
-        };
+        return text;
     }
 
 
-    const week=
-        detectWeek(raw);
-
-
-    const aliasExercises=
-        findExercisesByAlias(raw);
-
-
-    const practiceUnits=
-        findPracticeUnits(raw);
-
-
-    const lamMo=
-        detectLamMo(raw);
-
-
-    const exerciseIds=
-        new Set();
-
-
-    aliasExercises.forEach(
-        function(exercise){
-
-            exerciseIds.add(
-                exercise.id
-            );
-        }
-    );
-
-
-    practiceUnits.forEach(
-        function(unit){
-
-            unit.exercises.forEach(
-                function(id){
-
-                    exerciseIds.add(id);
-                }
-            );
-        }
-    );
-
-
-    if(lamMo){
-
-        exerciseIds.add(
-            lamMo.exerciseId
-        );
-    }
-
-
-    let resolutionType=
-        "UNKNOWN";
-
-
-    let confidence=
-        "LOW";
-
-
-    if(
-        aliasExercises.length === 1 &&
-        !week &&
-        practiceUnits.length <= 1
-    ){
-
-        resolutionType=
-            "EXACT";
-
-        confidence=
-            "VERY_HIGH";
-
-    }else if(
-        exerciseIds.size > 0
-    ){
-
-        resolutionType=
-            exerciseIds.size > 1
-            ?
-            "COMPOSITE"
-            :
-            "ALIAS";
-
-        confidence=
-            "HIGH";
-
-    }else if(
-        week &&
-        CURRICULUM_MAP[week]
-    ){
-
-        CURRICULUM_MAP[
-            week
-        ]
-        .exercises
-        .forEach(
-            function(id){
-
-                exerciseIds.add(id);
-            }
+    let match=
+        text.match(
+            /\/d\/([a-zA-Z0-9_-]+)/
         );
 
 
-        resolutionType=
-            "CURRICULUM";
-
-        confidence=
-            "MEDIUM";
+    if(match){
+        return match[1];
     }
 
 
-    const exercises=
-        Array.from(
-            exerciseIds
+    match=
+        text.match(
+            /[?&]id=([a-zA-Z0-9_-]+)/
+        );
+
+
+    if(match){
+        return match[1];
+    }
+
+
+    return "";
+}
+
+
+function convertDriveImageUrl(
+    value,
+    size
+){
+
+    const text=
+        String(
+            value || ""
         )
-        .map(
-            function(id){
-
-                return EXERCISE_MAP.get(id);
-            }
-        )
-        .filter(Boolean);
+        .trim();
 
 
-    const evidenceMap=
-        new Map();
+    if(!text){
+        return "";
+    }
 
 
-    exercises.forEach(
-        function(exercise){
-
-            exercise.primary
-            .forEach(
-                function(knowledgeId){
-
-                    const current=
-                        evidenceMap.get(
-                            knowledgeId
-                        );
+    const id=
+        extractDriveFileId(
+            text
+        );
 
 
-                    if(
-                        !current ||
-                        current.evidenceType !==
-                        "PRIMARY"
-                    ){
-
-                        evidenceMap.set(
-                            knowledgeId,
-                            {
-                                knowledgeId,
-                                exerciseId:
-                                    exercise.id,
-                                evidenceType:
-                                    "PRIMARY",
-                                weight:
-                                    CONFIG
-                                    .evidenceWeights
-                                    .PRIMARY
-                            }
-                        );
-                    }
-                }
-            );
+    if(!id){
+        return text;
+    }
 
 
-            exercise.secondary
-            .forEach(
-                function(knowledgeId){
-
-                    if(
-                        evidenceMap.has(
-                            knowledgeId
-                        )
-                    ){
-
-                        return;
-                    }
-
-
-                    evidenceMap.set(
-                        knowledgeId,
-                        {
-                            knowledgeId,
-                            exerciseId:
-                                exercise.id,
-                            evidenceType:
-                                "SECONDARY",
-                            weight:
-                                CONFIG
-                                .evidenceWeights
-                                .SECONDARY
-                        }
-                    );
-                }
-            );
-        }
-    );
-
-
-    return{
-
-        rawDescription:
-            raw,
-
-        normalizedDescription:
-            normalized,
-
-        resolutionType,
-
-        confidence,
-
-        week,
-
-        practiceUnits:
-            practiceUnits.map(
-                function(unit){
-
-                    return{
-                        id:unit.id,
-                        name:unit.name
-                    };
-                }
-            ),
-
-        exercises:
-            exercises.map(
-                function(exercise){
-
-                    return{
-                        id:
-                            exercise.id,
-
-                        name:
-                            exercise.name
-                    };
-                }
-            ),
-
-        knowledgeEvidence:
-            Array.from(
-                evidenceMap.values()
+    const width=
+        Math.max(
+            96,
+            Number(
+                size || 500
             )
-    };
+        );
+
+
+    return(
+        "https://drive.google.com/thumbnail?id="
+        +
+        encodeURIComponent(id)
+        +
+        "&sz=w"
+        +
+        Math.round(width)
+    );
 }
 
 
 /* =========================================================
-   SUBMISSION COLUMNS
+   DATE
 ========================================================= */
 
-function detectSubmissionColumns(rows){
+function parseVietnameseDate(value){
+
+    if(
+        value instanceof Date
+    ){
+
+        return Number.isNaN(
+            value.getTime()
+        )
+            ? null
+            : value;
+    }
+
+
+    const text=
+        String(
+            value || ""
+        )
+        .trim();
+
+
+    if(!text){
+        return null;
+    }
+
+
+    let match=
+        text.match(
+            /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/
+        );
+
+
+    if(match){
+
+        const date=
+            new Date(
+
+                Number(match[3]),
+
+                Number(match[2])-1,
+
+                Number(match[1]),
+
+                Number(match[4] || 0),
+
+                Number(match[5] || 0),
+
+                Number(match[6] || 0)
+            );
+
+
+        return Number.isNaN(
+            date.getTime()
+        )
+            ? null
+            : date;
+    }
+
+
+    match=
+        text.match(
+            /^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})(?:[T\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/
+        );
+
+
+    if(match){
+
+        const date=
+            new Date(
+
+                Number(match[1]),
+
+                Number(match[2])-1,
+
+                Number(match[3]),
+
+                Number(match[4] || 0),
+
+                Number(match[5] || 0),
+
+                Number(match[6] || 0)
+            );
+
+
+        return Number.isNaN(
+            date.getTime()
+        )
+            ? null
+            : date;
+    }
+
+
+    const nativeDate=
+        new Date(text);
+
+
+    return Number.isNaN(
+        nativeDate.getTime()
+    )
+        ? null
+        : nativeDate;
+}
+
+
+function getCalendarDayKey(date){
+
+    if(!date){
+        return "";
+    }
+
+
+    const y=
+        date.getFullYear();
+
+
+    const m=
+        String(
+            date.getMonth()+1
+        )
+        .padStart(
+            2,
+            "0"
+        );
+
+
+    const d=
+        String(
+            date.getDate()
+        )
+        .padStart(
+            2,
+            "0"
+        );
+
+
+    return(
+        y+
+        "-"+
+        m+
+        "-"+
+        d
+    );
+}
+
+
+/* =========================================================
+   GEMS
+========================================================= */
+
+function createEmptyGems(){
+
+    return{
+
+        hoangNgoc:0,
+
+        haiLamNgoc:0,
+
+        thachAnhTim:0,
+
+        lamBaoThach:0,
+
+        lucThach:0,
+
+        hongNgoc:0
+    };
+}
+
+
+function cloneGems(gems){
+
+    const result=
+        createEmptyGems();
+
+
+    GEM_ORDER.forEach(
+        function(key){
+
+            result[key]=
+                Math.max(
+                    0,
+                    Number(
+                        gems &&
+                        gems[key] ||
+                        0
+                    )
+                );
+        }
+    );
+
+
+    return result;
+}
+
+
+function normalizeGemType(value){
+
+    const normalized=
+        normalizeText(value);
+
+
+    if(!normalized){
+        return null;
+    }
+
+
+    for(
+        let i=0;
+        i<GEM_ORDER.length;
+        i++
+    ){
+
+        const key=
+            GEM_ORDER[i];
+
+
+        if(
+            normalizeText(key)
+            ===
+            normalized
+            ||
+            normalizeText(
+                GEM_TYPES[key]
+                .displayName
+            )
+            ===
+            normalized
+        ){
+
+            return key;
+        }
+    }
+
+
+    const aliases={
+
+        "hoang":
+            "hoangNgoc",
+
+        "hoang ngoc":
+            "hoangNgoc",
+
+        "hai lam":
+            "haiLamNgoc",
+
+        "hai lam ngoc":
+            "haiLamNgoc",
+
+        "thach anh":
+            "thachAnhTim",
+
+        "thach anh tim":
+            "thachAnhTim",
+
+        "lam bao":
+            "lamBaoThach",
+
+        "lam bao thach":
+            "lamBaoThach",
+
+        "luc":
+            "lucThach",
+
+        "luc thach":
+            "lucThach",
+
+        "hong":
+            "hongNgoc",
+
+        "hong ngoc":
+            "hongNgoc"
+    };
+
+
+    return aliases[
+        normalized
+    ] || null;
+}
+
+
+/* =========================================================
+   NORMALIZE GEM BALANCE
+
+   ĐÂY LÀ HÀM CHUẨN DUY NHẤT
+========================================================= */
+
+function normalizeGemBalance(gems){
+
+    const result=
+        cloneGems(
+            gems
+        );
+
+
+    function convertToLuc(
+        key,
+        divisor
+    ){
+
+        const amount=
+            Math.floor(
+                result[key]
+            );
+
+
+        const converted=
+            Math.floor(
+                amount /
+                divisor
+            );
+
+
+        if(
+            converted > 0
+        ){
+
+            result[key] -=
+                converted *
+                divisor;
+
+
+            result.lucThach +=
+                converted;
+        }
+    }
+
+
+    /*
+
+    */
+    convertToLuc(
+        "hoangNgoc",
+        GEM_CONVERSION
+        .hoangNgocToLuc
+    );
+
+
+    /*
+
+    */
+    convertToLuc(
+        "haiLamNgoc",
+        GEM_CONVERSION
+        .haiLamNgocToLuc
+    );
+
+
+    /*
+
+    */
+    convertToLuc(
+        "thachAnhTim",
+        GEM_CONVERSION
+        .thachAnhTimToLuc
+    );
+
+
+    /*
+
+    */
+    convertToLuc(
+        "lamBaoThach",
+        GEM_CONVERSION
+        .lamBaoThachToLuc
+    );
+
+
+    /*
+
+    */
+    const hong=
+        Math.floor(
+            result.lucThach /
+            GEM_CONVERSION
+            .lucThachToHong
+        );
+
+
+    if(
+        hong > 0
+    ){
+
+        result.lucThach -=
+            hong *
+            GEM_CONVERSION
+            .lucThachToHong;
+
+
+        result.hongNgoc +=
+            hong;
+    }
+
+
+    GEM_ORDER.forEach(
+        function(key){
+
+            result[key]=
+                Math.max(
+                    0,
+                    Math.floor(
+                        Number(
+                            result[key] ||
+                            0
+                        )
+                    )
+                );
+        }
+    );
+
+
+    return result;
+}
+
+
+/* =========================================================
+   ADD GEM REWARD
+
+   Mọi nguồn linh thạch đều phải đi qua hàm này.
+========================================================= */
+
+function addGemReward(
+    gems,
+    gemType,
+    amount
+){
+
+    const result=
+        cloneGems(
+            gems
+        );
+
+
+    const key=
+        normalizeGemType(
+            gemType
+        );
+
+
+    const quantity=
+        Math.floor(
+            Number(
+                amount || 0
+            )
+        );
+
+
+    if(
+        !key ||
+        quantity <= 0
+    ){
+
+        return normalizeGemBalance(
+            result
+        );
+    }
+
+
+    result[key] +=
+        quantity;
+
+
+    return normalizeGemBalance(
+        result
+    );
+}
+
+
+function getGemValueInHong(
+    gemType,
+    amount
+){
+
+    const key=
+        normalizeGemType(
+            gemType
+        );
+
+
+    const quantity=
+        Number(
+            amount || 0
+        );
+
+
+    if(
+        !key ||
+        quantity <= 0
+    ){
+
+        return 0;
+    }
+
+
+    switch(key){
+
+        case "hongNgoc":
+            return quantity;
+
+        case "lucThach":
+            return quantity / 3;
+
+        case "lamBaoThach":
+            return quantity / 6;
+
+        case "thachAnhTim":
+            return quantity / 9;
+
+        case "haiLamNgoc":
+            return quantity / 12;
+
+        case "hoangNgoc":
+            return quantity / 15;
+
+        default:
+            return 0;
+    }
+}
+
+
+/* =========================================================
+   RARITY
+========================================================= */
+
+function normalizeRarity(value){
+
+    const normalized=
+        normalizeText(
+            value
+        );
+
+
+    if(!normalized){
+        return null;
+    }
+
+
+    for(
+        let i=0;
+        i<RARITY_ORDER.length;
+        i++
+    ){
+
+        const key=
+            RARITY_ORDER[i];
+
+
+        if(
+            normalizeText(key)
+            ===
+            normalized
+            ||
+            normalizeText(
+                RARITY_TYPES[key]
+                .displayName
+            )
+            ===
+            normalized
+        ){
+
+            return key;
+        }
+    }
+
+
+    const aliases={
+
+        "pho thong":
+            "phoThong",
+
+        "trung pham":
+            "trungPham",
+
+        "trung thuong pham":
+            "trungThuongPham",
+
+        "thuong pham":
+            "thuongPham",
+
+        "cao cap":
+            "caoCap",
+
+        "cuc pham":
+            "cucPham",
+
+        "hoang ngoc":
+            "phoThong",
+
+        "hai lam ngoc":
+            "trungPham",
+
+        "thach anh tim":
+            "trungThuongPham",
+
+        "lam bao thach":
+            "thuongPham",
+
+        "luc thach":
+            "caoCap",
+
+        "hong ngoc":
+            "cucPham"
+    };
+
+
+    return aliases[
+        normalized
+    ] || null;
+}
+
+
+function getRarityInfo(value){
+
+    const key=
+        normalizeRarity(
+            value
+        );
+
+
+    return(
+        key &&
+        RARITY_TYPES[key]
+    )
+    ||
+    null;
+}
+
+
+function getRarityGem(value){
+
+    const rarity=
+        getRarityInfo(
+            value
+        );
+
+
+    return(
+        rarity &&
+        rarity.gemType
+        &&
+        GEM_TYPES[
+            rarity.gemType
+        ]
+    )
+    ||
+    null;
+}
+
+
+/* =========================================================
+   GEM MARKER
+========================================================= */
+
+function parseGemRewardMarker(description){
+
+    const raw=
+        String(
+            description || ""
+        );
+
+
+    const match=
+        raw.match(
+            /\[\s*GEM\s*:\s*([^:\]]+)\s*:\s*(\d+)\s*\]/i
+        );
+
+
+    if(!match){
+
+        return{
+
+            isGemReward:false,
+
+            gemType:null,
+
+            amount:0,
+
+            marker:"",
+
+            cleanDescription:
+                raw.trim()
+        };
+    }
+
+
+    const gemType=
+        normalizeGemType(
+            match[1]
+        );
+
+
+    const amount=
+        Math.max(
+            0,
+            Math.floor(
+                Number(
+                    match[2] ||
+                    0
+                )
+            )
+        );
+
+
+    return{
+
+        isGemReward:
+            Boolean(
+                gemType &&
+                amount > 0
+            ),
+
+        gemType:
+            gemType,
+
+        amount:
+            amount,
+
+        marker:
+            match[0],
+
+        cleanDescription:
+            raw
+            .replace(
+                match[0],
+                ""
+            )
+            .replace(
+                /\s{2,}/g,
+                " "
+            )
+            .trim()
+    };
+}
+
+
+function isGemRewardGift(gift){
+
+    return Boolean(
+
+        gift
+
+        &&
+
+        gift.isGemReward
+
+        &&
+
+        gift.rewardGemType
+
+        &&
+
+        Number(
+            gift.rewardGemAmount ||
+            0
+        ) > 0
+    );
+}
+
+
+/* =========================================================
+   GIFTS
+========================================================= */
+
+function mapGiftRows(rows){
 
     if(
         !rows ||
         !rows.length
     ){
 
-        return {};
-    }
-
-
-    const headers=
-        rows[0];
-
-
-    return{
-
-        timestamp:
-            findColumn(
-                headers,
-                [
-                    "Dấu thời gian",
-                    "Timestamp"
-                ]
-            ),
-
-        name:
-            findColumn(
-                headers,
-                [
-                    "Họ và tên",
-                    "Họ tên"
-                ]
-            ),
-
-        code:
-            findColumn(
-                headers,
-                [
-                    "Mã học viên"
-                ]
-            ),
-
-        group:
-            findColumn(
-                headers,
-                [
-                    "Tổ"
-                ]
-            ),
-
-        course:
-            findColumn(
-                headers,
-                [
-                    "Khóa",
-                    "Khoá"
-                ]
-            ),
-
-        image:
-            findColumn(
-                headers,
-                [
-                    "Tải bài tập lên"
-                ]
-            ),
-
-        description:
-            findColumn(
-                headers,
-                [
-                    "Mô tả bài tập"
-                ]
-            ),
-
-        score:
-            findColumn(
-                headers,
-                [
-                    "Điểm",
-                    "Điểm số"
-                ]
-            ),
-
-        comment:
-            findColumn(
-                headers,
-                [
-                    "Nhận xét"
-                ]
-            )
-    };
-}
-
-
-/* =========================================================
-   MAP SUBMISSIONS
-========================================================= */
-
-function mapSubmissionRows(rows){
-
-    if(
-        !rows ||
-        rows.length < 2
-    ){
-
         return [];
     }
 
 
-    const c=
-        detectSubmissionColumns(rows);
+    const headers=
+        rows[0]
+        .map(
+            normalizeText
+        );
+
+
+    let nameIndex=
+        findColumn(
+            headers,
+            [
+                "tên quà",
+                "ten qua"
+            ]
+        );
+
+
+    let imageIndex=
+        findColumn(
+            headers,
+            [
+                "icon",
+                "hình ảnh",
+                "hinh anh"
+            ]
+        );
+
+
+    let descriptionIndex=
+        findColumn(
+            headers,
+            [
+                "mô tả",
+                "mo ta"
+            ]
+        );
+
+
+    let priceIndex=
+        findColumn(
+            headers,
+            [
+                "điểm cần thiết",
+                "diem can thiet",
+                "giá",
+                "gia"
+            ]
+        );
+
+
+    let rarityIndex=
+        findColumn(
+            headers,
+            [
+                "độ hiếm",
+                "do hiem",
+                "phẩm cấp",
+                "pham cap"
+            ]
+        );
+
+
+    if(nameIndex < 0){
+        nameIndex=0;
+    }
+
+    if(imageIndex < 0){
+        imageIndex=1;
+    }
+
+    if(descriptionIndex < 0){
+        descriptionIndex=2;
+    }
+
+    if(priceIndex < 0){
+        priceIndex=3;
+    }
 
 
     return rows
@@ -3313,128 +1837,880 @@ function mapSubmissionRows(rows){
     .map(
         function(row,index){
 
-            const description=
-                c.description >= 0
+            const name=
+                String(
+                    row[
+                        nameIndex
+                    ] || ""
+                )
+                .trim();
+
+
+            const image=
+                String(
+                    row[
+                        imageIndex
+                    ] || ""
+                )
+                .trim();
+
+
+            const rawDescription=
+                String(
+                    row[
+                        descriptionIndex
+                    ] || ""
+                )
+                .trim();
+
+
+            const correctPrice=
+                Math.max(
+                    0,
+                    parseNumber(
+                        row[
+                            priceIndex
+                        ]
+                    )
+                );
+
+
+            const rawRarity=
+                rarityIndex >= 0
                 ?
-                row[c.description]
+                String(
+                    row[
+                        rarityIndex
+                    ] || ""
+                )
+                .trim()
                 :
                 "";
 
 
-            const resolution=
-                resolveDescription(
-                    description
+            const rarity=
+                normalizeRarity(
+                    rawRarity
+                );
+
+
+            const rarityInfo=
+                rarity
+                ?
+                RARITY_TYPES[
+                    rarity
+                ]
+                :
+                null;
+
+
+            const reward=
+                parseGemRewardMarker(
+                    rawDescription
                 );
 
 
             return{
 
-                source:
-                    "NopBaiLuyenTap",
-
-                rowIndex:
-                    index+2,
-
-                originalIndex:
+                index:
                     index+1,
 
-                timestamp:
-                    c.timestamp >= 0
-                    ?
-                    String(
-                        row[c.timestamp] || ""
-                    ).trim()
-                    :
-                    "",
+                name,
 
-                studentName:
-                    c.name >= 0
-                    ?
-                    String(
-                        row[c.name] || ""
-                    ).trim()
-                    :
-                    "",
+                normalizedName:
+                    normalizeText(
+                        name
+                    ),
 
-                code:
-                    c.code >= 0
-                    ?
-                    normalizeCode(
-                        row[c.code]
-                    )
-                    :
-                    "",
+                image,
 
-                group:
-                    c.group >= 0
-                    ?
-                    String(
-                        row[c.group] || ""
-                    ).trim()
-                    :
-                    "",
+                rawDescription,
 
-                course:
-                    c.course >= 0
-                    ?
-                    String(
-                        row[c.course] || ""
-                    ).trim()
-                    :
-                    "",
+                description:
+                    reward.cleanDescription,
 
-                image:
-                    c.image >= 0
-                    ?
-                    String(
-                        row[c.image] || ""
-                    ).trim()
-                    :
-                    "",
+                correctPrice,
 
-                rawDescription:
-                    String(
-                        description || ""
-                    ).trim(),
+                cost:
+                    correctPrice,
 
-                score:
-                    c.score >= 0
+                rawRarity,
+
+                rarity,
+
+                rarityInfo,
+
+                rarityGemType:
+                    rarityInfo
                     ?
-                    parseScore(
-                        row[c.score]
-                    )
+                    rarityInfo.gemType
                     :
                     null,
 
-                teacherComment:
-                    c.comment >= 0
-                    ?
-                    String(
-                        row[c.comment] || ""
-                    ).trim()
-                    :
-                    "",
+                gemType:
+                    CONFIG.marketCurrency,
 
-                resolution
+                isGemReward:
+                    reward.isGemReward,
+
+                rewardGemType:
+                    reward.gemType,
+
+                rewardGemAmount:
+                    reward.amount,
+
+                gemReward:
+                    reward.isGemReward
+                    ?
+                    {
+                        gemType:
+                            reward.gemType,
+
+                        amount:
+                            reward.amount
+                    }
+                    :
+                    null,
+
+                rewardMarker:
+                    reward.marker
             };
         }
     )
     .filter(
-        function(item){
+        function(gift){
 
             return Boolean(
-                item.code
+                gift.name
             );
         }
     );
 }
 
 
+function createGiftMap(gifts){
+
+    const map={};
+
+
+    (gifts || [])
+    .forEach(
+        function(gift){
+
+            map[
+                normalizeText(
+                    gift.name
+                )
+            ]=
+                gift;
+        }
+    );
+
+
+    return map;
+}
+
+
 /* =========================================================
-   CHAMDIEM
+   ECONOMY
 ========================================================= */
 
-function detectGradingColumns(rows){
+function analyzeGemOfferEconomy(
+    gift,
+    price
+){
+
+    const paid=
+        Number(
+            price ||
+            gift &&
+            gift.correctPrice ||
+            0
+        );
+
+
+    if(
+        !isGemRewardGift(
+            gift
+        )
+    ){
+
+        return{
+
+            isGemReward:false,
+
+            paidHong:
+                paid,
+
+            rewardHongValue:0,
+
+            difference:0,
+
+            ratio:0,
+
+            type:"item"
+        };
+    }
+
+
+    const rewardValue=
+        getGemValueInHong(
+
+            gift.rewardGemType,
+
+            gift.rewardGemAmount
+        );
+
+
+    const difference=
+        rewardValue -
+        paid;
+
+
+    let type=
+        "break-even";
+
+
+    if(
+        difference > 0.000001
+    ){
+
+        type=
+            "profit";
+
+    }else if(
+        difference < -0.000001
+    ){
+
+        type=
+            "loss";
+    }
+
+
+    return{
+
+        isGemReward:true,
+
+        paidHong:
+            paid,
+
+        rewardHongValue:
+            rewardValue,
+
+        difference,
+
+        ratio:
+            paid > 0
+            ?
+            rewardValue /
+            paid
+            :
+            0,
+
+        type
+    };
+}
+
+
+/* =========================================================
+   MYSTERY
+========================================================= */
+
+function isMysteryBoxGiftName(value){
+
+    const name=
+        normalizeText(
+            value
+        );
+
+
+    const configured=
+        normalizeText(
+            CONFIG.mysteryBoxGiftName
+        );
+
+
+    return(
+        name === configured
+        ||
+        name.startsWith(
+            configured+" "
+        )
+    );
+}
+
+
+/* =========================================================
+   DEAL
+========================================================= */
+
+function sanitizeDealId(value){
+
+    return String(
+        value || ""
+    )
+    .trim()
+    .replace(
+        /[^a-zA-Z0-9._:-]/g,
+        ""
+    )
+    .slice(
+        0,
+        120
+    );
+}
+
+
+function createDealMarker(
+    dealId
+){
+
+    const clean=
+        sanitizeDealId(
+            dealId
+        );
+
+
+    return clean
+    ?
+    "[DEAL:"+clean+"]"
+    :
+    "";
+}
+
+
+function parseDealMarker(value){
+
+    const raw=
+        String(
+            value || ""
+        );
+
+
+    const match=
+        raw.match(
+            /\[\s*DEAL\s*:\s*([a-zA-Z0-9._:-]+)\s*\]/i
+        );
+
+
+    if(!match){
+
+        return{
+
+            hasDeal:false,
+
+            dealId:"",
+
+            marker:"",
+
+            cleanValue:
+                raw.trim()
+        };
+    }
+
+
+    const dealId=
+        sanitizeDealId(
+            match[1]
+        );
+
+
+    return{
+
+        hasDeal:
+            Boolean(
+                dealId
+            ),
+
+        dealId,
+
+        marker:
+            match[0],
+
+        cleanValue:
+            raw
+            .replace(
+                match[0],
+                ""
+            )
+            .replace(
+                /\s{2,}/g,
+                " "
+            )
+            .trim()
+    };
+}
+
+
+function hashDealText(text){
+
+    let hash=
+        2166136261;
+
+
+    const value=
+        String(
+            text || ""
+        );
+
+
+    for(
+        let i=0;
+        i<value.length;
+        i++
+    ){
+
+        hash ^=
+            value.charCodeAt(i);
+
+
+        hash=
+            Math.imul(
+                hash,
+                16777619
+            );
+    }
+
+
+    return hash >>> 0;
+}
+
+
+function createDealId(
+    dayKey,
+    merchantKey,
+    slot,
+    giftName
+){
+
+    const merchant=
+        normalizeText(
+            merchantKey
+        )
+        .replace(
+            /[^a-z0-9]+/g,
+            "-"
+        )
+        .replace(
+            /^-+|-+$/g,
+            ""
+        )
+        ||
+        "npc";
+
+
+    const raw=
+
+        String(
+            dayKey || ""
+        )
+
+        +"|"+
+
+        merchant
+
+        +"|"+
+
+        String(
+            slot || 0
+        )
+
+        +"|"+
+
+        normalizeText(
+            giftName
+        );
+
+
+    const hash=
+        hashDealText(
+            raw
+        )
+        .toString(36);
+
+
+    return sanitizeDealId(
+
+        String(
+            dayKey || ""
+        )
+        .replace(
+            /[^0-9]/g,
+            ""
+        )
+
+        +
+
+        "-"
+
+        +
+
+        merchant
+
+        +
+
+        "-"
+
+        +
+
+        String(
+            slot || 0
+        )
+
+        +
+
+        "-"
+
+        +
+
+        hash
+    );
+}
+
+
+function getConsumedDealIds(
+    transactions
+){
+
+    const result=
+        new Set();
+
+
+    (transactions || [])
+    .forEach(
+        function(item){
+
+            if(
+                item &&
+                item.dealId &&
+                item.accountingStatus ===
+                "valid"
+            ){
+
+                result.add(
+                    sanitizeDealId(
+                        item.dealId
+                    )
+                );
+            }
+        }
+    );
+
+
+    return result;
+}
+
+
+/* =========================================================
+   FORM VALUE
+========================================================= */
+
+function createFormGiftValue(
+    giftName,
+    price,
+    thirdArg,
+    fourthArg
+){
+
+    let dealId="";
+
+
+    const oldGemType=
+        normalizeGemType(
+            thirdArg
+        );
+
+
+    if(fourthArg){
+
+        dealId=
+            fourthArg;
+
+    }else if(
+        thirdArg &&
+        !oldGemType
+    ){
+
+        dealId=
+            thirdArg;
+    }
+
+
+    let result=
+
+        String(
+            giftName || ""
+        )
+        .trim()
+
+        +
+
+        " - "
+
+        +
+
+        formatNumber(
+            price
+        )
+
+        +
+
+        " "
+
+        +
+
+        GEM_TYPES[
+            CONFIG.marketCurrency
+        ].displayName;
+
+
+    const marker=
+        createDealMarker(
+            dealId
+        );
+
+
+    if(marker){
+
+        result +=
+            " "+
+            marker;
+    }
+
+
+    return result;
+}
+
+
+function parseFormGiftValue(
+    value,
+    giftMap
+){
+
+    const raw=
+        String(
+            value || ""
+        )
+        .trim();
+
+
+    const deal=
+        parseDealMarker(
+            raw
+        );
+
+
+    const cleanRaw=
+        deal.cleanValue;
+
+
+    const map=
+        giftMap ||
+        {};
+
+
+    if(!cleanRaw){
+
+        return{
+
+            giftName:"",
+
+            gift:null,
+
+            price:0,
+
+            gemType:null,
+
+            dealId:
+                deal.dealId,
+
+            hasDeal:
+                deal.hasDeal,
+
+            dealMarker:
+                deal.marker,
+
+            format:
+                "invalid"
+        };
+    }
+
+
+    const separator=
+        " - ";
+
+
+    const splitIndex=
+        cleanRaw.lastIndexOf(
+            separator
+        );
+
+
+    if(
+        splitIndex > 0
+    ){
+
+        const giftName=
+            cleanRaw
+            .slice(
+                0,
+                splitIndex
+            )
+            .trim();
+
+
+        const transactionText=
+            cleanRaw
+            .slice(
+                splitIndex+
+                separator.length
+            )
+            .trim();
+
+
+        const match=
+            transactionText.match(
+                /^([0-9]+(?:[.,][0-9]+)?)\s+(.+)$/
+            );
+
+
+        if(match){
+
+            const price=
+                parseNumber(
+                    match[1]
+                );
+
+
+            const parsedGemType=
+                normalizeGemType(
+                    match[2]
+                );
+
+
+            const gift=
+                map[
+                    normalizeText(
+                        giftName
+                    )
+                ]
+                ||
+                null;
+
+
+            if(
+                price > 0 &&
+                parsedGemType
+            ){
+
+                return{
+
+                    giftName:
+                        gift
+                        ?
+                        gift.name
+                        :
+                        giftName,
+
+                    gift,
+
+                    price,
+
+                    gemType:
+                        parsedGemType,
+
+                    dealId:
+                        deal.dealId,
+
+                    hasDeal:
+                        deal.hasDeal,
+
+                    dealMarker:
+                        deal.marker,
+
+                    format:
+                        "priced"
+                };
+            }
+        }
+    }
+
+
+    const directGift=
+        map[
+            normalizeText(
+                cleanRaw
+            )
+        ]
+        ||
+        null;
+
+
+    if(directGift){
+
+        return{
+
+            giftName:
+                directGift.name,
+
+            gift:
+                directGift,
+
+            price:
+                Number(
+                    directGift.correctPrice ||
+                    0
+                ),
+
+            gemType:
+                CONFIG.marketCurrency,
+
+            dealId:
+                deal.dealId,
+
+            hasDeal:
+                deal.hasDeal,
+
+            dealMarker:
+                deal.marker,
+
+            format:
+                "legacy"
+        };
+    }
+
+
+    return{
+
+        giftName:
+            cleanRaw,
+
+        gift:null,
+
+        price:0,
+
+        gemType:null,
+
+        dealId:
+            deal.dealId,
+
+        hasDeal:
+            deal.hasDeal,
+
+        dealMarker:
+            deal.marker,
+
+        format:
+            "invalid"
+    };
+}
+
+
+/* =========================================================
+   PHIEUDOI COLUMNS
+========================================================= */
+
+function detectFormColumns(rows){
 
     if(
         !rows ||
@@ -3446,63 +2722,138 @@ function detectGradingColumns(rows){
 
 
     const headers=
-        rows[0];
+        rows[0]
+        .map(
+            normalizeText
+        );
+
+
+    function column(
+        aliases,
+        fallback
+    ){
+
+        const found=
+            findColumn(
+                headers,
+                aliases
+            );
+
+
+        return found >= 0
+        ?
+        found
+        :
+        fallback;
+    }
 
 
     return{
 
         timestamp:
-            findColumn(
-                headers,
-                ["Dấu thời gian"]
-            ),
-
-        submissionId:
-            findColumn(
-                headers,
-                ["Mã bài nộp"]
+            column(
+                [
+                    "dấu thời gian",
+                    "dau thoi gian",
+                    "timestamp"
+                ],
+                0
             ),
 
         name:
-            findColumn(
-                headers,
-                ["Họ và tên"]
+            column(
+                [
+                    "họ tên",
+                    "ho ten",
+                    "họ và tên",
+                    "ho va ten"
+                ],
+                1
             ),
 
         code:
-            findColumn(
-                headers,
-                ["Mã học viên"]
-            ),
-
-        image:
-            findColumn(
-                headers,
-                ["Link tác phẩm"]
-            ),
-
-        score:
-            findColumn(
-                headers,
+            column(
                 [
-                    "Điểm giáo viên",
-                    "Điểm"
-                ]
+                    "mã học viên",
+                    "ma hoc vien"
+                ],
+                2
             ),
 
-        comment:
-            findColumn(
-                headers,
+        gift:
+            column(
                 [
-                    "Nhận xét GVCN",
-                    "Nhận xét"
-                ]
+                    "món quà muốn đổi",
+                    "mon qua muon doi"
+                ],
+                3
+            ),
+
+        confirm:
+            column(
+                [
+                    "xác nhận",
+                    "xac nhan"
+                ],
+                4
+            ),
+
+        isMystery:
+            column(
+                [
+                    "là hộp bí ẩn",
+                    "la hop bi an"
+                ],
+                5
+            ),
+
+        mysteryCode:
+            column(
+                [
+                    "mã quay",
+                    "ma quay"
+                ],
+                6
+            ),
+
+        mysteryRoll:
+            column(
+                [
+                    "số quay",
+                    "so quay"
+                ],
+                7
+            ),
+
+        mysteryReward:
+            column(
+                [
+                    "quà nhận được",
+                    "qua nhan duoc"
+                ],
+                8
+            ),
+
+        mysteryStatus:
+            column(
+                [
+                    "trạng thái",
+                    "trang thai"
+                ],
+                9
             )
     };
 }
 
 
-function mapGradingRows(rows){
+/* =========================================================
+   MAP PHIEUDOI
+========================================================= */
+
+function mapFormResponseRows(
+    rows,
+    gifts
+){
 
     if(
         !rows ||
@@ -3513,8 +2864,22 @@ function mapGradingRows(rows){
     }
 
 
-    const c=
-        detectGradingColumns(rows);
+    const giftMap=
+        createGiftMap(
+            gifts
+        );
+
+
+    const columns=
+        detectFormColumns(
+            rows
+        );
+
+
+    const confirmWanted=
+        normalizeText(
+            CONFIG.formConfirmValue
+        );
 
 
     return rows
@@ -3522,1340 +2887,421 @@ function mapGradingRows(rows){
     .map(
         function(row,index){
 
+            const rawGiftValue=
+                String(
+                    row[
+                        columns.gift
+                    ] || ""
+                )
+                .trim();
+
+
+            const parsed=
+                parseFormGiftValue(
+                    rawGiftValue,
+                    giftMap
+                );
+
+
+            const code=
+                normalizeCode(
+                    row[
+                        columns.code
+                    ]
+                );
+
+
+            const confirmation=
+                String(
+                    row[
+                        columns.confirm
+                    ] || ""
+                )
+                .trim();
+
+
+            const confirmed=
+                normalizeText(
+                    confirmation
+                )
+                ===
+                confirmWanted;
+
+
+            const mysteryFlag=
+                normalizeText(
+                    row[
+                        columns.isMystery
+                    ] || ""
+                );
+
+
+            const mysteryRewardName=
+                String(
+                    row[
+                        columns.mysteryReward
+                    ] || ""
+                )
+                .trim();
+
+
+            const isMysteryBox=
+
+                isMysteryBoxGiftName(
+                    parsed.giftName
+                )
+
+                ||
+
+                mysteryFlag ===
+                "true"
+
+                ||
+
+                mysteryFlag ===
+                "co"
+
+                ||
+
+                mysteryFlag ===
+                "yes";
+
+
+            const mysteryRewardGift=
+                mysteryRewardName
+                ?
+                (
+                    giftMap[
+                        normalizeText(
+                            mysteryRewardName
+                        )
+                    ]
+                    ||
+                    null
+                )
+                :
+                null;
+
+
             return{
 
-                source:
-                    "ChamDiem",
+                index:
+                    index+1,
 
                 rowIndex:
                     index+2,
 
-                timestamp:
-                    c.timestamp >= 0
-                    ?
-                    String(
-                        row[c.timestamp] || ""
-                    ).trim()
-                    :
-                    "",
+                transactionType:
+                    "redemption",
 
-                submissionId:
-                    c.submissionId >= 0
-                    ?
+                timestamp:
                     String(
-                        row[c.submissionId] || ""
-                    ).trim()
-                    :
-                    "",
+                        row[
+                            columns.timestamp
+                        ] || ""
+                    )
+                    .trim(),
 
                 studentName:
-                    c.name >= 0
-                    ?
                     String(
-                        row[c.name] || ""
-                    ).trim()
-                    :
-                    "",
-
-                code:
-                    c.code >= 0
-                    ?
-                    normalizeCode(
-                        row[c.code]
+                        row[
+                            columns.name
+                        ] || ""
                     )
-                    :
+                    .trim(),
+
+                code,
+
+                confirmation,
+
+                confirmed,
+
+                rawGiftValue,
+
+                giftName:
+                    parsed.giftName,
+
+                gift:
+                    parsed.gift,
+
+                price:
+                    Number(
+                        parsed.price ||
+                        0
+                    ),
+
+                gemType:
+                    parsed.gemType,
+
+                format:
+                    parsed.format,
+
+                dealId:
+                    parsed.dealId ||
                     "",
 
-                image:
-                    c.image >= 0
-                    ?
+                hasDeal:
+                    Boolean(
+                        parsed.hasDeal
+                    ),
+
+                dealMarker:
+                    parsed.dealMarker ||
+                    "",
+
+                isGemReward:
+                    isGemRewardGift(
+                        parsed.gift
+                    ),
+
+                isMysteryBox,
+
+                mysteryRewardName,
+
+                mysteryRewardGift,
+
+                mysteryCode:
                     String(
-                        row[c.image] || ""
-                    ).trim()
-                    :
-                    "",
-
-                score:
-                    c.score >= 0
-                    ?
-                    parseScore(
-                        row[c.score]
+                        row[
+                            columns.mysteryCode
+                        ] || ""
                     )
-                    :
-                    null,
+                    .trim(),
 
-                teacherComment:
-                    c.comment >= 0
-                    ?
+                mysteryRoll:
                     String(
-                        row[c.comment] || ""
-                    ).trim()
-                    :
-                    ""
+                        row[
+                            columns.mysteryRoll
+                        ] || ""
+                    )
+                    .trim(),
+
+                mysteryStatus:
+                    String(
+                        row[
+                            columns.mysteryStatus
+                        ] || ""
+                    )
+                    .trim()
             };
         }
     )
     .filter(
         function(item){
 
-            return Boolean(
-                item.code
-            );
-        }
-    );
-}
-
-
-/* =========================================================
-   ERROR DETECTION
-
-   CHỈ TEACHER COMMENT ĐƯỢC TẠO ERROR CỤ THỂ.
-   SCORE KHÔNG TỰ SINH ERROR CODE.
-========================================================= */
-
-function detectErrorsFromComment(
-    comment,
-    resolution
-){
-
-    const normalized=
-        normalizeText(comment);
-
-
-    if(!normalized){
-
-        return [];
-    }
-
-
-    const exerciseIds=
-        new Set(
-            (
-                resolution &&
-                resolution.exercises ||
-                []
-            )
-            .map(
-                function(item){
-
-                    return item.id;
-                }
-            )
-        );
-
-
-    const results=[];
-
-
-    Object.keys(
-        ERROR_MAP
-    )
-    .forEach(
-        function(errorId){
-
-            const error=
-                ERROR_MAP[errorId];
-
-
-            /*
-               Nếu biết exercise,
-               ưu tiên chỉ dò lỗi liên quan.
-            */
-            if(
-                exerciseIds.size &&
-                !exerciseIds.has(
-                    error.exerciseId
+            return(
+                item.confirmed
+                &&
+                Boolean(
+                    item.code
                 )
-            ){
-
-                return;
-            }
-
-
-            const matched=
-                error.keywords.some(
-                    function(keyword){
-
-                        return normalized.includes(
-                            normalizeText(keyword)
-                        );
-                    }
-                );
-
-
-            if(matched){
-
-                results.push(
-                    Object.assign(
-                        {},
-                        error,
-                        {
-                            source:
-                                "TEACHER",
-
-                            confidence:
-                                "HIGH"
-                        }
-                    )
-                );
-            }
+                &&
+                Boolean(
+                    item.giftName
+                )
+            );
         }
     );
-
-
-    GENERAL_FEEDBACK_RULES
-    .forEach(
-        function(rule){
-
-            const matched=
-                rule.keywords.some(
-                    function(keyword){
-
-                        return normalized.includes(
-                            normalizeText(keyword)
-                        );
-                    }
-                );
-
-
-            if(!matched){
-                return;
-            }
-
-
-            if(
-                rule.errorId &&
-                ERROR_MAP[
-                    rule.errorId
-                ]
-            ){
-
-                if(
-                    !results.some(
-                        function(item){
-
-                            return(
-                                item.id ===
-                                rule.errorId
-                            );
-                        }
-                    )
-                ){
-
-                    results.push(
-                        Object.assign(
-                            {},
-                            ERROR_MAP[
-                                rule.errorId
-                            ],
-                            {
-                                source:
-                                    "TEACHER",
-
-                                confidence:
-                                    "MEDIUM"
-                            }
-                        )
-                    );
-                }
-            }
-        }
-    );
-
-
-    return results;
 }
 
 
 /* =========================================================
-   EVIDENCE BUILDER
+   QUATANGGVCN COLUMNS
 ========================================================= */
 
-function buildKnowledgeEvidence(
-    submissions
-){
+function detectTeacherGiftColumns(rows){
 
-    const evidenceByNode=
-        new Map();
+    if(
+        !rows ||
+        !rows.length
+    ){
 
-
-    KNOWLEDGE_NODES.forEach(
-        function(node){
-
-            evidenceByNode.set(
-                node.id,
-                []
-            );
-        }
-    );
-
-
-    (
-        submissions ||
-        []
-    )
-    .forEach(
-        function(submission){
-
-            const resolution=
-                submission.resolution;
-
-
-            if(
-                !resolution ||
-                resolution.resolutionType ===
-                "UNKNOWN"
-            ){
-
-                return;
-            }
-
-
-            const score=
-                parseScore(
-                    submission.score
-                );
-
-
-            if(score === null){
-                return;
-            }
-
-
-            const errors=
-                detectErrorsFromComment(
-                    submission.teacherComment,
-                    resolution
-                );
-
-
-            resolution
-            .knowledgeEvidence
-            .forEach(
-                function(link){
-
-                    if(
-                        !evidenceByNode.has(
-                            link.knowledgeId
-                        )
-                    ){
-
-                        return;
-                    }
-
-
-                    const relatedErrors=
-                        errors.filter(
-                            function(error){
-
-                                return(
-                                    error.knowledgeId ===
-                                    link.knowledgeId
-                                );
-                            }
-                        );
-
-
-                    evidenceByNode
-                    .get(
-                        link.knowledgeId
-                    )
-                    .push({
-
-                        timestamp:
-                            submission.timestamp,
-
-                        date:
-                            parseDate(
-                                submission.timestamp
-                            ),
-
-                        rowIndex:
-                            submission.rowIndex,
-
-                        score,
-
-                        qualityState:
-                            qualityFromScore(
-                                score
-                            ),
-
-                        exerciseId:
-                            link.exerciseId,
-
-                        evidenceType:
-                            link.evidenceType,
-
-                        evidenceWeight:
-                            link.weight,
-
-                        resolutionType:
-                            resolution
-                            .resolutionType,
-
-                        confidence:
-                            resolution
-                            .confidence,
-
-                        teacherComment:
-                            submission
-                            .teacherComment ||
-                            "",
-
-                        teacherEvidence:
-                            Boolean(
-                                submission
-                                .teacherComment
-                            ),
-
-                        errors:
-                            relatedErrors,
-
-                        source:
-                            submission.source
-                    });
-                }
-            );
-        }
-    );
-
-
-    evidenceByNode
-    .forEach(
-        function(items){
-
-            items.sort(
-                function(a,b){
-
-                    const ta=
-                        a.date
-                        ?
-                        a.date.getTime()
-                        :
-                        0;
-
-
-                    const tb=
-                        b.date
-                        ?
-                        b.date.getTime()
-                        :
-                        0;
-
-
-                    if(
-                        tb !== ta
-                    ){
-
-                        return tb-ta;
-                    }
-
-
-                    return(
-                        Number(
-                            b.rowIndex || 0
-                        )
-                        -
-                        Number(
-                            a.rowIndex || 0
-                        )
-                    );
-                }
-            );
-        }
-    );
-
-
-    return evidenceByNode;
-}
-
-
-/* =========================================================
-   CURRENT QUALITY
-========================================================= */
-
-function calculateCurrentQuality(
-    evidence
-){
-
-    const recent=
-        (
-            evidence ||
-            []
-        )
-        .slice(
-            0,
-            CONFIG.maxEvidencePerNode
-        );
-
-
-    if(!recent.length){
-
-        return{
-
-            value:0,
-
-            state:
-                QUALITY_STATES
-                .NOT_PERFORMED,
-
-            evidenceCount:0
-        };
+        return {};
     }
 
 
-    let numerator=0;
-    let denominator=0;
+    const headers=
+        rows[0]
+        .map(
+            normalizeText
+        );
 
 
-    recent.forEach(
-        function(item,index){
+    function column(
+        aliases,
+        fallback
+    ){
 
-            const recencyWeight=
-                CONFIG.recencyWeights[
-                    index
-                ]
-                ||
-                0.40;
-
-
-            const evidenceWeight=
-                Number(
-                    item.evidenceWeight ||
-                    1
-                );
+        const found=
+            findColumn(
+                headers,
+                aliases
+            );
 
 
-            const confidenceWeight=
-                CONFIG
-                .confidenceWeights[
-                    item.confidence
-                ]
-                ||
-                0.40;
-
-
-            const weight=
-                recencyWeight *
-                evidenceWeight *
-                confidenceWeight;
-
-
-            numerator +=
-                Number(item.score) *
-                weight;
-
-
-            denominator +=
-                weight;
-        }
-    );
-
-
-    const value=
-        denominator > 0
+        return found >= 0
         ?
-        numerator /
-        denominator
+        found
         :
-        0;
+        fallback;
+    }
 
 
     return{
 
-        value:
-            round(value,2),
-
-        state:
-            qualityFromScore(
-                value
+        timestamp:
+            column(
+                [
+                    "dấu thời gian",
+                    "dau thoi gian"
+                ],
+                0
             ),
 
-        evidenceCount:
-            recent.length
-    };
-}
-
-
-/* =========================================================
-   TREND
-========================================================= */
-
-function calculateTrend(
-    evidence
-){
-
-    const chronological=
-        (
-            evidence ||
-            []
-        )
-        .slice(
-            0,
-            5
-        )
-        .reverse();
-
-
-    if(
-        chronological.length < 2
-    ){
-
-        return TREND_STATES.UNKNOWN;
-    }
-
-
-    const scores=
-        chronological.map(
-            function(item){
-
-                return Number(
-                    item.score
-                );
-            }
-        );
-
-
-    const first=
-        scores[0];
-
-
-    const last=
-        scores[
-            scores.length-1
-        ];
-
-
-    const delta=
-        last-first;
-
-
-    let positive=0;
-    let negative=0;
-
-
-    for(
-        let i=1;
-        i<scores.length;
-        i++
-    ){
-
-        const diff=
-            scores[i]-
-            scores[i-1];
-
-
-        if(diff > 0){
-            positive++;
-        }
-
-        if(diff < 0){
-            negative++;
-        }
-    }
-
-
-    const range=
-        Math.max.apply(
-            null,
-            scores
-        )
-        -
-        Math.min.apply(
-            null,
-            scores
-        );
-
-
-    if(
-        delta >= 3 &&
-        positive >=
-        Math.max(
-            2,
-            scores.length-2
-        )
-    ){
-
-        return TREND_STATES
-            .STRONG_IMPROVEMENT;
-    }
-
-
-    if(
-        delta >= 1 &&
-        positive > negative
-    ){
-
-        return TREND_STATES
-            .IMPROVING;
-    }
-
-
-    if(
-        delta <= -2 &&
-        negative > positive
-    ){
-
-        return TREND_STATES
-            .DECLINING;
-    }
-
-
-    if(
-        range >= 3 &&
-        positive > 0 &&
-        negative > 0
-    ){
-
-        return TREND_STATES
-            .FLUCTUATING;
-    }
-
-
-    return TREND_STATES.STABLE;
-}
-
-
-/* =========================================================
-   STABILITY
-========================================================= */
-
-function calculateStability(
-    evidence
-){
-
-    const recent=
-        (
-            evidence ||
-            []
-        )
-        .slice(
-            0,
-            5
-        );
-
-
-    if(
-        recent.length <= 1
-    ){
-
-        return STABILITY_STATES.LOW;
-    }
-
-
-    const scores=
-        recent.map(
-            function(item){
-
-                return Number(
-                    item.score
-                );
-            }
-        );
-
-
-    const mean=
-        scores.reduce(
-            function(a,b){
-
-                return a+b;
-            },
-            0
-        )
-        /
-        scores.length;
-
-
-    const variance=
-        scores.reduce(
-            function(total,value){
-
-                return(
-                    total+
-                    Math.pow(
-                        value-mean,
-                        2
-                    )
-                );
-            },
-            0
-        )
-        /
-        scores.length;
-
-
-    const deviation=
-        Math.sqrt(
-            variance
-        );
-
-
-    if(
-        recent.length >= 5 &&
-        deviation <= 0.65
-    ){
-
-        return STABILITY_STATES
-            .VERY_HIGH;
-    }
-
-
-    if(
-        recent.length >= 4 &&
-        deviation <= 1
-    ){
-
-        return STABILITY_STATES
-            .HIGH;
-    }
-
-
-    if(
-        recent.length >= 3 &&
-        deviation <= 1.5
-    ){
-
-        return STABILITY_STATES
-            .MODERATE;
-    }
-
-
-    if(
-        recent.length >= 2
-    ){
-
-        return STABILITY_STATES
-            .DEVELOPING;
-    }
-
-
-    return STABILITY_STATES.LOW;
-}
-
-
-/* =========================================================
-   CONFIDENCE
-========================================================= */
-
-function calculateConfidence(
-    evidence
-){
-
-    const recent=
-        (
-            evidence ||
-            []
-        )
-        .slice(
-            0,
-            5
-        );
-
-
-    if(!recent.length){
-
-        return CONFIDENCE_STATES.LOW;
-    }
-
-
-    let points=0;
-
-
-    recent.forEach(
-        function(item){
-
-            points +=
-                CONFIG
-                .confidenceWeights[
-                    item.confidence
-                ]
-                ||
-                0.4;
-
-
-            if(
-                item.teacherEvidence
-            ){
-
-                points += 0.25;
-            }
-
-
-            if(
-                item.evidenceType ===
-                "PRIMARY"
-            ){
-
-                points += 0.15;
-            }
-        }
-    );
-
-
-    const average=
-        points /
-        recent.length;
-
-
-    if(
-        recent.length >= 4 &&
-        average >= 1
-    ){
-
-        return CONFIDENCE_STATES
-            .VERY_HIGH;
-    }
-
-
-    if(
-        recent.length >= 3 &&
-        average >= 0.8
-    ){
-
-        return CONFIDENCE_STATES
-            .HIGH;
-    }
-
-
-    if(
-        recent.length >= 2
-    ){
-
-        return CONFIDENCE_STATES
-            .MEDIUM;
-    }
-
-
-    return CONFIDENCE_STATES.LOW;
-}
-
-
-/* =========================================================
-   ERROR STATE
-========================================================= */
-
-function calculateErrorState(
-    evidence
-){
-
-    const history=
-        new Map();
-
-
-    (
-        evidence ||
-        []
-    )
-    .slice()
-    .reverse()
-    .forEach(
-        function(item){
-
-            (
-                item.errors ||
-                []
+        scope:
+            column(
+                [
+                    "phạm vi tặng",
+                    "pham vi tang"
+                ],
+                1
+            ),
+
+        code:
+            column(
+                [
+                    "mã học viên",
+                    "ma hoc vien"
+                ],
+                2
+            ),
+
+        group:
+            column(
+                [
+                    "tổ",
+                    "to"
+                ],
+                3
+            ),
+
+        rewardType:
+            column(
+                [
+                    "loại phần thưởng",
+                    "loai phan thuong"
+                ],
+                4
+            ),
+
+        giftName:
+            column(
+                [
+                    "tên vật phẩm",
+                    "ten vat pham"
+                ],
+                5
+            ),
+
+        gemType:
+            column(
+                [
+                    "loại linh thạch",
+                    "loai linh thach"
+                ],
+                6
+            ),
+
+        quantity:
+            column(
+                [
+                    "số lượng",
+                    "so luong"
+                ],
+                7
+            ),
+
+        reason:
+            column(
+                [
+                    "lý do tặng",
+                    "ly do tang"
+                ],
+                8
+            ),
+
+        giver:
+            column(
+                [
+                    "người tặng",
+                    "nguoi tang"
+                ],
+                9
+            ),
+
+        status:
+            column(
+                [
+                    "trạng thái",
+                    "trang thai"
+                ],
+                10
+            ),
+
+        course:
+            column(
+                [
+                    "khóa",
+                    "khoa"
+                ],
+                11
             )
-            .forEach(
-                function(error){
-
-                    if(
-                        !history.has(
-                            error.id
-                        )
-                    ){
-
-                        history.set(
-                            error.id,
-                            []
-                        );
-                    }
-
-
-                    history
-                    .get(
-                        error.id
-                    )
-                    .push({
-                        timestamp:
-                            item.timestamp,
-                        score:
-                            item.score,
-                        error
-                    });
-                }
-            );
-        }
-    );
-
-
-    const active=[];
-    const resolved=[];
-
-
-    history.forEach(
-        function(records,errorId){
-
-            const definition=
-                ERROR_MAP[errorId];
-
-
-            const occurrences=
-                records.length;
-
-
-            const recentEvidence=
-                (
-                    evidence ||
-                    []
-                )
-                .slice(
-                    0,
-                    3
-                );
-
-
-            const recentOccurrences=
-                recentEvidence.filter(
-                    function(item){
-
-                        return(
-                            item.errors ||
-                            []
-                        )
-                        .some(
-                            function(error){
-
-                                return(
-                                    error.id ===
-                                    errorId
-                                );
-                            }
-                        );
-                    }
-                )
-                .length;
-
-
-            let lifecycle=
-                ERROR_LIFECYCLE.NEW;
-
-
-            if(
-                occurrences >= 3
-            ){
-
-                lifecycle=
-                    ERROR_LIFECYCLE
-                    .PERSISTENT;
-
-            }else if(
-                occurrences >= 2
-            ){
-
-                lifecycle=
-                    ERROR_LIFECYCLE
-                    .REPEATED;
-            }
-
-
-            if(
-                occurrences > 0 &&
-                recentOccurrences === 0 &&
-                recentEvidence.length >= 2
-            ){
-
-                lifecycle=
-                    ERROR_LIFECYCLE
-                    .RESOLVED;
-            }
-
-
-            const object=
-                Object.assign(
-                    {},
-                    definition,
-                    {
-                        occurrences,
-                        recentOccurrences,
-                        lifecycle
-                    }
-                );
-
-
-            if(
-                lifecycle ===
-                ERROR_LIFECYCLE.RESOLVED
-            ){
-
-                resolved.push(object);
-
-            }else{
-
-                active.push(object);
-            }
-        }
-    );
-
-
-    return{
-        active,
-        resolved
     };
 }
 
 
 /* =========================================================
-   BLOCKING ERROR
+   QUÀ GVCN ACTIVE
 ========================================================= */
 
-function hasBlockingError(errors){
+function isTeacherGiftActive(status){
 
-    return(
-        errors ||
-        []
-    )
-    .some(
-        function(error){
-
-            return(
-                error.severity ===
-                ERROR_SEVERITIES.BLOCKING
-            );
-        }
-    );
-}
-
-
-function hasRepeatedMajorError(errors){
-
-    return(
-        errors ||
-        []
-    )
-    .some(
-        function(error){
-
-            return(
-                error.severity ===
-                ERROR_SEVERITIES.MAJOR
-                &&
-                (
-                    error.lifecycle ===
-                    ERROR_LIFECYCLE.REPEATED
-                    ||
-                    error.lifecycle ===
-                    ERROR_LIFECYCLE.PERSISTENT
-                )
-            );
-        }
-    );
-}
-
-
-/* =========================================================
-   BASE MASTERY
-========================================================= */
-
-function calculateBaseMastery(
-    evidence,
-    currentQuality,
-    trend,
-    stability,
-    activeErrors
-){
-
-    const count=
-        evidence.length;
-
-
-    if(count === 0){
-
-        return MASTERY_STATES
-            .AVAILABLE;
-    }
-
-
-    const recentScores=
-        evidence
-        .slice(0,3)
-        .map(
-            function(item){
-
-                return Number(
-                    item.score
-                );
-            }
+    const value=
+        normalizeText(
+            status
         );
 
 
-    const latest=
-        recentScores.length
-        ?
-        recentScores[0]
-        :
-        0;
+    if(!value){
 
-
-    const blocking=
-        hasBlockingError(
-            activeErrors
-        );
-
-
-    const repeatedMajor=
-        hasRepeatedMajorError(
-            activeErrors
-        );
-
-
-    /*
-       MASTERED
-    */
-    if(
-        count >= 5
-        &&
-        recentScores.length >= 3
-        &&
-        recentScores.every(
-            function(score){
-
-                return score >= 7;
-            }
-        )
-        &&
-        recentScores.slice(0,3)
-        .every(
-            function(score){
-
-                return score >= 8;
-            }
-        )
-        &&
-        (
-            stability ===
-            STABILITY_STATES.HIGH
-            ||
-            stability ===
-            STABILITY_STATES.VERY_HIGH
-        )
-        &&
-        !blocking
-        &&
-        !repeatedMajor
-    ){
-
-        return MASTERY_STATES.MASTERED;
-    }
-
-
-    /*
-       STABLE
-    */
-    if(
-        count >= 4
-        &&
-        recentScores.length >= 3
-        &&
-        recentScores
-        .slice(0,3)
-        .every(
-            function(score){
-
-                return score >= 7;
-            }
-        )
-        &&
-        currentQuality.value >= 7
-        &&
-        trend !==
-        TREND_STATES.DECLINING
-        &&
-        !blocking
-        &&
-        !repeatedMajor
-    ){
-
-        return MASTERY_STATES.STABLE;
-    }
-
-
-    /*
-       ACHIEVED
-    */
-    if(
-        count >= 3
-        &&
-        latest >= 6
-        &&
-        recentScores
-        .slice(0,3)
-        .filter(
-            function(score){
-
-                return score >= 6;
-            }
-        )
-        .length >= 2
-        &&
-        !blocking
-    ){
-
-        return MASTERY_STATES.ACHIEVED;
-    }
-
-
-    /*
-       PRACTICING
-    */
-    if(
-        currentQuality.value >= 5
-    ){
-
-        return MASTERY_STATES.PRACTICING;
-    }
-
-
-    return MASTERY_STATES.LEARNING;
-}
-
-
-/* =========================================================
-   PREREQUISITES
-========================================================= */
-
-function prerequisitesPass(
-    node,
-    states
-){
-
-    if(
-        !node.prerequisites ||
-        !node.prerequisites.length
-    ){
-
+        /*
+           Dữ liệu cũ không trạng thái:
+           mặc định còn hiệu lực.
+        */
         return true;
     }
 
 
-    return node.prerequisites.every(
-        function(id){
+    return ![
 
-            const state=
-                states[id];
+        "het hieu luc",
 
+        "da huy",
 
-            if(!state){
-                return false;
-            }
+        "huy",
 
+        "khong hieu luc",
 
-            return(
-                MASTERY_RANK[
-                    state.mastery
-                ]
-                >=
-                MASTERY_RANK
-                .ACHIEVED
+        "thu hoi",
+
+        "da thu hoi"
+
+    ]
+    .some(
+        function(word){
+
+            return value.includes(
+                word
             );
         }
     );
@@ -4863,1257 +3309,755 @@ function prerequisitesPass(
 
 
 /* =========================================================
-   BUILD INITIAL NODE STATES
+   DETECT TEACHER GEM REWARD
+
+   HỖ TRỢ 2 KIỂU:
+
+   1. Loại phần thưởng = Linh thạch
+      Loại linh thạch = Hải Lam Ngọc
+      Số lượng = 4
+
+   2. Tên vật phẩm là món trong QuaTang có:
+      [GEM:haiLamNgoc:4]
+
+      Nếu Số lượng = 2 túi:
+
 ========================================================= */
 
-function buildInitialStates(
-    evidenceByNode
+function resolveTeacherGemReward(
+    rewardType,
+    gemTypeText,
+    quantity,
+    gift
 ){
 
-    const states={};
-
-
-    KNOWLEDGE_NODES.forEach(
-        function(node){
-
-            const evidence=
-                evidenceByNode.get(
-                    node.id
-                )
-                ||
-                [];
-
-
-            const currentQuality=
-                calculateCurrentQuality(
-                    evidence
-                );
-
-
-            const trend=
-                calculateTrend(
-                    evidence
-                );
-
-
-            const stability=
-                calculateStability(
-                    evidence
-                );
-
-
-            const confidence=
-                calculateConfidence(
-                    evidence
-                );
-
-
-            const errorState=
-                calculateErrorState(
-                    evidence
-                );
-
-
-            const mastery=
-                calculateBaseMastery(
-                    evidence,
-                    currentQuality,
-                    trend,
-                    stability,
-                    errorState.active
-                );
-
-
-            states[
-                node.id
-            ]={
-
-                id:
-                    node.id,
-
-                name:
-                    node.name,
-
-                domain:
-                    node.domain,
-
-                mastery,
-
-                highestMastery:
-                    mastery,
-
-                currentQuality:
-                    currentQuality.value,
-
-                qualityState:
-                    currentQuality.state,
-
-                trend,
-
-                stability,
-
-                confidence,
-
-                evidenceCount:
-                    evidence.length,
-
-                activeErrors:
-                    errorState.active,
-
-                resolvedErrors:
-                    errorState.resolved,
-
-                prerequisites:
-                    node.prerequisites.slice(),
-
-                prerequisitesPass:true,
-
-                recommendedAction:
-                    "CONTINUE",
-
-                recommendedExercise:null,
-
-                evidence:
-                    evidence.slice(
-                        0,
-                        CONFIG.maxEvidencePerNode
-                    )
-            };
-        }
-    );
-
-
-    return states;
-}
-
-
-/* =========================================================
-   APPLY PREREQUISITES
-========================================================= */
-
-function applyPrerequisiteRules(
-    states
-){
-
-    KNOWLEDGE_NODES.forEach(
-        function(node){
-
-            const state=
-                states[node.id];
-
-
-            const pass=
-                prerequisitesPass(
-                    node,
-                    states
-                );
-
-
-            state.prerequisitesPass=
-                pass;
-
-
-            /*
-               Chỉ LOCK nếu chưa có evidence.
-               Nếu đã có dữ liệu lịch sử thì không xóa trạng thái.
-            */
-            if(
-                !pass &&
-                state.evidenceCount === 0
-            ){
-
-                state.mastery=
-                    MASTERY_STATES.LOCKED;
-
-
-                state.recommendedAction=
-                    "UNLOCK_PREREQUISITE";
-            }
-
-
-            /*
-               Đã luyện nhưng nền tảng chưa đạt.
-            */
-            if(
-                !pass &&
-                state.evidenceCount > 0
-            ){
-
-                state.recommendedAction=
-                    "REVIEW_PREREQUISITE";
-
-
-                if(
-                    MASTERY_RANK[
-                        state.mastery
-                    ]
-                    >
-                    MASTERY_RANK
-                    .PRACTICING
-                ){
-
-                    state.mastery=
-                        MASTERY_STATES
-                        .PRACTICING;
-                }
-            }
-        }
-    );
-}
-
-
-/* =========================================================
-   REVIEW
-========================================================= */
-
-function applyReviewRules(
-    states
-){
-
-    Object.keys(states)
-    .forEach(
-        function(id){
-
-            const state=
-                states[id];
-
-
-            /*
-               Trong v1.1 chưa có persistent historical state
-               giữa các lần tải.
-
-               Ta suy highestMastery từ evidence lịch sử.
-            */
-
-            const chronological=
-                state.evidence
-                .slice()
-                .reverse();
-
-
-            if(
-                chronological.length < 4
-            ){
-
-                return;
-            }
-
-
-            const scores=
-                chronological.map(
-                    function(item){
-
-                        return Number(
-                            item.score
-                        );
-                    }
-                );
-
-
-            let hadStableWindow=false;
-
-
-            for(
-                let i=0;
-                i<=scores.length-3;
-                i++
-            ){
-
-                const windowScores=
-                    scores.slice(
-                        i,
-                        i+3
-                    );
-
-
-                if(
-                    windowScores.every(
-                        function(score){
-
-                            return score >= 7;
-                        }
-                    )
-                ){
-
-                    hadStableWindow=true;
-                    break;
-                }
-            }
-
-
-            if(hadStableWindow){
-
-                state.highestMastery=
-                    MASTERY_STATES.STABLE;
-            }
-
-
-            const latest=
-                state.evidence[0]
-                ?
+    const type=
+        normalizeText(
+            rewardType
+        );
+
+
+    const count=
+        Math.max(
+            1,
+            Math.floor(
                 Number(
-                    state.evidence[0].score
+                    quantity || 1
                 )
-                :
-                0;
-
-
-            if(
-                hadStableWindow
-                &&
-                (
-                    latest < 6
-                    ||
-                    state.trend ===
-                    TREND_STATES.DECLINING
-                )
-            ){
-
-                state.mastery=
-                    MASTERY_STATES.REVIEW;
-
-
-                state.recommendedAction=
-                    "REVIEW";
-            }
-        }
-    );
-}
-
-
-/* =========================================================
-   RECOMMENDED EXERCISE
-========================================================= */
-
-function findRecommendedExercise(
-    knowledgeId
-){
-
-    const primary=
-        EXERCISES.find(
-            function(exercise){
-
-                return exercise.primary.includes(
-                    knowledgeId
-                );
-            }
-        );
-
-
-    if(primary){
-        return primary.id;
-    }
-
-
-    const secondary=
-        EXERCISES.find(
-            function(exercise){
-
-                return exercise.secondary.includes(
-                    knowledgeId
-                );
-            }
-        );
-
-
-    return secondary
-        ? secondary.id
-        : null;
-}
-
-
-/* =========================================================
-   FINALIZE RECOMMENDATIONS
-========================================================= */
-
-function finalizeRecommendations(
-    states
-){
-
-    Object.keys(states)
-    .forEach(
-        function(id){
-
-            const state=
-                states[id];
-
-
-            state.recommendedExercise=
-                findRecommendedExercise(
-                    id
-                );
-
-
-            if(
-                state.recommendedAction !==
-                "CONTINUE"
-            ){
-
-                return;
-            }
-
-
-            if(
-                state.activeErrors.some(
-                    function(error){
-
-                        return(
-                            error.severity ===
-                            ERROR_SEVERITIES.BLOCKING
-                            ||
-                            error.lifecycle ===
-                            ERROR_LIFECYCLE.PERSISTENT
-                        );
-                    }
-                )
-            ){
-
-                state.recommendedAction=
-                    "CORRECT_ERROR";
-
-                return;
-            }
-
-
-            switch(
-                state.mastery
-            ){
-
-                case "LOCKED":
-
-                    state.recommendedAction=
-                        "UNLOCK_PREREQUISITE";
-                    break;
-
-
-                case "AVAILABLE":
-
-                    state.recommendedAction=
-                        "START";
-                    break;
-
-
-                case "LEARNING":
-
-                    state.recommendedAction=
-                        "LEARN";
-                    break;
-
-
-                case "PRACTICING":
-
-                    state.recommendedAction=
-                        "PRACTICE";
-                    break;
-
-
-                case "ACHIEVED":
-
-                    state.recommendedAction=
-                        "STABILIZE";
-                    break;
-
-
-                case "STABLE":
-
-                    state.recommendedAction=
-                        "ADVANCE";
-                    break;
-
-
-                case "MASTERED":
-
-                    state.recommendedAction=
-                        "MAINTAIN";
-                    break;
-
-
-                case "REVIEW":
-
-                    state.recommendedAction=
-                        "REVIEW";
-                    break;
-            }
-        }
-    );
-}
-
-
-/* =========================================================
-   PROGRESS
-========================================================= */
-
-function calculateProgress(states){
-
-    const values=
-        Object.values(states);
-
-
-    const counts={
-
-        LOCKED:0,
-
-        AVAILABLE:0,
-
-        LEARNING:0,
-
-        PRACTICING:0,
-
-        ACHIEVED:0,
-
-        STABLE:0,
-
-        MASTERED:0,
-
-        REVIEW:0
-    };
-
-
-    values.forEach(
-        function(state){
-
-            if(
-                counts[
-                    state.mastery
-                ] !== undefined
-            ){
-
-                counts[
-                    state.mastery
-                ]++;
-            }
-        }
-    );
-
-
-    const achievedOrHigher=
-        values.filter(
-            function(state){
-
-                return(
-                    state.mastery ===
-                    MASTERY_STATES.ACHIEVED
-                    ||
-                    state.mastery ===
-                    MASTERY_STATES.STABLE
-                    ||
-                    state.mastery ===
-                    MASTERY_STATES.MASTERED
-                );
-            }
-        )
-        .length;
-
-
-    const percentage=
-        values.length
-        ?
-        round(
-            achievedOrHigher /
-            values.length *
-            100,
-            1
-        )
-        :
-        0;
-
-
-    return{
-
-        totalNodes:
-            values.length,
-
-        counts,
-
-        achievedOrHigher,
-
-        percentage
-    };
-}
-
-
-/* =========================================================
-   WEAK NODES
-========================================================= */
-
-function getWeakNodesFromStates(
-    states,
-    limit
-){
-
-    const max=
-        Number(
-            limit || 5
-        );
-
-
-    return Object.values(states)
-    .filter(
-        function(state){
-
-            return(
-                state.evidenceCount > 0
-                &&
-                (
-                    state.mastery ===
-                    MASTERY_STATES.LEARNING
-                    ||
-                    state.mastery ===
-                    MASTERY_STATES.PRACTICING
-                    ||
-                    state.mastery ===
-                    MASTERY_STATES.REVIEW
-                    ||
-                    state.activeErrors.length > 0
-                )
-            );
-        }
-    )
-    .sort(
-        function(a,b){
-
-            const aBlocking=
-                hasBlockingError(
-                    a.activeErrors
-                )
-                ? 1
-                : 0;
-
-
-            const bBlocking=
-                hasBlockingError(
-                    b.activeErrors
-                )
-                ? 1
-                : 0;
-
-
-            if(
-                bBlocking !==
-                aBlocking
-            ){
-
-                return bBlocking-aBlocking;
-            }
-
-
-            if(
-                a.currentQuality !==
-                b.currentQuality
-            ){
-
-                return(
-                    a.currentQuality-
-                    b.currentQuality
-                );
-            }
-
-
-            return(
-                b.evidenceCount-
-                a.evidenceCount
-            );
-        }
-    )
-    .slice(
-        0,
-        max
-    );
-}
-
-
-/* =========================================================
-   ADVICE
-========================================================= */
-
-function buildAdvice(
-    studentState
-){
-
-    const weak=
-        studentState.weakNodes;
-
-
-    if(!weak.length){
-
-        const strong=
-            Object.values(
-                studentState.mastery
             )
-            .filter(
-                function(state){
-
-                    return(
-                        state.mastery ===
-                        MASTERY_STATES.STABLE
-                        ||
-                        state.mastery ===
-                        MASTERY_STATES.MASTERED
-                    );
-                }
-            );
-
-
-        if(strong.length){
-
-            return{
-
-                type:
-                    "PROGRESS",
-
-                confidence:
-                    "HIGH",
-
-                title:
-                    "Tiếp tục duy trì",
-
-                message:
-                    "Các kết quả gần đây cho thấy bạn đang duy trì khá tốt những nội dung đã luyện. Hãy tiếp tục luyện đều và chuyển dần sang những nội dung kế tiếp.",
-
-                knowledgeId:
-                    strong[0].id,
-
-                recommendedExercise:
-                    strong[0]
-                    .recommendedExercise
-            };
-        }
-
-
-        return{
-
-            type:
-                "START",
-
-            confidence:
-                "LOW",
-
-            title:
-                "Bắt đầu từ nền tảng",
-
-            message:
-                "Hiện chưa có đủ bài tập được xác định rõ để đánh giá từng kỹ năng. Hãy tiếp tục nộp bài với tên bài tập cụ thể để Minh Hồng theo dõi tiến bộ chính xác hơn.",
-
-            knowledgeId:null,
-
-            recommendedExercise:null
-        };
-    }
-
-
-    const target=
-        weak[0];
-
-
-    const blocking=
-        target.activeErrors.find(
-            function(error){
-
-                return(
-                    error.severity ===
-                    ERROR_SEVERITIES.BLOCKING
-                );
-            }
         );
 
 
-    if(blocking){
-
-        return{
-
-            type:
-                "CORRECT_ERROR",
-
-            confidence:
-                target.confidence,
-
-            title:
-                "Ưu tiên sửa lỗi",
-
-            message:
-                "Nhận xét gần đây cho thấy “"+
-                blocking.name+
-                "”. Bạn nên sửa điểm này trước khi tăng độ khó của bài tập.",
-
-            knowledgeId:
-                target.id,
-
-            errorId:
-                blocking.id,
-
-            recommendedExercise:
-                target.recommendedExercise
-        };
-    }
+    /*
+       Cách 1:
+       Form GVCN chọn trực tiếp loại linh thạch.
+    */
+    const directGem=
+        normalizeGemType(
+            gemTypeText
+        );
 
 
     if(
-        target.recommendedAction ===
-        "REVIEW_PREREQUISITE"
-    ){
-
-        const node=
-            KNOWLEDGE_MAP.get(
-                target.id
-            );
-
-
-        const prerequisite=
-            node.prerequisites
-            .map(
-                function(id){
-
-                    return studentState
-                        .mastery[id];
-                }
-            )
-            .find(
-                function(state){
-
-                    return(
-                        !state
-                        ||
-                        MASTERY_RANK[
-                            state.mastery
-                        ]
-                        <
-                        MASTERY_RANK
-                        .ACHIEVED
-                    );
-                }
-            );
-
-
-        return{
-
-            type:
-                "REVIEW_PREREQUISITE",
-
-            confidence:
-                target.confidence,
-
-            title:
-                "Củng cố kỹ năng nền",
-
-            message:
-                prerequisite
-                ?
-                (
-                    "Trước khi tiếp tục “"+
-                    target.name+
-                    "”, bạn nên củng cố “"+
-                    prerequisite.name+
-                    "”. Đây là kỹ năng nền đang chưa đủ ổn định."
-                )
-                :
-                (
-                    "Bạn nên củng cố kỹ năng nền trước khi tiếp tục nội dung này."
-                ),
-
-            knowledgeId:
-                target.id,
-
-            prerequisiteId:
-                prerequisite
-                ?
-                prerequisite.id
-                :
-                null,
-
-            recommendedExercise:
-                prerequisite
-                ?
-                prerequisite
-                .recommendedExercise
-                :
-                target
-                .recommendedExercise
-        };
-    }
-
-
-    if(
-        target.mastery ===
-        MASTERY_STATES.REVIEW
-    ){
-
-        return{
-
-            type:
-                "REVIEW",
-
-            confidence:
-                target.confidence,
-
-            title:
-                "Nên ôn lại",
-
-            message:
-                "Bạn từng thể hiện khá tốt ở “"+
-                target.name+
-                "”, nhưng kết quả gần đây đang giảm. Nên dành một bài để ôn lại trước khi tiếp tục.",
-
-            knowledgeId:
-                target.id,
-
-            recommendedExercise:
-                target.recommendedExercise
-        };
-    }
-
-
-    if(
-        target.trend ===
-        TREND_STATES.IMPROVING
-        ||
-        target.trend ===
-        TREND_STATES.STRONG_IMPROVEMENT
-    ){
-
-        return{
-
-            type:
-                "IMPROVING",
-
-            confidence:
-                target.confidence,
-
-            title:
-                "Đang tiến bộ",
-
-            message:
-                "Dựa trên kết quả các bài gần đây, “"+
-                target.name+
-                "” đang có xu hướng tiến bộ. Hãy tiếp tục luyện thêm để biến kết quả tốt thành kỹ năng ổn định.",
-
-            knowledgeId:
-                target.id,
-
-            recommendedExercise:
-                target.recommendedExercise
-        };
-    }
-
-
-    if(
-        target.mastery ===
-        MASTERY_STATES.PRACTICING
-    ){
-
-        return{
-
-            type:
-                "PRACTICE",
-
-            confidence:
-                target.confidence,
-
-            title:
-                "Cần luyện thêm",
-
-            message:
-                "Dựa trên kết quả các bài gần đây, “"+
-                target.name+
-                "” đã hình thành ở mức cơ bản nhưng chưa đủ ổn định. Hãy tiếp tục luyện cùng dạng bài này.",
-
-            knowledgeId:
-                target.id,
-
-            recommendedExercise:
-                target.recommendedExercise
-        };
-    }
-
-
-    return{
-
-        type:
-            "LEARN",
-
-        confidence:
-            target.confidence,
-
-        title:
-            "Ưu tiên nội dung này",
-
-        message:
-            "Dựa trên kết quả các bài gần đây, bạn nên tập trung thêm vào “"+
-            target.name+
-            "” trước khi chuyển sang kỹ thuật khó hơn.",
-
-        knowledgeId:
-            target.id,
-
-        recommendedExercise:
-            target.recommendedExercise
-    };
-}
-
-
-/* =========================================================
-   QUEST EVENTS
-========================================================= */
-
-function buildQuestEvents(states){
-
-    const events=[];
-
-
-    Object.values(states)
-    .forEach(
-        function(state){
-
-            if(
-                state.mastery ===
-                MASTERY_STATES.ACHIEVED
-            ){
-
-                events.push({
-                    type:
-                        "KNOWLEDGE_ACHIEVED",
-                    knowledgeId:
-                        state.id
-                });
-            }
-
-
-            if(
-                state.mastery ===
-                MASTERY_STATES.STABLE
-            ){
-
-                events.push({
-                    type:
-                        "KNOWLEDGE_STABLE",
-                    knowledgeId:
-                        state.id
-                });
-            }
-
-
-            if(
-                state.mastery ===
-                MASTERY_STATES.MASTERED
-            ){
-
-                events.push({
-                    type:
-                        "KNOWLEDGE_MASTERED",
-                    knowledgeId:
-                        state.id
-                });
-            }
-
-
-            if(
-                state.mastery ===
-                MASTERY_STATES.REVIEW
-            ){
-
-                events.push({
-                    type:
-                        "REVIEW_REQUIRED",
-                    knowledgeId:
-                        state.id
-                });
-            }
-
-
-            state.activeErrors
-            .forEach(
-                function(error){
-
-                    events.push({
-
-                        type:
-                            error.lifecycle ===
-                            ERROR_LIFECYCLE
-                            .PERSISTENT
-                            ?
-                            "ERROR_PERSISTENT"
-                            :
-                            "ERROR_DETECTED",
-
-                        knowledgeId:
-                            state.id,
-
-                        errorId:
-                            error.id
-                    });
-                }
-            );
-
-
-            if(
-                state.trend ===
-                TREND_STATES.IMPROVING
-                ||
-                state.trend ===
-                TREND_STATES
-                .STRONG_IMPROVEMENT
-            ){
-
-                events.push({
-                    type:
-                        "TREND_IMPROVING",
-                    knowledgeId:
-                        state.id
-                });
-            }
-
-
-            if(
-                state.trend ===
-                TREND_STATES.DECLINING
-            ){
-
-                events.push({
-                    type:
-                        "TREND_DECLINING",
-                    knowledgeId:
-                        state.id
-                });
-            }
-        }
-    );
-
-
-    return events;
-}
-
-
-/* =========================================================
-   CACHE
-========================================================= */
-
-let dataCache=null;
-let dataCacheTime=0;
-
-const studentStateCache=
-    new Map();
-
-
-/* =========================================================
-   LOAD RAW DATA
-========================================================= */
-
-async function loadData(forceRefresh){
-
-    const now=
-        Date.now();
-
-
-    if(
-        !forceRefresh &&
-        dataCache &&
+        directGem &&
         (
-            now-dataCacheTime
+            type.includes(
+                "linh thach"
+            )
+            ||
+            !type
         )
-        <
-        CONFIG.cacheTtl
     ){
 
-        return dataCache;
+        return{
+
+            isGemReward:true,
+
+            gemType:
+                directGem,
+
+            amount:
+                count,
+
+            source:
+                "teacher-direct-gem"
+        };
     }
 
 
-    const results=
-        await Promise.all([
+    /*
+       Cách 2:
+       Vật phẩm/túi linh thạch trong QuaTang.
+    */
+    if(
+        gift &&
+        isGemRewardGift(
+            gift
+        )
+    ){
 
-            fetchRows(
-                CONFIG.submissionSheetName
-            ),
+        return{
 
-            fetchRows(
-                CONFIG.gradingSheetName
-            )
+            isGemReward:true,
 
-        ]);
+            gemType:
+                gift.rewardGemType,
+
+            /*
+               2 túi × 4 ngọc/túi = 8
+            */
+            amount:
+                Math.max(
+                    1,
+                    Number(
+                        gift.rewardGemAmount ||
+                        0
+                    )
+                )
+                *
+                count,
+
+            source:
+                "teacher-gem-bag"
+        };
+    }
 
 
-    const submissions=
-        mapSubmissionRows(
-            results[0]
-        );
+    return{
 
+        isGemReward:false,
 
-    const grading=
-        mapGradingRows(
-            results[1]
-        );
+        gemType:null,
 
+        amount:0,
 
-    dataCache={
-
-        submissions,
-
-        grading,
-
-        rawSubmissionRows:
-            results[0],
-
-        rawGradingRows:
-            results[1]
+        source:""
     };
-
-
-    dataCacheTime=
-        now;
-
-
-    studentStateCache.clear();
-
-
-    return dataCache;
 }
 
 
 /* =========================================================
-   GET STUDENT SUBMISSIONS
+   MAP QUATANGGVCN
 ========================================================= */
 
-async function getStudentSubmissions(
-    code,
-    forceRefresh
+function mapTeacherGiftRows(
+    rows,
+    gifts
 ){
 
-    const studentCode=
-        normalizeCode(code);
-
-
-    if(!studentCode){
+    if(
+        !rows ||
+        rows.length < 2
+    ){
 
         return [];
     }
 
 
-    const data=
-        await loadData(
-            forceRefresh
+    const columns=
+        detectTeacherGiftColumns(
+            rows
         );
 
 
-    return data.submissions
+    const giftMap=
+        createGiftMap(
+            gifts
+        );
+
+
+    return rows
+    .slice(1)
+    .map(
+        function(row,index){
+
+            const code=
+                normalizeCode(
+                    row[
+                        columns.code
+                    ] || ""
+                );
+
+
+            const giftNameRaw=
+                String(
+                    row[
+                        columns.giftName
+                    ] || ""
+                )
+                .trim();
+
+
+            const gift=
+                giftMap[
+                    normalizeText(
+                        giftNameRaw
+                    )
+                ]
+                ||
+                null;
+
+
+            const quantity=
+                Math.max(
+                    1,
+                    Math.floor(
+                        parseNumber(
+                            row[
+                                columns.quantity
+                            ] || 1
+                        )
+                    )
+                );
+
+
+            const rewardType=
+                String(
+                    row[
+                        columns.rewardType
+                    ] || ""
+                )
+                .trim();
+
+
+            const gemTypeText=
+                String(
+                    row[
+                        columns.gemType
+                    ] || ""
+                )
+                .trim();
+
+
+            const status=
+                String(
+                    row[
+                        columns.status
+                    ] || ""
+                )
+                .trim();
+
+
+            const gemReward=
+                resolveTeacherGemReward(
+
+                    rewardType,
+
+                    gemTypeText,
+
+                    quantity,
+
+                    gift
+                );
+
+
+            return{
+
+                index:
+                    index+1,
+
+                rowIndex:
+                    index+2,
+
+                transactionType:
+                    gemReward.isGemReward
+                    ?
+                    "teacher-gem"
+                    :
+                    "teacher-item",
+
+                timestamp:
+                    String(
+                        row[
+                            columns.timestamp
+                        ] || ""
+                    )
+                    .trim(),
+
+                code,
+
+                scope:
+                    String(
+                        row[
+                            columns.scope
+                        ] || ""
+                    )
+                    .trim(),
+
+                group:
+                    String(
+                        row[
+                            columns.group
+                        ] || ""
+                    )
+                    .trim(),
+
+                course:
+                    String(
+                        row[
+                            columns.course
+                        ] || ""
+                    )
+                    .trim(),
+
+                rewardType,
+
+                giftName:
+                    gift
+                    ?
+                    gift.name
+                    :
+                    giftNameRaw,
+
+                gift,
+
+                quantity,
+
+                teacherGemType:
+                    gemReward.gemType,
+
+                teacherGemAmount:
+                    gemReward.amount,
+
+                teacherGemSource:
+                    gemReward.source,
+
+                isTeacherGemReward:
+                    gemReward.isGemReward,
+
+                reason:
+                    String(
+                        row[
+                            columns.reason
+                        ] || ""
+                    )
+                    .trim(),
+
+                giver:
+                    String(
+                        row[
+                            columns.giver
+                        ] || ""
+                    )
+                    .trim(),
+
+                status,
+
+                active:
+                    isTeacherGiftActive(
+                        status
+                    ),
+
+                ownershipSource:
+                    gemReward.isGemReward
+                    ?
+                    "teacher-gem"
+                    :
+                    "teacher-gift"
+            };
+        }
+    )
     .filter(
         function(item){
 
             return(
-                item.code ===
-                studentCode
+                Boolean(
+                    item.code
+                )
+                &&
+                item.active
+                &&
+                (
+                    item.isTeacherGemReward
+                    ||
+                    Boolean(
+                        item.giftName
+                    )
+                )
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   TEACHER GEM TRANSACTIONS
+
+   Chuyển quà linh thạch GVCN thành transaction đặc biệt.
+
+   KHÔNG có giá.
+   KHÔNG trừ Hồng Ngọc.
+========================================================= */
+
+function buildTeacherGemTransactions(
+    teacherRows
+){
+
+    return(
+        teacherRows ||
+        []
+    )
+    .filter(
+        function(item){
+
+            return(
+                item.isTeacherGemReward
+                &&
+                item.teacherGemType
+                &&
+                Number(
+                    item.teacherGemAmount ||
+                    0
+                ) > 0
             );
         }
     )
+    .map(
+        function(item){
+
+            return{
+
+                index:
+                    item.index,
+
+                rowIndex:
+                    item.rowIndex,
+
+                transactionType:
+                    "teacher-gem",
+
+                timestamp:
+                    item.timestamp,
+
+                code:
+                    item.code,
+
+                studentName:"",
+
+                giftName:
+                    item.giftName ||
+                    (
+                        "Tặng "+
+                        GEM_TYPES[
+                            item.teacherGemType
+                        ].displayName
+                    ),
+
+                gift:
+                    item.gift ||
+                    null,
+
+                rewardGemType:
+                    item.teacherGemType,
+
+                rewardGemAmount:
+                    Number(
+                        item.teacherGemAmount
+                    ),
+
+                /*
+                   Không phải giao dịch mua.
+                */
+                price:0,
+
+                gemType:null,
+
+                dealId:"",
+
+                accountingStatus:
+                    "pending",
+
+                ownershipSource:
+                    "teacher-gem",
+
+                reason:
+                    item.reason,
+
+                giver:
+                    item.giver,
+
+                teacherGiftRow:
+                    item
+            };
+        }
+    );
+}
+
+
+/* =========================================================
+   TEACHER OWNED ITEMS
+
+   Túi linh thạch KHÔNG xuất hiện trong kho vật phẩm.
+   Nó được chuyển thành số dư linh thạch.
+========================================================= */
+
+function buildTeacherOwnedItems(
+    teacherRows
+){
+
+    const result=[];
+
+
+    (
+        teacherRows ||
+        []
+    )
+    .forEach(
+        function(item){
+
+            /*
+               Quà linh thạch:
+               không tạo item.
+            */
+            if(
+                item.isTeacherGemReward
+            ){
+
+                return;
+            }
+
+
+            if(
+                !item.gift
+            ){
+
+                return;
+            }
+
+
+            /*
+               Hộp bí ẩn do GVCN tặng
+               chưa sử dụng cơ chế quay.
+            */
+            if(
+                isMysteryBoxGiftName(
+                    item.gift.name
+                )
+            ){
+
+                return;
+            }
+
+
+            result.push({
+
+                index:
+                    item.index,
+
+                rowIndex:
+                    item.rowIndex,
+
+                timestamp:
+                    item.timestamp,
+
+                studentName:"",
+
+                code:
+                    item.code,
+
+                giftName:
+                    item.gift.name,
+
+                gift:
+                    item.gift,
+
+                image:
+                    item.gift.image ||
+                    "",
+
+                description:
+                    item.gift.description ||
+                    "",
+
+                rarity:
+                    item.gift.rarity ||
+                    null,
+
+                rarityInfo:
+                    item.gift.rarityInfo ||
+                    null,
+
+                rarityGemType:
+                    item.gift.rarityGemType ||
+                    null,
+
+                /*
+                   Giá 0 vì được GVCN tặng.
+                */
+                price:0,
+
+                gemType:null,
+
+                quantity:
+                    Math.max(
+                        1,
+                        Number(
+                            item.quantity ||
+                            1
+                        )
+                    ),
+
+                format:
+                    "teacher-gift",
+
+                ownershipSource:
+                    "teacher-gift",
+
+                accountingStatus:
+                    "valid",
+
+                reason:
+                    item.reason ||
+                    "",
+
+                giver:
+                    item.giver ||
+                    "GVCN",
+
+                status:
+                    item.status ||
+                    "",
+
+                group:
+                    item.group ||
+                    "",
+
+                course:
+                    item.course ||
+                    ""
+            });
+        }
+    );
+
+
+    return result;
+}
+
+
+/* =========================================================
+   MAP TEACHER ITEMS
+========================================================= */
+
+function buildTeacherOwnedItemMap(
+    teacherRows
+){
+
+    const map=
+        new Map();
+
+
+    buildTeacherOwnedItems(
+        teacherRows
+    )
+    .forEach(
+        function(item){
+
+            const code=
+                normalizeCode(
+                    item.code
+                );
+
+
+            if(!code){
+                return;
+            }
+
+
+            if(
+                !map.has(code)
+            ){
+
+                map.set(
+                    code,
+                    []
+                );
+            }
+
+
+            map.get(code)
+            .push(item);
+        }
+    );
+
+
+    return map;
+}
+
+
+/* =========================================================
+   MAP TEACHER GEM
+========================================================= */
+
+function buildTeacherGemTransactionMap(
+    teacherRows
+){
+
+    const map=
+        new Map();
+
+
+    buildTeacherGemTransactions(
+        teacherRows
+    )
+    .forEach(
+        function(item){
+
+            const code=
+                normalizeCode(
+                    item.code
+                );
+
+
+            if(!code){
+                return;
+            }
+
+
+            if(
+                !map.has(code)
+            ){
+
+                map.set(
+                    code,
+                    []
+                );
+            }
+
+
+            map.get(code)
+            .push(item);
+        }
+    );
+
+
+    return map;
+}
+
+
+/* =========================================================
+   SORT TRANSACTIONS
+========================================================= */
+
+function sortTransactionsChronologically(
+    transactions
+){
+
+    return(
+        transactions ||
+        []
+    )
+    .slice()
     .sort(
         function(a,b){
 
             const da=
-                parseDate(
+                parseVietnameseDate(
                     a.timestamp
                 );
 
 
             const db=
-                parseDate(
+                parseVietnameseDate(
                     b.timestamp
                 );
 
@@ -6134,10 +4078,29 @@ async function getStudentSubmissions(
                 0;
 
 
+            if(
+                ta !== tb
+            ){
+
+                return ta-tb;
+            }
+
+
             return(
-                tb-ta
-                ||
-                b.rowIndex-a.rowIndex
+
+                Number(
+                    a.rowIndex ||
+                    a.index ||
+                    0
+                )
+
+                -
+
+                Number(
+                    b.rowIndex ||
+                    b.index ||
+                    0
+                )
             );
         }
     );
@@ -6145,388 +4108,2923 @@ async function getStudentSubmissions(
 
 
 /* =========================================================
-   BUILD STUDENT STATE
+   AFFORD
 ========================================================= */
 
-async function buildStudentState(
-    code,
-    forceRefresh
+function canAffordTransaction(
+    balance,
+    gemType,
+    price
 ){
 
-    const studentCode=
-        normalizeCode(code);
-
-
-    if(!studentCode){
-
-        throw new Error(
-            "Mã học viên không hợp lệ."
+    const key=
+        normalizeGemType(
+            gemType
         );
-    }
+
+
+    const amount=
+        Number(
+            price || 0
+        );
 
 
     if(
-        !forceRefresh &&
-        studentStateCache.has(
-            studentCode
-        )
+        !key ||
+        amount <= 0
     ){
 
-        return studentStateCache.get(
-            studentCode
-        );
+        return false;
     }
 
 
-    const submissions=
-        await getStudentSubmissions(
-            studentCode,
-            forceRefresh
-        );
-
-
-    const evidenceByNode=
-        buildKnowledgeEvidence(
-            submissions
-        );
-
-
-    const mastery=
-        buildInitialStates(
-            evidenceByNode
-        );
-
-
-    applyPrerequisiteRules(
-        mastery
+    return(
+        Number(
+            balance &&
+            balance[key] ||
+            0
+        )
+        >=
+        amount
     );
-
-
-    applyReviewRules(
-        mastery
-    );
-
-
-    finalizeRecommendations(
-        mastery
-    );
-
-
-    const weakNodes=
-        getWeakNodesFromStates(
-            mastery,
-            5
-        );
-
-
-    const progress=
-        calculateProgress(
-            mastery
-        );
-
-
-    const state={
-
-        version:
-            VERSION,
-
-        code:
-            studentCode,
-
-        generatedAt:
-            new Date()
-            .toISOString(),
-
-        submissions,
-
-        mastery,
-
-        weakNodes,
-
-        progress,
-
-        activeErrors:
-            Object.values(
-                mastery
-            )
-            .flatMap(
-                function(item){
-
-                    return item
-                    .activeErrors
-                    .map(
-                        function(error){
-
-                            return Object.assign(
-                                {
-                                    knowledgeId:
-                                        item.id,
-
-                                    knowledgeName:
-                                        item.name
-                                },
-                                error
-                            );
-                        }
-                    );
-                }
-            ),
-
-        resolvedErrors:
-            Object.values(
-                mastery
-            )
-            .flatMap(
-                function(item){
-
-                    return item
-                    .resolvedErrors
-                    .map(
-                        function(error){
-
-                            return Object.assign(
-                                {
-                                    knowledgeId:
-                                        item.id,
-
-                                    knowledgeName:
-                                        item.name
-                                },
-                                error
-                            );
-                        }
-                    );
-                }
-            )
-    };
-
-
-    state.advice=
-        buildAdvice(
-            state
-        );
-
-
-    state.questEvents=
-        buildQuestEvents(
-            mastery
-        );
-
-
-    studentStateCache.set(
-        studentCode,
-        state
-    );
-
-
-    return state;
 }
 
 
 /* =========================================================
-   PUBLIC GETTERS
+   PROCESS TRANSACTIONS v3.6.0
+
+   QUAN TRỌNG:
+
+   Teacher Gem:
+
+
+
 ========================================================= */
 
-async function getStudentState(
-    code,
-    forceRefresh
+function processTransactions(
+    startingGems,
+    transactions
 ){
 
-    return buildStudentState(
-        code,
-        Boolean(forceRefresh)
+    const normalizedStart=
+        normalizeGemBalance(
+            startingGems ||
+            createEmptyGems()
+        );
+
+
+    let balance=
+        cloneGems(
+            normalizedStart
+        );
+
+
+    const validTransactions=[];
+    const rejectedTransactions=[];
+    const ownedItems=[];
+    const gemRewards=[];
+
+    const consumedDealIds=
+        new Set();
+
+
+    const ordered=
+        sortTransactionsChronologically(
+            transactions
+        );
+
+
+    ordered.forEach(
+        function(item){
+
+
+            /* =================================================
+               QUÀ LINH THẠCH GVCN
+            ================================================= */
+
+            if(
+                item.transactionType ===
+                "teacher-gem"
+            ){
+
+                const gemType=
+                    normalizeGemType(
+                        item.rewardGemType
+                    );
+
+
+                const amount=
+                    Math.max(
+                        0,
+                        Math.floor(
+                            Number(
+                                item.rewardGemAmount ||
+                                0
+                            )
+                        )
+                    );
+
+
+                if(
+                    !gemType ||
+                    amount <= 0
+                ){
+
+                    rejectedTransactions.push(
+
+                        Object.assign(
+                            {},
+                            item,
+                            {
+                                accountingStatus:
+                                    "rejected-invalid-teacher-gem",
+
+                                rejectionReason:
+                                    "invalid-teacher-gem"
+                            }
+                        )
+                    );
+
+
+                    return;
+                }
+
+
+                const balanceBefore=
+                    cloneGems(
+                        balance
+                    );
+
+
+                /*
+                   Cộng và gộp ngay.
+                */
+                balance=
+                    addGemReward(
+                        balance,
+                        gemType,
+                        amount
+                    );
+
+
+                const reward={
+
+                    index:
+                        item.index,
+
+                    rowIndex:
+                        item.rowIndex,
+
+                    timestamp:
+                        item.timestamp,
+
+                    code:
+                        item.code,
+
+                    source:
+                        "teacher-gift",
+
+                    sourceGiftName:
+                        item.giftName,
+
+                    giftName:
+                        item.giftName,
+
+                    gemType,
+
+                    amount,
+
+                    giver:
+                        item.giver ||
+                        "GVCN"
+                };
+
+
+                gemRewards.push(
+                    reward
+                );
+
+
+                validTransactions.push(
+
+                    Object.assign(
+                        {},
+                        item,
+                        {
+
+                            accountingStatus:
+                                "valid",
+
+                            balanceBefore,
+
+                            balanceAfter:
+                                cloneGems(
+                                    balance
+                                ),
+
+                            grantedGemReward:
+                                reward
+                        }
+                    )
+                );
+
+
+                return;
+            }
+
+
+            /* =================================================
+               GIAO DỊCH CHỢ PHIÊN
+            ================================================= */
+
+            const price=
+                Number(
+                    item.price ||
+                    0
+                );
+
+
+            const gemType=
+                normalizeGemType(
+                    item.gemType
+                );
+
+
+            const dealId=
+                sanitizeDealId(
+                    item.dealId ||
+                    ""
+                );
+
+
+            const balanceBefore=
+                cloneGems(
+                    balance
+                );
+
+
+            if(
+                !item.gift ||
+                !gemType ||
+                price <= 0
+            ){
+
+                rejectedTransactions.push(
+
+                    Object.assign(
+                        {},
+                        item,
+                        {
+
+                            dealId,
+
+                            accountingStatus:
+                                "rejected-invalid",
+
+                            rejectionReason:
+                                "invalid-transaction",
+
+                            balanceBefore,
+
+                            balanceAfter:
+                                cloneGems(
+                                    balance
+                                )
+                        }
+                    )
+                );
+
+
+                return;
+            }
+
+
+            if(
+                dealId &&
+                consumedDealIds.has(
+                    dealId
+                )
+            ){
+
+                rejectedTransactions.push(
+
+                    Object.assign(
+                        {},
+                        item,
+                        {
+
+                            dealId,
+
+                            accountingStatus:
+                                "rejected-duplicate-deal",
+
+                            rejectionReason:
+                                "duplicate-deal",
+
+                            balanceBefore,
+
+                            balanceAfter:
+                                cloneGems(
+                                    balance
+                                )
+                        }
+                    )
+                );
+
+
+                return;
+            }
+
+
+            if(
+                !canAffordTransaction(
+                    balance,
+                    gemType,
+                    price
+                )
+            ){
+
+                rejectedTransactions.push(
+
+                    Object.assign(
+                        {},
+                        item,
+                        {
+
+                            dealId,
+
+                            accountingStatus:
+                                "rejected-insufficient-balance",
+
+                            rejectionReason:
+                                "insufficient-balance",
+
+                            balanceBefore,
+
+                            balanceAfter:
+                                cloneGems(
+                                    balance
+                                )
+                        }
+                    )
+                );
+
+
+                return;
+            }
+
+
+            balance[gemType] -=
+                price;
+
+
+            let grantedGemReward=
+                null;
+
+
+            /* =================================================
+               HỘP BÍ ẨN
+            ================================================= */
+
+            if(
+                item.isMysteryBox
+            ){
+
+                const rewardGift=
+                    item.mysteryRewardGift;
+
+
+                if(
+                    rewardGift &&
+                    isGemRewardGift(
+                        rewardGift
+                    )
+                ){
+
+                    grantedGemReward={
+
+                        index:
+                            item.index,
+
+                        timestamp:
+                            item.timestamp,
+
+                        code:
+                            item.code,
+
+                        dealId,
+
+                        source:
+                            "mystery-box",
+
+                        sourceGiftName:
+                            item.giftName,
+
+                        giftName:
+                            rewardGift.name,
+
+                        gemType:
+                            rewardGift.rewardGemType,
+
+                        amount:
+                            Number(
+                                rewardGift.rewardGemAmount ||
+                                0
+                            )
+                    };
+
+
+                    /*
+
+                    */
+                    balance=
+                        addGemReward(
+
+                            balance,
+
+                            grantedGemReward
+                            .gemType,
+
+                            grantedGemReward
+                            .amount
+                        );
+
+
+                    gemRewards.push(
+                        grantedGemReward
+                    );
+                }
+            }
+
+
+            /* =================================================
+               ĐỔI GÓI LINH THẠCH TRỰC TIẾP
+            ================================================= */
+
+            else if(
+                isGemRewardGift(
+                    item.gift
+                )
+            ){
+
+                grantedGemReward={
+
+                    index:
+                        item.index,
+
+                    timestamp:
+                        item.timestamp,
+
+                    code:
+                        item.code,
+
+                    dealId,
+
+                    source:
+                        "redemption",
+
+                    sourceGiftName:
+                        item.giftName,
+
+                    giftName:
+                        item.giftName,
+
+                    gemType:
+                        item.gift
+                        .rewardGemType,
+
+                    amount:
+                        Number(
+                            item.gift
+                            .rewardGemAmount ||
+                            0
+                        )
+                };
+
+
+                balance=
+                    addGemReward(
+
+                        balance,
+
+                        grantedGemReward
+                        .gemType,
+
+                        grantedGemReward
+                        .amount
+                    );
+
+
+                gemRewards.push(
+                    grantedGemReward
+                );
+            }
+
+
+            balance=
+                normalizeGemBalance(
+                    balance
+                );
+
+
+            if(dealId){
+
+                consumedDealIds.add(
+                    dealId
+                );
+            }
+
+
+            const validItem=
+                Object.assign(
+                    {},
+                    item,
+                    {
+
+                        dealId,
+
+                        accountingStatus:
+                            "valid",
+
+                        balanceBefore,
+
+                        balanceAfter:
+                            cloneGems(
+                                balance
+                            ),
+
+                        grantedGemReward
+                    }
+                );
+
+
+            validTransactions.push(
+                validItem
+            );
+
+
+            /* =================================================
+               OWNED FROM MYSTERY
+            ================================================= */
+
+            if(
+                item.isMysteryBox
+            ){
+
+                const rewardGift=
+                    item.mysteryRewardGift;
+
+
+                if(
+                    rewardGift &&
+                    !isMysteryBoxGiftName(
+                        rewardGift.name
+                    )
+                    &&
+                    !isGemRewardGift(
+                        rewardGift
+                    )
+                ){
+
+                    ownedItems.push({
+
+                        index:
+                            item.index,
+
+                        timestamp:
+                            item.timestamp,
+
+                        studentName:
+                            item.studentName,
+
+                        code:
+                            item.code,
+
+                        dealId,
+
+                        giftName:
+                            rewardGift.name,
+
+                        gift:
+                            rewardGift,
+
+                        image:
+                            rewardGift.image ||
+                            "",
+
+                        description:
+                            rewardGift.description ||
+                            "",
+
+                        rarity:
+                            rewardGift.rarity ||
+                            null,
+
+                        rarityInfo:
+                            rewardGift.rarityInfo ||
+                            null,
+
+                        rarityGemType:
+                            rewardGift.rarityGemType ||
+                            null,
+
+                        quantity:1,
+
+                        price:0,
+
+                        gemType:null,
+
+                        format:
+                            "mystery-reward",
+
+                        ownershipSource:
+                            "mystery-box",
+
+                        accountingStatus:
+                            "valid",
+
+                        sourceGiftName:
+                            item.giftName
+                    });
+                }
+            }
+
+
+            /* =================================================
+               OWNED DIRECT
+            ================================================= */
+
+            else if(
+                !isGemRewardGift(
+                    item.gift
+                )
+            ){
+
+                ownedItems.push(
+
+                    Object.assign(
+                        {},
+                        validItem,
+                        {
+
+                            image:
+                                item.gift.image ||
+                                "",
+
+                            description:
+                                item.gift.description ||
+                                "",
+
+                            rarity:
+                                item.gift.rarity ||
+                                null,
+
+                            rarityInfo:
+                                item.gift.rarityInfo ||
+                                null,
+
+                            rarityGemType:
+                                item.gift.rarityGemType ||
+                                null,
+
+                            quantity:1,
+
+                            ownershipSource:
+                                "redemption"
+                        }
+                    )
+                );
+            }
+
+        }
+    );
+
+
+    const finalBalance=
+        normalizeGemBalance(
+            balance
+        );
+
+
+    return{
+
+        startingGems:
+            cloneGems(
+                normalizedStart
+            ),
+
+        gems:
+            cloneGems(
+                finalBalance
+            ),
+
+        balance:
+            cloneGems(
+                finalBalance
+            ),
+
+        validTransactions,
+
+        transactions:
+            validTransactions,
+
+        rejectedTransactions,
+
+        ownedItems,
+
+        redeemedItems:
+            ownedItems,
+
+        gemRewards,
+
+        consumedDealIds
+    };
+}
+
+
+/* =========================================================
+   COMPATIBILITY
+========================================================= */
+
+function applyRedeemedItems(
+    startingGems,
+    transactions
+){
+
+    return processTransactions(
+        startingGems,
+        transactions
+    ).gems;
+}
+
+
+function applyTransactions(
+    startingGems,
+    transactions
+){
+
+    return processTransactions(
+        startingGems,
+        transactions
     );
 }
 
 
-async function getMastery(
-    code,
-    knowledgeId,
-    forceRefresh
+function calculateGemBalance(
+    startingGems,
+    transactions
 ){
 
-    const state=
-        await getStudentState(
-            code,
-            forceRefresh
+    return processTransactions(
+        startingGems,
+        transactions
+    );
+}
+
+
+/* =========================================================
+   LEGACY OWNED ITEMS
+========================================================= */
+
+function buildOwnedItems(
+    transactions
+){
+
+    const items=[];
+
+
+    (
+        transactions ||
+        []
+    )
+    .forEach(
+        function(item){
+
+
+            /*
+               Teacher gem:
+               không phải vật phẩm.
+            */
+            if(
+                item &&
+                item.transactionType ===
+                "teacher-gem"
+            ){
+
+                return;
+            }
+
+
+            if(
+                !item ||
+                !item.gift
+            ){
+
+                return;
+            }
+
+
+            if(
+                item.isMysteryBox
+            ){
+
+                const rewardGift=
+                    item.mysteryRewardGift;
+
+
+                if(
+                    rewardGift &&
+                    !isGemRewardGift(
+                        rewardGift
+                    )
+                    &&
+                    !isMysteryBoxGiftName(
+                        rewardGift.name
+                    )
+                ){
+
+                    items.push({
+
+                        index:
+                            item.index,
+
+                        timestamp:
+                            item.timestamp,
+
+                        studentName:
+                            item.studentName,
+
+                        code:
+                            item.code,
+
+                        dealId:
+                            item.dealId ||
+                            "",
+
+                        giftName:
+                            rewardGift.name,
+
+                        gift:
+                            rewardGift,
+
+                        image:
+                            rewardGift.image ||
+                            "",
+
+                        description:
+                            rewardGift.description ||
+                            "",
+
+                        rarity:
+                            rewardGift.rarity ||
+                            null,
+
+                        rarityInfo:
+                            rewardGift.rarityInfo ||
+                            null,
+
+                        rarityGemType:
+                            rewardGift.rarityGemType ||
+                            null,
+
+                        quantity:1,
+
+                        price:0,
+
+                        gemType:null,
+
+                        ownershipSource:
+                            "mystery-box"
+                    });
+                }
+
+
+                return;
+            }
+
+
+            if(
+                isGemRewardGift(
+                    item.gift
+                )
+            ){
+
+                return;
+            }
+
+
+            items.push(
+
+                Object.assign(
+                    {},
+                    item,
+                    {
+
+                        image:
+                            item.gift.image ||
+                            "",
+
+                        description:
+                            item.gift.description ||
+                            "",
+
+                        rarity:
+                            item.gift.rarity ||
+                            null,
+
+                        rarityInfo:
+                            item.gift.rarityInfo ||
+                            null,
+
+                        rarityGemType:
+                            item.gift.rarityGemType ||
+                            null,
+
+                        quantity:
+                            Number(
+                                item.quantity ||
+                                1
+                            ),
+
+                        ownershipSource:
+                            item.ownershipSource ||
+                            "redemption"
+                    }
+                )
+            );
+        }
+    );
+
+
+    return items;
+}
+
+
+/* =========================================================
+   MERGE OWNED ITEMS
+========================================================= */
+
+function mergeOwnedItems(
+    redemptionItems,
+    teacherItems
+){
+
+    return [
+
+        ...(
+            redemptionItems ||
+            []
+        ),
+
+        ...(
+            teacherItems ||
+            []
+        )
+
+    ]
+    .sort(
+        function(a,b){
+
+            const da=
+                parseVietnameseDate(
+                    a.timestamp
+                );
+
+
+            const db=
+                parseVietnameseDate(
+                    b.timestamp
+                );
+
+
+            const ta=
+                da
+                ?
+                da.getTime()
+                :
+                0;
+
+
+            const tb=
+                db
+                ?
+                db.getTime()
+                :
+                0;
+
+
+            if(
+                tb !== ta
+            ){
+
+                return tb-ta;
+            }
+
+
+            return(
+
+                Number(
+                    b.rowIndex ||
+                    b.index ||
+                    0
+                )
+
+                -
+
+                Number(
+                    a.rowIndex ||
+                    a.index ||
+                    0
+                )
+            );
+        }
+    );
+}
+
+
+function getOwnedItemsFromShared(
+    shared,
+    code
+){
+
+    const key=
+        normalizeCode(
+            code
         );
 
 
     return(
-        state.mastery[
-            knowledgeId
-        ]
-        ||
-        null
+        shared &&
+        shared.ownedItemMap &&
+        shared.ownedItemMap.get(
+            key
+        )
+    )
+    ||
+    [];
+}
+
+
+function hasOwnedItem(
+    items,
+    giftName
+){
+
+    const wanted=
+        normalizeText(
+            giftName
+        );
+
+
+    return(
+        items ||
+        []
+    )
+    .some(
+        function(item){
+
+            return normalizeText(
+                item.giftName
+            )
+            ===
+            wanted;
+        }
     );
 }
 
 
-async function getWeakNodes(
-    code,
-    limit,
-    forceRefresh
+function getOwnedItemQuantity(
+    items,
+    giftName
 ){
 
-    const state=
-        await getStudentState(
-            code,
-            forceRefresh
+    const wanted=
+        normalizeText(
+            giftName
         );
 
 
-    return getWeakNodesFromStates(
-        state.mastery,
-        limit || 5
+    return(
+        items ||
+        []
+    )
+    .reduce(
+        function(total,item){
+
+            if(
+                normalizeText(
+                    item.giftName
+                )
+                !==
+                wanted
+            ){
+
+                return total;
+            }
+
+
+            return(
+                total +
+                Math.max(
+                    1,
+                    Number(
+                        item.quantity ||
+                        1
+                    )
+                )
+            );
+        },
+        0
     );
-}
-
-
-async function getProgress(
-    code,
-    forceRefresh
-){
-
-    const state=
-        await getStudentState(
-            code,
-            forceRefresh
-        );
-
-
-    return state.progress;
-}
-
-
-async function getAdvice(
-    code,
-    forceRefresh
-){
-
-    const state=
-        await getStudentState(
-            code,
-            forceRefresh
-        );
-
-
-    return state.advice;
 }
 
 
 /* =========================================================
-   RECOMMENDED LESSON
+   ACHIEVEMENT
 ========================================================= */
 
-async function getRecommendedLesson(
-    code,
-    forceRefresh
+const STREAK_RULES=[
+
+    {
+        days:5,
+        icon:ICONS.seed,
+        name:"Mầm cây chăm chỉ",
+        hoangNgocValue:1
+    },
+
+    {
+        days:7,
+        icon:ICONS.medal,
+        name:"Phiếu bé ngoan",
+        hoangNgocValue:2
+    },
+
+    {
+        days:14,
+        icon:ICONS.tree,
+        name:"Cây nhỏ bền bỉ",
+        hoangNgocValue:4
+    },
+
+    {
+        days:30,
+        icon:ICONS.fire,
+        name:"Ngọn lửa không tắt",
+        hoangNgocValue:8
+    }
+];
+
+
+const HIGH_SCORE_RULES=[
+
+    {
+        blockSize:3,
+        requiredBlocks:1,
+        icon:ICONS.star,
+        name:"Ngôi sao ổn định",
+        hoangNgocValue:2
+    },
+
+    {
+        blockSize:4,
+        requiredBlocks:1,
+        icon:ICONS.target,
+        name:"Mũi tên tập trung",
+        hoangNgocValue:3
+    },
+
+    {
+        blockSize:5,
+        requiredBlocks:1,
+        icon:ICONS.rocket,
+        name:"Tên lửa tiến bộ",
+        hoangNgocValue:4
+    },
+
+    {
+        blockSize:3,
+        requiredBlocks:2,
+        icon:ICONS.sparkles,
+        name:"Song tinh bền bỉ",
+        hoangNgocValue:4
+    },
+
+    {
+        blockSize:4,
+        requiredBlocks:2,
+        icon:ICONS.eagle,
+        name:"Đôi cánh vững vàng",
+        hoangNgocValue:6
+    },
+
+    {
+        blockSize:5,
+        requiredBlocks:2,
+        icon:ICONS.crown,
+        name:"Vương miện ổn định",
+        hoangNgocValue:8
+    }
+];
+
+
+/* =========================================================
+   STREAK
+========================================================= */
+
+function calculateLongestStreak(
+    submissions
 ){
 
-    const state=
-        await getStudentState(
-            code,
-            forceRefresh
+    const uniqueDays=
+        new Set();
+
+
+    (
+        submissions ||
+        []
+    )
+    .forEach(
+        function(item){
+
+            const date=
+                parseVietnameseDate(
+                    item.timestamp
+                );
+
+
+            if(date){
+
+                uniqueDays.add(
+                    getCalendarDayKey(
+                        date
+                    )
+                );
+            }
+        }
+    );
+
+
+    const dates=
+        Array.from(
+            uniqueDays
+        )
+        .map(
+            function(key){
+
+                const parts=
+                    key.split("-");
+
+
+                return new Date(
+
+                    Number(parts[0]),
+
+                    Number(parts[1])-1,
+
+                    Number(parts[2])
+                );
+            }
+        )
+        .sort(
+            function(a,b){
+
+                return(
+                    a.getTime() -
+                    b.getTime()
+                );
+            }
         );
 
 
-    const advice=
-        state.advice;
-
-
-    if(
-        !advice ||
-        !advice.recommendedExercise
-    ){
-
-        return null;
+    if(!dates.length){
+        return 0;
     }
 
 
-    const exercise=
-        EXERCISE_MAP.get(
-            advice.recommendedExercise
+    let longest=1;
+    let current=1;
+
+
+    for(
+        let i=1;
+        i<dates.length;
+        i++
+    ){
+
+        const difference=
+            Math.round(
+
+                (
+                    dates[i]
+                    .getTime()
+
+                    -
+
+                    dates[i-1]
+                    .getTime()
+                )
+
+                /
+
+                ONE_DAY
+            );
+
+
+        if(
+            difference === 1
+        ){
+
+            current++;
+
+            longest=
+                Math.max(
+                    longest,
+                    current
+                );
+
+        }else{
+
+            current=1;
+        }
+    }
+
+
+    return longest;
+}
+
+
+/* =========================================================
+   HIGH SCORE
+========================================================= */
+
+function calculateHighScoreRuns(
+    submissions
+){
+
+    const ordered=
+        (
+            submissions ||
+            []
+        )
+        .slice()
+        .sort(
+            function(a,b){
+
+                const da=
+                    parseVietnameseDate(
+                        a.timestamp
+                    );
+
+
+                const db=
+                    parseVietnameseDate(
+                        b.timestamp
+                    );
+
+
+                const ta=
+                    da
+                    ?
+                    da.getTime()
+                    :
+                    0;
+
+
+                const tb=
+                    db
+                    ?
+                    db.getTime()
+                    :
+                    0;
+
+
+                if(
+                    ta !== tb
+                ){
+
+                    return ta-tb;
+                }
+
+
+                return(
+
+                    Number(
+                        a.originalIndex ||
+                        0
+                    )
+
+                    -
+
+                    Number(
+                        b.originalIndex ||
+                        0
+                    )
+                );
+            }
         );
 
 
-    if(!exercise){
+    const runs=[];
 
-        return null;
+    let current=0;
+
+
+    ordered.forEach(
+        function(item){
+
+            const score=
+                parseScore(
+                    item.score
+                );
+
+
+            if(
+                score === null
+            ){
+
+                return;
+            }
+
+
+            if(
+                score >= 6
+            ){
+
+                current++;
+
+                return;
+            }
+
+
+            if(
+                current > 0
+            ){
+
+                runs.push(
+                    current
+                );
+
+                current=0;
+            }
+        }
+    );
+
+
+    if(
+        current > 0
+    ){
+
+        runs.push(
+            current
+        );
+    }
+
+
+    return runs;
+}
+
+
+/* =========================================================
+   SCORE GEMS
+========================================================= */
+
+function calculateScoreGems(
+    submissions
+){
+
+    const counts={
+
+        score5:0,
+
+        score6:0,
+
+        score7:0,
+
+        score89:0,
+
+        score10:0
+    };
+
+
+    (
+        submissions ||
+        []
+    )
+    .forEach(
+        function(item){
+
+            const score=
+                parseScore(
+                    item.score
+                );
+
+
+            if(
+                score === null
+            ){
+
+                return;
+            }
+
+
+            if(
+                score === 5
+            ){
+
+                counts.score5++;
+
+            }else if(
+                score === 6
+            ){
+
+                counts.score6++;
+
+            }else if(
+                score === 7
+            ){
+
+                counts.score7++;
+
+            }else if(
+                score === 8 ||
+                score === 9
+            ){
+
+                counts.score89++;
+
+            }else if(
+                score === 10
+            ){
+
+                counts.score10++;
+            }
+        }
+    );
+
+
+    const gems=
+        createEmptyGems();
+
+
+    gems.hoangNgoc +=
+        Math.floor(
+            counts.score5 / 2
+        );
+
+
+    gems.haiLamNgoc +=
+        Math.floor(
+            counts.score6 / 2
+        );
+
+
+    gems.thachAnhTim +=
+        Math.floor(
+            counts.score7 / 2
+        );
+
+
+    gems.lamBaoThach +=
+        Math.floor(
+            counts.score89 / 2
+        );
+
+
+    gems.lucThach +=
+        counts.score10;
+
+
+    return{
+        counts,
+        gems
+    };
+}
+
+
+/* =========================================================
+   REWARD
+========================================================= */
+
+function calculateStudentRewardData(
+    submissions
+){
+
+    const longestStreak=
+        calculateLongestStreak(
+            submissions
+        );
+
+
+    const streakUnlocked=
+        STREAK_RULES.filter(
+            function(rule){
+
+                return(
+                    longestStreak >=
+                    rule.days
+                );
+            }
+        );
+
+
+    const streakGift=
+        streakUnlocked.length
+        ?
+        streakUnlocked[
+            streakUnlocked.length-1
+        ]
+        :
+        null;
+
+
+    const runs=
+        calculateHighScoreRuns(
+            submissions
+        );
+
+
+    const bestHighRun=
+        runs.length
+        ?
+        Math.max.apply(
+            null,
+            runs
+        )
+        :
+        0;
+
+
+    const blockCounts={};
+
+
+    [3,4,5]
+    .forEach(
+        function(blockSize){
+
+            blockCounts[
+                blockSize
+            ]=
+                runs.reduce(
+                    function(
+                        total,
+                        run
+                    ){
+
+                        return(
+                            total+
+                            Math.floor(
+                                run /
+                                blockSize
+                            )
+                        );
+                    },
+                    0
+                );
+        }
+    );
+
+
+    const unlockedHighScoreGifts=
+        HIGH_SCORE_RULES.filter(
+            function(rule){
+
+                return(
+                    Number(
+                        blockCounts[
+                            rule.blockSize
+                        ] || 0
+                    )
+                    >=
+                    rule.requiredBlocks
+                );
+            }
+        );
+
+
+    let highScoreGift=
+        null;
+
+
+    unlockedHighScoreGifts
+    .forEach(
+        function(rule){
+
+            if(
+                !highScoreGift ||
+                rule.hoangNgocValue >=
+                highScoreGift
+                .hoangNgocValue
+            ){
+
+                highScoreGift=
+                    rule;
+            }
+        }
+    );
+
+
+    const scoreResult=
+        calculateScoreGems(
+            submissions
+        );
+
+
+    const earned=
+        cloneGems(
+            scoreResult.gems
+        );
+
+
+    if(streakGift){
+
+        earned.hoangNgoc +=
+            Number(
+                streakGift
+                .hoangNgocValue ||
+                0
+            );
+    }
+
+
+    unlockedHighScoreGifts
+    .forEach(
+        function(rule){
+
+            earned.hoangNgoc +=
+                Number(
+                    rule.hoangNgocValue ||
+                    0
+                );
+        }
+    );
+
+
+    const normalized=
+        normalizeGemBalance(
+            earned
+        );
+
+
+    return{
+
+        longestStreak,
+
+        streakGift,
+
+        streakUnlocked,
+
+        highScoreRuns:
+            runs,
+
+        bestHighRun,
+
+        highScoreBlocks:
+            blockCounts,
+
+        highScoreGift,
+
+        unlockedHighScoreGifts,
+
+        scoreCounts:
+            scoreResult.counts,
+
+        rawGems:
+            earned,
+
+        gems:
+            normalized
+    };
+}
+
+
+/* =========================================================
+   PROFILE TITLE
+========================================================= */
+
+function getProfileTitle(reward){
+
+    reward=
+        reward || {};
+
+
+    if(
+        reward.highScoreGift
+    ){
+
+        return{
+
+            icon:
+                reward.highScoreGift
+                .icon ||
+                ICONS.star,
+
+            name:
+                reward.highScoreGift
+                .name ||
+                "Học viên"
+        };
+    }
+
+
+    if(
+        reward.streakGift
+    ){
+
+        return{
+
+            icon:
+                reward.streakGift
+                .icon ||
+                ICONS.seed,
+
+            name:
+                reward.streakGift
+                .name ||
+                "Học viên"
+        };
     }
 
 
     return{
 
-        exerciseId:
-            exercise.id,
+        icon:
+            ICONS.seed,
 
         name:
-            exercise.name,
-
-        knowledgeId:
-            advice.knowledgeId,
-
-        reason:
-            advice.type,
-
-        confidence:
-            advice.confidence
+            "Học viên mới"
     };
 }
 
 
 /* =========================================================
-   REFRESH
+   OWNED SORT
 ========================================================= */
 
-async function refresh(
-    code
+function sortOwnedItemsNewest(
+    items
 ){
 
-    dataCache=null;
-    dataCacheTime=0;
+    return(
+        items ||
+        []
+    )
+    .slice()
+    .sort(
+        function(a,b){
 
-    studentStateCache.clear();
-
-
-    const state=
-        code
-        ?
-        await getStudentState(
-            code,
-            true
-        )
-        :
-        await loadData(true);
+            const da=
+                parseVietnameseDate(
+                    a.timestamp
+                );
 
 
-    try{
+            const db=
+                parseVietnameseDate(
+                    b.timestamp
+                );
 
-        window.dispatchEvent(
-            new CustomEvent(
-                "ocdKnowledgeStateChanged",
-                {
-                    detail:{
-                        code:
-                            code
-                            ?
-                            normalizeCode(code)
-                            :
-                            "",
 
-                        state,
+            const ta=
+                da
+                ?
+                da.getTime()
+                :
+                0;
 
-                        version:
-                            VERSION
-                    }
-                }
-            )
+
+            const tb=
+                db
+                ?
+                db.getTime()
+                :
+                0;
+
+
+            if(
+                tb !== ta
+            ){
+
+                return tb-ta;
+            }
+
+
+            return(
+
+                Number(
+                    b.rowIndex ||
+                    b.index ||
+                    0
+                )
+
+                -
+
+                Number(
+                    a.rowIndex ||
+                    a.index ||
+                    0
+                )
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   PROFILE ASSETS
+========================================================= */
+
+function getLatestOwnedItemByPrefix(
+    items,
+    prefix
+){
+
+    const wanted=
+        normalizeText(
+            prefix
         );
 
-    }catch(error){}
+
+    return(
+        sortOwnedItemsNewest(
+            items
+        )
+        .find(
+            function(item){
+
+                return normalizeText(
+                    item.giftName
+                )
+                .startsWith(
+                    wanted
+                );
+            }
+        )
+    )
+    ||
+    null;
+}
 
 
-    return state;
+function getProfileAvatar(
+    items
+){
+
+    const item=
+        getLatestOwnedItemByPrefix(
+
+            items,
+
+            CONFIG.avatarGiftPrefix
+        );
+
+
+    return(
+        item &&
+        item.image
+    )
+    ?
+    convertDriveImageUrl(
+        item.image,
+        500
+    )
+    :
+    "";
+}
+
+
+function getProfileAvatarFrame(
+    items
+){
+
+    const item=
+        getLatestOwnedItemByPrefix(
+
+            items,
+
+            CONFIG.avatarFramePrefix
+        );
+
+
+    return(
+        item &&
+        item.image
+    )
+    ?
+    convertDriveImageUrl(
+        item.image,
+        700
+    )
+    :
+    "";
+}
+
+
+function getProfileBackground(
+    items
+){
+
+    const item=
+        getLatestOwnedItemByPrefix(
+
+            items,
+
+            CONFIG.profileBackgroundPrefix
+        );
+
+
+    return(
+        item &&
+        item.image
+    )
+    ?
+    convertDriveImageUrl(
+        item.image,
+        1600
+    )
+    :
+    "";
+}
+
+
+function hasMultitaskPotion(
+    items
+){
+
+    const wanted=
+        normalizeText(
+            CONFIG
+            .multitaskPotionGiftName
+        );
+
+
+    return(
+        items ||
+        []
+    )
+    .some(
+        function(item){
+
+            return normalizeText(
+                item.giftName
+            )
+            ===
+            wanted;
+        }
+    );
+}
+
+
+/* =========================================================
+   MULTITASK DOM
+========================================================= */
+
+function clearMultitaskEffect(
+    wrapper,
+    nameElement
+){
+
+    if(wrapper){
+
+        wrapper.classList.remove(
+
+            "reward-multitask-wrap",
+
+            "reward-multitask-size-small",
+
+            "reward-multitask-size-medium",
+
+            "reward-multitask-size-large"
+        );
+
+
+        wrapper
+        .querySelectorAll(
+            ".reward-multitask-star"
+        )
+        .forEach(
+            function(star){
+
+                star.remove();
+            }
+        );
+    }
+
+
+    if(nameElement){
+
+        nameElement
+        .classList.remove(
+            "reward-multitask-name"
+        );
+    }
+}
+
+
+function applyMultitaskEffect(
+    wrapper,
+    nameElement,
+    options
+){
+
+    if(
+        !wrapper ||
+        !nameElement
+    ){
+
+        return;
+    }
+
+
+    clearMultitaskEffect(
+        wrapper,
+        nameElement
+    );
+
+
+    const size=
+        options &&
+        options.size
+        ?
+        options.size
+        :
+        "medium";
+
+
+    wrapper.classList.add(
+        "reward-multitask-wrap"
+    );
+
+
+    wrapper.classList.add(
+        "reward-multitask-size-"+
+        size
+    );
+
+
+    nameElement.classList.add(
+        "reward-multitask-name"
+    );
+
+
+    const sparkleA=
+        String.fromCodePoint(
+            0x2726
+        );
+
+
+    const sparkleB=
+        String.fromCodePoint(
+            0x2727
+        );
+
+
+    [
+
+        [
+            "reward-multitask-star-left",
+            sparkleA
+        ],
+
+        [
+            "reward-multitask-star-right",
+            sparkleB
+        ],
+
+        [
+            "reward-multitask-star-bottom-left",
+            sparkleB
+        ],
+
+        [
+            "reward-multitask-star-bottom-right",
+            sparkleA
+        ]
+
+    ]
+    .forEach(
+        function(config){
+
+            const star=
+                document.createElement(
+                    "span"
+                );
+
+
+            star.className=
+
+                "reward-multitask-star "
+
+                +
+
+                config[0];
+
+
+            star.textContent=
+                config[1];
+
+
+            star.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+
+            wrapper.appendChild(
+                star
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   SHARED CACHE
+========================================================= */
+
+let sharedCache=null;
+let sharedCacheTime=0;
+
+
+/* =========================================================
+   LOAD SHARED DATA v3.6
+
+   QuaTang
+   + PhieuDoi
+   + QuaTangGVCN
+========================================================= */
+
+async function loadSharedRewardData(
+    forceRefresh
+){
+
+    const now=
+        Date.now();
+
+
+    if(
+        !forceRefresh &&
+        sharedCache &&
+        (
+            now-
+            sharedCacheTime
+        )
+        <
+        CONFIG.cacheTtl
+    ){
+
+        return sharedCache;
+    }
+
+
+    const results=
+        await Promise.all([
+
+            /*
+               QuaTang
+            */
+            fetchRows(
+                sheetCsvUrl(
+                    CONFIG.giftGid
+                )
+            ),
+
+            /*
+               PhieuDoi
+            */
+            fetchRows(
+                sheetNameCsvUrl(
+                    CONFIG.formSheetName
+                )
+            ),
+
+            /*
+               QuaTangGVCN
+            */
+            fetchRows(
+                sheetNameCsvUrl(
+                    CONFIG.teacherGiftSheetName
+                )
+            )
+        ]);
+
+
+    const giftRows=
+        results[0];
+
+
+    const responseRows=
+        results[1];
+
+
+    const rawTeacherRows=
+        results[2];
+
+
+    /* =====================================================
+       QUATANG
+    ===================================================== */
+
+    const gifts=
+        mapGiftRows(
+            giftRows
+        );
+
+
+    const giftMap=
+        createGiftMap(
+            gifts
+        );
+
+
+    /* =====================================================
+       PHIEUDOI
+    ===================================================== */
+
+    const responses=
+        mapFormResponseRows(
+            responseRows,
+            gifts
+        );
+
+
+    const marketRedemptionMap=
+        new Map();
+
+
+    responses.forEach(
+        function(item){
+
+            if(
+                !marketRedemptionMap
+                .has(
+                    item.code
+                )
+            ){
+
+                marketRedemptionMap
+                .set(
+                    item.code,
+                    []
+                );
+            }
+
+
+            marketRedemptionMap
+            .get(
+                item.code
+            )
+            .push(item);
+        }
+    );
+
+
+    /* =====================================================
+       QUATANGGVCN
+    ===================================================== */
+
+    const teacherGifts=
+        mapTeacherGiftRows(
+            rawTeacherRows,
+            gifts
+        );
+
+
+    const teacherOwnedItemMap=
+        buildTeacherOwnedItemMap(
+            teacherGifts
+        );
+
+
+    const teacherGemTransactionMap=
+        buildTeacherGemTransactionMap(
+            teacherGifts
+        );
+
+
+    /* =====================================================
+       COMBINED TRANSACTIONS
+
+       Để Profile Market v4.4 tiếp tục chạy:
+       redemptionMap bao gồm:
+       - giao dịch Chợ
+       - quà gem GVCN
+
+       Quà item GVCN KHÔNG đi vào đây.
+    ===================================================== */
+
+    const redemptionMap=
+        new Map();
+
+
+    const allTransactionCodes=
+        new Set();
+
+
+    marketRedemptionMap
+    .forEach(
+        function(value,code){
+
+            allTransactionCodes.add(
+                code
+            );
+        }
+    );
+
+
+    teacherGemTransactionMap
+    .forEach(
+        function(value,code){
+
+            allTransactionCodes.add(
+                code
+            );
+        }
+    );
+
+
+    allTransactionCodes
+    .forEach(
+        function(code){
+
+            redemptionMap.set(
+
+                code,
+
+                sortTransactionsChronologically([
+
+                    ...(
+                        marketRedemptionMap
+                        .get(code)
+                        ||
+                        []
+                    ),
+
+                    ...(
+                        teacherGemTransactionMap
+                        .get(code)
+                        ||
+                        []
+                    )
+                ])
+            );
+        }
+    );
+
+
+    /* =====================================================
+       OWNED ITEM MAP
+    ===================================================== */
+
+    const ownedItemMap=
+        new Map();
+
+
+    const allItemCodes=
+        new Set();
+
+
+    redemptionMap
+    .forEach(
+        function(value,code){
+
+            allItemCodes.add(
+                code
+            );
+        }
+    );
+
+
+    teacherOwnedItemMap
+    .forEach(
+        function(value,code){
+
+            allItemCodes.add(
+                code
+            );
+        }
+    );
+
+
+    allItemCodes
+    .forEach(
+        function(code){
+
+            const redemptionItems=
+                buildOwnedItems(
+
+                    redemptionMap
+                    .get(code)
+                    ||
+                    []
+                );
+
+
+            const teacherItems=
+                teacherOwnedItemMap
+                .get(code)
+                ||
+                [];
+
+
+            ownedItemMap.set(
+
+                code,
+
+                mergeOwnedItems(
+                    redemptionItems,
+                    teacherItems
+                )
+            );
+        }
+    );
+
+
+    /* =====================================================
+       GEM REWARD MAP
+    ===================================================== */
+
+    const gemRewardMap=
+        new Map();
+
+
+    redemptionMap
+    .forEach(
+        function(
+            transactions,
+            code
+        ){
+
+            gemRewardMap.set(
+
+                code,
+
+                transactions.filter(
+                    function(item){
+
+                        return(
+
+                            item.transactionType ===
+                            "teacher-gem"
+
+                            ||
+
+                            item.isGemReward
+
+                            ||
+
+                            (
+                                item.isMysteryBox
+                                &&
+                                isGemRewardGift(
+                                    item.mysteryRewardGift
+                                )
+                            )
+                        );
+                    }
+                )
+            );
+        }
+    );
+
+
+    sharedCache={
+
+        gifts,
+
+        giftMap,
+
+
+        /*
+           Chỉ giao dịch Chợ.
+        */
+        responses,
+
+        marketRedemptionMap,
+
+
+        /*
+           Tương thích các trang cũ:
+           Chợ + gem GVCN.
+        */
+        redemptionMap,
+
+
+        /*
+           Teacher.
+        */
+        teacherGifts,
+
+        teacherOwnedItemMap,
+
+        teacherGemTransactionMap,
+
+
+        /*
+           Kho chuẩn.
+        */
+        ownedItemMap,
+
+        gemRewardMap,
+
+
+        rawGiftRows:
+            giftRows,
+
+        rawResponseRows:
+            responseRows,
+
+        rawTeacherGiftRows:
+            rawTeacherRows
+    };
+
+
+    sharedCacheTime=
+        now;
+
+
+    return sharedCache;
+}
+
+
+/* =========================================================
+   GET STUDENT PROFILE
+========================================================= */
+
+async function getStudentRewardProfile(
+    code,
+    submissionCsvText
+){
+
+    const studentCode=
+        normalizeCode(
+            code
+        );
+
+
+    const shared=
+        await loadSharedRewardData();
+
+
+    let submissions=[];
+
+
+    if(
+        submissionCsvText
+    ){
+
+        const rows=
+            parseCSV(
+                submissionCsvText
+            );
+
+
+        if(rows.length){
+
+            const headers=
+                rows[0]
+                .map(
+                    normalizeText
+                );
+
+
+            const codeIndex=
+                findColumn(
+                    headers,
+                    [
+                        "mã học viên",
+                        "ma hoc vien"
+                    ]
+                );
+
+
+            const timestampIndex=
+                findColumn(
+                    headers,
+                    [
+                        "dấu thời gian",
+                        "dau thoi gian",
+                        "timestamp"
+                    ]
+                );
+
+
+            const scoreIndex=
+                findColumn(
+                    headers,
+                    [
+                        "điểm",
+                        "diem",
+                        "điểm số",
+                        "diem so"
+                    ]
+                );
+
+
+            if(
+                codeIndex >= 0
+            ){
+
+                submissions=
+                    rows
+                    .slice(1)
+                    .map(
+                        function(row,index){
+
+                            return{
+
+                                code:
+                                    normalizeCode(
+                                        row[
+                                            codeIndex
+                                        ]
+                                    ),
+
+                                timestamp:
+                                    timestampIndex >= 0
+                                    ?
+                                    (
+                                        row[
+                                            timestampIndex
+                                        ] || ""
+                                    )
+                                    :
+                                    "",
+
+                                score:
+                                    scoreIndex >= 0
+                                    ?
+                                    (
+                                        row[
+                                            scoreIndex
+                                        ] || ""
+                                    )
+                                    :
+                                    "",
+
+                                originalIndex:
+                                    index+1
+                            };
+                        }
+                    )
+                    .filter(
+                        function(item){
+
+                            return(
+                                item.code ===
+                                studentCode
+                            );
+                        }
+                    );
+            }
+        }
+    }
+
+
+    /*
+       Linh thạch học tập.
+    */
+    const rewardData=
+        calculateStudentRewardData(
+            submissions
+        );
+
+
+    const earnedGems=
+        cloneGems(
+            rewardData.gems
+        );
+
+
+    /*
+       Giao dịch Chợ
+       + quà linh thạch GVCN.
+    */
+    const rawTransactions=
+        shared.redemptionMap
+        .get(
+            studentCode
+        )
+        ||
+        [];
+
+
+    /*
+       TẤT CẢ linh thạch được hợp nhất tại đây.
+    */
+    const accounting=
+        processTransactions(
+            earnedGems,
+            rawTransactions
+        );
+
+
+    /*
+       Kho item chuẩn:
+       PhieuDoi + Mystery + GVCN.
+    */
+    const unifiedOwnedItems=
+        getOwnedItemsFromShared(
+            shared,
+            studentCode
+        );
+
+
+    return{
+
+        code:
+            studentCode,
+
+        rewardData,
+
+        earnedGems,
+
+
+        /*
+           SỐ DƯ CUỐI CÙNG
+           đã bao gồm gem GVCN.
+        */
+        gems:
+            accounting.gems,
+
+        balance:
+            accounting.balance,
+
+        rawTransactions,
+
+        transactions:
+            accounting.validTransactions,
+
+        validTransactions:
+            accounting.validTransactions,
+
+        rejectedTransactions:
+            accounting.rejectedTransactions,
+
+
+        /*
+           KHO HỢP NHẤT.
+        */
+        ownedItems:
+            unifiedOwnedItems,
+
+        redeemedItems:
+            unifiedOwnedItems,
+
+
+        redemptionOwnedItems:
+            accounting.ownedItems,
+
+        teacherOwnedItems:
+            (
+                shared.teacherOwnedItemMap
+                .get(
+                    studentCode
+                )
+                ||
+                []
+            ),
+
+
+        teacherGemTransactions:
+            (
+                shared.teacherGemTransactionMap
+                .get(
+                    studentCode
+                )
+                ||
+                []
+            ),
+
+
+        gemRewards:
+            accounting.gemRewards,
+
+        consumedDealIds:
+            accounting.consumedDealIds,
+
+
+        avatar:
+            getProfileAvatar(
+                unifiedOwnedItems
+            ),
+
+        avatarFrame:
+            getProfileAvatarFrame(
+                unifiedOwnedItems
+            ),
+
+        profileBackground:
+            getProfileBackground(
+                unifiedOwnedItems
+            ),
+
+        hasMultitaskPotion:
+            hasMultitaskPotion(
+                unifiedOwnedItems
+            ),
+
+        accounting
+    };
 }
 
 
@@ -6534,9 +7032,30 @@ async function refresh(
    DEBUG
 ========================================================= */
 
-async function debug(code){
+function debug(){
 
-    const result={
+    console.log(
+        "[Reward Core] Version:",
+        VERSION
+    );
+
+
+    console.log(
+        "[Reward Core] CONFIG:",
+        CONFIG
+    );
+
+
+    if(sharedCache){
+
+        console.log(
+            "[Reward Core] Shared:",
+            sharedCache
+        );
+    }
+
+
+    return{
 
         version:
             VERSION,
@@ -6544,225 +7063,9 @@ async function debug(code){
         config:
             CONFIG,
 
-        knowledgeNodes:
-            KNOWLEDGE_NODES.length,
-
-        exercises:
-            EXERCISES.length,
-
-        practiceUnits:
-            PRACTICE_UNITS.length,
-
-        errorCount:
-            Object.keys(
-                ERROR_MAP
-            ).length,
-
         cache:
-            dataCache
+            sharedCache
     };
-
-
-    if(code){
-
-        result.student=
-            await getStudentState(
-                code
-            );
-    }
-
-
-    console.log(
-        "[OCD Knowledge Engine]",
-        result
-    );
-
-
-    return result;
-}
-
-
-/* =========================================================
-   TEST MASTERY
-========================================================= */
-
-function createTestEvidence(scores){
-
-    return(
-        scores ||
-        []
-    )
-    .slice()
-    .reverse()
-    .map(
-        function(score,index){
-
-            return{
-
-                score:
-                    Number(score),
-
-                timestamp:
-                    "",
-
-                rowIndex:
-                    index,
-
-                evidenceWeight:1,
-
-                confidence:
-                    "VERY_HIGH",
-
-                evidenceType:
-                    "PRIMARY",
-
-                teacherEvidence:false,
-
-                errors:[]
-            };
-        }
-    );
-}
-
-
-function testScoreSequence(scores){
-
-    const evidence=
-        createTestEvidence(
-            scores
-        );
-
-
-    const quality=
-        calculateCurrentQuality(
-            evidence
-        );
-
-
-    const trend=
-        calculateTrend(
-            evidence
-        );
-
-
-    const stability=
-        calculateStability(
-            evidence
-        );
-
-
-    const errors=
-        calculateErrorState(
-            evidence
-        );
-
-
-    const mastery=
-        calculateBaseMastery(
-
-            evidence,
-
-            quality,
-
-            trend,
-
-            stability,
-
-            errors.active
-        );
-
-
-    return{
-
-        scores,
-
-        currentQuality:
-            quality,
-
-        trend,
-
-        stability,
-
-        mastery
-    };
-}
-
-
-/* =========================================================
-   SELF TEST
-========================================================= */
-
-function selfTest(){
-
-    const tests=[
-
-        [3,4,6,7,8],
-
-        [5,6,6,7,7],
-
-        [8,8,9,8,8],
-
-        [8,5,8,4,7],
-
-        [9,8,7,5,4],
-
-        [10],
-
-        [8,8,8],
-
-        [7,7,7,7],
-
-        [8,8,8,8,8]
-
-    ];
-
-
-    const results=
-        tests.map(
-            testScoreSequence
-        );
-
-
-    console.table(
-        results.map(
-            function(item){
-
-                return{
-
-                    scores:
-                        item.scores.join(
-                            " → "
-                        ),
-
-                    quality:
-                        item.currentQuality
-                        .value,
-
-                    trend:
-                        item.trend,
-
-                    stability:
-                        item.stability,
-
-                    mastery:
-                        item.mastery
-                };
-            }
-        )
-    );
-
-
-    return results;
-}
-
-
-/* =========================================================
-   OCD ROOT
-========================================================= */
-
-if(!window.OCD){
-
-    window.OCD={};
 }
 
 
@@ -6770,43 +7073,30 @@ if(!window.OCD){
    PUBLIC API
 ========================================================= */
 
-window.OCD.knowledge={
+window.StudentRewardSystem={
 
     version:
         VERSION,
 
     CONFIG,
 
-    MASTERY_STATES,
+    ONE_DAY,
 
-    QUALITY_STATES,
+    ICONS,
 
-    TREND_STATES,
+    GEM_TYPES,
 
-    STABILITY_STATES,
+    GEM_ORDER,
 
-    CONFIDENCE_STATES,
+    GEM_CONVERSION,
 
-    ERROR_SEVERITIES,
+    RARITY_TYPES,
 
-    ERROR_LIFECYCLE,
+    RARITY_ORDER,
 
+    STREAK_RULES,
 
-    /* REGISTRY */
-
-    KNOWLEDGE_NODES,
-
-    KNOWLEDGE_MAP,
-
-    EXERCISES,
-
-    EXERCISE_MAP,
-
-    PRACTICE_UNITS,
-
-    CURRICULUM_MAP,
-
-    ERROR_MAP,
+    HIGH_SCORE_RULES,
 
 
     /* BASIC */
@@ -6815,109 +7105,194 @@ window.OCD.knowledge={
 
     normalizeCode,
 
+    parseNumber,
+
     parseScore,
 
-    parseDate,
+    formatNumber,
 
-    qualityFromScore,
-
-
-    /* RESOLVER */
-
-    detectWeek,
-
-    findPracticeUnits,
-
-    findExercisesByAlias,
-
-    detectLamMo,
-
-    resolveDescription,
+    findColumn,
 
 
-    /* DATA */
+    /* CSV */
 
-    detectSubmissionColumns,
+    parseCSV,
 
-    mapSubmissionRows,
+    fetchCSV,
 
-    detectGradingColumns,
+    fetchRows,
 
-    mapGradingRows,
+    sheetCsvUrl,
 
-    loadData,
-
-    getStudentSubmissions,
+    sheetNameCsvUrl,
 
 
-    /* ERROR */
+    /* DRIVE */
 
-    detectErrorsFromComment,
+    extractDriveFileId,
 
-    calculateErrorState,
-
-    hasBlockingError,
-
-    hasRepeatedMajorError,
+    convertDriveImageUrl,
 
 
-    /* EVIDENCE */
+    /* DATE */
 
-    buildKnowledgeEvidence,
+    parseVietnameseDate,
 
-    calculateCurrentQuality,
-
-    calculateTrend,
-
-    calculateStability,
-
-    calculateConfidence,
+    getCalendarDayKey,
 
 
-    /* MASTERY */
+    /* GEMS */
 
-    calculateBaseMastery,
+    createEmptyGems,
 
-    prerequisitesPass,
+    cloneGems,
 
-    buildInitialStates,
+    normalizeGemType,
 
-    applyPrerequisiteRules,
+    normalizeGemBalance,
 
-    applyReviewRules,
+    addGemReward,
 
-    finalizeRecommendations,
+    getGemValueInHong,
 
+    parseGemRewardMarker,
 
-    /* STUDENT */
+    isGemRewardGift,
 
-    getStudentState,
-
-    getMastery,
-
-    getWeakNodes,
-
-    getProgress,
-
-    getRecommendedLesson,
-
-    getAdvice,
+    analyzeGemOfferEconomy,
 
 
-    /* QUEST */
+    /* RARITY */
 
-    buildQuestEvents,
+    normalizeRarity,
+
+    getRarityInfo,
+
+    getRarityGem,
 
 
-    /* SYSTEM */
+    /* GIFTS */
 
-    refresh,
+    mapGiftRows,
 
-    debug,
+    createGiftMap,
 
-    selfTest,
+    isMysteryBoxGiftName,
 
-    testScoreSequence
+
+    /* DEAL */
+
+    sanitizeDealId,
+
+    createDealMarker,
+
+    parseDealMarker,
+
+    createDealId,
+
+    getConsumedDealIds,
+
+
+    /* FORM */
+
+    createFormGiftValue,
+
+    parseFormGiftValue,
+
+    detectFormColumns,
+
+    mapFormResponseRows,
+
+
+    /* TEACHER */
+
+    detectTeacherGiftColumns,
+
+    isTeacherGiftActive,
+
+    resolveTeacherGemReward,
+
+    mapTeacherGiftRows,
+
+    buildTeacherGemTransactions,
+
+    buildTeacherOwnedItems,
+
+    buildTeacherOwnedItemMap,
+
+    buildTeacherGemTransactionMap,
+
+
+    /* ACCOUNTING */
+
+    sortTransactionsChronologically,
+
+    canAffordTransaction,
+
+    processTransactions,
+
+    applyTransactions,
+
+    calculateGemBalance,
+
+    applyRedeemedItems,
+
+    buildOwnedItems,
+
+    mergeOwnedItems,
+
+    getOwnedItemsFromShared,
+
+    hasOwnedItem,
+
+    getOwnedItemQuantity,
+
+
+    /* ACHIEVEMENT */
+
+    calculateLongestStreak,
+
+    calculateHighScoreRuns,
+
+    calculateScoreGems,
+
+    calculateStudentRewardData,
+
+    getProfileTitle,
+
+
+    /* PROFILE */
+
+    sortOwnedItemsNewest,
+
+    getLatestOwnedItemByPrefix,
+
+    getProfileAvatar,
+
+    getProfileAvatarFrame,
+
+    getProfileBackground,
+
+    hasMultitaskPotion,
+
+
+    /* EFFECT */
+
+    clearMultitaskEffect,
+
+    applyMultitaskEffect,
+
+
+    /* SHARED */
+
+    loadSharedRewardData,
+
+    getStudentRewardProfile,
+
+
+    /* DEBUG */
+
+    debug
 };
 
 
@@ -6926,20 +7301,7 @@ window.OCD.knowledge={
 ========================================================= */
 
 console.log(
-    "[OCD Knowledge Engine] v"+
-    VERSION+
-    " đã sẵn sàng."
-);
-
-
-console.log(
-    "[OCD Knowledge Engine] "+
-    KNOWLEDGE_NODES.length+
-    " Knowledge Nodes / "+
-    EXERCISES.length+
-    " Standard Exercises / "+
-    Object.keys(ERROR_MAP).length+
-    " Error Codes."
+    "[Reward Core] StudentRewardSystem v3.6.0 đã sẵn sàng."
 );
 
 
@@ -6947,23 +7309,11 @@ try{
 
     window.dispatchEvent(
         new CustomEvent(
-            "ocdKnowledgeEngineReady",
+            "studentRewardCoreReady",
             {
                 detail:{
-
                     version:
-                        VERSION,
-
-                    knowledgeNodes:
-                        KNOWLEDGE_NODES.length,
-
-                    exercises:
-                        EXERCISES.length,
-
-                    errors:
-                        Object.keys(
-                            ERROR_MAP
-                        ).length
+                        VERSION
                 }
             }
         )
@@ -6973,3 +7323,384 @@ try{
 
 
 })();
+
+
+/* =========================================================
+   OCD STUDENT REWARD CORE v4.2.0
+   COMPATIBILITY LOCK + MINH HONG BUYBACK
+   ---------------------------------------------------------
+   Nền v3.6.0 được đóng gói trực tiếp phía trên.
+   KHÔNG tải Core cũ qua CDN.
+========================================================= */
+(function(){
+"use strict";
+const V4_VERSION="4.2.0";
+const MH_CONFIG={
+    policySheetName:"MinhHongThuMua",
+    transactionSheetName:"MinhHongGiaoDich",
+    confirmValue:"Tôi xác nhận bán vật phẩm này.",
+    formResponseUrl:"https://docs.google.com/forms/d/e/1FAIpQLSdKYU3t5LgVKKY326Arq4TkqeUOe53HR6l8ZzM0-Z50YwvgsQ/formResponse",
+    formEntries:{
+        sellId:"entry.563661764",
+        code:"entry.540081212",
+        giftName:"entry.256766747",
+        quantity:"entry.697793477",
+        price:"entry.1111443255",
+        gemType:"entry.1616135319",
+        confirm:"entry.256416718"
+    },
+    cacheTtl:15000,
+    pollDelay:1800,
+    pollAttempts:8
+};
+
+let upgradePromise=null;
+let mhCache=null;
+let mhCacheTime=0;
+const sourceRegistry=new Map();
+
+function clean(v){ return String(v===undefined||v===null?"":v).trim(); }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function positiveInt(v,RS){ return Math.max(0,Math.floor(RS.parseNumber(v))); }
+function positiveNumber(v,RS){ return Math.max(0,Number(RS.parseNumber(v)||0)); }
+
+function emit(name,detail){
+    try{ window.dispatchEvent(new CustomEvent(name,{detail:detail||{}})); }catch(e){}
+}
+
+function detectPolicyColumns(rows,RS){
+    if(!rows||!rows.length) return {};
+    const h=rows[0].map(RS.normalizeText);
+    const col=(a,f)=>{ const x=RS.findColumn(h,a); return x>=0?x:f; };
+    return {
+        giftName:col(["tên vật phẩm","ten vat pham"],0),
+        price:col(["giá thu mua","gia thu mua"],1),
+        gemType:col(["loại linh thạch","loai linh thach"],2),
+        status:col(["trạng thái","trang thai","status"],3),
+        dailyLimit:col(["giới hạn/ngày","gioi han/ngay","giới hạn ngày","gioi han ngay"],4)
+    };
+}
+
+function detectSaleColumns(rows,RS){
+    if(!rows||!rows.length) return {};
+    const h=rows[0].map(RS.normalizeText);
+    const col=(a,f)=>{ const x=RS.findColumn(h,a); return x>=0?x:f; };
+    return {
+        timestamp:col(["dấu thời gian","dau thoi gian","timestamp"],0),
+        sellId:col(["sell_id","sell id","mã giao dịch","ma giao dich"],1),
+        code:col(["mã học viên","ma hoc vien"],2),
+        giftName:col(["tên vật phẩm","ten vat pham"],3),
+        quantity:col(["số lượng","so luong"],4),
+        price:col(["giá thu mua","gia thu mua"],5),
+        gemType:col(["loại linh thạch","loai linh thach"],6),
+        confirm:col(["xác nhận","xac nhan"],7),
+        status:RS.findColumn(h,["trạng thái","trang thai","status"])
+    };
+}
+
+function isPolicyActive(v,RS){ return RS.normalizeText(v)==="active"; }
+function isSaleEffective(row,c,RS){
+    const confirm=clean(row[c.confirm]);
+    if(confirm!==MH_CONFIG.confirmValue) return false;
+    if(c.status>=0){
+        const s=RS.normalizeText(row[c.status]);
+        if(["huy","da huy","hủy","đã hủy","thu hoi","da thu hoi","het hieu luc","khong hieu luc"].includes(s)) return false;
+        if(s && s!=="deal" && s!=="active" && s!=="hoan tat" && s!=="completed") return false;
+    }
+    return true;
+}
+
+function mapPolicies(rows,RS){
+    const out=[]; if(!rows||rows.length<2) return out;
+    const c=detectPolicyColumns(rows,RS);
+    for(let i=1;i<rows.length;i++){
+        const r=rows[i];
+        const name=clean(r[c.giftName]);
+        const gemType=RS.normalizeGemType(r[c.gemType]);
+        const price=positiveNumber(r[c.price],RS);
+        if(!name||!gemType||price<=0||!isPolicyActive(r[c.status],RS)) continue;
+        out.push({giftName:name,normalizedGiftName:RS.normalizeText(name),price,gemType,dailyLimit:positiveInt(r[c.dailyLimit],RS)});
+    }
+    return out;
+}
+
+function mapSales(rows,RS){
+    const out=[]; if(!rows||rows.length<2) return out;
+    const c=detectSaleColumns(rows,RS); const seen=new Set();
+    for(let i=1;i<rows.length;i++){
+        const r=rows[i]; if(!isSaleEffective(r,c,RS)) continue;
+        const sellId=clean(r[c.sellId]);
+        const code=RS.normalizeCode(r[c.code]);
+        const giftName=clean(r[c.giftName]);
+        const quantity=positiveInt(r[c.quantity],RS);
+        const price=positiveNumber(r[c.price],RS);
+        const gemType=RS.normalizeGemType(r[c.gemType]);
+        if(!sellId||seen.has(sellId)||!code||!giftName||quantity<=0||price<=0||!gemType) continue;
+        seen.add(sellId);
+        out.push({
+            transactionType:"minh-hong-sell", transactionId:"MH-"+sellId, sellId,
+            timestamp:clean(r[c.timestamp]), code, giftName,
+            normalizedGiftName:RS.normalizeText(giftName), quantity,
+            unitPrice:price, rewardGemType:gemType,
+            rewardGemAmount:quantity*price, rowIndex:i
+        });
+    }
+    out.sort((a,b)=>{
+        const da=RS.parseVietnameseDate(a.timestamp), db=RS.parseVietnameseDate(b.timestamp);
+        const ta=da?da.getTime():0, tb=db?db.getTime():0;
+        return ta-tb || a.rowIndex-b.rowIndex;
+    });
+    return out;
+}
+
+async function loadMinhHongData(force,RS){
+    if(!force && mhCache && Date.now()-mhCacheTime<MH_CONFIG.cacheTtl) return mhCache;
+    const results=await Promise.all([
+        RS.fetchRows(RS.sheetNameCsvUrl(MH_CONFIG.policySheetName)),
+        RS.fetchRows(RS.sheetNameCsvUrl(MH_CONFIG.transactionSheetName))
+    ]);
+    const policies=mapPolicies(results[0],RS);
+    const sales=mapSales(results[1],RS);
+    const salesByCode=new Map();
+    sales.forEach(s=>{ if(!salesByCode.has(s.code)) salesByCode.set(s.code,[]); salesByCode.get(s.code).push(s); });
+    mhCache={policies,sales,salesByCode,policyRows:results[0],saleRows:results[1]};
+    mhCacheTime=Date.now();
+    return mhCache;
+}
+
+function cloneItems(items){ return (items||[]).map(x=>Object.assign({},x)); }
+function itemQty(item){ return Math.max(1,Math.floor(Number(item&&item.quantity||1))); }
+
+function applySalesToItems(items,sales,RS){
+    const lots=cloneItems(items);
+    const rejected=[]; const applied=[];
+    function available(name){
+        const key=RS.normalizeText(name); let n=0;
+        lots.forEach(x=>{ if(RS.normalizeText(x.giftName||x.name)===key) n+=Math.max(0,Number(x.quantity===undefined?1:x.quantity)); });
+        return n;
+    }
+    (sales||[]).forEach(s=>{
+        let need=s.quantity;
+        if(available(s.giftName)<need){ rejected.push(Object.assign({reason:"INSUFFICIENT_ITEM"},s)); return; }
+        for(let i=0;i<lots.length && need>0;i++){
+            const lot=lots[i];
+            if(RS.normalizeText(lot.giftName||lot.name)!==s.normalizedGiftName) continue;
+            const q=Math.max(0,Number(lot.quantity===undefined?1:lot.quantity));
+            const take=Math.min(q,need);
+            lot.quantity=q-take; need-=take;
+        }
+        applied.push(s);
+    });
+    return {items:lots.filter(x=>Number(x.quantity===undefined?1:x.quantity)>0),applied,rejected};
+}
+
+function applySalesToGems(gems,applied,RS){
+    let result=Object.assign({},gems||{});
+    (applied||[]).forEach(s=>{ result=RS.addGemReward(result,s.rewardGemType,s.rewardGemAmount); });
+    return result;
+}
+
+function buildOffers(profile,data,RS){
+    const code=RS.normalizeCode(profile&&profile.code||profile&&profile.studentCode||"");
+    const items=profile&&profile.ownedItems||[];
+    const now=new Date();
+    const todayKey=new Intl.DateTimeFormat("en-CA",{timeZone:RS.CONFIG.timeZone||"Asia/Ho_Chi_Minh",year:"numeric",month:"2-digit",day:"2-digit"}).format(now);
+    return data.policies.map(p=>{
+        const owned=RS.getOwnedItemQuantity(items,p.giftName);
+        let soldToday=0;
+        (data.salesByCode.get(code)||[]).forEach(s=>{
+            if(s.normalizedGiftName!==p.normalizedGiftName) return;
+            const d=RS.parseVietnameseDate(s.timestamp); if(!d) return;
+            const k=new Intl.DateTimeFormat("en-CA",{timeZone:RS.CONFIG.timeZone||"Asia/Ho_Chi_Minh",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+            if(k===todayKey) soldToday+=s.quantity;
+        });
+        const remaining=p.dailyLimit>0?Math.max(0,p.dailyLimit-soldToday):owned;
+        const maxQuantity=Math.max(0,Math.min(owned,remaining));
+        return Object.assign({},p,{ownedQuantity:owned,soldToday,remainingToday:remaining,maxQuantity,available:maxQuantity>0});
+    }).filter(x=>x.ownedQuantity>0);
+}
+
+function createSellId(code,RS){
+    const c=RS.normalizeCode(code)||"UNKNOWN";
+    let rnd="";
+    try{ if(window.crypto&&window.crypto.getRandomValues){ const a=new Uint32Array(2); window.crypto.getRandomValues(a); rnd=a[0].toString(36)+a[1].toString(36); } }catch(e){}
+    if(!rnd) rnd=Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+    const day=new Intl.DateTimeFormat("en-CA",{timeZone:RS.CONFIG.timeZone||"Asia/Ho_Chi_Minh",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()).replace(/-/g,"");
+    return ("MH-"+day+"-"+c+"-"+rnd).replace(/[^a-zA-Z0-9._:-]/g,"").slice(0,120);
+}
+
+function submitForm(payload){
+    return new Promise(function(resolve){
+        const iframe=document.createElement("iframe");
+        iframe.name="mhSellFrame_"+Date.now(); iframe.style.display="none";
+        const form=document.createElement("form");
+        form.method="POST"; form.action=MH_CONFIG.formResponseUrl; form.target=iframe.name; form.style.display="none";
+        Object.keys(payload).forEach(k=>{ const input=document.createElement("input"); input.type="hidden"; input.name=k; input.value=payload[k]; form.appendChild(input); });
+        document.body.appendChild(iframe); document.body.appendChild(form); form.submit();
+        setTimeout(()=>{ try{form.remove();iframe.remove();}catch(e){} resolve(true); },700);
+    });
+}
+
+function registerAssetSource(name,adapter){
+    const key=clean(name); if(!key||typeof adapter!=="function") throw new Error("Asset source không hợp lệ.");
+    sourceRegistry.set(key,adapter); return true;
+}
+function unregisterAssetSource(name){ return sourceRegistry.delete(clean(name)); }
+function getRegisteredAssetSources(){ return Array.from(sourceRegistry.keys()); }
+
+async function installV4(RS){
+    if(RS.__OCD_UNIFIED_ASSET_V4__) return RS;
+    Object.defineProperty(RS,"__OCD_UNIFIED_ASSET_V4__",{value:true,configurable:false});
+
+    const legacy={
+        version:RS.version,
+        loadSharedRewardData:RS.loadSharedRewardData.bind(RS),
+        getStudentRewardProfile:RS.getStudentRewardProfile.bind(RS),
+        processTransactions:RS.processTransactions.bind(RS),
+        mergeOwnedItems:RS.mergeOwnedItems.bind(RS)
+    };
+
+    RS.CONFIG.minhHongBuybackSheetName=MH_CONFIG.policySheetName;
+    RS.CONFIG.minhHongTransactionSheetName=MH_CONFIG.transactionSheetName;
+    RS.CONFIG.minhHongConfirmValue=MH_CONFIG.confirmValue;
+    RS.CONFIG.minhHongFormResponseUrl=MH_CONFIG.formResponseUrl;
+    RS.CONFIG.minhHongFormEntries=Object.assign({},MH_CONFIG.formEntries);
+
+    RS.loadMinhHongData=function(force){ return loadMinhHongData(Boolean(force),RS); };
+
+    RS.loadSharedRewardData=async function(force){
+        const results=await Promise.all([legacy.loadSharedRewardData(force),loadMinhHongData(Boolean(force),RS)]);
+        const shared=results[0], mh=results[1];
+        shared.minhHongPolicies=mh.policies;
+        shared.minhHongSales=mh.sales;
+        shared.minhHongSalesByCode=mh.salesByCode;
+        return shared;
+    };
+
+    RS.getStudentRewardProfile=async function(code,submissionCsvText,force){
+        const results=await Promise.all([
+            legacy.getStudentRewardProfile(code,submissionCsvText),
+            loadMinhHongData(Boolean(force),RS)
+        ]);
+        const profile=results[0], mh=results[1];
+        const studentCode=RS.normalizeCode(code);
+        const sales=mh.salesByCode.get(studentCode)||[];
+        const itemResult=applySalesToItems(profile.ownedItems||[],sales,RS);
+        const gems=applySalesToGems(profile.gems||profile.balance||{},itemResult.applied,RS);
+        profile.code=profile.code||studentCode;
+        profile.gems=gems;
+        profile.balance=gems;
+        profile.ownedItems=itemResult.items;
+        profile.redeemedItems=itemResult.items;
+        profile.minhHong={
+            sales:itemResult.applied.slice(),
+            rejectedSales:itemResult.rejected.slice(),
+            offers:[]
+        };
+        profile.minhHong.offers=buildOffers(profile,mh,RS);
+        profile.assets={
+            gems:profile.gems,
+            items:profile.ownedItems,
+            transactions:itemResult.applied.slice(),
+            rejectedTransactions:itemResult.rejected.slice()
+        };
+        return profile;
+    };
+
+    RS.refreshStudentRewardProfile=async function(code,submissionCsvText){
+        mhCache=null; mhCacheTime=0;
+        const profile=await RS.getStudentRewardProfile(code,submissionCsvText,true);
+        emit("ocdRewardProfileChanged",{code:RS.normalizeCode(code),profile,version:V4_VERSION});
+        return profile;
+    };
+
+    RS.getMinhHongOffers=async function(code,submissionCsvText,force){
+        const p=await RS.getStudentRewardProfile(code,submissionCsvText,force);
+        return p.minhHong?p.minhHong.offers:[];
+    };
+
+    RS.createMinhHongSaleRequest=async function(code,giftName,quantity,submissionCsvText){
+        const profile=await RS.getStudentRewardProfile(code,submissionCsvText,true);
+        const q=positiveInt(quantity,RS); if(q<=0) throw new Error("Số lượng bán không hợp lệ.");
+        const offer=(profile.minhHong.offers||[]).find(x=>x.normalizedGiftName===RS.normalizeText(giftName));
+        if(!offer||!offer.available) throw new Error("Vật phẩm này hiện không nằm trong danh sách Minh Hồng thu mua.");
+        if(q>offer.maxQuantity) throw new Error("Số lượng vượt quá số đang sở hữu hoặc giới hạn thu mua hôm nay.");
+        return {
+            sellId:createSellId(code,RS), code:RS.normalizeCode(code), giftName:offer.giftName,
+            quantity:q, unitPrice:offer.price, gemType:offer.gemType,
+            rewardAmount:q*offer.price, confirm:MH_CONFIG.confirmValue
+        };
+    };
+
+    RS.submitMinhHongSaleRequest=async function(request){
+        const e=MH_CONFIG.formEntries;
+        const payload={};
+        payload[e.sellId]=request.sellId; payload[e.code]=request.code; payload[e.giftName]=request.giftName;
+        payload[e.quantity]=String(request.quantity); payload[e.price]=String(request.unitPrice);
+        payload[e.gemType]=RS.GEM_TYPES[request.gemType]?RS.GEM_TYPES[request.gemType].displayName:request.gemType;
+        payload[e.confirm]=MH_CONFIG.confirmValue;
+        await submitForm(payload); return request;
+    };
+
+    RS.waitForMinhHongSale=async function(sellId,attempts){
+        const max=Math.max(1,Number(attempts||MH_CONFIG.pollAttempts));
+        for(let i=0;i<max;i++){
+            if(i>0) await sleep(MH_CONFIG.pollDelay);
+            mhCache=null; mhCacheTime=0;
+            const data=await loadMinhHongData(true,RS);
+            const found=data.sales.find(x=>x.sellId===sellId);
+            if(found) return found;
+        }
+        return null;
+    };
+
+    RS.sellItemToMinhHong=async function(code,giftName,quantity,submissionCsvText){
+        const request=await RS.createMinhHongSaleRequest(code,giftName,quantity,submissionCsvText);
+        await RS.submitMinhHongSaleRequest(request);
+        const sale=await RS.waitForMinhHongSale(request.sellId);
+        if(!sale) throw new Error("Đã gửi yêu cầu bán nhưng chưa thấy SELL_ID trong MinhHongGiaoDich. Tài sản chưa được xác nhận thay đổi.");
+        const profile=await RS.refreshStudentRewardProfile(code,submissionCsvText);
+        return {request,sale,profile};
+    };
+
+    RS.registerAssetSource=registerAssetSource;
+    RS.unregisterAssetSource=unregisterAssetSource;
+    RS.getRegisteredAssetSources=getRegisteredAssetSources;
+    RS.createAssetTransaction=function(input){
+        const tx=Object.assign({},input||{});
+        tx.transactionId=clean(tx.transactionId); tx.transactionType=clean(tx.transactionType||"external");
+        tx.code=RS.normalizeCode(tx.code); tx.effects=Array.isArray(tx.effects)?tx.effects.map(x=>Object.assign({},x)):[];
+        if(!tx.transactionId) throw new Error("transactionId là bắt buộc.");
+        return tx;
+    };
+
+    /*
+       COMPATIBILITY LOCK
+       - version giữ 3.6.0 để các trang cũ nhận đúng Core ổn định.
+       - coreVersion mới là phiên bản kiến trúc thực tế.
+    */
+    RS.version=legacy.version;
+    RS.coreVersion=V4_VERSION;
+    RS.legacyVersion=legacy.version;
+    RS.MinhHongBuyback={
+        version:"2.0.0-core", config:MH_CONFIG,
+        loadData:RS.loadMinhHongData,
+        getOffers:RS.getMinhHongOffers,
+        createSaleRequest:RS.createMinhHongSaleRequest,
+        submitSaleRequest:RS.submitMinhHongSaleRequest,
+        waitForSale:RS.waitForMinhHongSale,
+        sell:RS.sellItemToMinhHong
+    };
+
+    emit("studentRewardCoreReady",{version:legacy.version,coreVersion:V4_VERSION,legacyVersion:legacy.version,unifiedAssets:true});
+    emit("ocdRewardCoreUpgraded",{version:V4_VERSION,compatibilityVersion:legacy.version});
+    console.log("[StudentRewardSystem] Core v"+V4_VERSION+" ready. Compatibility API: "+legacy.version);
+    return RS;
+}
+
+
+
+if(!window.StudentRewardSystem){
+    console.error("[StudentRewardSystem v4] Không tìm thấy nền Core nội bộ.");
+    return;
+}
