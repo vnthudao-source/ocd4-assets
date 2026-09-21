@@ -8,12 +8,12 @@
 ========================================================= */
  
 if(
-    window.__OCD_MINH_HONG_FOOTER_V1573__
+    window.__OCD_MINH_HONG_FOOTER_V1574__
 ){
     return;
 }
  
-window.__OCD_MINH_HONG_FOOTER_V1573__=
+window.__OCD_MINH_HONG_FOOTER_V1574__=
     true;
  
  
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1573__=
 const CONFIG={
  
     version:
-        "1.5.7.3",
+        "1.5.7.4",
  
     enabled:
         true,
@@ -4967,11 +4967,6 @@ const MinhHongAssistant=
  
  
         headerActions.appendChild(
-            muteButton
-        );
- 
- 
-        headerActions.appendChild(
             closePanelButton
         );
  
@@ -5099,15 +5094,6 @@ const MinhHongAssistant=
             "click",
             closePanel
         );
- 
- 
-        muteButton.addEventListener(
-            "click",
-            toggleMute
-        );
- 
- 
-        renderMuteButton();
  
  
         renderPanel();
@@ -7638,7 +7624,7 @@ const MinhHongAssistant=
  
  
     /* =====================================================
-       MINH HỒNG THU MUA v1.5.7.3
+       MINH HỒNG THU MUA v1.5.7.4
        - Core là nguồn sự thật duy nhất cho vật phẩm/Linh Thạch.
        - Minh Hồng chỉ đọc offer và gửi yêu cầu SELL qua Core.
        - Chỉ báo thành công sau khi SELL_ID xuất hiện trong Sheet.
@@ -7707,7 +7693,9 @@ const MinhHongAssistant=
                 .mh-sell-status{font-size:12px;line-height:1.55;padding:8px 9px;border-radius:9px;background:rgba(121,83,55,.07);margin-bottom:8px}
                 .mh-sell-item{padding:10px 0;border-top:1px solid rgba(121,83,55,.13)}
                 .mh-sell-item:first-of-type{border-top:0}
-                .mh-sell-name{font-weight:700;margin-bottom:4px}
+                .mh-sell-name{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:4px}
+                .mh-sell-item-icon{width:30px;height:30px;flex:0 0 30px;border-radius:8px;object-fit:contain;background:rgba(255,255,255,.75);border:1px solid rgba(121,83,55,.13)}
+                .mh-sell-item-icon-fallback{width:30px;height:30px;flex:0 0 30px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(121,83,55,.07);font-size:17px}
                 .mh-sell-meta{font-size:12px;line-height:1.5;opacity:.78}
                 .mh-sell-actions{display:flex;gap:7px;align-items:center;margin-top:8px}
                 .mh-sell-qty{width:72px;min-width:72px;border:1px solid rgba(121,83,55,.25);border-radius:9px;padding:8px;background:#fff}
@@ -7770,7 +7758,34 @@ const MinhHongAssistant=
 
                     available.forEach(function(offer){
                         const item=makeElement("div","mh-sell-item");
-                        item.appendChild(makeElement("div","mh-sell-name",offer.giftName||"Vật phẩm"));
+                        const nameRow=makeElement("div","mh-sell-name");
+                        const ownedItems=(profile&&Array.isArray(profile.ownedItems))?profile.ownedItems:[];
+                        const wanted=String(offer.giftName||"").trim().toLowerCase();
+                        const ownedItem=ownedItems.find(function(x){
+                            const n=String(x&&(x.giftName||x.name||(x.gift&&x.gift.name))||"").trim().toLowerCase();
+                            return n===wanted || n.replace(/^gói\s+/i,"")===wanted.replace(/^gói\s+/i,"");
+                        });
+                        const imageUrl=ownedItem&&(
+                            ownedItem.image ||
+                            (ownedItem.gift&&ownedItem.gift.image)
+                        );
+                        if(imageUrl){
+                            const icon=document.createElement("img");
+                            icon.className="mh-sell-item-icon";
+                            icon.src=imageUrl;
+                            icon.alt=offer.giftName||"Vật phẩm";
+                            icon.loading="lazy";
+                            icon.decoding="async";
+                            icon.onerror=function(){
+                                const fallback=makeElement("span","mh-sell-item-icon-fallback",ICONS.gift);
+                                if(icon.parentNode) icon.parentNode.replaceChild(fallback,icon);
+                            };
+                            nameRow.appendChild(icon);
+                        }else{
+                            nameRow.appendChild(makeElement("span","mh-sell-item-icon-fallback",ICONS.gift));
+                        }
+                        nameRow.appendChild(makeElement("span","",offer.giftName||"Vật phẩm"));
+                        item.appendChild(nameRow);
                         item.appendChild(makeElement("div","mh-sell-meta",
                             "Đang có: "+Number(offer.ownedQuantity||offer.quantity||0)+
                             " / Có thể bán: "+Number(offer.maxQuantity||0)+
