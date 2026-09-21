@@ -8,12 +8,12 @@
 ========================================================= */
  
 if(
-    window.__OCD_MINH_HONG_FOOTER_V1571__
+    window.__OCD_MINH_HONG_FOOTER_V1572__
 ){
     return;
 }
  
-window.__OCD_MINH_HONG_FOOTER_V1571__=
+window.__OCD_MINH_HONG_FOOTER_V1572__=
     true;
  
  
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1571__=
 const CONFIG={
  
     version:
-        "1.5.7.1",
+        "1.5.7.2",
  
     enabled:
         true,
@@ -7684,7 +7684,7 @@ const MinhHongAssistant=
  
  
     /* =====================================================
-       MINH HỒNG THU MUA v1.5.7.0
+       MINH HỒNG THU MUA v1.5.7.2
        - Core là nguồn sự thật duy nhất cho vật phẩm/Linh Thạch.
        - Minh Hồng chỉ đọc offer và gửi yêu cầu SELL qua Core.
        - Chỉ báo thành công sau khi SELL_ID xuất hiện trong Sheet.
@@ -7692,38 +7692,36 @@ const MinhHongAssistant=
     const MinhHongSellPanel=(function(){
         let submissionCsvPromise=null;
         let selling=false;
- 
-        function getCore(){
-            return window.StudentRewardSystem||null;
-        }
- 
+        let pendingSale=null;
+
+        function getCore(){ return window.StudentRewardSystem||null; }
+
         function coreReady(){
             const RS=getCore();
             return !!(
                 RS &&
                 typeof RS.getStudentRewardProfile==="function" &&
                 typeof RS.getMinhHongOffers==="function" &&
-                typeof RS.sellItemToMinhHong==="function" &&
-                typeof RS.refreshStudentRewardProfile==="function"
+                typeof RS.createMinhHongSaleRequest==="function" &&
+                typeof RS.submitMinhHongSaleRequest==="function" &&
+                typeof RS.confirmMinhHongSale==="function"
             );
         }
- 
+
         function waitCore(timeout){
             timeout=Math.max(1000,Number(timeout||12000));
             return new Promise(function(resolve,reject){
                 const start=Date.now();
                 (function check(){
                     if(coreReady()) return resolve(getCore());
-                    if(Date.now()-start>=timeout){
-                        return reject(new Error("Reward Core chưa sẵn sàng."));
-                    }
+                    if(Date.now()-start>=timeout) return reject(new Error("Reward Core v4.2.2+ chưa sẵn sàng."));
                     setTimeout(check,100);
                 })();
             });
         }
- 
+
         function loadSubmissionCsv(force){
-            if(!force && submissionCsvPromise) return submissionCsvPromise;
+            if(submissionCsvPromise && !force) return submissionCsvPromise;
             const sep=CONFIG.csvUrl.indexOf("?")>=0?"&":"?";
             const url=CONFIG.csvUrl+sep+"_mh_sell="+Date.now();
             submissionCsvPromise=fetch(url,{cache:"no-store",credentials:"omit"})
@@ -7737,16 +7735,16 @@ const MinhHongAssistant=
                 });
             return submissionCsvPromise;
         }
- 
+
         function gemLabel(RS,key){
             const info=RS.GEM_TYPES&&RS.GEM_TYPES[key];
             return info&&info.displayName?info.displayName:key;
         }
- 
+
         function injectStyle(){
-            if(document.getElementById("mhSellStyle1570")) return;
+            if(document.getElementById("mhSellStyle1572")) return;
             const style=document.createElement("style");
-            style.id="mhSellStyle1570";
+            style.id="mhSellStyle1572";
             style.textContent=`
                 .mh-sell-wrap{margin-top:10px}
                 .mh-sell-toggle{width:100%;border:1px solid rgba(121,83,55,.25);border-radius:12px;padding:11px 12px;background:#fffaf1;color:#5d4030;font-weight:700;cursor:pointer;text-align:left}
@@ -7764,11 +7762,11 @@ const MinhHongAssistant=
             `;
             document.head.appendChild(style);
         }
- 
+
         function append(state){
             if(!state||!state.verified) return;
             injectStyle();
- 
+
             const section=makeElement("div","mh-section mh-sell-wrap");
             const toggle=makeElement("button","mh-sell-toggle","Rao bán vật phẩm cho Minh Hồng");
             toggle.type="button";
@@ -7777,132 +7775,168 @@ const MinhHongAssistant=
             section.appendChild(toggle);
             section.appendChild(box);
             panelBody.appendChild(section);
- 
+
             let opened=false;
             let loaded=false;
- 
+            let disposed=false;
+            let retryRequest=null;
+
             function status(text){
                 clearNode(box);
                 box.appendChild(makeElement("div","mh-sell-status",text));
             }
- 
+
+            function alive(){
+                return !disposed && document.body.contains(section);
+            }
+
             async function render(force){
                 if(selling) return;
                 status("Đang tải vật phẩm và chính sách thu mua...");
                 try{
                     const RS=await waitCore(12000);
-                    const csv=await loadSubmissionCsv(Boolean(force));
+                    const csv=await loadSubmissionCsv(false);
                     const profile=await RS.getStudentRewardProfile(state.code,csv,Boolean(force));
                     const offers=(profile&&profile.minhHong&&Array.isArray(profile.minhHong.offers))
                         ? profile.minhHong.offers
                         : await RS.getMinhHongOffers(state.code,csv,Boolean(force));
- 
+
+                    if(!alive()) return;
                     clearNode(box);
                     box.appendChild(makeElement(
                         "div","mh-sell-note",
-                        "Minh Hồng chỉ hiển thị vật phẩm Core xác nhận bạn đang sở hữu và đang được thu mua. Tài sản chỉ thay đổi sau khi giao dịch được xác nhận."
+                        "Minh Hồng chỉ gửi yêu cầu bán. Reward Core là nguồn sự thật duy nhất và chỉ cập nhật tài sản khi SELL_ID đã được xác nhận trong MinhHongGiaoDich."
                     ));
- 
+
                     const available=(offers||[]).filter(function(o){
                         return o && o.available && Number(o.maxQuantity||0)>0;
                     });
- 
+
                     if(!available.length){
-                        box.appendChild(makeElement(
-                            "div","mh-sell-status",
-                            "Hiện chưa có vật phẩm phù hợp để rao bán, hoặc bạn đã đạt giới hạn thu mua hôm nay."
-                        ));
+                        box.appendChild(makeElement("div","mh-sell-status",
+                            "Hiện chưa có vật phẩm phù hợp để rao bán, hoặc bạn đã đạt giới hạn thu mua hôm nay."));
                         loaded=true;
                         return;
                     }
- 
+
                     available.forEach(function(offer){
                         const item=makeElement("div","mh-sell-item");
                         item.appendChild(makeElement("div","mh-sell-name",offer.giftName||"Vật phẩm"));
-                        item.appendChild(makeElement(
-                            "div","mh-sell-meta",
+                        item.appendChild(makeElement("div","mh-sell-meta",
                             "Đang có: "+Number(offer.ownedQuantity||offer.quantity||0)+
-                            " · Có thể bán: "+Number(offer.maxQuantity||0)+
-                            " · Giá: "+Number(offer.price||0)+" "+gemLabel(RS,offer.gemType)+" / vật phẩm"
-                        ));
- 
+                            " / Có thể bán: "+Number(offer.maxQuantity||0)+
+                            " / Giá: "+Number(offer.price||0)+" "+gemLabel(RS,offer.gemType)+" / vật phẩm"));
+
                         const actions=makeElement("div","mh-sell-actions");
                         const qty=document.createElement("input");
-                        qty.type="number";
-                        qty.className="mh-sell-qty";
-                        qty.min="1";
+                        qty.type="number"; qty.className="mh-sell-qty"; qty.min="1";
                         qty.max=String(Math.max(1,Number(offer.maxQuantity||1)));
-                        qty.step="1";
-                        qty.value="1";
-                        qty.setAttribute("aria-label","Số lượng bán");
- 
+                        qty.step="1"; qty.value="1"; qty.setAttribute("aria-label","Số lượng bán");
+
                         const sell=makeElement("button","mh-sell-btn","BÁN VẬT PHẨM");
                         sell.type="button";
                         sell.addEventListener("click",async function(){
-                            if(selling) return;
-                            const q=Math.floor(Number(qty.value||0));
-                            const max=Math.floor(Number(offer.maxQuantity||0));
-                            if(!Number.isFinite(q)||q<1||q>max){
-                                qty.focus();
+                            if(selling||pendingSale) return;
+                            if(retryRequest){
+                                const retry=retryRequest;
+                                pendingSale={request:retry.request,csv:retry.csv};
+                                sell.disabled=true; qty.disabled=true; sell.textContent="ĐANG KIỂM TRA...";
+                                try{
+                                    const confirmed=await RS.confirmMinhHongSale(retry.request.sellId,retry.csv,state.code);
+                                    pendingSale=null;
+                                    if(confirmed&&confirmed.sale){
+                                        retryRequest=null;
+                                        await render(true);
+                                    }else{
+                                        sell.disabled=false; qty.disabled=false; sell.textContent="KIỂM TRA LẠI";
+                                    }
+                                }catch(error){
+                                    pendingSale=null;
+                                    sell.disabled=false; qty.disabled=false; sell.textContent="KIỂM TRA LẠI";
+                                }
                                 return;
                             }
+                            const q=Math.floor(Number(qty.value||0));
+                            const max=Math.floor(Number(offer.maxQuantity||0));
+                            if(!Number.isFinite(q)||q<1||q>max){ qty.focus(); return; }
+
                             const reward=q*Number(offer.price||0);
-                            const ok=window.confirm(
-                                "Xác nhận bán "+q+" × "+offer.giftName+" cho Minh Hồng để nhận "+
-                                reward+" "+gemLabel(RS,offer.gemType)+"?"
-                            );
-                            if(!ok) return;
- 
-                            selling=true;
-                            sell.disabled=true;
-                            qty.disabled=true;
-                            sell.textContent="ĐANG XÁC NHẬN...";
+                            if(!window.confirm("Xác nhận bán "+q+" × "+offer.giftName+
+                                " cho Minh Hồng để nhận "+reward+" "+gemLabel(RS,offer.gemType)+"?")) return;
+
+                            selling=true; sell.disabled=true; qty.disabled=true; sell.textContent="ĐANG GỬI...";
                             try{
-                                const freshCsv=await loadSubmissionCsv(true);
-                                const result=await RS.sellItemToMinhHong(
-                                    state.code,offer.giftName,q,freshCsv
-                                );
-                                if(!result||!result.sale){
-                                    throw new Error("Giao dịch chưa được xác nhận.");
+                                const csv=await loadSubmissionCsv(false);
+                                const request=await RS.createMinhHongSaleRequest(state.code,offer.giftName,q,csv);
+                                await RS.submitMinhHongSaleRequest(request);
+
+                                pendingSale={request:request,csv:csv};
+                                selling=false;
+                                sell.textContent="ĐANG CHỜ XÁC NHẬN...";
+                                if(alive()){
+                                    const pending=makeElement("div","mh-sell-status",
+                                        "Đã gửi giao dịch "+request.sellId+". Đang chờ Google Sheet đồng bộ; không cần bấm bán lại.");
+                                    box.insertBefore(pending,box.firstChild);
                                 }
-                                selling=false;
-                                await render(true);
-                                const success=makeElement(
-                                    "div","mh-sell-status",
-                                    "Đã bán thành công. Core đã cập nhật lại vật phẩm và Linh Thạch."
-                                );
-                                box.insertBefore(success,box.firstChild);
+
+                                RS.confirmMinhHongSale(request.sellId,csv,state.code).then(async function(confirmed){
+                                    if(!pendingSale||pendingSale.request.sellId!==request.sellId) return;
+                                    pendingSale=null;
+                                    if(!confirmed||!confirmed.sale){
+                                        if(alive()){
+                                            retryRequest={request:request,csv:csv};
+                                            sell.disabled=false; qty.disabled=false; sell.textContent="KIỂM TRA LẠI";
+                                            const wait=makeElement("div","mh-sell-status",
+                                                "Giao dịch đã gửi nhưng Sheet chưa đồng bộ kịp. Bấm KIỂM TRA LẠI để xác nhận đúng SELL_ID này; nút này không tạo giao dịch mới.");
+                                            box.insertBefore(wait,box.firstChild);
+                                        }
+                                        return;
+                                    }
+                                    if(alive()){
+                                        await render(true);
+                                        if(alive()){
+                                            const success=makeElement("div","mh-sell-status",
+                                                "Đã xác nhận giao dịch. Reward Core đã đồng bộ lại hành trang và Linh Thạch.");
+                                            box.insertBefore(success,box.firstChild);
+                                        }
+                                    }
+                                }).catch(function(error){
+                                    pendingSale=null;
+                                    console.warn("[Minh Hồng] Xác nhận giao dịch:",error);
+                                    if(alive()){
+                                        sell.disabled=false; qty.disabled=false; sell.textContent="KIỂM TRA LẠI";
+                                    }
+                                });
                             }catch(err){
-                                selling=false;
-                                sell.disabled=false;
-                                qty.disabled=false;
-                                sell.textContent="BÁN VẬT PHẨM";
-                                window.alert(err&&err.message?err.message:"Không thể hoàn tất giao dịch. Vui lòng thử lại.");
+                                selling=false; pendingSale=null;
+                                sell.disabled=false; qty.disabled=false; sell.textContent="BÁN VẬT PHẨM";
+                                window.alert(err&&err.message?err.message:"Không thể gửi giao dịch. Vui lòng thử lại.");
                             }
                         });
-                        actions.appendChild(qty);
-                        actions.appendChild(sell);
-                        item.appendChild(actions);
-                        box.appendChild(item);
+
+                        actions.appendChild(qty); actions.appendChild(sell);
+                        item.appendChild(actions); box.appendChild(item);
                     });
                     loaded=true;
                 }catch(err){
                     status(err&&err.message?err.message:"Không thể tải hệ thống thu mua.");
                 }
             }
- 
+
             toggle.addEventListener("click",function(){
                 opened=!opened;
                 box.style.display=opened?"":"none";
                 toggle.textContent=opened?"Đóng rao bán vật phẩm":"Rao bán vật phẩm cho Minh Hồng";
                 if(opened&&!loaded) render(false);
             });
- 
+
             const onProfileChanged=function(event){
-                if(!opened||!document.body.contains(section)){
-                    if(!document.body.contains(section)) window.removeEventListener("ocdRewardProfileChanged",onProfileChanged);
+                if(!alive()){
+                    disposed=true;
+                    window.removeEventListener("ocdRewardProfileChanged",onProfileChanged);
                     return;
                 }
+                if(!opened||selling||pendingSale) return;
                 const detail=event&&event.detail?event.detail:{};
                 if(!detail.code||String(detail.code).toUpperCase()===String(state.code).toUpperCase()){
                     render(true);
@@ -7910,7 +7944,7 @@ const MinhHongAssistant=
             };
             window.addEventListener("ocdRewardProfileChanged",onProfileChanged);
         }
- 
+
         return {append:append};
     })();
  
@@ -8771,3 +8805,4 @@ console.info(
  
  
  
+
