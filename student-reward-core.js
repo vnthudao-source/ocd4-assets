@@ -7334,7 +7334,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.2.0";
+const V4_VERSION="4.2.2";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -7350,8 +7350,8 @@ const MH_CONFIG={
         confirm:"entry.256416718"
     },
     cacheTtl:15000,
-    pollDelay:1800,
-    pollAttempts:8
+    pollDelay:2200,
+    pollAttempts:18
 };
 
 let upgradePromise=null;
@@ -7470,26 +7470,43 @@ async function loadMinhHongData(force,RS){
 
 function cloneItems(items){ return (items||[]).map(x=>Object.assign({},x)); }
 function itemQty(item){ return Math.max(1,Math.floor(Number(item&&item.quantity||1))); }
+function normalizeAssetName(value,RS){
+    let v=RS.normalizeText(value||"");
+    v=v.replace(/^(goi|gói)\s+/i,"").replace(/\s+/g," ").trim();
+    return v;
+}
+function itemAssetName(item){
+    return clean(item&&(item.giftName||item.name||(item.gift&&item.gift.name))||"");
+}
 
 function applySalesToItems(items,sales,RS){
     const lots=cloneItems(items);
     const rejected=[]; const applied=[];
+    function keyOf(value){ return normalizeAssetName(value,RS); }
     function available(name){
-        const key=RS.normalizeText(name); let n=0;
-        lots.forEach(x=>{ if(RS.normalizeText(x.giftName||x.name)===key) n+=Math.max(0,Number(x.quantity===undefined?1:x.quantity)); });
+        const key=keyOf(name); let n=0;
+        lots.forEach(x=>{
+            if(keyOf(itemAssetName(x))===key){
+                n+=Math.max(0,Number(x.quantity===undefined?1:x.quantity));
+            }
+        });
         return n;
     }
     (sales||[]).forEach(s=>{
-        let need=s.quantity;
+        let need=Math.max(0,Number(s.quantity)||0);
+        if(!need)return;
         if(available(s.giftName)<need){ rejected.push(Object.assign({reason:"INSUFFICIENT_ITEM"},s)); return; }
+        const saleKey=keyOf(s.giftName);
         for(let i=0;i<lots.length && need>0;i++){
             const lot=lots[i];
-            if(RS.normalizeText(lot.giftName||lot.name)!==s.normalizedGiftName) continue;
+            if(keyOf(itemAssetName(lot))!==saleKey) continue;
             const q=Math.max(0,Number(lot.quantity===undefined?1:lot.quantity));
             const take=Math.min(q,need);
-            lot.quantity=q-take; need-=take;
+            lot.quantity=q-take;
+            need-=take;
         }
-        applied.push(s);
+        if(need===0) applied.push(s);
+        else rejected.push(Object.assign({reason:"ITEM_DEDUCTION_INCOMPLETE"},s));
     });
     return {items:lots.filter(x=>Number(x.quantity===undefined?1:x.quantity)>0),applied,rejected};
 }
@@ -7643,24 +7660,41 @@ async function installV4(RS){
     };
 
     RS.waitForMinhHongSale=async function(sellId,attempts){
+        const wanted=clean(sellId);
         const max=Math.max(1,Number(attempts||MH_CONFIG.pollAttempts));
         for(let i=0;i<max;i++){
             if(i>0) await sleep(MH_CONFIG.pollDelay);
             mhCache=null; mhCacheTime=0;
-            const data=await loadMinhHongData(true,RS);
-            const found=data.sales.find(x=>x.sellId===sellId);
-            if(found) return found;
+            try{
+                const data=await loadMinhHongData(true,RS);
+                const found=(data.sales||[]).find(x=>clean(x.sellId)===wanted);
+                if(found) return found;
+            }catch(error){
+                console.warn("[MinhHongBuyback] Chưa đọc được giao dịch, sẽ thử lại.",error);
+            }
         }
         return null;
+    };
+
+    RS.confirmMinhHongSale=async function(sellId,submissionCsvText,code,attempts){
+        const sale=await RS.waitForMinhHongSale(sellId,attempts);
+        if(!sale) return null;
+        const studentCode=RS.normalizeCode(code||sale.code||"");
+        const profile=studentCode?await RS.refreshStudentRewardProfile(studentCode,submissionCsvText):null;
+        return {sale,profile};
     };
 
     RS.sellItemToMinhHong=async function(code,giftName,quantity,submissionCsvText){
         const request=await RS.createMinhHongSaleRequest(code,giftName,quantity,submissionCsvText);
         await RS.submitMinhHongSaleRequest(request);
         const sale=await RS.waitForMinhHongSale(request.sellId);
-        if(!sale) throw new Error("Đã gửi yêu cầu bán nhưng chưa thấy SELL_ID trong MinhHongGiaoDich. Tài sản chưa được xác nhận thay đổi.");
+        if(!sale){
+            emit("ocdMinhHongSalePending",{sellId:request.sellId,code:request.code,giftName:request.giftName,quantity:request.quantity});
+            return {request,sale:null,profile:null,pending:true,confirmed:false};
+        }
         const profile=await RS.refreshStudentRewardProfile(code,submissionCsvText);
-        return {request,sale,profile};
+        emit("ocdMinhHongSaleConfirmed",{sellId:request.sellId,code:request.code,sale,profile});
+        return {request,sale,profile,pending:false,confirmed:true};
     };
 
     RS.registerAssetSource=registerAssetSource;
@@ -7683,12 +7717,13 @@ async function installV4(RS){
     RS.coreVersion=V4_VERSION;
     RS.legacyVersion=legacy.version;
     RS.MinhHongBuyback={
-        version:"2.0.0-core", config:MH_CONFIG,
+        version:"2.2.0-core", config:MH_CONFIG,
         loadData:RS.loadMinhHongData,
         getOffers:RS.getMinhHongOffers,
         createSaleRequest:RS.createMinhHongSaleRequest,
         submitSaleRequest:RS.submitMinhHongSaleRequest,
         waitForSale:RS.waitForMinhHongSale,
+        confirmSale:RS.confirmMinhHongSale,
         sell:RS.sellItemToMinhHong
     };
 
@@ -7704,3 +7739,14 @@ if(!window.StudentRewardSystem){
     console.error("[StudentRewardSystem v4] Không tìm thấy nền Core nội bộ.");
     return;
 }
+
+window.StudentRewardSystemReady = installV4(window.StudentRewardSystem)
+    .catch(function(error){
+        console.error("[StudentRewardSystem v4]",error);
+        throw error;
+    });
+
+})();
+
+
+
