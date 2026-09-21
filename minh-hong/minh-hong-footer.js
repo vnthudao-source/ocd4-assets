@@ -8,12 +8,12 @@
 ========================================================= */
  
 if(
-    window.__OCD_MINH_HONG_FOOTER_V1600__
+    window.__OCD_MINH_HONG_FOOTER_V1573__
 ){
     return;
 }
  
-window.__OCD_MINH_HONG_FOOTER_V1600__=
+window.__OCD_MINH_HONG_FOOTER_V1573__=
     true;
  
  
@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1600__=
 const CONFIG={
  
     version:
-        "1.6.0",
+        "1.5.7.3",
  
     enabled:
         true,
@@ -608,28 +608,58 @@ function getPageContentTab(){
    SAFE STORAGE
 ========================================================= */
  
-/* =========================================================
-   MEMORY STORAGE ONLY v1.6.0
-   - Không dùng bộ nhớ lưu trữ trình duyệt.
-   - Dữ liệu chỉ tồn tại trong vòng đời trang hiện tại.
-========================================================= */
-const __mhMemoryStore=Object.create(null);
-
 function safeStorageGet(key){
-    return Object.prototype.hasOwnProperty.call(__mhMemoryStore,key)
-        ? __mhMemoryStore[key]
-        : null;
+ 
+    try{
+ 
+        return localStorage.getItem(
+            key
+        );
+ 
+    }catch(error){
+ 
+        return null;
+    }
+ 
 }
-
-function safeStorageSet(key,value){
-    __mhMemoryStore[key]=String(value);
-    return true;
+ 
+ 
+function safeStorageSet(
+    key,
+    value
+){
+ 
+    try{
+ 
+        localStorage.setItem(
+            key,
+            value
+        );
+ 
+ 
+        return true;
+ 
+    }catch(error){
+ 
+        return false;
+    }
+ 
 }
-
+ 
+ 
 function safeStorageRemove(key){
-    delete __mhMemoryStore[key];
+ 
+    try{
+ 
+        localStorage.removeItem(
+            key
+        );
+ 
+    }catch(error){}
+ 
 }
-
+ 
+ 
 /* =========================================================
    STUDENT SESSION
 ========================================================= */
@@ -1047,7 +1077,7 @@ const OCDStudentSession=
  
  
     window.addEventListener(
-        "ocdMinhHongMemoryStorageDisabled",
+        "storage",
         function(event){
  
             if(
@@ -1073,7 +1103,7 @@ const OCDStudentSession=
             emit(
                 previous,
                 current,
-                "ocdMinhHongMemoryStorageDisabled"
+                "storage"
             );
  
         }
@@ -1466,7 +1496,7 @@ const InsightStore=
 /* =========================================================
    GUEST JOURNEY v1.5.4
  
-   - Theo dõi nhẹ hành trình của khách chỉ trong bộ nhớ của trang hiện tại.
+   - Ghi nhớ nhẹ hành trình của khách trong localStorage.
    - Kích hoạt đúng điều kiện first_visit / returning_guest.
    - Ưu tiên nội dung chưa xem, nhưng KHÔNG làm mất fallback.
    - Không chứa dữ liệu học viên và không can thiệp Student Session.
@@ -1592,7 +1622,7 @@ window.OCDMinhHongGuestJourney=GuestJourney;
  
    - Đọc nội dung điều khiển từ Google Sheet MinhHong
    - Chỉ tải tab được yêu cầu (lazy-load)
-   - Không lưu cache nội dung xuống trình duyệt; dữ liệu chỉ giữ tạm trong bộ nhớ trang
+   - Cache riêng từng tab trong localStorage
    - Sheet lỗi: trả dữ liệu cache cũ hoặc [] và KHÔNG làm hỏng Minh Hồng
    - Ngày trống = luôn có hiệu lực
    - Ưu tiên số lớn hiển thị trước
@@ -4257,16 +4287,21 @@ const CommunityEngine=
  
     /* =====================================================
        STUDENT CODE VERIFICATION - FIX2 / DUAL SOURCE
+
        GIỮ NGUYÊN nguồn xác minh cũ:
        - CONFIG.csvUrl (COMMUNITY CSV / tab đầu tiên)
+
        BỔ SUNG nguồn xác minh thứ hai:
        - NopBaiLuyenTap > HocVien
+
        Mã xuất hiện ở MỘT TRONG HAI nguồn => xác minh thành công.
        Hai nguồn được kiểm tra độc lập; một nguồn lỗi vẫn cho phép
        nguồn còn lại xác minh học viên.
     ===================================================== */
     async function verifyStudentCode(code){
+
         const wanted=normalizeCode(code);
+
         if(!wanted){
             return {
                 ok:false,
@@ -4275,18 +4310,27 @@ const CommunityEngine=
                 reason:"empty"
             };
         }
+
+
         function findStudentInRows(rows,sourceName){
+
             if(!rows || rows.length<2){
                 return null;
             }
+
             const columns=getColumns(rows);
+
             if(columns.codeIndex<0){
                 return null;
             }
+
             for(let i=1;i<rows.length;i++){
+
                 const row=rows[i] || [];
                 const rowCode=normalizeCode(row[columns.codeIndex]);
+
                 if(rowCode===wanted){
+
                     return {
                         ok:true,
                         code:wanted,
@@ -4298,13 +4342,18 @@ const CommunityEngine=
                     };
                 }
             }
+
             return null;
         }
+
+
         async function loadOriginalVerificationSource(){
+
             const separator=
                 CONFIG.csvUrl.indexOf("?")>=0
                 ? "&"
                 : "?";
+
             const response=await fetch(
                 CONFIG.csvUrl+separator+"mh_verify="+Date.now(),
                 {
@@ -4312,13 +4361,19 @@ const CommunityEngine=
                     credentials:"omit"
                 }
             );
+
             if(!response.ok){
                 throw new Error("Không thể tải nguồn xác minh học viên hiện tại.");
             }
+
             const csv=await response.text();
+
             return parseCSV(csv);
         }
+
+
         async function loadHocVienVerificationSource(){
+
             const url=
                 "https://docs.google.com/spreadsheets/d/"
                 +CONFIG.studentSpreadsheetId
@@ -4326,6 +4381,7 @@ const CommunityEngine=
                 +encodeURIComponent(CONFIG.studentSheetName)
                 +"&mh_verify="
                 +Date.now();
+
             const response=await fetch(
                 url,
                 {
@@ -4333,60 +4389,82 @@ const CommunityEngine=
                     credentials:"omit"
                 }
             );
+
             if(!response.ok){
                 throw new Error("Không thể tải tab HocVien.");
             }
+
             const csv=await response.text();
+
             return parseCSV(csv);
         }
+
+
         const results=await Promise.allSettled([
             loadOriginalVerificationSource(),
             loadHocVienVerificationSource()
         ]);
+
+
         if(results[0].status==="fulfilled"){
+
             const foundOriginal=
                 findStudentInRows(
                     results[0].value,
                     "community"
                 );
+
             if(foundOriginal){
                 return foundOriginal;
             }
         }
+
+
         if(results[1].status==="fulfilled"){
+
             const foundHocVien=
                 findStudentInRows(
                     results[1].value,
                     "HocVien"
                 );
+
             if(foundHocVien){
                 return foundHocVien;
             }
         }
+
+
         if(
             results[0].status==="rejected"
             &&
             results[1].status==="rejected"
         ){
+
             console.warn(
                 "[Minh Hồng] Cả hai nguồn xác minh học viên đều lỗi.",
                 results[0].reason,
                 results[1].reason
             );
+
             throw new Error("Không thể tải dữ liệu xác minh học viên.");
         }
+
+
         if(results[0].status==="rejected"){
             console.warn(
                 "[Minh Hồng] Nguồn xác minh hiện tại tạm lỗi:",
                 results[0].reason
             );
         }
+
         if(results[1].status==="rejected"){
             console.warn(
                 "[Minh Hồng] Tab HocVien tạm lỗi:",
                 results[1].reason
             );
         }
+
+
         return {
             ok:false,
             code:wanted,
@@ -4394,6 +4472,8 @@ const CommunityEngine=
             reason:"not-found"
         };
     }
+
+
     return{
  
         load,
@@ -4887,6 +4967,11 @@ const MinhHongAssistant=
  
  
         headerActions.appendChild(
+            muteButton
+        );
+ 
+ 
+        headerActions.appendChild(
             closePanelButton
         );
  
@@ -5016,8 +5101,15 @@ const MinhHongAssistant=
         );
  
  
-        /* v1.6.0: không gắn cơ chế thông báo nổi hoặc nút bật/tắt thông báo. */
-
+        muteButton.addEventListener(
+            "click",
+            toggleMute
+        );
+ 
+ 
+        renderMuteButton();
+ 
+ 
         renderPanel();
  
     }
@@ -5712,9 +5804,50 @@ const MinhHongAssistant=
  
  
     function showNotification(event){
-        return;
+ 
+        if(
+            panelOpen ||
+            notificationsMuted ||
+            !event
+        ){
+ 
+            return;
+        }
+ 
+ 
+ 
+        renderNotification(
+            event
+        );
+ 
+ 
+        notification.classList.remove(
+            "mh-show"
+        );
+ 
+ 
+        void notification.offsetWidth;
+ 
+ 
+        notification.classList.add(
+            "mh-show"
+        );
+ 
+ 
+        clearTimeout(
+            hideTimer
+        );
+ 
+ 
+        hideTimer=
+            setTimeout(
+                hideNotification,
+                CONFIG.visibleTime
+            );
+ 
     }
-
+ 
+ 
     function hideNotification(){
  
         if(!notification){
@@ -5859,10 +5992,37 @@ const MinhHongAssistant=
  
  
     function startNotificationLoop(){
-        /* v1.6.0: thông báo nổi đã bị loại bỏ hoàn toàn. */
+ 
         stopNotificationLoop();
+ 
+ 
+        const list=
+            activeEvents();
+ 
+ 
+        if(
+            notificationsMuted ||
+            panelOpen ||
+            !list.length
+        ){
+ 
+            return;
+        }
+ 
+ 
+ 
+        currentIndex=0;
+ 
+ 
+        firstTimer=
+            setTimeout(
+                nextNotification,
+                activeFirstDelay()
+            );
+ 
     }
-
+ 
+ 
     /* =====================================================
        MUTE
     ===================================================== */
@@ -7478,7 +7638,7 @@ const MinhHongAssistant=
  
  
     /* =====================================================
-       MINH HỒNG THU MUA v1.6.0
+       MINH HỒNG THU MUA v1.5.7.3
        - Core là nguồn sự thật duy nhất cho vật phẩm/Linh Thạch.
        - Minh Hồng chỉ đọc offer và gửi yêu cầu SELL qua Core.
        - Chỉ báo thành công sau khi SELL_ID xuất hiện trong Sheet.
@@ -7487,7 +7647,9 @@ const MinhHongAssistant=
         let submissionCsvPromise=null;
         let selling=false;
         let pendingSale=null;
+
         function getCore(){ return window.StudentRewardSystem||null; }
+
         function coreReady(){
             const RS=getCore();
             return !!(
@@ -7499,6 +7661,7 @@ const MinhHongAssistant=
                 typeof RS.confirmMinhHongSale==="function"
             );
         }
+
         function waitCore(timeout){
             timeout=Math.max(1000,Number(timeout||12000));
             return new Promise(function(resolve,reject){
@@ -7510,6 +7673,7 @@ const MinhHongAssistant=
                 })();
             });
         }
+
         function loadSubmissionCsv(force){
             if(submissionCsvPromise && !force) return submissionCsvPromise;
             const sep=CONFIG.csvUrl.indexOf("?")>=0?"&":"?";
@@ -7525,10 +7689,12 @@ const MinhHongAssistant=
                 });
             return submissionCsvPromise;
         }
+
         function gemLabel(RS,key){
             const info=RS.GEM_TYPES&&RS.GEM_TYPES[key];
             return info&&info.displayName?info.displayName:key;
         }
+
         function injectStyle(){
             if(document.getElementById("mhSellStyle1572")) return;
             const style=document.createElement("style");
@@ -7550,9 +7716,11 @@ const MinhHongAssistant=
             `;
             document.head.appendChild(style);
         }
+
         function append(state){
             if(!state||!state.verified) return;
             injectStyle();
+
             const section=makeElement("div","mh-section mh-sell-wrap");
             const toggle=makeElement("button","mh-sell-toggle","Rao bán vật phẩm cho Minh Hồng");
             toggle.type="button";
@@ -7561,17 +7729,21 @@ const MinhHongAssistant=
             section.appendChild(toggle);
             section.appendChild(box);
             panelBody.appendChild(section);
+
             let opened=false;
             let loaded=false;
             let disposed=false;
             let retryRequest=null;
+
             function status(text){
                 clearNode(box);
                 box.appendChild(makeElement("div","mh-sell-status",text));
             }
+
             function alive(){
                 return !disposed && document.body.contains(section);
             }
+
             async function render(force){
                 if(selling) return;
                 status("Đang tải vật phẩm và chính sách thu mua...");
@@ -7582,21 +7754,20 @@ const MinhHongAssistant=
                     const offers=(profile&&profile.minhHong&&Array.isArray(profile.minhHong.offers))
                         ? profile.minhHong.offers
                         : await RS.getMinhHongOffers(state.code,csv,Boolean(force));
+
                     if(!alive()) return;
                     clearNode(box);
-                    box.appendChild(makeElement(
-                        "div","mh-sell-note",
-                        "Minh Hồng chỉ gửi yêu cầu bán. Reward Core là nguồn sự thật duy nhất và chỉ cập nhật tài sản khi SELL_ID đã được xác nhận trong MinhHongGiaoDich."
-                    ));
                     const available=(offers||[]).filter(function(o){
                         return o && o.available && Number(o.maxQuantity||0)>0;
                     });
+
                     if(!available.length){
                         box.appendChild(makeElement("div","mh-sell-status",
                             "Hiện chưa có vật phẩm phù hợp để rao bán, hoặc bạn đã đạt giới hạn thu mua hôm nay."));
                         loaded=true;
                         return;
                     }
+
                     available.forEach(function(offer){
                         const item=makeElement("div","mh-sell-item");
                         item.appendChild(makeElement("div","mh-sell-name",offer.giftName||"Vật phẩm"));
@@ -7604,11 +7775,13 @@ const MinhHongAssistant=
                             "Đang có: "+Number(offer.ownedQuantity||offer.quantity||0)+
                             " / Có thể bán: "+Number(offer.maxQuantity||0)+
                             " / Giá: "+Number(offer.price||0)+" "+gemLabel(RS,offer.gemType)+" / vật phẩm"));
+
                         const actions=makeElement("div","mh-sell-actions");
                         const qty=document.createElement("input");
                         qty.type="number"; qty.className="mh-sell-qty"; qty.min="1";
                         qty.max=String(Math.max(1,Number(offer.maxQuantity||1)));
                         qty.step="1"; qty.value="1"; qty.setAttribute("aria-label","Số lượng bán");
+
                         const sell=makeElement("button","mh-sell-btn","BÁN VẬT PHẨM");
                         sell.type="button";
                         sell.addEventListener("click",async function(){
@@ -7635,14 +7808,17 @@ const MinhHongAssistant=
                             const q=Math.floor(Number(qty.value||0));
                             const max=Math.floor(Number(offer.maxQuantity||0));
                             if(!Number.isFinite(q)||q<1||q>max){ qty.focus(); return; }
+
                             const reward=q*Number(offer.price||0);
                             if(!window.confirm("Xác nhận bán "+q+" × "+offer.giftName+
                                 " cho Minh Hồng để nhận "+reward+" "+gemLabel(RS,offer.gemType)+"?")) return;
+
                             selling=true; sell.disabled=true; qty.disabled=true; sell.textContent="ĐANG GỬI...";
                             try{
                                 const csv=await loadSubmissionCsv(false);
                                 const request=await RS.createMinhHongSaleRequest(state.code,offer.giftName,q,csv);
                                 await RS.submitMinhHongSaleRequest(request);
+
                                 pendingSale={request:request,csv:csv};
                                 selling=false;
                                 sell.textContent="ĐANG CHỜ XÁC NHẬN...";
@@ -7651,6 +7827,7 @@ const MinhHongAssistant=
                                         "Đã gửi giao dịch "+request.sellId+". Đang chờ Google Sheet đồng bộ; không cần bấm bán lại.");
                                     box.insertBefore(pending,box.firstChild);
                                 }
+
                                 RS.confirmMinhHongSale(request.sellId,csv,state.code).then(async function(confirmed){
                                     if(!pendingSale||pendingSale.request.sellId!==request.sellId) return;
                                     pendingSale=null;
@@ -7685,6 +7862,7 @@ const MinhHongAssistant=
                                 window.alert(err&&err.message?err.message:"Không thể gửi giao dịch. Vui lòng thử lại.");
                             }
                         });
+
                         actions.appendChild(qty); actions.appendChild(sell);
                         item.appendChild(actions); box.appendChild(item);
                     });
@@ -7693,12 +7871,14 @@ const MinhHongAssistant=
                     status(err&&err.message?err.message:"Không thể tải hệ thống thu mua.");
                 }
             }
+
             toggle.addEventListener("click",function(){
                 opened=!opened;
                 box.style.display=opened?"":"none";
                 toggle.textContent=opened?"Đóng rao bán vật phẩm":"Rao bán vật phẩm cho Minh Hồng";
                 if(opened&&!loaded) render(false);
             });
+
             const onProfileChanged=function(event){
                 if(!alive()){
                     disposed=true;
@@ -7713,6 +7893,7 @@ const MinhHongAssistant=
             };
             window.addEventListener("ocdRewardProfileChanged",onProfileChanged);
         }
+
         return {append:append};
     })();
  
@@ -8342,7 +8523,7 @@ const MinhHongAssistant=
     );
  
     window.addEventListener(
-        "ocdMinhHongMemoryStorageDisabled",
+        "storage",
         function(event){
  
             if(
@@ -8573,3 +8754,4 @@ console.info(
  
  
  
+
