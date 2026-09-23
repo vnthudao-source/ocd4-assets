@@ -240,7 +240,7 @@ const GEM_TYPES={
             "gem-hailam",
 
         image:
-            "1vDrlf7846xVNJ4g8HPdkFNWhOtpTNrGu"
+            "1TMrH31aDPivPaSSTbZts1syEXtvJWc7N"
     },
 
 
@@ -270,7 +270,7 @@ const GEM_TYPES={
             "gem-lambao",
 
         image:
-            "1TMrH31aDPivPaSSTbZts1syEXtvJWc7N"
+            "1vDrlf7846xVNJ4g8HPdkFNWhOtpTNrGu"
     },
 
 
