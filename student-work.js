@@ -528,7 +528,10 @@ async function loadCanonicalStudentAssets(studentCode,force){
         await RS.getStudentRewardProfile(
             code,
             buildStudentSubmissionCSVForCore(code),
-            Boolean(force)
+            Boolean(force),
+            {
+                adminBypass:true
+            }
         );
 
         const canonical =
