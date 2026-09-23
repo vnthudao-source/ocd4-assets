@@ -15,7 +15,7 @@
    - Không quà tặng
    - Không tìm kiếm
    - Không phân trang
-   - Không phụ thuộc StudentRewardSystem Core
+   - Dùng cổng trạng thái StudentRewardSystem Core
 ========================================================= */
 
 
@@ -96,6 +96,46 @@ new Set();
 let started = false;
 
 let refreshTimer = null;
+
+
+/* =========================================================
+   STUDENT ACCESS CORE
+========================================================= */
+
+async function waitForStudentAccessCore(){
+
+    const startedAt =
+    Date.now();
+
+
+    while(
+        Date.now() - startedAt < 5000
+    ){
+
+        const RS =
+        window.StudentRewardSystem;
+
+
+        if(
+            RS &&
+            typeof RS.filterActiveStudents ===
+            "function"
+        ){
+            return RS;
+        }
+
+
+        await new Promise(
+            resolve =>
+            setTimeout(resolve,50)
+        );
+    }
+
+
+    throw new Error(
+        "Cổng trạng thái học viên chưa sẵn sàng."
+    );
+}
 
 
 /* =========================================================
@@ -1676,6 +1716,29 @@ async function loadData(){
         );
 
 
+        /*
+           Không công khai tác phẩm của học viên đã tạm dừng,
+           chờ kích hoạt, tốt nghiệp hoặc bị khóa.
+        */
+        const RS =
+        await waitForStudentAccessCore();
+
+
+        works =
+        await RS.filterActiveStudents(
+            works,
+            {
+                getCode:
+                    function(item){
+                        return column(
+                            item,
+                            ["Mã học viên"]
+                        );
+                    }
+            }
+        );
+
+
         render();
 
 
@@ -1842,3 +1905,4 @@ if(
 
 
 })();
+
