@@ -225,7 +225,7 @@ const GEM_TYPES={
             "gem-hoang",
 
         image:
-            "1w28sOWzHppnD9AzudfcwxLK9T7-DJMfp"
+            "1ELG5w78c1vM2H53NjR__Wif-COFBIa4-"
     },
 
 
@@ -240,7 +240,7 @@ const GEM_TYPES={
             "gem-hailam",
 
         image:
-            "1ZMMPqWp5Qi-qUU5_rZoJXz7CnxUsmBV0"
+            "1vDrlf7846xVNJ4g8HPdkFNWhOtpTNrGu"
     },
 
 
@@ -255,7 +255,7 @@ const GEM_TYPES={
             "gem-thachanh",
 
         image:
-            "1fFkMfitQcIj5lSBthnIttyEw3B1MwStw"
+            "1vhsBzLr3kqCDuK3kAd0ueRGJBEdjuWnd"
     },
 
 
@@ -270,7 +270,7 @@ const GEM_TYPES={
             "gem-lambao",
 
         image:
-            "1aCYy67a4Zw-buU_Q6CaZH_zBtvRyM2AE"
+            "1TMrH31aDPivPaSSTbZts1syEXtvJWc7N"
     },
 
 
@@ -285,7 +285,7 @@ const GEM_TYPES={
             "gem-luc",
 
         image:
-            "1xGRw4wu4YhavP57uN8VJuJkEWKQnQaq3"
+            "19FSdR0HkIbvQIyTejqw7kXlxWEARG5ZB"
     },
 
 
@@ -300,7 +300,7 @@ const GEM_TYPES={
             "gem-hong",
 
         image:
-            "1H7QqdmKcZl-S39T8r7Kp8Vql2aKgHXVn"
+            "1S4DuNvJypXLIeg1LUV-IpVD5gM8tRK43"
     }
 };
 
