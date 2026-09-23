@@ -76,6 +76,23 @@ const CONFIG={
     studentCsv:
         "https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?output=csv",
 
+    /*
+       Danh bạ học viên và trạng thái hoạt động.
+       Đây là cổng quyền dùng chung cho các trang công khai.
+    */
+    studentRegistryCsv:
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?gid=1603096683&single=true&output=csv",
+
+    /*
+       false: học viên cũ chưa có trong HocVien vẫn được hoạt động.
+       Bật true sau khi đã nhập đủ toàn bộ học viên vào HocVien.
+    */
+    studentRegistryStrict:
+        false,
+
+    studentRegistryCacheTtl:
+        15000,
+
     timeZone:
         "Asia/Ho_Chi_Minh",
 
@@ -820,6 +837,409 @@ async function fetchRows(url){
     return parseCSV(
         await fetchCSV(url)
     );
+}
+
+
+/* =========================================================
+   STUDENT ACCESS GATE
+
+   Nguồn duy nhất: tab HocVien, cột Trạng thái.
+   ACTIVE      = hoạt động
+   PAUSED      = tạm dừng
+   PENDING     = chờ kích hoạt
+   GRADUATED   = đã tốt nghiệp
+   BANNED      = bị khóa
+
+   Dữ liệu lịch sử không bị xóa. Các trang Admin có thể dùng
+   option {adminBypass:true} để đọc hồ sơ phục vụ quản trị.
+========================================================= */
+
+let studentRegistryCache=null;
+let studentRegistryCacheTime=0;
+
+
+function normalizeStudentStatus(value){
+
+    const status=
+        normalizeText(value)
+        .replace(/\s+/g,"-");
+
+
+    const aliases={
+
+        "active":"active",
+        "hoat-dong":"active",
+        "dang-hoat-dong":"active",
+
+        "paused":"paused",
+        "pause":"paused",
+        "tam-dung":"paused",
+
+        "pending":"pending",
+        "cho-kich-hoat":"pending",
+        "chua-kich-hoat":"pending",
+
+        "graduated":"graduated",
+        "tot-nghiep":"graduated",
+        "da-tot-nghiep":"graduated",
+
+        "banned":"banned",
+        "blocked":"banned",
+        "khoa":"banned",
+        "da-khoa":"banned",
+        "inactive":"paused"
+    };
+
+
+    return aliases[status] || status;
+}
+
+
+function getStudentAccessMessage(status){
+
+    if(status === "paused"){
+        return "Mã học viên hiện đang tạm dừng.";
+    }
+
+
+    if(status === "pending"){
+        return "Mã học viên hiện chưa được kích hoạt.";
+    }
+
+
+    if(status === "graduated"){
+        return "Mã học viên đã chuyển sang trạng thái tốt nghiệp.";
+    }
+
+
+    if(status === "banned"){
+        return "Mã học viên hiện đã bị khóa.";
+    }
+
+
+    if(status === "not-found"){
+        return "Không tìm thấy Mã học viên trong danh bạ.";
+    }
+
+
+    return "Mã học viên hiện không ở trạng thái hoạt động.";
+}
+
+
+function detectStudentRegistryColumns(rows){
+
+    const headers=
+        rows && rows.length
+        ? rows[0].map(normalizeText)
+        : [];
+
+
+    return{
+
+        code:
+            findColumn(headers,["mã học viên","ma hoc vien"]),
+
+        name:
+            findColumn(headers,["họ và tên","ho va ten","họ tên","ho ten"]),
+
+        group:
+            findColumn(headers,["tổ","to"]),
+
+        course:
+            findColumn(headers,["khóa","khoá","khoa"]),
+
+        status:
+            findColumn(headers,["trạng thái","trang thai","status"]),
+
+        activatedAt:
+            findColumn(headers,["ngày kích hoạt","ngay kich hoat"])
+    };
+}
+
+
+function mapStudentRegistryRows(rows){
+
+    const columns=
+        detectStudentRegistryColumns(rows);
+
+
+    if(columns.code < 0){
+        throw new Error("Không tìm thấy cột Mã học viên trong HocVien.");
+    }
+
+
+    const students=[];
+    const studentMap=new Map();
+
+
+    (rows || [])
+    .slice(1)
+    .forEach(
+        function(row,index){
+
+            const code=
+                normalizeCode(row[columns.code] || "");
+
+
+            if(!code){
+                return;
+            }
+
+
+            const rawStatus=
+                columns.status >= 0
+                ? String(row[columns.status] || "").trim()
+                : "";
+
+
+            const status=
+                normalizeStudentStatus(rawStatus || "pending") ||
+                "pending";
+
+
+            const student={
+
+                code,
+
+                name:
+                    columns.name >= 0
+                    ? String(row[columns.name] || "").trim()
+                    : "",
+
+                group:
+                    columns.group >= 0
+                    ? String(row[columns.group] || "").trim()
+                    : "",
+
+                course:
+                    columns.course >= 0
+                    ? String(row[columns.course] || "").trim()
+                    : "",
+
+                status,
+                rawStatus,
+
+                activatedAt:
+                    columns.activatedAt >= 0
+                    ? String(row[columns.activatedAt] || "").trim()
+                    : "",
+
+                sourceRow:
+                    index + 2
+            };
+
+
+            students.push(student);
+            studentMap.set(code,student);
+        }
+    );
+
+
+    return{
+        students,
+        studentMap,
+        columns,
+        loadedAt:Date.now()
+    };
+}
+
+
+async function loadStudentRegistry(forceRefresh){
+
+    const now=Date.now();
+
+
+    if(
+        !forceRefresh &&
+        studentRegistryCache &&
+        now-studentRegistryCacheTime < CONFIG.studentRegistryCacheTtl
+    ){
+        return studentRegistryCache;
+    }
+
+
+    const rows=
+        await fetchRows(CONFIG.studentRegistryCsv);
+
+
+    studentRegistryCache=
+        mapStudentRegistryRows(rows);
+
+
+    studentRegistryCacheTime=now;
+
+
+    return studentRegistryCache;
+}
+
+
+function buildStudentAccess(student,code,options){
+
+    const adminBypass=
+        Boolean(options && options.adminBypass);
+
+
+    if(adminBypass){
+        return{
+            code,
+            exists:Boolean(student),
+            status:student ? student.status : "admin-bypass",
+            canAccess:true,
+            canSubmit:true,
+            canDisplayPublicly:true,
+            adminBypass:true,
+            student:student || null,
+            message:""
+        };
+    }
+
+
+    if(!student){
+
+        const allowed=
+            CONFIG.studentRegistryStrict !== true;
+
+
+        return{
+            code,
+            exists:false,
+            status:"not-found",
+            canAccess:allowed,
+            canSubmit:allowed,
+            canDisplayPublicly:allowed,
+            adminBypass:false,
+            student:null,
+            message:
+                allowed
+                ? ""
+                : getStudentAccessMessage("not-found")
+        };
+    }
+
+
+    const allowed=
+        student.status === "active";
+
+
+    return{
+        code,
+        exists:true,
+        status:student.status,
+        canAccess:allowed,
+        canSubmit:allowed,
+        canDisplayPublicly:allowed,
+        adminBypass:false,
+        student,
+        message:
+            allowed
+            ? ""
+            : getStudentAccessMessage(student.status)
+    };
+}
+
+
+async function getStudentAccess(code,options){
+
+    const studentCode=
+        normalizeCode(code);
+
+
+    if(!studentCode){
+        return buildStudentAccess(null,"",options);
+    }
+
+
+    const registry=
+        await loadStudentRegistry(
+            Boolean(options && options.forceRefresh)
+        );
+
+
+    return buildStudentAccess(
+        registry.studentMap.get(studentCode) || null,
+        studentCode,
+        options
+    );
+}
+
+
+async function assertStudentActive(code,options){
+
+    const access=
+        await getStudentAccess(code,options);
+
+
+    if(!access.canAccess){
+
+        const error=
+            new Error(access.message);
+
+
+        error.code="STUDENT_ACCESS_DENIED";
+        error.studentAccess=access;
+
+
+        throw error;
+    }
+
+
+    return access;
+}
+
+
+async function filterActiveStudents(items,options){
+
+    const list=
+        Array.isArray(items)
+        ? items
+        : [];
+
+
+    const registry=
+        await loadStudentRegistry(
+            Boolean(options && options.forceRefresh)
+        );
+
+
+    const getCode=
+        options && typeof options.getCode === "function"
+        ? options.getCode
+        : function(item){
+            return item && (
+                item.code ||
+                item.studentCode ||
+                item.maHocVien ||
+                item["Mã học viên"] ||
+                ""
+            );
+        };
+
+
+    return list.filter(
+        function(item){
+
+            const code=
+                normalizeCode(getCode(item));
+
+
+            const access=
+                buildStudentAccess(
+                    registry.studentMap.get(code) || null,
+                    code,
+                    options
+                );
+
+
+            return access.canDisplayPublicly;
+        }
+    );
+}
+
+
+function clearStudentRegistryCache(){
+
+    studentRegistryCache=null;
+    studentRegistryCacheTime=0;
 }
 
 
@@ -7127,6 +7547,27 @@ window.StudentRewardSystem={
     sheetNameCsvUrl,
 
 
+    /* STUDENT ACCESS */
+
+    normalizeStudentStatus,
+
+    getStudentAccessMessage,
+
+    detectStudentRegistryColumns,
+
+    mapStudentRegistryRows,
+
+    loadStudentRegistry,
+
+    getStudentAccess,
+
+    assertStudentActive,
+
+    filterActiveStudents,
+
+    clearStudentRegistryCache,
+
+
     /* DRIVE */
 
     extractDriveFileId,
@@ -7334,7 +7775,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.2.2";
+const V4_VERSION="4.3.0";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -7594,7 +8035,8 @@ async function installV4(RS){
         return shared;
     };
 
-    RS.getStudentRewardProfile=async function(code,submissionCsvText,force){
+    RS.getStudentRewardProfile=async function(code,submissionCsvText,force,accessOptions){
+        await RS.assertStudentActive(code,accessOptions);
         const results=await Promise.all([
             legacy.getStudentRewardProfile(code,submissionCsvText),
             loadMinhHongData(Boolean(force),RS)
@@ -7624,9 +8066,9 @@ async function installV4(RS){
         return profile;
     };
 
-    RS.refreshStudentRewardProfile=async function(code,submissionCsvText){
+    RS.refreshStudentRewardProfile=async function(code,submissionCsvText,accessOptions){
         mhCache=null; mhCacheTime=0;
-        const profile=await RS.getStudentRewardProfile(code,submissionCsvText,true);
+        const profile=await RS.getStudentRewardProfile(code,submissionCsvText,true,accessOptions);
         emit("ocdRewardProfileChanged",{code:RS.normalizeCode(code),profile,version:V4_VERSION});
         return profile;
     };
@@ -7747,6 +8189,4 @@ window.StudentRewardSystemReady = installV4(window.StudentRewardSystem)
     });
 
 })();
-
-
 
