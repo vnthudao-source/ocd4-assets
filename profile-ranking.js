@@ -4,7 +4,7 @@
  
  
 /* =========================================================
-   PROFILE RANKING v4.8.0
+   PROFILE RANKING v4.8.1
    FULL DELETE SYNC
    REWARD CORE v4.2.0+
    CANONICAL ASSET PROFILE
@@ -3571,6 +3571,43 @@ async function loadData(){
                 Boolean
             );
 
+
+        /*
+           =================================================
+           CHỐNG TRÙNG HỌC VIÊN THEO MÃ CHUẨN
+
+           Khi cùng một mã xuất hiện ở cả nguồn cũ và HocVien,
+           chỉ giữ một hồ sơ. Bản ghi xuất hiện sau được ưu tiên
+           để dữ liệu quản lý mới từ HocVien có hiệu lực.
+           =================================================
+        */
+        const uniqueStudentsByCode=
+            new Map();
+
+        students.forEach(
+            function(student){
+
+                const uniqueCode=
+                    RS.normalizeCode(
+                        student && student.code
+                    );
+
+                if(!uniqueCode){
+                    return;
+                }
+
+                student.code=uniqueCode;
+                uniqueStudentsByCode.set(
+                    uniqueCode,
+                    student
+                );
+            }
+        );
+
+        students=
+            Array.from(
+                uniqueStudentsByCode.values()
+            );
 
         /*
            Cổng trạng thái tập trung từ Core/HocVien.
