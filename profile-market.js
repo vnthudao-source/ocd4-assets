@@ -3973,9 +3973,24 @@ async function searchStudent(){
                 code
             );
  
-        assertRegistryStudentStatus(
-            registryStudent
-        );
+        if(
+            typeof RS.assertStudentActive ===
+            "function"
+        ){
+
+            await RS.assertStudentActive(
+                code,
+                {
+                    forceRefresh:true
+                }
+            );
+
+        }else{
+
+            assertRegistryStudentStatus(
+                registryStudent
+            );
+        }
  
         state.gifts=
             shared.gifts ||
