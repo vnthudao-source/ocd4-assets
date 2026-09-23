@@ -3570,8 +3570,31 @@ async function loadData(){
             .filter(
                 Boolean
             );
- 
- 
+
+
+        /*
+           Cổng trạng thái tập trung từ Core/HocVien.
+           PAUSED, PENDING, GRADUATED và BANNED không xuất hiện
+           trên bảng xếp hạng hoặc bảng thành tích theo tổ.
+        */
+        if(
+            typeof RS.filterActiveStudents ===
+            "function"
+        ){
+
+            students=
+                await RS.filterActiveStudents(
+                    students,
+                    {
+                        getCode:
+                            function(student){
+                                return student.code;
+                            }
+                    }
+                );
+        }
+
+
         filteredStudents=
             students.slice();
  
@@ -6330,3 +6353,4 @@ loadData();
 }
  
 })();
+
