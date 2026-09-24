@@ -3,7 +3,7 @@
 "use strict";
  
 /* =========================================================
-   HỒ SƠ / CHỢ PHIÊN v4.9L-R3
+   HỒ SƠ / CHỢ PHIÊN v4.9.1L-R3
    CORE CANONICAL ASSETS / MARKET SELF-RECOVERY
  
    GIỮ:
@@ -176,10 +176,10 @@ const CONFIG={
         4,
  
     minProfitDealsPerDay:
-        1,
+        0,
  
     maxProfitDealsPerDay:
-        3,
+        2,
  
     specialMerchants:[
         "gian thuong",
