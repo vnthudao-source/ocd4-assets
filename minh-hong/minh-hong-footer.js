@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1574__=
 const CONFIG={
  
     version:
-        "1.5.8.0",
+        "1.5.8.1",
  
     enabled:
         true,
@@ -4440,20 +4440,37 @@ const MinhHongAssistant=
             });
         }
 
-        function loadSubmissionCsv(force){
-            if(submissionCsvPromise && !force) return submissionCsvPromise;
+        /* v1.5.8.1: lấy bài nộp của ĐÚNG học viên qua Reward Core (Apps Script lọc sẵn, Core tự quay về CSV khi lỗi).
+           Core vốn chỉ dùng các dòng của mã này nên kết quả không đổi; chỉ bớt tải toàn bộ CSV bài nộp.
+           Bộ nhớ theo mã học viên (dữ liệu đã lọc chỉ đúng cho 1 mã).
+           Core chưa có getStudentSubmissionsCsv hoặc lỗi -> tải CSV toàn bộ như v1.5.7.5. */
+        let submissionCsvCode="";
+        function loadSubmissionCsvFull(){
             const sep=CONFIG.csvUrl.indexOf("?")>=0?"&":"?";
             const url=CONFIG.csvUrl+sep+"_mh_sell="+Date.now();
-            submissionCsvPromise=fetchWithTimeout(url,{cache:"no-store",credentials:"omit"})
+            return fetchWithTimeout(url,{cache:"no-store",credentials:"omit"})
                 .then(function(r){
                     if(!r.ok) throw new Error("Không thể tải dữ liệu học viên.");
                     return r.text();
-                })
-                .catch(function(err){
-                    submissionCsvPromise=null;
-                    throw err;
                 });
-            return submissionCsvPromise;
+        }
+        function loadSubmissionCsv(force,code){
+            const c=normalizeCode(code);
+            if(submissionCsvPromise && !force && submissionCsvCode===c) return submissionCsvPromise;
+            const RS=getCore();
+            submissionCsvCode=c;
+            const p=(c && RS && typeof RS.getStudentSubmissionsCsv==="function")
+                ? RS.getStudentSubmissionsCsv(c,Boolean(force)).catch(function(err){
+                    console.warn("[Minh Hồng] Reward Core chưa đọc được bài nộp, dùng CSV:",err && err.message || err);
+                    return loadSubmissionCsvFull();
+                })
+                : loadSubmissionCsvFull();
+            const q=p.catch(function(err){
+                if(submissionCsvPromise===q) submissionCsvPromise=null;
+                throw err;
+            });
+            submissionCsvPromise=q;
+            return q;
         }
 
         function gemLabel(RS,key){
@@ -4517,7 +4534,7 @@ const MinhHongAssistant=
                 status("Đang tải vật phẩm và chính sách thu mua...");
                 try{
                     const RS=await waitCore(12000);
-                    const csv=await loadSubmissionCsv(false);
+                    const csv=await loadSubmissionCsv(false,state.code);
                     const profile=await RS.getStudentRewardProfile(state.code,csv,Boolean(force));
                     const offers=(profile&&profile.minhHong&&Array.isArray(profile.minhHong.offers))
                         ? profile.minhHong.offers
@@ -4610,7 +4627,7 @@ const MinhHongAssistant=
 
                             selling=true; sell.disabled=true; qty.disabled=true; sell.textContent="ĐANG GỬI...";
                             try{
-                                const csv=await loadSubmissionCsv(false);
+                                const csv=await loadSubmissionCsv(false,state.code);
                                 const request=await RS.createMinhHongSaleRequest(state.code,offer.giftName,q,csv);
                                 await RS.submitMinhHongSaleRequest(request);
 
