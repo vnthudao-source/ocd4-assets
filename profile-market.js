@@ -3936,9 +3936,12 @@ async function searchStudent(){
         const results=
             await Promise.all([
  
-                RS.fetchCSV(
-                    RS.CONFIG.studentCsv
-                ),
+                /* v4.9.7: bài nộp của riêng học viên qua Apps Script (lọc sẵn) thay vì tải cả CSV */
+                typeof RS.getStudentSubmissionsCsv === "function"
+                    ? RS.getStudentSubmissionsCsv(code,true)
+                    : RS.fetchCSV(
+                        RS.CONFIG.studentCsv
+                    ),
  
                 RS.loadSharedRewardData(
                     true
@@ -3948,7 +3951,16 @@ async function searchStudent(){
  
                 RS.fetchCSV(
                     CONFIG.studentRegistryCsv
-                )
+                ),
+                /* v4.9.7: kiểm tra trạng thái học viên chạy song song (gom chung 1 yêu cầu Apps Script) */
+                typeof RS.assertStudentActive === "function"
+                    ? RS.assertStudentActive(
+                        code,
+                        {
+                            forceRefresh:true
+                        }
+                    )
+                    : null
             ]);
  
         const studentRows=
@@ -3978,12 +3990,7 @@ async function searchStudent(){
             "function"
         ){
 
-            await RS.assertStudentActive(
-                code,
-                {
-                    forceRefresh:true
-                }
-            );
+            /* v4.9.7: đã kiểm tra song song ở bước tải dữ liệu phía trên. */
 
         }else{
 
@@ -4300,10 +4307,11 @@ async function searchStudent(){
            TÀI SẢN HỌC VIÊN: chỉ lấy từ Core.
            Profile Market không tự tính số dư cuối cùng nữa.
         */
+        /* v4.9.7: dữ liệu chung vừa được làm mới ở bước trên -> không tải lại lần nữa */
         const assetProfile=
             await loadCanonicalStudentProfile(
                 code,
-                true
+                false
             );
  
         applyCanonicalAssets(
