@@ -847,14 +847,14 @@ async function fetchCSVRaw(url){
 
 
 /* =========================================================
-   APPS SCRIPT DATA SOURCE (v4.4.1)
+   APPS SCRIPT DATA SOURCE (v4.4.2)
    Gom các tab cần đọc trong cùng một lượt thành 1 yêu cầu.
    Lỗi -> tự quay về CSV/gviz như cũ.
 ========================================================= */
 let lastDataSource="";
 const apiQueues={};
 /* Tab nặng gửi yêu cầu riêng (chạy song song); Apps Script chậm/lỗi -> tạm dùng CSV 3 phút. */
-const API_HEAVY={QuaTangGVCN:1,PhieuDoi:1,MinhHongGiaoDich:1};
+const API_HEAVY={}; // v4.4.2: máy chủ đã đọc gộp nhanh -> gom mọi tab (quà + học viên) vào 1 yêu cầu
 const API_TIMEOUT_MS=9000;
 let apiPausedUntil=0;
 function apiTargetFor(url){
@@ -874,7 +874,7 @@ function apiTargetFor(url){
     return null;
 }
 function apiSheet(src,name){
-    const group=API_HEAVY[name]?src+":"+name:src;
+    const group=API_HEAVY[name]?src+":"+name:"all";
     let q=apiQueues[group];
     if(!q){
         q=apiQueues[group]={names:new Set()};
@@ -882,16 +882,17 @@ function apiSheet(src,name){
             setTimeout(async function(){
                 delete apiQueues[group];
                 const ac=new AbortController();
-                const timer=setTimeout(function(){ ac.abort(); },API_TIMEOUT_MS);
+                const timer=setTimeout(function(){ ac.abort(); },API_TIMEOUT_MS),t0=Date.now();
                 try{
                     const res=await fetch(
                         CONFIG.appsScriptUrl
-                        +"?src="+encodeURIComponent(src)
-                        +"&sheets="+encodeURIComponent(Array.from(q.names).join(","))
+                        +"?multi="+encodeURIComponent(Array.from(q.names).join(";"))
+                        +"&v=442"
                         +"&_="+Date.now(),
                         {cache:"no-store",credentials:"omit",signal:ac.signal}
                     );
                     const json=JSON.parse(await res.text());
+                    console.info("[Reward Core] Apps Script "+(Date.now()-t0)+"ms:",Array.from(q.names).join(" ; "));
                     if(!json || !json.ok || !json.sheets) throw new Error(json && json.error || "Apps Script trả về lỗi.");
                     resolve(json.sheets);
                 }catch(error){
@@ -902,9 +903,9 @@ function apiSheet(src,name){
             },0);
         });
     }
-    q.names.add(name);
+    q.names.add(src+":"+name);
     return q.promise.then(function(sheets){
-        const rows=sheets[name];
+        const rows=sheets[src+":"+name];
         if(!Array.isArray(rows) || !rows.length) throw new Error("Apps Script thiếu tab "+name+".");
         return rows;
     });
@@ -7866,7 +7867,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.4.1";
+const V4_VERSION="4.4.2";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
