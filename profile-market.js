@@ -69,7 +69,7 @@ function startWhenReady(){
     started=true;
  
     console.log(
-        "[Profile Market v4.9L-R3] Reward Core:",
+        "[Profile Market v4.9.8] Reward Core:",
         RS.version
     );
  
@@ -6754,6 +6754,79 @@ function renderExchangeTicket(gift){
  
  
 /* =========================================================
+   v4.9.8: GHI THẲNG VÀO SHEET QUA APPS SCRIPT (không qua Google Form)
+   - Thành công / đã có sẵn (trùng DEAL)  -> "sent"
+   - Máy chủ trả lỗi rõ ràng (chưa ghi)   -> "notsent"  (dùng Google Form dự phòng)
+   - Mất mạng / quá giờ (không rõ đã ghi) -> "unknown"  (kiểm tra Sheet trước khi gửi Form)
+========================================================= */
+
+async function postAppendItems(items){
+
+    const url=
+        RS.CONFIG &&
+        RS.CONFIG.appsScriptUrl;
+
+    if(!url){
+        return {ok:false,error:"Chưa cấu hình Apps Script."};
+    }
+
+    const ac=new AbortController();
+    const timer=setTimeout(function(){ ac.abort(); },20000);
+
+    try{
+        const res=await fetch(url,{
+            method:"POST",
+            body:JSON.stringify({action:"append",items:items}),
+            headers:{"Content-Type":"text/plain;charset=utf-8"},
+            credentials:"omit",
+            cache:"no-store",
+            signal:ac.signal
+        });
+        return JSON.parse(await res.text());
+    }finally{
+        clearTimeout(timer);
+    }
+}
+
+async function submitExchangeViaApi(gift){
+
+    const row=[
+        "",
+        state.student.name || "",
+        state.student.code,
+        gift.formGiftValue,
+        RS.CONFIG.formConfirmValue
+    ];
+
+    for(let attempt=0;attempt<3;attempt++){
+        try{
+            const t0=Date.now();
+            const json=await postAppendItems([{kind:"exchange",row:row}]);
+            console.info("[Direct Exchange] Apps Script "+(Date.now()-t0)+"ms:",json);
+            if(json && json.ok){
+                const w=json.written && json.written.exchange || 0;
+                const d=json.dup && json.dup.exchange || 0;
+                return (w || d) ? "sent" : "notsent";
+            }
+            if(json && json.busy && attempt<2){
+                await sleep(1500);
+                continue;
+            }
+            return "notsent";
+        }catch(error){
+            console.warn("[Direct Exchange] Apps Script lỗi:",error && error.message || error);
+            if(attempt<1){
+                await sleep(1200);
+                continue;
+            }
+            return "unknown";
+        }
+    }
+    return "notsent";
+}
+
+
+/* =========================================================
    DIRECT GOOGLE FORM
 ========================================================= */
  
@@ -6991,18 +7064,23 @@ async function rebuildStudentFromShared(shared){
 ========================================================= */
  
 async function verifyDirectExchange(
-    selectedGift
+    selectedGift,
+    fast,
+    tries
 ){
  
     for(
         let attempt=0;
-        attempt<CONFIG.verifyTries;
+        attempt<(tries || CONFIG.verifyTries);
         attempt++
     ){
  
-        await sleep(
-            CONFIG.verifyInterval
-        );
+        /* v4.9.8: đã ghi thẳng vào Sheet -> kiểm tra ngay, không chờ */
+        if(!(fast && attempt===0)){
+            await sleep(
+                fast ? 1000 : CONFIG.verifyInterval
+            );
+        }
  
         try{
  
@@ -7135,14 +7213,45 @@ async function confirmExchangeDirect(){
  
     try{
  
-        submitGoogleFormDirect(
-            gift
-        );
- 
-        const result=
-            await verifyDirectExchange(
+        /* v4.9.8: Apps Script ghi thẳng vào PhieuDoi; lỗi thì quay về Google Form */
+        const mode=
+            await submitExchangeViaApi(
                 gift
             );
+
+        let result={success:false};
+
+        if(mode==="sent"){
+
+            result=
+                await verifyDirectExchange(
+                    gift,
+                    true
+                );
+
+        }else{
+
+            if(mode==="unknown"){
+                /* không rõ máy chủ đã ghi chưa -> xem Sheet trước để không bị ghi trùng */
+                result=
+                    await verifyDirectExchange(
+                        gift,
+                        true,
+                        3
+                    ).catch(function(){ return {success:false}; });
+            }
+
+            if(!result.success){
+                submitGoogleFormDirect(
+                    gift
+                );
+
+                result=
+                    await verifyDirectExchange(
+                        gift
+                    );
+            }
+        }
  
         if(
             result.success

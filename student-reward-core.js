@@ -936,6 +936,44 @@ function apiSheet(src,name,code){
         return rows;
     });
 }
+/* v4.4.5: ghi thẳng vào Sheet qua Apps Script (POST action=append).
+   Trả về: "sent" (đã ghi / đã có sẵn), "notsent" (máy chủ báo chưa ghi -> dùng Form dự phòng),
+   "unknown" (mất mạng/quá giờ, không rõ đã ghi chưa -> kiểm tra Sheet trước khi gửi Form). */
+/* v4.4.5: các dòng của 1 học viên trong 1 tab NopBaiLuyenTap (vd TacPhamWeb), lọc sẵn ở máy chủ, trả về CSV */
+function getStudentSheetCsv(name,code){
+    const c=normalizeCode(code);
+    if(!c || !CONFIG.appsScriptUrl || Date.now()<apiPausedUntil) return Promise.reject(new Error("Apps Script tạm tắt."));
+    return apiSheet("students",String(name||""),c).then(rowsToCsv);
+}
+async function apiAppend(kind,row){
+    if(!CONFIG.appsScriptUrl) return "notsent";
+    for(let attempt=0;attempt<3;attempt++){
+        const ac=new AbortController();
+        const timer=setTimeout(function(){ ac.abort(); },20000),t0=Date.now();
+        try{
+            const res=await fetch(CONFIG.appsScriptUrl,{
+                method:"POST",
+                body:JSON.stringify({action:"append",items:[{kind:kind,row:row}]}),
+                headers:{"Content-Type":"text/plain;charset=utf-8"},
+                credentials:"omit",cache:"no-store",signal:ac.signal
+            });
+            const json=JSON.parse(await res.text());
+            console.info("[Reward Core] Ghi thẳng "+kind+" "+(Date.now()-t0)+"ms:",json);
+            if(json && json.ok){
+                return ((json.written&&json.written[kind])||(json.dup&&json.dup[kind]))?"sent":"notsent";
+            }
+            if(json && json.busy && attempt<2){ await new Promise(function(r){ setTimeout(r,1500); }); continue; }
+            return "notsent";
+        }catch(error){
+            console.warn("[Reward Core] Ghi thẳng "+kind+" lỗi:",error && error.message || error);
+            if(attempt<1){ await new Promise(function(r){ setTimeout(r,1200); }); continue; }
+            return "unknown";
+        }finally{
+            clearTimeout(timer);
+        }
+    }
+    return "notsent";
+}
 /* v4.4.3: bài nộp của 1 học viên qua Apps Script (lọc sẵn ở máy chủ) -> nhẹ hơn tải cả CSV */
 const submissionCache=new Map();
 function rowsToCsv(rows){
@@ -7715,6 +7753,10 @@ window.StudentRewardSystem={
 
     getStudentSubmissionsCsv,
 
+    apiAppend,
+
+    getStudentSheetCsv,
+
     fetchRows,
 
     sheetCsvUrl,
@@ -7950,7 +7992,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.4.4";
+const V4_VERSION="4.4.5";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -7973,6 +8015,7 @@ const MH_CONFIG={
 let upgradePromise=null;
 let mhCache=null;
 let mhCacheTime=0;
+const directSales=new Set();
 const sourceRegistry=new Map();
 
 function clean(v){ return String(v===undefined||v===null?"":v).trim(); }
@@ -8297,11 +8340,25 @@ async function installV4(RS){
     };
 
     RS.submitMinhHongSaleRequest=async function(request){
+        /* v4.4.5: Apps Script ghi thẳng vào MinhHongGiaoDich (chống trùng SELL_ID); lỗi thì gửi Form như cũ */
+        const gemName=RS.GEM_TYPES[request.gemType]?RS.GEM_TYPES[request.gemType].displayName:request.gemType;
+        if(typeof RS.apiAppend==="function"){
+            const mode=await RS.apiAppend("mhSale",["",request.sellId,request.code,request.giftName,
+                String(request.quantity),String(request.unitPrice),gemName,MH_CONFIG.confirmValue]);
+            if(mode==="sent"){ mhCache=null; mhCacheTime=0; directSales.add(clean(request.sellId)); return request; }
+            if(mode==="unknown"){
+                mhCache=null; mhCacheTime=0;
+                try{
+                    const data=await loadMinhHongData(true,RS);
+                    if((data.sales||[]).some(x=>clean(x.sellId)===clean(request.sellId))){ directSales.add(clean(request.sellId)); return request; }
+                }catch(error){}
+            }
+        }
         const e=MH_CONFIG.formEntries;
         const payload={};
         payload[e.sellId]=request.sellId; payload[e.code]=request.code; payload[e.giftName]=request.giftName;
         payload[e.quantity]=String(request.quantity); payload[e.price]=String(request.unitPrice);
-        payload[e.gemType]=RS.GEM_TYPES[request.gemType]?RS.GEM_TYPES[request.gemType].displayName:request.gemType;
+        payload[e.gemType]=gemName;
         payload[e.confirm]=MH_CONFIG.confirmValue;
         await submitForm(payload); return request;
     };
@@ -8310,7 +8367,7 @@ async function installV4(RS){
         const wanted=clean(sellId);
         const max=Math.max(1,Number(attempts||MH_CONFIG.pollAttempts));
         for(let i=0;i<max;i++){
-            if(i>0) await sleep(MH_CONFIG.pollDelay);
+            if(i>0) await sleep(directSales.has(wanted)?1000:MH_CONFIG.pollDelay);
             mhCache=null; mhCacheTime=0;
             try{
                 const data=await loadMinhHongData(true,RS);
