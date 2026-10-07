@@ -847,7 +847,7 @@ async function fetchCSVRaw(url){
 
 
 /* =========================================================
-   APPS SCRIPT DATA SOURCE (v4.4.2)
+   APPS SCRIPT DATA SOURCE (v4.4.3)
    Gom các tab cần đọc trong cùng một lượt thành 1 yêu cầu.
    Lỗi -> tự quay về CSV/gviz như cũ.
 ========================================================= */
@@ -873,11 +873,13 @@ function apiTargetFor(url){
     if(url===CONFIG.studentRegistryCsv) return {src:"students",name:"HocVien"};
     return null;
 }
-function apiSheet(src,name){
-    const group=API_HEAVY[name]?src+":"+name:"all";
+function apiSheet(src,name,code){
+    code=code?String(code):"";
+    let group=API_HEAVY[name]?src+":"+name:"all";
     let q=apiQueues[group];
+    if(q && code && q.code && q.code!==code){ group+="|"+code; q=apiQueues[group]; }
     if(!q){
-        q=apiQueues[group]={names:new Set()};
+        q=apiQueues[group]={names:new Set(),code:""};
         q.promise=new Promise(function(resolve,reject){
             setTimeout(async function(){
                 delete apiQueues[group];
@@ -887,7 +889,7 @@ function apiSheet(src,name){
                     const res=await fetch(
                         CONFIG.appsScriptUrl
                         +"?multi="+encodeURIComponent(Array.from(q.names).join(";"))
-                        +"&v=442"
+                        +(q.code?"&code="+encodeURIComponent(q.code):"")+"&v=443"
                         +"&_="+Date.now(),
                         {cache:"no-store",credentials:"omit",signal:ac.signal}
                     );
@@ -903,12 +905,48 @@ function apiSheet(src,name){
             },0);
         });
     }
-    q.names.add(src+":"+name);
+    if(code) q.code=code;
+    const key=src+":"+name+(code?"!":"");
+    q.names.add(key);
     return q.promise.then(function(sheets){
-        const rows=sheets[src+":"+name];
+        const rows=sheets[key];
         if(!Array.isArray(rows) || !rows.length) throw new Error("Apps Script thiếu tab "+name+".");
         return rows;
     });
+}
+/* v4.4.3: bài nộp của 1 học viên qua Apps Script (lọc sẵn ở máy chủ) -> nhẹ hơn tải cả CSV */
+const submissionCache=new Map();
+function rowsToCsv(rows){
+    return rows.map(function(r){
+        return r.map(function(v){
+            v=v==null?"":String(v);
+            return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;
+        }).join(",");
+    }).join("\n");
+}
+function getStudentSubmissionsCsv(code,force){
+    const c=normalizeCode(code);
+    if(!c) return fetchCSV(CONFIG.studentCsv);
+    const hit=submissionCache.get(c);
+    if(hit && (hit.pending || (!force && Date.now()-hit.at<15000))) return hit.p;
+    const e={at:Date.now(),pending:true};
+    e.p=(async function(){
+        if(CONFIG.appsScriptUrl && Date.now()>=apiPausedUntil){
+            try{
+                const rows=await apiSheet("students","Form Responses 1",c);
+                lastDataSource="Apps Script ("+new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.timeZone})+")";
+                return rowsToCsv(rows);
+            }catch(error){
+                console.warn("[Reward Core] Apps Script lỗi (bài nộp), dùng CSV:",error && error.message || error);
+                lastDataSource="CSV dự phòng (Apps Script lỗi)";
+                if(error && (error.name==="AbortError" || error.name==="TypeError")) apiPausedUntil=Date.now()+180000;
+            }
+        }
+        return fetchCSV(CONFIG.studentCsv);
+    })();
+    submissionCache.set(c,e);
+    e.p.then(function(){ e.pending=false; e.at=Date.now(); },function(){ if(submissionCache.get(c)===e) submissionCache.delete(c); });
+    return e.p;
 }
 async function fetchRows(url){
     const apiTarget=apiTargetFor(url);
@@ -1134,7 +1172,17 @@ function mapStudentRegistryRows(rows){
 }
 
 
-async function loadStudentRegistry(forceRefresh){
+let registryTask=null;
+function loadStudentRegistry(forceRefresh){
+    if(registryTask && (!forceRefresh || registryTask.force)) return registryTask.p;
+    const t={force:Boolean(forceRefresh)};
+    t.p=loadStudentRegistryRaw(forceRefresh);
+    registryTask=t;
+    const done=function(){ if(registryTask===t) registryTask=null; };
+    t.p.then(done,done);
+    return t.p;
+}
+async function loadStudentRegistryRaw(forceRefresh){
 
     const now=Date.now();
 
@@ -6863,7 +6911,18 @@ let sharedCacheTime=0;
    + QuaTangGVCN
 ========================================================= */
 
-async function loadSharedRewardData(
+/* v4.4.3: gộp các lượt tải trùng nhau đang chạy */
+let sharedTask=null;
+function loadSharedRewardData(forceRefresh){
+    if(sharedTask && (!forceRefresh || sharedTask.force)) return sharedTask.p;
+    const t={force:Boolean(forceRefresh)};
+    t.p=loadSharedRewardDataRaw(forceRefresh);
+    sharedTask=t;
+    const done=function(){ if(sharedTask===t) sharedTask=null; };
+    t.p.then(done,done);
+    return t.p;
+}
+async function loadSharedRewardDataRaw(
     forceRefresh
 ){
 
@@ -7632,6 +7691,8 @@ window.StudentRewardSystem={
 
     getDataSource:function(){ return lastDataSource; },
 
+    getStudentSubmissionsCsv,
+
     fetchRows,
 
     sheetCsvUrl,
@@ -7867,7 +7928,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.4.2";
+const V4_VERSION="4.4.3";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -7986,7 +8047,17 @@ function mapSales(rows,RS){
     return out;
 }
 
-async function loadMinhHongData(force,RS){
+let mhTask=null;
+function loadMinhHongData(force,RS){
+    if(mhTask && (!force || mhTask.force)) return mhTask.p;
+    const t={force:Boolean(force)};
+    t.p=loadMinhHongDataRaw(force,RS);
+    mhTask=t;
+    const done=function(){ if(mhTask===t) mhTask=null; };
+    t.p.then(done,done);
+    return t.p;
+}
+async function loadMinhHongDataRaw(force,RS){
     if(!force && mhCache && Date.now()-mhCacheTime<MH_CONFIG.cacheTtl) return mhCache;
     const results=await Promise.all([
         RS.fetchRows(RS.sheetNameCsvUrl(MH_CONFIG.policySheetName)),
@@ -8127,15 +8198,31 @@ async function installV4(RS){
         return shared;
     };
 
+    /* v4.4.3: gọi sớm khi đã biết mã học viên -> tải sẵn danh bạ, dữ liệu chung, Minh Hồng, bài nộp trong 1 yêu cầu */
+    RS.prefetchStudent=function(code){
+        const c=RS.normalizeCode(code);
+        const tasks=[RS.loadSharedRewardData(false)];
+        if(c){
+            if(RS.getStudentAccess) tasks.push(RS.getStudentAccess(c));
+            if(RS.getStudentSubmissionsCsv) tasks.push(RS.getStudentSubmissionsCsv(c));
+        }
+        return Promise.allSettled(tasks);
+    };
+
     RS.getStudentRewardProfile=async function(code,submissionCsvText,force,accessOptions){
         if(force){
-            try{ await legacy.loadSharedRewardData(true); }
-            catch(e){ console.warn("[StudentRewardSystem v4] Chưa làm mới được dữ liệu chung:",e); }
+            /* v4.4.3: dữ liệu chung được tải song song bên dưới */
+
         }
+        /* v4.4.3: kiểm tra học viên + dữ liệu chung + Minh Hồng chạy CÙNG LÚC (gom 1 yêu cầu Apps Script) */
+        const sharedP=legacy.loadSharedRewardData(Boolean(force)).catch(function(e){ console.warn("[StudentRewardSystem v4] Chưa làm mới được dữ liệu chung:",e); });
+        const mhP=loadMinhHongData(Boolean(force),RS);
+        mhP.catch(function(){});
         await RS.assertStudentActive(code,accessOptions);
+        await sharedP;
         const results=await Promise.all([
             legacy.getStudentRewardProfile(code,submissionCsvText),
-            loadMinhHongData(Boolean(force),RS)
+            mhP
         ]);
         const profile=results[0], mh=results[1];
         const studentCode=RS.normalizeCode(code);
