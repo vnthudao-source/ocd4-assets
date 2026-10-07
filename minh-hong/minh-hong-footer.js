@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1574__=
 const CONFIG={
  
     version:
-        "1.5.8.1",
+        "1.5.8.2",
  
     enabled:
         true,
@@ -4473,15 +4473,50 @@ const MinhHongAssistant=
             return q;
         }
 
+        /* v1.5.8.2: ảnh vật phẩm = QuaTang (theo tên) -> ảnh của vật phẩm đang giữ -> "" (hiện 🎁).
+           Link Drive được đổi sang ảnh thu nhỏ như Chợ phiên. */
+        function sellItemImage(RS,giftMap,giftName,ownedItem){
+            function norm(v){
+                try{ return RS.normalizeText(String(v||"")); }catch(e){ return String(v||"").trim().toLowerCase(); }
+            }
+            function pickImage(gift){ return gift&&(gift.image||gift.icon)||""; }
+            let raw="";
+            if(giftMap){
+                const key=norm(giftName);
+                raw=pickImage(giftMap[key])||pickImage(giftMap[key.replace(/^goi\s+/,"")])||pickImage(giftMap["goi "+key]);
+            }
+            if(!raw&&ownedItem) raw=ownedItem.image||(ownedItem.gift&&ownedItem.gift.image)||"";
+            if(!raw) return "";
+            try{ return typeof RS.convertDriveImageUrl==="function"?RS.convertDriveImageUrl(raw,160):raw; }catch(e){ return raw; }
+        }
+        /* Biểu tượng ngọc (ảnh từ Reward Core). Tên ngọc nằm ở alt/title để đọc màn hình và nhấn giữ. */
+        function gemIcon(RS,key,extraClass){
+            const info=RS.GEM_TYPES&&RS.GEM_TYPES[key];
+            const label=gemLabel(RS,key);
+            if(info&&info.image&&typeof RS.convertDriveImageUrl==="function"){
+                const img=document.createElement("img");
+                img.className="mh-sell-gem"+(extraClass?" "+extraClass:"");
+                img.src=RS.convertDriveImageUrl(info.image,96);
+                img.alt=label; img.title=label;
+                img.loading="lazy"; img.decoding="async";
+                img.onerror=function(){
+                    const t=makeElement("span","",label);
+                    if(img.parentNode) img.parentNode.replaceChild(t,img);
+                };
+                return img;
+            }
+            return makeElement("span","",label);
+        }
+
         function gemLabel(RS,key){
             const info=RS.GEM_TYPES&&RS.GEM_TYPES[key];
             return info&&info.displayName?info.displayName:key;
         }
 
         function injectStyle(){
-            if(document.getElementById("mhSellStyle1572")) return;
+            if(document.getElementById("mhSellStyle1582")) return;
             const style=document.createElement("style");
-            style.id="mhSellStyle1572";
+            style.id="mhSellStyle1582";
             style.textContent=`
                 .mh-sell-wrap{margin-top:10px}
                 .mh-sell-toggle{width:100%;border:1px solid rgba(121,83,55,.25);border-radius:12px;padding:11px 12px;background:#fffaf1;color:#5d4030;font-weight:700;cursor:pointer;text-align:left}
@@ -4498,6 +4533,30 @@ const MinhHongAssistant=
                 .mh-sell-qty{width:72px;min-width:72px;border:1px solid rgba(121,83,55,.25);border-radius:9px;padding:8px;background:#fff}
                 .mh-sell-btn{flex:1;border:0;border-radius:9px;padding:9px 10px;background:#765344;color:#fff;font-weight:700;cursor:pointer}
                 .mh-sell-btn:disabled,.mh-sell-qty:disabled{opacity:.5;cursor:not-allowed}
+                /* v1.5.8.2: thẻ vật phẩm */
+                .mh-sell-item.mh-sell-card{padding:10px;margin-top:8px;border:1px solid rgba(121,83,55,.16);border-top:1px solid rgba(121,83,55,.16);border-radius:12px;background:#fff}
+                .mh-sell-item.mh-sell-card:first-of-type{border-top:1px solid rgba(121,83,55,.16)}
+                .mh-sell-head{display:flex;align-items:center;gap:10px}
+                .mh-sell-thumb{width:48px;height:48px;flex:0 0 48px;border-radius:10px;object-fit:contain;background:#fffaf1;border:1px solid rgba(121,83,55,.14)}
+                .mh-sell-thumb-fallback{width:48px;height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#fffaf1;border:1px solid rgba(121,83,55,.14);font-size:22px}
+                .mh-sell-info{flex:1;min-width:0}
+                .mh-sell-title{font-weight:700;color:#4c3326;line-height:1.3;overflow-wrap:anywhere}
+                .mh-sell-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+                .mh-sell-chip{font-size:11px;line-height:1;padding:4px 7px;border-radius:999px;background:rgba(121,83,55,.08);color:#6a4a3a;white-space:nowrap}
+                .mh-sell-chip b{font-weight:800;color:#4c3326}
+                .mh-sell-price{flex:0 0 auto;text-align:right;line-height:1.1}
+                .mh-sell-price-main{display:flex;align-items:center;justify-content:flex-end;gap:4px;font-size:20px;font-weight:800;color:#765344}
+                .mh-sell-price-unit{font-size:10px;opacity:.6;margin-top:2px}
+                .mh-sell-gem{width:20px;height:20px;object-fit:contain;vertical-align:middle;flex:0 0 auto}
+                .mh-sell-gem-sm{width:17px;height:17px}
+                .mh-sell-actions{display:flex;gap:8px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px dashed rgba(121,83,55,.18)}
+                .mh-sell-stepper{display:flex;align-items:center;border:1px solid rgba(121,83,55,.25);border-radius:10px;overflow:hidden;background:#fffaf1;flex:0 0 auto}
+                .mh-sell-step{width:34px;height:36px;border:0;background:transparent;color:#765344;font-size:18px;font-weight:800;cursor:pointer;padding:0}
+                .mh-sell-step:disabled{opacity:.35;cursor:not-allowed}
+                .mh-sell-stepper .mh-sell-qty{width:40px;min-width:40px;height:36px;border:0;border-left:1px solid rgba(121,83,55,.15);border-right:1px solid rgba(121,83,55,.15);border-radius:0;padding:0;text-align:center;font-weight:700;background:#fff;-moz-appearance:textfield;appearance:textfield}
+                .mh-sell-stepper .mh-sell-qty::-webkit-outer-spin-button,.mh-sell-stepper .mh-sell-qty::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+                .mh-sell-btn{display:flex;align-items:center;justify-content:center;gap:5px;min-height:38px;border-radius:10px}
+                .mh-sell-btn .mh-sell-gem{width:18px;height:18px}
             `;
             document.head.appendChild(style);
         }
@@ -4553,49 +4612,116 @@ const MinhHongAssistant=
                         return;
                     }
 
+                    /* v1.5.8.2: ảnh vật phẩm tra theo tên trong QuaTang (Reward Core đã tải sẵn, không thêm request) */
+                    let giftMap=null;
+                    try{
+                        const shared=await RS.loadSharedRewardData(false);
+                        giftMap=shared&&shared.giftMap||null;
+                    }catch(error){}
+                    if(!alive()) return;
+
                     available.forEach(function(offer){
-                        const item=makeElement("div","mh-sell-item");
-                        const nameRow=makeElement("div","mh-sell-name");
+                        const item=makeElement("div","mh-sell-item mh-sell-card");
                         const ownedItems=(profile&&Array.isArray(profile.ownedItems))?profile.ownedItems:[];
                         const wanted=String(offer.giftName||"").trim().toLowerCase();
                         const ownedItem=ownedItems.find(function(x){
                             const n=String(x&&(x.giftName||x.name||(x.gift&&x.gift.name))||"").trim().toLowerCase();
                             return n===wanted || n.replace(/^gói\s+/i,"")===wanted.replace(/^gói\s+/i,"");
                         });
-                        const imageUrl=ownedItem&&(
-                            ownedItem.image ||
-                            (ownedItem.gift&&ownedItem.gift.image)
-                        );
+                        const imageUrl=sellItemImage(RS,giftMap,offer.giftName,ownedItem);
+                        const owned=Number(offer.ownedQuantity||offer.quantity||0);
+                        const max=Math.max(1,Math.floor(Number(offer.maxQuantity||1)));
+                        const price=Number(offer.price||0);
+
+                        const head=makeElement("div","mh-sell-head");
                         if(imageUrl){
-                            const icon=document.createElement("img");
-                            icon.className="mh-sell-item-icon";
-                            icon.src=imageUrl;
-                            icon.alt=offer.giftName||"Vật phẩm";
-                            icon.loading="lazy";
-                            icon.decoding="async";
-                            icon.onerror=function(){
-                                const fallback=makeElement("span","mh-sell-item-icon-fallback",ICONS.gift);
-                                if(icon.parentNode) icon.parentNode.replaceChild(fallback,icon);
+                            const thumb=document.createElement("img");
+                            thumb.className="mh-sell-thumb";
+                            thumb.src=imageUrl;
+                            thumb.alt=offer.giftName||"Vật phẩm";
+                            thumb.loading="lazy";
+                            thumb.decoding="async";
+                            thumb.onerror=function(){
+                                const fallback=makeElement("span","mh-sell-thumb-fallback",ICONS.gift);
+                                if(thumb.parentNode) thumb.parentNode.replaceChild(fallback,thumb);
                             };
-                            nameRow.appendChild(icon);
+                            head.appendChild(thumb);
                         }else{
-                            nameRow.appendChild(makeElement("span","mh-sell-item-icon-fallback",ICONS.gift));
+                            head.appendChild(makeElement("span","mh-sell-thumb-fallback",ICONS.gift));
                         }
-                        nameRow.appendChild(makeElement("span","",offer.giftName||"Vật phẩm"));
-                        item.appendChild(nameRow);
-                        item.appendChild(makeElement("div","mh-sell-meta",
-                            "Đang có: "+Number(offer.ownedQuantity||offer.quantity||0)+
-                            " / Có thể bán: "+Number(offer.maxQuantity||0)+
-                            " / Giá: "+Number(offer.price||0)+" "+gemLabel(RS,offer.gemType)+" / vật phẩm"));
+
+                        const info=makeElement("div","mh-sell-info");
+                        info.appendChild(makeElement("div","mh-sell-title",offer.giftName||"Vật phẩm"));
+                        const chips=makeElement("div","mh-sell-chips");
+                        const chipOwned=makeElement("span","mh-sell-chip","Đang có ");
+                        chipOwned.appendChild(makeElement("b","",String(owned)));
+                        const chipMax=makeElement("span","mh-sell-chip","Bán được ");
+                        chipMax.appendChild(makeElement("b","",String(Number(offer.maxQuantity||0))));
+                        chips.appendChild(chipOwned); chips.appendChild(chipMax);
+                        info.appendChild(chips);
+                        head.appendChild(info);
+
+                        const priceBox=makeElement("div","mh-sell-price");
+                        const priceMain=makeElement("div","mh-sell-price-main",String(price));
+                        priceMain.appendChild(gemIcon(RS,offer.gemType,""));
+                        priceBox.appendChild(priceMain);
+                        priceBox.appendChild(makeElement("div","mh-sell-price-unit","/ cái"));
+                        priceBox.title=price+" "+gemLabel(RS,offer.gemType)+" / vật phẩm";
+                        head.appendChild(priceBox);
+                        item.appendChild(head);
 
                         const actions=makeElement("div","mh-sell-actions");
                         const qty=document.createElement("input");
                         qty.type="number"; qty.className="mh-sell-qty"; qty.min="1";
-                        qty.max=String(Math.max(1,Number(offer.maxQuantity||1)));
+                        qty.max=String(max);
                         qty.step="1"; qty.value="1"; qty.setAttribute("aria-label","Số lượng bán");
+                        qty.inputMode="numeric";
 
                         const sell=makeElement("button","mh-sell-btn","BÁN VẬT PHẨM");
                         sell.type="button";
+
+                        const minus=makeElement("button","mh-sell-step","−");
+                        minus.type="button"; minus.setAttribute("aria-label","Giảm số lượng");
+                        const plus=makeElement("button","mh-sell-step","+");
+                        plus.type="button"; plus.setAttribute("aria-label","Tăng số lượng");
+                        const stepper=makeElement("div","mh-sell-stepper");
+                        stepper.appendChild(minus); stepper.appendChild(qty); stepper.appendChild(plus);
+
+                        function currentQty(){
+                            const q=Math.floor(Number(qty.value||0));
+                            return Number.isFinite(q)?q:0;
+                        }
+                        /* Nhãn nút khi rảnh: "BÁN · nhận N [ngọc]". Các trạng thái khác (ĐANG GỬI..., KIỂM TRA LẠI) giữ chữ như cũ. */
+                        function setIdle(){
+                            const q=Math.min(max,Math.max(1,currentQty()||1));
+                            clearNode(sell);
+                            sell.appendChild(document.createTextNode("BÁN · nhận "+(q*price)));
+                            sell.appendChild(gemIcon(RS,offer.gemType,""));
+                            sell.setAttribute("aria-label","Bán "+q+" "+(offer.giftName||"vật phẩm")+", nhận "+(q*price)+" "+gemLabel(RS,offer.gemType));
+                        }
+                        function syncStepper(){
+                            const q=currentQty();
+                            minus.disabled=qty.disabled||q<=1;
+                            plus.disabled=qty.disabled||q>=max;
+                        }
+                        function step(delta){
+                            if(qty.disabled) return;
+                            qty.value=String(Math.min(max,Math.max(1,(currentQty()||1)+delta)));
+                            syncStepper();
+                            if(!sell.disabled&&!retryRequest) setIdle();
+                        }
+                        minus.addEventListener("click",function(){ step(-1); });
+                        plus.addEventListener("click",function(){ step(1); });
+                        qty.addEventListener("input",function(){
+                            syncStepper();
+                            if(!sell.disabled&&!retryRequest&&currentQty()>=1&&currentQty()<=max) setIdle();
+                        });
+                        /* nút −/+ tự khoá theo ô số lượng (code bán bật/tắt qty.disabled) */
+                        try{
+                            new MutationObserver(syncStepper).observe(qty,{attributes:true,attributeFilter:["disabled"]});
+                        }catch(error){}
+                        setIdle();
+                        syncStepper();
                         sell.addEventListener("click",async function(){
                             if(selling||pendingSale) return;
                             if(retryRequest){
@@ -4670,12 +4796,12 @@ const MinhHongAssistant=
                                 });
                             }catch(err){
                                 selling=false; pendingSale=null;
-                                sell.disabled=false; qty.disabled=false; sell.textContent="BÁN VẬT PHẨM";
+                                sell.disabled=false; qty.disabled=false; setIdle();
                                 window.alert(err&&err.message?err.message:"Không thể gửi giao dịch. Vui lòng thử lại.");
                             }
                         });
 
-                        actions.appendChild(qty); actions.appendChild(sell);
+                        actions.appendChild(stepper); actions.appendChild(sell);
                         item.appendChild(actions); box.appendChild(item);
                     });
                     loaded=true;
