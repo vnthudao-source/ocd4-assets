@@ -1,15 +1,16 @@
 /* =========================================================
-   NGŨ GIÁC CHỈ SỐ v1.0.0 – Trang Tra cứu hồ sơ / Chợ phiên
+   NGŨ GIÁC CHỈ SỐ v1.1.0 – Trang Tra cứu hồ sơ / Chợ phiên
    ---------------------------------------------------------
    - Dùng đúng danh sách bài nộp mà trang đã tải (analysis.works,
      đã loại bài bị xoá) -> không gọi thêm Sheet / Apps Script.
    - 5 chỉ số thang 10, tối thiểu 1:
        Học lực   : điểm TB mọi bài đã chấm
        Dụng bút  : điểm TB các bài có mô tả "Dụng bút"
-       Thức thế  : điểm TB các bài có mô tả "Thức thế" hoặc "TT"
+       Thức thế  : điểm TB các bài có mô tả "Thức thế"
        Khoả thúc : điểm TB các bài có mô tả "Khoả thúc"
        Kiên trì  : chuỗi ngày nộp bài liên tiếp dài nhất trong 30 ngày gần nhất / 30 × 10
-     Dưới 10 bài (đã chấm, đúng mô tả với 4 chỉ số điểm; tổng số bài với Kiên trì) -> 1.
+     Dưới 10 bài -> mặc định: Dụng bút / Thức thế / Khoả thúc = 3 (bài đúng mô tả đã chấm);
+     Học lực = 1 (bài đã chấm); Kiên trì = 1 (tổng số bài).
    - Banner là nút: bấm để mở / đóng phần "Hồ sơ phân tích cá nhân" (.insight-shell).
    Trang gọi: OCDPentagon.loading(mã) / render(analysis) / fail() / hide().
 ========================================================= */
@@ -18,11 +19,12 @@
 if(window.OCDPentagon && window.OCDPentagon.version) return;
 
 const CONFIG={
-    version:"1.0.0",
+    version:"1.1.0",
     timeZone:"Asia/Ho_Chi_Minh",
     minWorks:10,          // dưới số bài này -> chỉ số = 1
     streakWindowDays:30,  // Kiên trì: xét 30 ngày gần nhất
     floor:1,
+    skillDefault:3,       // v1.1.0: Dụng bút / Thức thế / Khoả thúc chưa đủ bài -> 3
     max:10,
     sectionId:"studentInsightSection",
     shellSelector:".insight-shell"
@@ -40,7 +42,7 @@ const AXES=[
 /* Nhận diện mô tả bài (đã bỏ dấu, chữ thường) */
 const MATCHERS={
     dungBut: [/dung\s*but/],
-    thucThe: [/thuc\s*the/, /(^|[^a-z0-9])tt([^a-z0-9]|$)/],
+    thucThe: [/thuc\s*the/],
     khoaThuc:[/khoa\s*thuc/]
 };
 
@@ -109,15 +111,15 @@ function compute(works,nowMs){
             if(MATCHERS[k].some(function(re){ return re.test(d); })) byKey[k].push(s);
         });
     });
-    function avgOrFloor(list){
-        return list.length>=CONFIG.minWorks ? clamp(round1(mean(list))) : CONFIG.floor;
+    function avgOrDefault(list,fallback){
+        return list.length>=CONFIG.minWorks ? clamp(round1(mean(list))) : fallback;
     }
     const streak=streakInWindow(works,nowMs);
     const values={
-        hocLuc: avgOrFloor(graded),
-        dungBut: avgOrFloor(byKey.dungBut),
-        thucThe: avgOrFloor(byKey.thucThe),
-        khoaThuc: avgOrFloor(byKey.khoaThuc),
+        hocLuc: avgOrDefault(graded,CONFIG.floor),
+        dungBut: avgOrDefault(byKey.dungBut,CONFIG.skillDefault),
+        thucThe: avgOrDefault(byKey.thucThe,CONFIG.skillDefault),
+        khoaThuc: avgOrDefault(byKey.khoaThuc,CONFIG.skillDefault),
         kienTri: works.length>=CONFIG.minWorks ? clamp(round1(streak/CONFIG.streakWindowDays*10)) : CONFIG.floor
     };
     return {
@@ -129,9 +131,9 @@ function compute(works,nowMs){
 
 /* ===================== GIAO DIỆN ===================== */
 function injectStyle(){
-    if(document.getElementById("ocdPentagonStyle100")) return;
+    if(document.getElementById("ocdPentagonStyle110")) return;
     const st=document.createElement("style");
-    st.id="ocdPentagonStyle100";
+    st.id="ocdPentagonStyle110";
     st.textContent=`
 #ocdPentagon{margin:0 0 14px}
 .pg-card{display:block;width:100%;text-align:left;cursor:pointer;font:inherit;color:#332b26;background:linear-gradient(160deg,#fffdf8 0%,#fbf1e1 100%);border:1px solid #eadfce;border-radius:22px;box-shadow:0 10px 30px rgba(72,48,30,.10);padding:18px 18px 14px;-webkit-tap-highlight-color:transparent}
@@ -224,6 +226,15 @@ function drawPentagon(values){
 
 let mount=null,shell=null,open=false,lastCode="";
 
+/* v1.1.0: tên học viên lấy từ thẻ hồ sơ trang đã hiện (#studentProfileName); không có thì "bạn" */
+function studentName(code){
+    try{
+        const n=clean((document.getElementById("studentProfileName")||{}).textContent);
+        if(n && n!=="-" && n.toUpperCase()!==clean(code).toUpperCase()) return n;
+    }catch(e){}
+    return "bạn";
+}
+
 function ensureMount(){
     const section=document.getElementById(CONFIG.sectionId);
     if(!section) return null;
@@ -267,7 +278,7 @@ function build(code,result){
     const head=document.createElement("div"); head.className="pg-head";
     const left=document.createElement("div");
     const k=document.createElement("div"); k.className="pg-kicker"; k.textContent="Ngũ giác chỉ số"+(code?" · "+code:"");
-    const h=document.createElement("div"); h.className="pg-title"; h.textContent=result?"Năng lực của bạn":"Đang tính chỉ số...";
+    const h=document.createElement("div"); h.className="pg-title"; h.textContent=result?"Năng lực của "+studentName(code):"Đang tính chỉ số...";
     left.appendChild(k); left.appendChild(h); head.appendChild(left);
     if(result){
         const total=document.createElement("div"); total.className="pg-total";
@@ -300,8 +311,8 @@ function build(code,result){
         card.appendChild(body);
 
         const hint=document.createElement("div"); hint.className="pg-hint";
-        hint.innerHTML="<b>Tăng chỉ số:</b> khi nộp bài, ghi vào mô tả <b>“Dụng bút”</b>, <b>“Thức thế”</b> (hoặc <b>TT</b>) hay <b>“Khoả thúc”</b> để thầy chú ý chấm điểm phần đó. "+
-            "<b>Học lực</b> và <b>Kiên trì</b> được tính tự động. Mỗi chỉ số cần ít nhất "+CONFIG.minWorks+" bài, chưa đủ sẽ để mức 1.";
+        hint.innerHTML="<b>Tăng chỉ số:</b> khi nộp bài, ghi vào mô tả <b>“Dụng bút”</b>, <b>“Thức thế”</b> hay <b>“Khoả thúc”</b> để thầy chú ý chấm điểm phần đó. "+
+            "<b>Học lực</b> và <b>Kiên trì</b> được tính tự động.";
         card.appendChild(hint);
     }else{
         const l=document.createElement("div"); l.className="pg-loading"; l.textContent="Đang đọc bài nộp của bạn...";
