@@ -6788,7 +6788,18 @@ async function postAppendItems(items){
     }
 }
 
+/* v4.9.9: Code.gs chưa nhận kind "exchange" -> nhớ 1 giờ, gửi thẳng Google Form, không gọi Apps Script thừa */
+const EXCHANGE_KIND_KEY="srcApiNoKind_v447";
+function exchangeKindBlocked(){
+    try{ const m=JSON.parse(window.localStorage.getItem(EXCHANGE_KIND_KEY)||"{}"); return Date.now()<Number(m.exchange||0); }catch(e){ return false; }
+}
+function blockExchangeKind(){
+    try{ const m=JSON.parse(window.localStorage.getItem(EXCHANGE_KIND_KEY)||"{}"); m.exchange=Date.now()+3600000; window.localStorage.setItem(EXCHANGE_KIND_KEY,JSON.stringify(m)); }catch(e){}
+}
+
 async function submitExchangeViaApi(gift){
+
+    if(exchangeKindBlocked()) return "notsent";
 
     const row=[
         "",
@@ -6807,6 +6818,10 @@ async function submitExchangeViaApi(gift){
                 const w=json.written && json.written.exchange || 0;
                 const d=json.dup && json.dup.exchange || 0;
                 return (w || d) ? "sent" : "notsent";
+            }
+            if(json && json.ok===false && /lo[aạ]i d[uữ] li[eệ]u ghi kh[oô]ng h[oợ]p l[eệ]/i.test(String(json.error||""))){
+                blockExchangeKind();
+                return "notsent";
             }
             if(json && json.busy && attempt<2){
                 await sleep(1500);

@@ -1020,8 +1020,22 @@ function getStudentSheetCsv(name,code){
         );
     });
 }
+/* v4.4.7: máy chủ chưa nhận loại dữ liệu này (Code.gs cũ trả "Loại dữ liệu ghi không hợp lệ")
+   -> nhớ 1 giờ trên máy học viên, các lần sau gửi thẳng Google Form, không gọi Apps Script thừa. */
+const API_KIND_KEY="srcApiNoKind_v447";
+const API_KIND_TTL=3600000;
+function apiKindBlocked(kind){
+    try{ const m=JSON.parse(window.localStorage.getItem(API_KIND_KEY)||"{}"); return Date.now()<Number(m[kind]||0); }catch(e){ return false; }
+}
+function blockApiKind(kind){
+    try{ const m=JSON.parse(window.localStorage.getItem(API_KIND_KEY)||"{}"); m[kind]=Date.now()+API_KIND_TTL; window.localStorage.setItem(API_KIND_KEY,JSON.stringify(m)); }catch(e){}
+}
+function isUnsupportedKindReply(json){
+    return !!json && json.ok===false && /lo[aạ]i d[uữ] li[eệ]u ghi kh[oô]ng h[oợ]p l[eệ]/i.test(String(json.error||""));
+}
 async function apiAppend(kind,row){
     if(!CONFIG.appsScriptUrl) return "notsent";
+    if(apiKindBlocked(kind)) return "notsent";
     for(let attempt=0;attempt<3;attempt++){
         const ac=new AbortController();
         const timer=setTimeout(function(){ ac.abort(); },20000),t0=Date.now();
@@ -1037,7 +1051,8 @@ async function apiAppend(kind,row){
             if(json && json.ok){
                 return ((json.written&&json.written[kind])||(json.dup&&json.dup[kind]))?"sent":"notsent";
             }
-            if(json && json.busy && attempt<2){ await new Promise(function(r){ setTimeout(r,1500); }); continue; }
+            if(isUnsupportedKindReply(json)){ blockApiKind(kind); return "notsent"; }
+            if(json && (json.busy || /đang bận/i.test(String(json.error||""))) && attempt<2){ await new Promise(function(r){ setTimeout(r,1500); }); continue; }
             return "notsent";
         }catch(error){
             console.warn("[Reward Core] Ghi thẳng "+kind+" lỗi:",error && error.message || error);
@@ -8059,7 +8074,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.4.6";
+const V4_VERSION="4.4.7";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
