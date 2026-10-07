@@ -847,12 +847,16 @@ async function fetchCSVRaw(url){
 
 
 /* =========================================================
-   APPS SCRIPT DATA SOURCE (v4.4.0)
+   APPS SCRIPT DATA SOURCE (v4.4.1)
    Gom các tab cần đọc trong cùng một lượt thành 1 yêu cầu.
    Lỗi -> tự quay về CSV/gviz như cũ.
 ========================================================= */
 let lastDataSource="";
 const apiQueues={};
+/* Tab nặng gửi yêu cầu riêng (chạy song song); Apps Script chậm/lỗi -> tạm dùng CSV 3 phút. */
+const API_HEAVY={QuaTangGVCN:1,PhieuDoi:1,MinhHongGiaoDich:1};
+const API_TIMEOUT_MS=9000;
+let apiPausedUntil=0;
 function apiTargetFor(url){
     if(!CONFIG.appsScriptUrl) return null;
     url=String(url||"");
@@ -870,14 +874,15 @@ function apiTargetFor(url){
     return null;
 }
 function apiSheet(src,name){
-    let q=apiQueues[src];
+    const group=API_HEAVY[name]?src+":"+name:src;
+    let q=apiQueues[group];
     if(!q){
-        q=apiQueues[src]={names:new Set()};
+        q=apiQueues[group]={names:new Set()};
         q.promise=new Promise(function(resolve,reject){
             setTimeout(async function(){
-                delete apiQueues[src];
+                delete apiQueues[group];
                 const ac=new AbortController();
-                const timer=setTimeout(function(){ ac.abort(); },20000);
+                const timer=setTimeout(function(){ ac.abort(); },API_TIMEOUT_MS);
                 try{
                     const res=await fetch(
                         CONFIG.appsScriptUrl
@@ -906,7 +911,7 @@ function apiSheet(src,name){
 }
 async function fetchRows(url){
     const apiTarget=apiTargetFor(url);
-    if(apiTarget){
+    if(apiTarget && Date.now()>=apiPausedUntil){
         try{
             const rows=await apiSheet(apiTarget.src,apiTarget.name);
             lastDataSource="Apps Script ("+new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.timeZone})+")";
@@ -914,6 +919,7 @@ async function fetchRows(url){
         }catch(error){
             console.warn("[Reward Core] Apps Script lỗi, dùng CSV:",error && error.message || error);
             lastDataSource="CSV dự phòng (Apps Script lỗi)";
+            if(error && (error.name==="AbortError" || error.name==="TypeError")) apiPausedUntil=Date.now()+180000;
         }
     }
 
@@ -7860,7 +7866,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.4.0";
+const V4_VERSION="4.4.1";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
