@@ -108,6 +108,12 @@ const CONFIG={
     profileBackgroundPrefix:
         "Nền hồ sơ ",
 
+    /*
+       Apps Script: đọc trực tiếp Sheet (không qua gviz/CSV công khai).
+       Để trống "" nếu muốn tắt; lỗi sẽ tự quay về CSV như cũ.
+    */
+    appsScriptUrl:
+        "https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec",
     multitaskPotionGiftName:
         "Thuốc đa nhiệm",
 
@@ -808,6 +814,14 @@ function parseCSV(text){
 
 
 async function fetchCSV(url){
+    return Promise.race([
+        fetchCSVRaw(url),
+        new Promise(function(_,reject){
+            setTimeout(function(){ reject(new Error("Nguồn dữ liệu không phản hồi sau 20 giây.")); },20000);
+        })
+    ]);
+}
+async function fetchCSVRaw(url){
 
     const response=
         await fetch(
@@ -832,7 +846,76 @@ async function fetchCSV(url){
 }
 
 
+/* =========================================================
+   APPS SCRIPT DATA SOURCE (v4.4.0)
+   Gom các tab cần đọc trong cùng một lượt thành 1 yêu cầu.
+   Lỗi -> tự quay về CSV/gviz như cũ.
+========================================================= */
+let lastDataSource="";
+const apiQueues={};
+function apiTargetFor(url){
+    if(!CONFIG.appsScriptUrl) return null;
+    url=String(url||"");
+    const giftBase="https://docs.google.com/spreadsheets/d/"+encodeURIComponent(CONFIG.spreadsheetId)+"/gviz/tq?";
+    if(url.indexOf(giftBase)===0){
+        let m=url.match(/[?&]sheet=([^&]+)/);
+        if(m) return {src:"gift",name:decodeURIComponent(m[1])};
+        m=url.match(/[?&]gid=([^&]+)/);
+        const byGid={"0":"QuaTang"};
+        byGid[String(CONFIG.npcGid)]="NhanVat";
+        if(m && byGid[decodeURIComponent(m[1])]) return {src:"gift",name:byGid[decodeURIComponent(m[1])]};
+        return null;
+    }
+    if(url===CONFIG.studentRegistryCsv) return {src:"students",name:"HocVien"};
+    return null;
+}
+function apiSheet(src,name){
+    let q=apiQueues[src];
+    if(!q){
+        q=apiQueues[src]={names:new Set()};
+        q.promise=new Promise(function(resolve,reject){
+            setTimeout(async function(){
+                delete apiQueues[src];
+                const ac=new AbortController();
+                const timer=setTimeout(function(){ ac.abort(); },20000);
+                try{
+                    const res=await fetch(
+                        CONFIG.appsScriptUrl
+                        +"?src="+encodeURIComponent(src)
+                        +"&sheets="+encodeURIComponent(Array.from(q.names).join(","))
+                        +"&_="+Date.now(),
+                        {cache:"no-store",credentials:"omit",signal:ac.signal}
+                    );
+                    const json=JSON.parse(await res.text());
+                    if(!json || !json.ok || !json.sheets) throw new Error(json && json.error || "Apps Script trả về lỗi.");
+                    resolve(json.sheets);
+                }catch(error){
+                    reject(error);
+                }finally{
+                    clearTimeout(timer);
+                }
+            },0);
+        });
+    }
+    q.names.add(name);
+    return q.promise.then(function(sheets){
+        const rows=sheets[name];
+        if(!Array.isArray(rows) || !rows.length) throw new Error("Apps Script thiếu tab "+name+".");
+        return rows;
+    });
+}
 async function fetchRows(url){
+    const apiTarget=apiTargetFor(url);
+    if(apiTarget){
+        try{
+            const rows=await apiSheet(apiTarget.src,apiTarget.name);
+            lastDataSource="Apps Script ("+new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.timeZone})+")";
+            return rows;
+        }catch(error){
+            console.warn("[Reward Core] Apps Script lỗi, dùng CSV:",error && error.message || error);
+            lastDataSource="CSV dự phòng (Apps Script lỗi)";
+        }
+    }
 
     return parseCSV(
         await fetchCSV(url)
@@ -7540,6 +7623,8 @@ window.StudentRewardSystem={
 
     fetchCSV,
 
+    getDataSource:function(){ return lastDataSource; },
+
     fetchRows,
 
     sheetCsvUrl,
@@ -7775,7 +7860,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.3.0";
+const V4_VERSION="4.4.0";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -8036,6 +8121,10 @@ async function installV4(RS){
     };
 
     RS.getStudentRewardProfile=async function(code,submissionCsvText,force,accessOptions){
+        if(force){
+            try{ await legacy.loadSharedRewardData(true); }
+            catch(e){ console.warn("[StudentRewardSystem v4] Chưa làm mới được dữ liệu chung:",e); }
+        }
         await RS.assertStudentActive(code,accessOptions);
         const results=await Promise.all([
             legacy.getStudentRewardProfile(code,submissionCsvText),
