@@ -813,7 +813,21 @@ function parseCSV(text){
 }
 
 
-async function fetchCSV(url){
+async function fetchCSV(url,noApi){
+    /* v4.4.4: các CSV của file NopBaiLuyenTap (XepHang, bài nộp, XoaBai, TacPhamWeb, HocVien) và DoiQua
+       được đọc qua Apps Script (gom chung 1 yêu cầu, dữ liệu mới ngay). Lỗi -> CSV như cũ. */
+    const apiTarget=noApi?null:apiTargetFor(url);
+    if(apiTarget && Date.now()>=apiPausedUntil){
+        try{
+            const rows=await apiSheet(apiTarget.src,apiTarget.name);
+            lastDataSource="Apps Script ("+new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.timeZone})+")";
+            return rowsToCsv(rows);
+        }catch(error){
+            console.warn("[Reward Core] Apps Script lỗi ("+apiTarget.name+"), dùng CSV:",error && error.message || error);
+            lastDataSource="CSV dự phòng (Apps Script lỗi)";
+            if(error && (error.name==="AbortError" || error.name==="TypeError")) apiPausedUntil=Date.now()+180000;
+        }
+    }
     return Promise.race([
         fetchCSVRaw(url),
         new Promise(function(_,reject){
@@ -847,7 +861,7 @@ async function fetchCSVRaw(url){
 
 
 /* =========================================================
-   APPS SCRIPT DATA SOURCE (v4.4.3)
+   APPS SCRIPT DATA SOURCE (v4.4.4)
    Gom các tab cần đọc trong cùng một lượt thành 1 yêu cầu.
    Lỗi -> tự quay về CSV/gviz như cũ.
 ========================================================= */
@@ -871,6 +885,14 @@ function apiTargetFor(url){
         return null;
     }
     if(url===CONFIG.studentRegistryCsv) return {src:"students",name:"HocVien"};
+    const studentPub="https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?";
+    const studentExport="https://docs.google.com/spreadsheets/d/1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs/export?";
+    if(url.indexOf(studentPub)===0 || url.indexOf(studentExport)===0){
+        const g=url.match(/[?&]gid=(\d+)/);
+        const gid=g?g[1]:(url.indexOf(studentPub)===0?"1837470623":"");
+        const byGid={"1837470623":"Form Responses 1","1326884435":"XepHang","521976322":"XoaBai","1023688821":"TacPhamWeb","1603096683":"HocVien"};
+        if(byGid[gid]) return {src:"students",name:byGid[gid]};
+    }
     return null;
 }
 function apiSheet(src,name,code){
@@ -942,7 +964,7 @@ function getStudentSubmissionsCsv(code,force){
                 if(error && (error.name==="AbortError" || error.name==="TypeError")) apiPausedUntil=Date.now()+180000;
             }
         }
-        return fetchCSV(CONFIG.studentCsv);
+        return fetchCSV(CONFIG.studentCsv,true);
     })();
     submissionCache.set(c,e);
     e.p.then(function(){ e.pending=false; e.at=Date.now(); },function(){ if(submissionCache.get(c)===e) submissionCache.delete(c); });
@@ -963,7 +985,7 @@ async function fetchRows(url){
     }
 
     return parseCSV(
-        await fetchCSV(url)
+        await fetchCSV(url,true)
     );
 }
 
@@ -7928,7 +7950,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.4.3";
+const V4_VERSION="4.4.4";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
