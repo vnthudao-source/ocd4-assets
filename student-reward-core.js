@@ -814,49 +814,40 @@ function parseCSV(text){
 
 
 async function fetchCSV(url,noApi){
-    /* v4.4.4: các CSV của file NopBaiLuyenTap (XepHang, bài nộp, XoaBai, TacPhamWeb, HocVien) và DoiQua
-       được đọc qua Apps Script (gom chung 1 yêu cầu, dữ liệu mới ngay). Lỗi -> CSV như cũ. */
+    /* v4.4.6: Apps Script trước; nếu 2,5 giây chưa trả lời thì tải CSV song song,
+       bên nào xong trước dùng bên đó (Apps Script thỉnh thoảng bị Google giữ 6–15 giây). */
     const apiTarget=noApi?null:apiTargetFor(url);
-    if(apiTarget && Date.now()>=apiPausedUntil){
-        try{
-            const rows=await apiSheet(apiTarget.src,apiTarget.name);
-            lastDataSource="Apps Script ("+new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.timeZone})+")";
-            return rowsToCsv(rows);
-        }catch(error){
-            console.warn("[Reward Core] Apps Script lỗi ("+apiTarget.name+"), dùng CSV:",error && error.message || error);
-            lastDataSource="CSV dự phòng (Apps Script lỗi)";
-            if(error && (error.name==="AbortError" || error.name==="TypeError")) apiPausedUntil=Date.now()+180000;
-        }
+    if(apiTarget && !apiPaused()){
+        return raceApiCsv(
+            function(){ return apiSheet(apiTarget.src,apiTarget.name).then(rowsToCsv); },
+            function(signal){ return fetchCSVRaw(url,signal); },
+            apiTarget.name
+        );
     }
-    return Promise.race([
-        fetchCSVRaw(url),
-        new Promise(function(_,reject){
-            setTimeout(function(){ reject(new Error("Nguồn dữ liệu không phản hồi sau 20 giây.")); },20000);
-        })
-    ]);
+    if(apiTarget) lastDataSource="CSV (Apps Script tạm tắt, "+stamp()+")";
+    return fetchCSVRaw(url);
 }
-async function fetchCSVRaw(url){
-
-    const response=
-        await fetch(
-            url,
-            {
-                cache:"no-store"
-            }
-        );
-
-
-    if(
-        !response.ok
-    ){
-
-        throw new Error(
-            "Không tải được dữ liệu CSV."
-        );
+/* v4.4.6: request CSV bị huỷ thật khi quá 20 giây (trước đây chỉ ngừng chờ, request vẫn tải tiếp) */
+async function fetchCSVRaw(url,signal){
+    const ac=new AbortController();
+    let timedOut=false;
+    const timer=setTimeout(function(){ timedOut=true; ac.abort(); },CSV_TIMEOUT_MS);
+    const onOuterAbort=function(){ ac.abort(); };
+    if(signal){
+        if(signal.aborted) ac.abort();
+        else signal.addEventListener("abort",onOuterAbort,{once:true});
     }
-
-
-    return response.text();
+    try{
+        const response=await fetch(url,{cache:"no-store",signal:ac.signal});
+        if(!response.ok) throw new Error("Không tải được dữ liệu CSV.");
+        return await response.text();
+    }catch(error){
+        if(timedOut) throw new Error("Nguồn dữ liệu không phản hồi sau 20 giây.");
+        throw error;
+    }finally{
+        clearTimeout(timer);
+        if(signal) signal.removeEventListener("abort",onOuterAbort);
+    }
 }
 
 
@@ -869,8 +860,79 @@ let lastDataSource="";
 const apiQueues={};
 /* Tab nặng gửi yêu cầu riêng (chạy song song); Apps Script chậm/lỗi -> tạm dùng CSV 3 phút. */
 const API_HEAVY={}; // v4.4.2: máy chủ đã đọc gộp nhanh -> gom mọi tab (quà + học viên) vào 1 yêu cầu
-const API_TIMEOUT_MS=9000;
-let apiPausedUntil=0;
+/* v4.4.6: không huỷ Apps Script ở giây thứ 9 nữa. Sau API_HEDGE_MS mà chưa có kết quả thì tải CSV song song;
+   Apps Script vẫn được chờ tối đa API_CAP_MS. Chỉ tạm tắt Apps Script (3 phút, nhớ qua các trang)
+   khi lỗi mạng hoặc quá API_CAP_MS — chậm thông thường không làm tắt. */
+const API_HEDGE_MS=2500;
+const API_CAP_MS=25000;
+const CSV_TIMEOUT_MS=20000;
+const API_PAUSE_MS=180000;
+const API_PAUSE_KEY="srcApiPausedUntil_v446";
+let apiPausedUntil=(function(){
+    try{ return Number(window.sessionStorage.getItem(API_PAUSE_KEY))||0; }catch(e){ return 0; }
+})();
+function apiPaused(){ return Date.now()<apiPausedUntil; }
+function pauseApi(){
+    apiPausedUntil=Date.now()+API_PAUSE_MS;
+    try{ window.sessionStorage.setItem(API_PAUSE_KEY,String(apiPausedUntil)); }catch(e){}
+}
+/* Rời trang khi request đang chạy -> trình duyệt tự huỷ (Chrome: AbortError, Safari iPhone: TypeError "Load failed").
+   Đó không phải lỗi Apps Script nên không được tạm tắt Apps Script cho các trang sau. */
+let pageLeaving=false;
+try{
+    window.addEventListener("pagehide",function(){ pageLeaving=true; });
+    window.addEventListener("beforeunload",function(){ pageLeaving=true; });
+    window.addEventListener("pageshow",function(){ pageLeaving=false; });
+}catch(e){}
+function isHardApiError(error){
+    if(!error || pageLeaving) return false;
+    return error.apiCap===true || error.name==="TypeError";
+}
+function stamp(){ return new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.timeZone}); }
+/* Chạy Apps Script; nếu chậm hoặc lỗi thì chạy CSV song song. Bên nào thành công trước thắng.
+   Apps Script thắng -> huỷ request CSV. CSV thắng -> Apps Script (dùng chung) vẫn chạy nốt cho lượt sau. */
+function raceApiCsv(apiFn,csvFn,label){
+    return new Promise(function(resolve,reject){
+        let done=false,csvStarted=false,apiDone=false,csvDone=false,apiErr=null,csvErr=null,hedgeTimer=null;
+        const csvAc=new AbortController();
+        function finish(ok,value){
+            if(done) return;
+            done=true;
+            clearTimeout(hedgeTimer);
+            if(ok) resolve(value); else reject(value);
+        }
+        function startCsv(){
+            if(csvStarted || done) return;
+            csvStarted=true;
+            Promise.resolve().then(function(){ return csvFn(csvAc.signal); }).then(function(value){
+                csvDone=true;
+                if(!done){ lastDataSource="CSV dự phòng ("+stamp()+")"; finish(true,value); }
+            },function(error){
+                csvDone=true; csvErr=error;
+                if(apiDone) finish(false,apiErr||error);
+            });
+        }
+        Promise.resolve().then(apiFn).then(function(value){
+            apiDone=true;
+            if(!done){
+                lastDataSource="Apps Script ("+stamp()+")";
+                try{ csvAc.abort(); }catch(e){}
+                finish(true,value);
+            }
+        },function(error){
+            apiDone=true; apiErr=error;
+            if(!done && !pageLeaving) console.warn("[Reward Core] Apps Script lỗi ("+label+"), dùng CSV:",error && error.message || error);
+            if(isHardApiError(error)) pauseApi();
+            if(csvStarted){ if(csvDone) finish(false,csvErr||error); }
+            else startCsv();
+        });
+        hedgeTimer=setTimeout(function(){
+            if(done || csvStarted) return;
+            console.info("[Reward Core] Apps Script chưa trả lời sau "+(API_HEDGE_MS/1000)+"s ("+label+"), tải CSV song song.");
+            startCsv();
+        },API_HEDGE_MS);
+    });
+}
 function apiTargetFor(url){
     if(!CONFIG.appsScriptUrl) return null;
     url=String(url||"");
@@ -906,12 +968,13 @@ function apiSheet(src,name,code){
             setTimeout(async function(){
                 delete apiQueues[group];
                 const ac=new AbortController();
-                const timer=setTimeout(function(){ ac.abort(); },API_TIMEOUT_MS),t0=Date.now();
+                let capped=false;
+                const timer=setTimeout(function(){ capped=true; ac.abort(); },API_CAP_MS),t0=Date.now();
                 try{
                     const res=await fetch(
                         CONFIG.appsScriptUrl
                         +"?multi="+encodeURIComponent(Array.from(q.names).join(";"))
-                        +(q.code?"&code="+encodeURIComponent(q.code):"")+"&v=443"
+                        +(q.code?"&code="+encodeURIComponent(q.code):"")+"&v=446"
                         +"&_="+Date.now(),
                         {cache:"no-store",credentials:"omit",signal:ac.signal}
                     );
@@ -920,7 +983,11 @@ function apiSheet(src,name,code){
                     if(!json || !json.ok || !json.sheets) throw new Error(json && json.error || "Apps Script trả về lỗi.");
                     resolve(json.sheets);
                 }catch(error){
-                    reject(error);
+                    if(capped){
+                        const e=new Error("Apps Script không trả lời sau "+(API_CAP_MS/1000)+" giây.");
+                        e.apiCap=true;
+                        reject(e);
+                    }else reject(error);
                 }finally{
                     clearTimeout(timer);
                 }
@@ -942,8 +1009,16 @@ function apiSheet(src,name,code){
 /* v4.4.5: các dòng của 1 học viên trong 1 tab NopBaiLuyenTap (vd TacPhamWeb), lọc sẵn ở máy chủ, trả về CSV */
 function getStudentSheetCsv(name,code){
     const c=normalizeCode(code);
-    if(!c || !CONFIG.appsScriptUrl || Date.now()<apiPausedUntil) return Promise.reject(new Error("Apps Script tạm tắt."));
-    return apiSheet("students",String(name||""),c).then(rowsToCsv);
+    if(!c || !CONFIG.appsScriptUrl || apiPaused()) return Promise.reject(new Error("Apps Script tạm tắt."));
+    /* v4.4.6: trang gọi tự có đường dự phòng riêng -> trả lỗi sau 5 giây nếu Apps Script chậm,
+       không huỷ request dùng chung (kết quả vẫn về cho các lượt khác). */
+    return new Promise(function(resolve,reject){
+        const timer=setTimeout(function(){ reject(new Error("Apps Script chậm (quá 5 giây).")); },API_HEDGE_MS*2);
+        apiSheet("students",String(name||""),c).then(rowsToCsv).then(
+            function(v){ clearTimeout(timer); resolve(v); },
+            function(e){ clearTimeout(timer); if(isHardApiError(e)) pauseApi(); reject(e); }
+        );
+    });
 }
 async function apiAppend(kind,row){
     if(!CONFIG.appsScriptUrl) return "notsent";
@@ -990,17 +1065,13 @@ function getStudentSubmissionsCsv(code,force){
     const hit=submissionCache.get(c);
     if(hit && (hit.pending || (!force && Date.now()-hit.at<15000))) return hit.p;
     const e={at:Date.now(),pending:true};
-    e.p=(async function(){
-        if(CONFIG.appsScriptUrl && Date.now()>=apiPausedUntil){
-            try{
-                const rows=await apiSheet("students","Form Responses 1",c);
-                lastDataSource="Apps Script ("+new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.timeZone})+")";
-                return rowsToCsv(rows);
-            }catch(error){
-                console.warn("[Reward Core] Apps Script lỗi (bài nộp), dùng CSV:",error && error.message || error);
-                lastDataSource="CSV dự phòng (Apps Script lỗi)";
-                if(error && (error.name==="AbortError" || error.name==="TypeError")) apiPausedUntil=Date.now()+180000;
-            }
+    e.p=(function(){
+        if(CONFIG.appsScriptUrl && !apiPaused()){
+            return raceApiCsv(
+                function(){ return apiSheet("students","Form Responses 1",c).then(rowsToCsv); },
+                function(signal){ return fetchCSVRaw(CONFIG.studentCsv,signal); },
+                "bài nộp"
+            );
         }
         return fetchCSV(CONFIG.studentCsv,true);
     })();
@@ -1010,18 +1081,14 @@ function getStudentSubmissionsCsv(code,force){
 }
 async function fetchRows(url){
     const apiTarget=apiTargetFor(url);
-    if(apiTarget && Date.now()>=apiPausedUntil){
-        try{
-            const rows=await apiSheet(apiTarget.src,apiTarget.name);
-            lastDataSource="Apps Script ("+new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.timeZone})+")";
-            return rows;
-        }catch(error){
-            console.warn("[Reward Core] Apps Script lỗi, dùng CSV:",error && error.message || error);
-            lastDataSource="CSV dự phòng (Apps Script lỗi)";
-            if(error && (error.name==="AbortError" || error.name==="TypeError")) apiPausedUntil=Date.now()+180000;
-        }
+    if(apiTarget && !apiPaused()){
+        return raceApiCsv(
+            function(){ return apiSheet(apiTarget.src,apiTarget.name); },
+            function(signal){ return fetchCSVRaw(url,signal).then(parseCSV); },
+            apiTarget.name
+        );
     }
-
+    if(apiTarget) lastDataSource="CSV (Apps Script tạm tắt, "+stamp()+")";
     return parseCSV(
         await fetchCSV(url,true)
     );
@@ -7992,7 +8059,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.4.5";
+const V4_VERSION="4.4.6";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",

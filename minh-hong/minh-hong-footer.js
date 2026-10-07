@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1574__=
 const CONFIG={
  
     version:
-        "1.5.7.4",
+        "1.5.7.5",
  
     enabled:
         true,
@@ -381,6 +381,22 @@ const GIFT_RULES=[
    BASIC HELPERS
 ========================================================= */
  
+/* v1.5.7.5: mọi request tải dữ liệu đều có giới hạn 20 giây và bị huỷ thật khi quá giờ
+   (trước đây không có giới hạn: mạng điện thoại chập chờn có thể để request treo mãi). */
+const MH_FETCH_TIMEOUT_MS=20000;
+function fetchWithTimeout(url,options){
+    const ac=new AbortController();
+    let timedOut=false;
+    const timer=setTimeout(function(){ timedOut=true; ac.abort(); },MH_FETCH_TIMEOUT_MS);
+    return fetch(url,Object.assign({},options||{},{signal:ac.signal}))
+        .catch(function(error){
+            if(timedOut) throw new Error("Nguồn dữ liệu không phản hồi sau 20 giây.");
+            throw error;
+        })
+        .finally(function(){ clearTimeout(timer); });
+}
+
+
 function clean(value){
  
     return String(
@@ -1874,7 +1890,7 @@ const MinhHongContentEngine=
  
         if(loading[tab]) return loading[tab];
  
-        loading[tab]=fetch(csvUrl(tab),{cache:"no-store",credentials:"omit"})
+        loading[tab]=fetchWithTimeout(csvUrl(tab),{cache:"no-store",credentials:"omit"})
             .then(function(response){
                 if(!response.ok) throw new Error("HTTP "+response.status);
                 return response.text();
@@ -4057,7 +4073,7 @@ const CommunityEngine=
  
     function fetchAndBuild(){
  
-        return fetch(
+        return fetchWithTimeout(
             CONFIG.csvUrl
         )
         .then(
@@ -4354,7 +4370,7 @@ const CommunityEngine=
                 ? "&"
                 : "?";
 
-            const response=await fetch(
+            const response=await fetchWithTimeout(
                 CONFIG.csvUrl+separator+"mh_verify="+Date.now(),
                 {
                     cache:"no-store",
@@ -4382,7 +4398,7 @@ const CommunityEngine=
                 +"&mh_verify="
                 +Date.now();
 
-            const response=await fetch(
+            const response=await fetchWithTimeout(
                 url,
                 {
                     cache:"no-store",
@@ -7664,7 +7680,7 @@ const MinhHongAssistant=
             if(submissionCsvPromise && !force) return submissionCsvPromise;
             const sep=CONFIG.csvUrl.indexOf("?")>=0?"&":"?";
             const url=CONFIG.csvUrl+sep+"_mh_sell="+Date.now();
-            submissionCsvPromise=fetch(url,{cache:"no-store",credentials:"omit"})
+            submissionCsvPromise=fetchWithTimeout(url,{cache:"no-store",credentials:"omit"})
                 .then(function(r){
                     if(!r.ok) throw new Error("Không thể tải dữ liệu học viên.");
                     return r.text();
