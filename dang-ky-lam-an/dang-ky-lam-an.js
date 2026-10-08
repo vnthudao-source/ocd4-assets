@@ -1,7 +1,7 @@
 /* Đăng ký làm ấn – thudao.com. Cấu hình (API_URL, bảng giá) đặt trong window.DLA_CONFIG trên trang Blogspot. */
 (function(){
   "use strict";
-  function showErr(m){ try { var w = document.getElementById("dla-who"); if (w){ w.className = "who warn"; w.textContent = "Lỗi trang: " + m; } } catch(e){} }
+  function showErr(m){ m = "(v1.1) " + m; try { var w = document.getElementById("dla-who"); if (w){ w.className = "who warn"; w.textContent = "Lỗi trang: " + m; } } catch(e){} }
   window.addEventListener("error", function(ev){ if (ev && ev.message) showErr(ev.message); });
 
   var C = window.DLA_CONFIG || {};
@@ -12,6 +12,21 @@
 
   /* ====== TIỆN ÍCH ====== */
   var $ = function(id){ return document.getElementById(id); };
+  /* Gắn sự kiện ở cấp document: vẫn hoạt động kể cả khi theme/script khác vẽ lại phần thân bài */
+  var HANDLERS = {};
+  function on(id, type, fn){
+    if (!HANDLERS[type]){
+      HANDLERS[type] = {};
+      document.addEventListener(type, function(e){
+        var n = e.target;
+        while (n && n !== document){
+          if (n.id && HANDLERS[type][n.id]){ HANDLERS[type][n.id].call(n, e); return; }
+          n = n.parentNode;
+        }
+      }, false);
+    }
+    HANDLERS[type][id] = fn;
+  }
   function money(n){ return Number(n || 0).toLocaleString("vi-VN") + "đ"; }
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
   function normCode(s){ return String(s || "").trim().toUpperCase(); }
@@ -34,7 +49,8 @@
     return st && st.code ? normCode(st.code) : "";
   }
 
-  function setWho(cls, html){ var w = $("dla-who"); w.className = "who " + (cls || ""); w.innerHTML = html; }
+  var lastWho = null;
+  function setWho(cls, html){ lastWho = { cls: cls, html: html }; var w = $("dla-who"); if (!w) return; w.className = "who " + (cls || ""); w.innerHTML = html; }
 
   function showSaved(){
     var s = student && student.found ? student.saved || {} : {};
@@ -50,7 +66,7 @@
     wrap.classList.toggle("hidden", !!(has && use.checked));
   }
   ["phone", "addr", "mail"].forEach(function(k){
-    $("dla-use-" + k).addEventListener("change", function(){ $("dla-" + k + "-wrap").classList.toggle("hidden", this.checked); });
+    on("dla-use-" + k, "change", function(){ $("dla-" + k + "-wrap").classList.toggle("hidden", this.checked); });
   });
 
   function lookup(code){
@@ -117,11 +133,11 @@
       })
       .catch(function(){ hint.textContent = ""; lastPhoneKey = ""; });
   }
-  $("dla-phone").addEventListener("change", lookupPhone);
-  $("dla-phone").addEventListener("blur", lookupPhone);
+  on("dla-phone", "change", lookupPhone);
+  on("dla-phone", "focusout", lookupPhone);
 
-  $("dla-check").addEventListener("click", function(){ lookup($("dla-code").value); });
-  $("dla-code").addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); lookup(this.value); } });
+  on("dla-check", "click", function(){ lookup($("dla-code").value); });
+  on("dla-code", "keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); lookup(this.value); } });
   window.addEventListener("ocdStudentSessionChanged", function(){
     var c = sessionCode();
     if (c && c !== normCode($("dla-code").value)) lookup(c);
@@ -199,7 +215,7 @@
     return total;
   }
 
-  $("dla-items").addEventListener("click", function(e){
+  on("dla-items", "click", function(e){
     var b = e.target.closest("button"); if (!b) return;
     if (b.hasAttribute("data-rm")){ items.splice(Number(b.getAttribute("data-rm")), 1); render(); return; }
     var i = Number(b.getAttribute("data-i")), it = items[i]; if (!it) return;
@@ -221,16 +237,16 @@
     it[k] = k === "design" ? el.checked : el.value;
     renderBill();
   }
-  $("dla-items").addEventListener("input", onInput);
-  $("dla-items").addEventListener("change", onInput);
+  on("dla-items", "input", onInput);
+  on("dla-items", "change", onInput);
 
-  $("dla-add").addEventListener("click", function(){
+  on("dla-add", "click", function(){
     if (items.length >= MAX_ITEMS) return;
     items.push(newItem()); render();
     var all = $("dla-items").querySelectorAll(".item");
     all[all.length - 1].scrollIntoView({ behavior: "smooth", block: "start" });
   });
-  $("dla-go").addEventListener("click", function(){ $("dla-bill").scrollIntoView({ behavior: "smooth", block: "start" }); });
+  on("dla-go", "click", function(){ $("dla-bill").scrollIntoView({ behavior: "smooth", block: "start" }); });
 
   /* ====== GỬI ĐƠN ====== */
   var clientId = uid();
@@ -249,7 +265,7 @@
     return "";
   }
 
-  $("dla-send").addEventListener("click", function(){
+  on("dla-send", "click", function(){
     var err = validate(), btn = this;
     $("dla-err").textContent = err;
     if (err) return;
@@ -291,7 +307,7 @@
       .then(function(){ btn.disabled = false; btn.textContent = "Gửi đăng ký"; });
   });
 
-  $("dla-again").addEventListener("click", function(){
+  on("dla-again", "click", function(){
     clientId = uid(); items = [newItem()];
     $("dla-note").value = ""; $("dla-err").textContent = "";
     $("dla-done").classList.add("hidden"); $("dla-form").classList.remove("hidden"); $("dla-bar").classList.remove("hidden");
@@ -308,6 +324,21 @@
   }
   items = [newItem()];
   render();
+
+  /* Nếu phần thân bài bị vẽ lại sau khi trang nạp, vẽ lại form từ trạng thái đang có */
+  function refresh(){
+    if (!$("dla-items")) return;
+    render();
+    if (lastWho) setWho(lastWho.cls, lastWho.html);
+    showSaved();
+    var sv = lsGet(LOCAL_KEY) || {};
+    if (!$("dla-name").value) $("dla-name").value = (student && student.name) || sv.name || "";
+    if (!$("dla-phone").value && sv.phone) $("dla-phone").value = sv.phone;
+    if (!$("dla-addr").value && sv.address) $("dla-addr").value = sv.address;
+    if (!$("dla-mail").value && sv.email) $("dla-mail").value = sv.email;
+    if (student && student.code && !$("dla-code").value) $("dla-code").value = student.code;
+  }
+  window.addEventListener("load", function(){ setTimeout(refresh, 300); setTimeout(refresh, 1500); });
 
   var code = sessionCode();
   if (code) lookup(code);
