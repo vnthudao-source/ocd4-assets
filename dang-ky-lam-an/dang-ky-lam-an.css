@@ -1,0 +1,71 @@
+/* Đăng ký làm ấn – thudao.com */
+#dla{--paper:#faf6ee;--card:#fffdf8;--ink:#2a2420;--muted:#7a6f66;--line:#e6dccb;--red:#b3261e;--red-soft:#f7e3df;--gold:#9a7b3c;
+  font-family:'Noto Serif',Georgia,serif;color:var(--ink);background:var(--paper);max-width:720px;margin:0 auto;padding:20px 16px 110px;line-height:1.55;box-sizing:border-box}
+#dla *{box-sizing:border-box}
+#dla h2,#dla h3{font-family:inherit;margin:0;color:var(--ink)}
+#dla .hero{display:flex;gap:16px;align-items:center;margin:4px 0 22px}
+#dla .seal{flex:none;width:62px;height:62px;border:3px solid var(--red);border-radius:6px;color:var(--red);display:grid;place-items:center;font-size:34px;font-weight:700;transform:rotate(-4deg);background:var(--red-soft)}
+#dla .hero h2{font-size:26px;letter-spacing:.5px}
+#dla .hero p{margin:4px 0 0;color:var(--muted);font-size:14.5px}
+#dla .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin-bottom:16px}
+#dla .box h3{font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+#dla .num{width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;font-size:13px;display:grid;place-items:center;flex:none}
+#dla label.f{display:block;font-size:13.5px;color:var(--muted);margin:12px 0 5px}
+#dla input[type=text],#dla input[type=tel],#dla input[type=email],#dla input[type=number],#dla textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}
+#dla textarea{min-height:64px;resize:vertical}
+#dla input:focus,#dla textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft)}
+#dla .row{display:flex;gap:8px}
+#dla .row input{flex:1}
+#dla button{font:inherit;cursor:pointer}
+#dla .btn{border:none;border-radius:10px;padding:10px 16px;font-size:15px;font-weight:600;background:var(--ink);color:#fff}
+#dla .btn.red{background:var(--red)}
+#dla .btn.ghost{background:transparent;color:var(--ink);border:1px dashed var(--muted);width:100%}
+#dla .btn:disabled{opacity:.55;cursor:default}
+#dla .who{border-radius:10px;padding:10px 12px;font-size:14.5px;background:#f3eee4;margin-bottom:4px}
+#dla .who.ok{background:#ecf3ea;color:#2f5a2a}
+#dla .who.warn{background:var(--red-soft);color:var(--red)}
+#dla .saved{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+#dla .saved input{margin-top:4px;accent-color:var(--red)}
+#dla .chips{display:flex;flex-wrap:wrap;gap:8px}
+#dla .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:14.5px;color:var(--ink)}
+#dla .chip.on{border-color:var(--red);background:var(--red);color:#fff}
+#dla .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#dla .opt{text-align:left;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;color:var(--ink)}
+#dla .opt b{display:block;font-size:15.5px}
+#dla .opt small{display:block;color:var(--muted);font-size:12.5px;line-height:1.4;margin-top:2px}
+#dla .opt.on{border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red);background:#fffaf8}
+#dla .opt .pr{color:var(--red);font-weight:700;font-size:14px;margin-top:4px;display:block}
+#dla .stones{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#dla .sub{margin-top:10px;padding:10px;border-radius:10px;background:#f8f2e8}
+#dla .item{border:1px solid var(--line);border-radius:12px;padding:14px 12px;margin-bottom:12px;background:#fff}
+#dla .item-h{display:flex;justify-content:space-between;align-items:center}
+#dla .item-h b{font-size:16px}
+#dla .rm{border:none;background:none;color:var(--red);font-size:14px}
+#dla .qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+#dla .qty button{border:none;background:#f3eee4;width:40px;height:40px;font-size:20px;color:var(--ink)}
+#dla .qty span{min-width:44px;text-align:center;font-weight:700}
+#dla .chk{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:14.5px}
+#dla .chk input{margin-top:4px;accent-color:var(--red);width:18px;height:18px}
+#dla .bill table{width:100%;border-collapse:collapse;font-size:14.5px}
+#dla .bill td{padding:7px 0;border-bottom:1px dashed var(--line);vertical-align:top}
+#dla .bill td.r{text-align:right;white-space:nowrap;padding-left:10px}
+#dla .bill .tot td{border:none;font-size:18px;font-weight:700;padding-top:12px}
+#dla .bill .tot .r{color:var(--red)}
+#dla .hint{font-size:12.5px;color:var(--muted);margin-top:8px}
+#dla .err{color:var(--red);font-size:14px;margin-top:10px;min-height:1px}
+#dla .bar{position:fixed;left:0;right:0;bottom:0;z-index:999;background:rgba(255,253,248,.97);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+#dla .bar-in{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#dla .bar small{display:block;color:var(--muted);font-size:12px}
+#dla .bar strong{font-size:19px;color:var(--red)}
+#dla .done{text-align:center;padding:28px 16px}
+#dla .done .seal{margin:0 auto 14px}
+#dla .done h3{font-size:22px;margin-bottom:6px}
+#dla .faq details{border-bottom:1px solid var(--line);padding:12px 0}
+#dla .faq details:last-child{border-bottom:none}
+#dla .faq summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:10px}
+#dla .faq summary::-webkit-details-marker{display:none}
+#dla .faq summary:after{content:'+';color:var(--red);font-size:20px;line-height:1}
+#dla .faq details[open] summary:after{content:'–'}
+#dla .faq p{margin:8px 0 0;color:#4a423c;font-size:14.5px}
+#dla .hidden{display:none!important}
+@media (max-width:420px){#dla .stones{grid-template-columns:1fr}}
