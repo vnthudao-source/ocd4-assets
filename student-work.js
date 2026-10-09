@@ -4174,7 +4174,86 @@ async function processGradeSendQueue(){
 
 /* =========================================================
    GIFT SUBMIT
+   v17: ghi thẳng vào QuaTangGVCN qua Apps Script (kind "gift").
+   - "sent"    : đã ghi / đã có sẵn (máy chủ chống trùng)
+   - "notsent" : máy chủ trả lỗi rõ ràng -> gửi Google Form như cũ
+   - "unknown" : mất mạng / quá giờ -> kiểm tra Sheet trước, chưa có mới gửi Form
 ========================================================= */
+
+const GIFT_KIND_KEY = "srcApiNoKind_v447";
+
+function giftKindBlocked(){
+    try{ const m=JSON.parse(window.localStorage.getItem(GIFT_KIND_KEY)||"{}"); return Date.now()<Number(m.gift||0); }catch(e){ return false; }
+}
+
+function blockGiftKind(){
+    try{ const m=JSON.parse(window.localStorage.getItem(GIFT_KIND_KEY)||"{}"); m.gift=Date.now()+3600000; window.localStorage.setItem(GIFT_KIND_KEY,JSON.stringify(m)); }catch(e){}
+}
+
+async function submitGiftDirect(data){
+
+    const RS = getRewardCore();
+    const url = RS && RS.CONFIG && RS.CONFIG.appsScriptUrl;
+
+    if(!url || giftKindBlocked()){
+        return "notsent";
+    }
+
+    const row = [
+        "",
+        "Cá nhân",
+        data.code,
+        data.group || "",
+        "Vật phẩm",
+        data.gift,
+        "",
+        1,
+        data.reason,
+        ADMIN_GIVER,
+        "Đang hiệu lực",
+        data.course || ""
+    ];
+
+    for(let attempt=0;attempt<3;attempt++){
+
+        const ac = new AbortController();
+        const timer = setTimeout(function(){ ac.abort(); },20000);
+
+        try{
+            const res = await fetch(url,{
+                method:"POST",
+                body:JSON.stringify({action:"append",items:[{kind:"gift",row:row}]}),
+                headers:{"Content-Type":"text/plain;charset=utf-8"},
+                credentials:"omit",
+                cache:"no-store",
+                signal:ac.signal
+            });
+            const json = JSON.parse(await res.text());
+            console.info("[Tặng quà] Apps Script:",json);
+
+            if(json && json.ok){
+                return ((json.written && json.written.gift) || (json.dup && json.dup.gift)) ? "sent" : "notsent";
+            }
+            if(json && /lo[aạ]i d[uữ] li[eệ]u ghi kh[oô]ng h[oợ]p l[eệ]/i.test(String(json.error||""))){
+                blockGiftKind();
+                return "notsent";
+            }
+            if(json && (json.busy || /đang bận/i.test(String(json.error||""))) && attempt<2){
+                await sleep(1500);
+                continue;
+            }
+            return "notsent";
+
+        }catch(error){
+            console.warn("[Tặng quà] Ghi thẳng lỗi:",error && error.message || error);
+            if(attempt<1){ await sleep(1200); continue; }
+            return "unknown";
+        }finally{
+            clearTimeout(timer);
+        }
+    }
+    return "notsent";
+}
 
 function submitGiftForm(data){
 
@@ -4969,7 +5048,7 @@ async function handleGiveGift(button){
 
     try{
 
-        submitGiftForm({
+        const giftData = {
 
             code:
             card.dataset.code,
@@ -4988,12 +5067,34 @@ async function handleGiveGift(button){
                 reason,
                 card.dataset.id
             )
-        });
+        };
 
-        const success =
+        /* v17: Apps Script trước, lỗi mới dùng Google Form */
+        const mode =
+        await submitGiftDirect(
+            giftData
+        );
+
+        if(mode === "notsent"){
+            submitGiftForm(
+                giftData
+            );
+        }
+
+        let success =
         await verifyGift(
             expected
         );
+
+        if(!success && mode === "unknown"){
+            submitGiftForm(
+                giftData
+            );
+            success =
+            await verifyGift(
+                expected
+            );
+        }
 
         if(!success){
 
