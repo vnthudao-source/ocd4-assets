@@ -828,7 +828,37 @@ async function fetchCSV(url,noApi){
     return fetchCSVRaw(url);
 }
 /* v4.4.6: request CSV bị huỷ thật khi quá 20 giây (trước đây chỉ ngừng chờ, request vẫn tải tiếp) */
+/* v4.4.9: link "Xuất bản lên web" (pub?output=csv) bị Google lưu đệm tới ~5 phút.
+   Khi phải dùng CSV dự phòng cho NopBaiLuyenTap, thử link xuất trực tiếp (export) trước – mới hơn;
+   chỉ khi link export không đọc được (file chưa chia sẻ công khai) mới dùng link pub như cũ. */
+const STUDENT_PUB_PREFIX="https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?";
+const STUDENT_EXPORT_BASE="https://docs.google.com/spreadsheets/d/1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs/export?format=csv&gid=";
+let studentExportBlocked=false;
+function freshCsvUrl(url){
+    url=String(url||"");
+    if(studentExportBlocked || url.indexOf(STUDENT_PUB_PREFIX)!==0) return "";
+    const g=url.match(/[?&]gid=(\d+)/);
+    return STUDENT_EXPORT_BASE+(g?g[1]:"1837470623");
+}
+function looksLikeCsv(text){
+    const s=String(text||"").slice(0,200).trim().toLowerCase();
+    return Boolean(s) && s.indexOf("<!doctype")!==0 && s.indexOf("<html")!==0;
+}
 async function fetchCSVRaw(url,signal){
+    const alt=freshCsvUrl(url);
+    if(alt){
+        try{
+            const text=await fetchCSVRawOnce(alt,signal);
+            if(looksLikeCsv(text)) return text;
+            studentExportBlocked=true;
+        }catch(error){
+            if(signal && signal.aborted) throw error;
+            studentExportBlocked=true;
+        }
+    }
+    return fetchCSVRawOnce(url,signal);
+}
+async function fetchCSVRawOnce(url,signal){
     const ac=new AbortController();
     let timedOut=false;
     const timer=setTimeout(function(){ timedOut=true; ac.abort(); },CSV_TIMEOUT_MS);
@@ -896,8 +926,18 @@ function stamp(){ return new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.
    trước khi tải CSV song song, để không lấy nhầm dữ liệu cũ. */
 const FRESH_HEDGE_MS=8000;
 let freshUntil=0;
+let lastWriteAt=0;
 function markDataFresh(ms){
+    lastWriteAt=Date.now();
     freshUntil=Math.max(freshUntil,Date.now()+(Number(ms)||60000));
+}
+function getLastWriteAt(){ return lastWriteAt; }
+/* v4.4.9: lượt tải vừa bắt đầu < 3 giây trước (và không có lần ghi nào sau đó) đủ mới cho cả yêu cầu "force":
+   trang mở ra gọi force ngay sau khi Core đã tải sẵn -> dùng lại, không tải lần 2. Sau mỗi lần ghi thì luôn tải mới. */
+const RECENT_LOAD_MS=3000;
+function recentLoad(startedAt){
+    const now=Date.now();
+    return startedAt>0 && now-startedAt<RECENT_LOAD_MS && startedAt>lastWriteAt && now>=freshUntil;
 }
 function hedgeDelay(){ return Date.now()<freshUntil?FRESH_HEDGE_MS:API_HEDGE_MS; }
 /* v4.4.8: CSV về trước nhưng Apps Script về sau có NHIỀU dòng hơn -> dữ liệu đang hiển thị là bản cũ.
@@ -934,6 +974,28 @@ function noteLateApiRows(label,apiRows,csvRows){
         });
     },800);
 }
+/* v4.4.9: báo nhỏ ở góc màn hình khi đang hiển thị dữ liệu dự phòng (CSV có thể chậm vài phút) */
+let fallbackNoticeTimer=null;
+function showFallbackNotice(on){
+    try{
+        let el=document.getElementById("ocdDataFallbackNotice");
+        if(!on){ if(el) el.style.display="none"; return; }
+        if(!document.body) return;
+        if(!el){
+            el=document.createElement("div");
+            el.id="ocdDataFallbackNotice";
+            el.setAttribute("role","status");
+            el.style.cssText="position:fixed;left:12px;bottom:12px;z-index:99999;max-width:min(320px,calc(100vw - 24px));"+
+                "padding:8px 12px;border-radius:10px;background:rgba(60,45,20,.92);color:#fff;font:13px/1.4 system-ui,sans-serif;"+
+                "box-shadow:0 4px 14px rgba(0,0,0,.25);pointer-events:none";
+            el.textContent="Đang hiển thị dữ liệu dự phòng, có thể chậm vài phút. Hệ thống sẽ tự cập nhật.";
+            document.body.appendChild(el);
+        }
+        el.style.display="block";
+        clearTimeout(fallbackNoticeTimer);
+        fallbackNoticeTimer=setTimeout(function(){ el.style.display="none"; },12000);
+    }catch(e){}
+}
 /* onLate(apiValue,csvValue): gọi khi CSV đã thắng nhưng Apps Script trả kết quả sau đó */
 function raceApiCsv(apiFn,csvFn,label,onLate){
     return new Promise(function(resolve,reject){
@@ -951,7 +1013,7 @@ function raceApiCsv(apiFn,csvFn,label,onLate){
             csvStarted=true;
             Promise.resolve().then(function(){ return csvFn(csvAc.signal); }).then(function(value){
                 csvDone=true;
-                if(!done){ lastDataSource="CSV dự phòng ("+stamp()+")"; csvValue=value; finish(true,value); }
+                if(!done){ lastDataSource="CSV dự phòng ("+stamp()+")"; csvValue=value; showFallbackNotice(true); finish(true,value); }
             },function(error){
                 csvDone=true; csvErr=error;
                 if(apiDone) finish(false,apiErr||error);
@@ -961,9 +1023,11 @@ function raceApiCsv(apiFn,csvFn,label,onLate){
             apiDone=true;
             if(!done){
                 lastDataSource="Apps Script ("+stamp()+")";
+                showFallbackNotice(false);
                 try{ csvAc.abort(); }catch(e){}
                 finish(true,value);
             }else if(onLate && csvValue!==null){
+                showFallbackNotice(false);
                 try{ onLate(value,csvValue); }catch(e){}
             }
         },function(error){
@@ -1005,6 +1069,25 @@ function apiTargetFor(url){
     }
     return null;
 }
+/* v4.4.9: nhớ kết quả ?multi= trong sessionStorage (dùng chung giữa các trang trong cùng tab).
+   Lần sau gửi kèm &h=<mã băm>; nếu dữ liệu không đổi, Apps Script (Code.gs v20) chỉ trả { same: true }. */
+const API_MULTI_STORE="ocdApiMulti_v1";
+let apiMultiMem=null;
+function multiStore(){
+    if(apiMultiMem) return apiMultiMem;
+    try{ apiMultiMem=JSON.parse(window.sessionStorage.getItem(API_MULTI_STORE)||"{}")||{}; }catch(e){ apiMultiMem={}; }
+    return apiMultiMem;
+}
+function multiSave(key,h,sheets){
+    const m=multiStore();
+    m[key]={h:h,sheets:sheets,at:Date.now()};
+    try{
+        Object.keys(m).sort(function(a,b){ return (m[b].at||0)-(m[a].at||0); }).slice(6).forEach(function(k){ delete m[k]; });
+        const s=JSON.stringify(m);
+        if(s.length<3000000) window.sessionStorage.setItem(API_MULTI_STORE,s);
+        else window.sessionStorage.removeItem(API_MULTI_STORE);
+    }catch(e){}
+}
 function apiSheet(src,name,code){
     code=code?String(code):"";
     let group=API_HEAVY[name]?src+":"+name:"all";
@@ -1019,16 +1102,27 @@ function apiSheet(src,name,code){
                 let capped=false;
                 const timer=setTimeout(function(){ capped=true; ac.abort(); },API_CAP_MS),t0=Date.now();
                 try{
+                    const names=Array.from(q.names).sort();
+                    const memoKey=names.join(";")+"|"+(q.code||"");
+                    const prev=multiStore()[memoKey];
                     const res=await fetch(
                         CONFIG.appsScriptUrl
-                        +"?multi="+encodeURIComponent(Array.from(q.names).join(";"))
-                        +(q.code?"&code="+encodeURIComponent(q.code):"")+"&v=446"
+                        +"?multi="+encodeURIComponent(names.join(";"))
+                        +(q.code?"&code="+encodeURIComponent(q.code):"")+"&v=449"
+                        +(prev && prev.h && prev.sheets?"&h="+encodeURIComponent(prev.h):"")
                         +"&_="+Date.now(),
                         {cache:"no-store",credentials:"omit",signal:ac.signal}
                     );
                     const json=JSON.parse(await res.text());
-                    console.info("[Reward Core] Apps Script "+(Date.now()-t0)+"ms:",Array.from(q.names).join(" ; "));
+                    if(json && json.ok && json.same && prev && prev.sheets){
+                        console.info("[Reward Core] Apps Script "+(Date.now()-t0)+"ms (không đổi):",names.join(" ; "));
+                        prev.at=Date.now();
+                        resolve(prev.sheets);
+                        return;
+                    }
+                    console.info("[Reward Core] Apps Script "+(Date.now()-t0)+"ms:",names.join(" ; "));
                     if(!json || !json.ok || !json.sheets) throw new Error(json && json.error || "Apps Script trả về lỗi.");
+                    if(json.h) multiSave(memoKey,json.h,json.sheets);
                     resolve(json.sheets);
                 }catch(error){
                     if(capped){
@@ -1128,8 +1222,8 @@ function getStudentSubmissionsCsv(code,force){
     const c=normalizeCode(code);
     if(!c) return fetchCSV(CONFIG.studentCsv);
     const hit=submissionCache.get(c);
-    if(hit && (hit.pending || (!force && Date.now()-hit.at<15000))) return hit.p;
-    const e={at:Date.now(),pending:true};
+    if(hit && (hit.pending || (!force && Date.now()-hit.at<15000) || (force && recentLoad(hit.startedAt)))) return hit.p;
+    const e={at:Date.now(),startedAt:Date.now(),pending:true};
     e.p=(function(){
         if(CONFIG.appsScriptUrl && !apiPaused()){
             return raceApiCsv(
@@ -1366,13 +1460,15 @@ function mapStudentRegistryRows(rows){
 
 
 let registryTask=null;
+let registryLoadedFrom=0;
 function loadStudentRegistry(forceRefresh){
-    if(registryTask && (!forceRefresh || registryTask.force)) return registryTask.p;
-    const t={force:Boolean(forceRefresh)};
+    if(registryTask && (!forceRefresh || registryTask.force || recentLoad(registryTask.at))) return registryTask.p;
+    if(forceRefresh && studentRegistryCache && recentLoad(registryLoadedFrom)) return Promise.resolve(studentRegistryCache);
+    const t={force:Boolean(forceRefresh),at:Date.now()};
     t.p=loadStudentRegistryRaw(forceRefresh);
     registryTask=t;
     const done=function(){ if(registryTask===t) registryTask=null; };
-    t.p.then(done,done);
+    t.p.then(function(){ registryLoadedFrom=t.at; done(); },done);
     return t.p;
 }
 async function loadStudentRegistryRaw(forceRefresh){
@@ -7106,13 +7202,15 @@ let sharedCacheTime=0;
 
 /* v4.4.3: gộp các lượt tải trùng nhau đang chạy */
 let sharedTask=null;
+let sharedLoadedFrom=0;
 function loadSharedRewardData(forceRefresh){
-    if(sharedTask && (!forceRefresh || sharedTask.force)) return sharedTask.p;
-    const t={force:Boolean(forceRefresh)};
+    if(sharedTask && (!forceRefresh || sharedTask.force || recentLoad(sharedTask.at))) return sharedTask.p;
+    if(forceRefresh && sharedCache && recentLoad(sharedLoadedFrom)) return Promise.resolve(sharedCache);
+    const t={force:Boolean(forceRefresh),at:Date.now()};
     t.p=loadSharedRewardDataRaw(forceRefresh);
     sharedTask=t;
     const done=function(){ if(sharedTask===t) sharedTask=null; };
-    t.p.then(done,done);
+    t.p.then(function(){ sharedLoadedFrom=t.at; done(); },done);
     return t.p;
 }
 async function loadSharedRewardDataRaw(
@@ -7890,6 +7988,10 @@ window.StudentRewardSystem={
 
     markDataFresh,
 
+    getLastWriteAt,
+
+    isRecentLoad:recentLoad,
+
     setLateRefreshHook,
 
     getStudentSheetCsv,
@@ -8129,7 +8231,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.4.8";
+const V4_VERSION="4.4.9";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -8250,13 +8352,18 @@ function mapSales(rows,RS){
 }
 
 let mhTask=null;
+let mhLoadedFrom=0;
+function mhRecent(RS,startedAt){
+    return typeof RS.isRecentLoad==="function" && RS.isRecentLoad(startedAt);
+}
 function loadMinhHongData(force,RS){
-    if(mhTask && (!force || mhTask.force)) return mhTask.p;
-    const t={force:Boolean(force)};
+    if(mhTask && (!force || mhTask.force || mhRecent(RS,mhTask.at))) return mhTask.p;
+    if(force && mhCache && mhRecent(RS,mhLoadedFrom)) return Promise.resolve(mhCache);
+    const t={force:Boolean(force),at:Date.now()};
     t.p=loadMinhHongDataRaw(force,RS);
     mhTask=t;
     const done=function(){ if(mhTask===t) mhTask=null; };
-    t.p.then(done,done);
+    t.p.then(function(){ mhLoadedFrom=t.at; done(); },done);
     return t.p;
 }
 async function loadMinhHongDataRaw(force,RS){
@@ -8420,8 +8527,27 @@ async function installV4(RS){
         });
     }
 
+    /* v4.4.9: hồ sơ vừa tính xong (sau lần ghi gần nhất) được dùng lại trong 4 giây cho các lượt "force" liền nhau
+       (vd Minh Hồng: xác nhận giao dịch rồi vẽ lại ngay) -> không tải lại toàn bộ dữ liệu 2-3 lần liên tiếp */
+    const PROFILE_REUSE_MS=4000;
+    let lastProfileMemo=null;
+    function wroteAt(){ return typeof RS.getLastWriteAt==="function"?RS.getLastWriteAt():0; }
+
     RS.getStudentRewardProfile=async function(code,submissionCsvText,force,accessOptions){
         if(code) lastProfileArgs=[code,submissionCsvText,accessOptions];
+        const memoCode=RS.normalizeCode(code);
+        if(force && lastProfileMemo && lastProfileMemo.code===memoCode &&
+           Date.now()-lastProfileMemo.at<PROFILE_REUSE_MS && lastProfileMemo.at>wroteAt() &&
+           (lastProfileMemo.csv===(submissionCsvText||""))){
+            return lastProfileMemo.profile;
+        }
+        const startedAt=Date.now();
+        const profile=await computeStudentProfileV4(code,submissionCsvText,force,accessOptions);
+        lastProfileMemo={code:memoCode,at:startedAt,csv:submissionCsvText||"",profile:profile};
+        return profile;
+    };
+
+    async function computeStudentProfileV4(code,submissionCsvText,force,accessOptions){
         if(force){
             /* v4.4.3: dữ liệu chung được tải song song bên dưới */
 
@@ -8474,7 +8600,8 @@ async function installV4(RS){
     };
 
     RS.createMinhHongSaleRequest=async function(code,giftName,quantity,submissionCsvText){
-        const profile=await RS.getStudentRewardProfile(code,submissionCsvText,true);
+        /* v4.4.9: dữ liệu trong bộ nhớ đệm (tối đa 15 giây, luôn tải lại sau mỗi lần ghi) là đủ để kiểm tra số lượng */
+        const profile=await RS.getStudentRewardProfile(code,submissionCsvText,false);
         const q=positiveInt(quantity,RS); if(q<=0) throw new Error("Số lượng bán không hợp lệ.");
         const offer=(profile.minhHong.offers||[]).find(x=>x.normalizedGiftName===RS.normalizeText(giftName));
         if(!offer||!offer.available) throw new Error("Vật phẩm này hiện không nằm trong danh sách Minh Hồng thu mua.");
@@ -8510,6 +8637,13 @@ async function installV4(RS){
         await submitForm(payload); return request;
     };
 
+    async function refreshProfileAfterSale(code,submissionCsvText){
+        lastProfileMemo=null;
+        const profile=await RS.getStudentRewardProfile(code,submissionCsvText,false);
+        emit("ocdRewardProfileChanged",{code:RS.normalizeCode(code),profile,version:V4_VERSION});
+        return profile;
+    }
+
     RS.waitForMinhHongSale=async function(sellId,attempts){
         const wanted=clean(sellId);
         const max=Math.max(1,Number(attempts||MH_CONFIG.pollAttempts));
@@ -8531,7 +8665,8 @@ async function installV4(RS){
         const sale=await RS.waitForMinhHongSale(sellId,attempts);
         if(!sale) return null;
         const studentCode=RS.normalizeCode(code||sale.code||"");
-        const profile=studentCode?await RS.refreshStudentRewardProfile(studentCode,submissionCsvText):null;
+        /* v4.4.9: giao dịch Minh Hồng vừa đọc mới -> chỉ tính lại hồ sơ, không tải lại toàn bộ dữ liệu chung */
+        const profile=studentCode?await refreshProfileAfterSale(studentCode,submissionCsvText):null;
         return {sale,profile};
     };
 
@@ -8543,7 +8678,7 @@ async function installV4(RS){
             emit("ocdMinhHongSalePending",{sellId:request.sellId,code:request.code,giftName:request.giftName,quantity:request.quantity});
             return {request,sale:null,profile:null,pending:true,confirmed:false};
         }
-        const profile=await RS.refreshStudentRewardProfile(code,submissionCsvText);
+        const profile=await refreshProfileAfterSale(code,submissionCsvText);
         emit("ocdMinhHongSaleConfirmed",{sellId:request.sellId,code:request.code,sale,profile});
         return {request,sale,profile,pending:false,confirmed:true};
     };
@@ -8581,7 +8716,23 @@ async function installV4(RS){
     emit("studentRewardCoreReady",{version:legacy.version,coreVersion:V4_VERSION,legacyVersion:legacy.version,unifiedAssets:true});
     emit("ocdRewardCoreUpgraded",{version:V4_VERSION,compatibilityVersion:legacy.version});
     console.log("[StudentRewardSystem] Core v"+V4_VERSION+" ready. Compatibility API: "+legacy.version);
+    autoPrefetchFromSession(RS);
     return RS;
+}
+
+/* v4.4.9: tải sẵn ngay khi Core sẵn sàng nếu học viên đã đăng nhập (phiên Minh Hồng lưu trong trình duyệt).
+   Mọi trang (Chợ phiên, Bảng xếp hạng, Nộp bài, Nhiệm vụ...) nhận dữ liệu sớm hơn, không phải chờ giao diện dựng xong. */
+function autoPrefetchFromSession(RS){
+    try{
+        const raw=window.localStorage.getItem("ocd_student_session_v1");
+        if(!raw) return;
+        const s=JSON.parse(raw)||{};
+        const code=RS.normalizeCode(s.code||"");
+        if(String(s.mode||"")!=="student" || !code) return;
+        setTimeout(function(){
+            Promise.resolve(RS.prefetchStudent(code)).catch(function(){});
+        },0);
+    }catch(error){}
 }
 
 

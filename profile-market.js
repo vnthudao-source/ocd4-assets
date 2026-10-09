@@ -3,7 +3,7 @@
 "use strict";
  
 /* =========================================================
-   HỒ SƠ / CHỢ PHIÊN v4.9.11 (báo thành công ngay khi Apps Script đã ghi, đồng bộ túi đồ ở nền)
+   HỒ SƠ / CHỢ PHIÊN v4.9.12 (hiện ngay hồ sơ lưu lần trước; báo thành công ngay khi Apps Script đã ghi)
    CORE CANONICAL ASSETS / MARKET SELF-RECOVERY
  
    GIỮ:
@@ -311,6 +311,9 @@ const state={
 
     /* v4.9.11: đang đồng bộ túi đồ sau giao dịch ghi thẳng (chặn mua tiếp để không dùng số dư cũ) */
     exchangeSyncing:false,
+
+    /* v4.9.12: đang hiển thị số liệu lưu từ lần trước (chưa có số liệu mới) -> chặn mua */
+    assetsStale:false,
  
     isAdmin:false
 };
@@ -3439,6 +3442,8 @@ function renderCanonicalAssets(profile){
     }
 
     syncStudentSession();
+
+    saveMarketSnapshot();
 }
 
 
@@ -3746,6 +3751,85 @@ function syncStudentSession(){
     }
     apply();
 }
+/* =========================================================
+   v4.9.12: BẢN LƯU HỒ SƠ (hiện ngay khi mở lại trang)
+   - Lưu số dư, túi đồ, thông tin học viên sau mỗi lần tải xong.
+   - Lần tra cứu sau hiện ngay bản lưu, kèm thông báo "đang cập nhật",
+     và chặn mua cho đến khi có số liệu mới.
+========================================================= */
+
+const MARKET_SNAPSHOT_KEY="ocd_market_snapshot_v1";
+const MARKET_SNAPSHOT_MAX_AGE=7*24*60*60*1000;
+
+function snapshotReplacer(key,value){
+    if(value instanceof Set) return {__set:Array.from(value)};
+    if(value instanceof Map) return {__map:Array.from(value.entries())};
+    return value;
+}
+function snapshotReviver(key,value){
+    if(value && typeof value==="object"){
+        if(Array.isArray(value.__set)) return new Set(value.__set);
+        if(Array.isArray(value.__map)) return new Map(value.__map);
+    }
+    return value;
+}
+function readMarketSnapshots(){
+    try{
+        const all=JSON.parse(window.localStorage.getItem(MARKET_SNAPSHOT_KEY)||"{}",snapshotReviver);
+        return all && typeof all==="object" ? all : {};
+    }catch(e){ return {}; }
+}
+function readMarketSnapshot(code){
+    const snap=readMarketSnapshots()[RS.normalizeCode(code)];
+    if(!snap || !snap.student || Date.now()-Number(snap.at||0)>MARKET_SNAPSHOT_MAX_AGE) return null;
+    return snap;
+}
+function saveMarketSnapshot(){
+    try{
+        if(!state.student || state.isAdmin || state.assetsStale) return;
+        const code=RS.normalizeCode(state.student.code);
+        if(!code) return;
+        const all=readMarketSnapshots();
+        all[code]={
+            at:Date.now(),
+            student:state.student,
+            reward:state.reward,
+            ownedItems:state.ownedItems||[],
+            gifts:state.gifts||[]
+        };
+        Object.keys(all)
+            .sort(function(a,b){ return Number(all[b].at||0)-Number(all[a].at||0); })
+            .slice(3)
+            .forEach(function(k){ delete all[k]; });
+        const text=JSON.stringify(all,snapshotReplacer);
+        if(text.length<1500000) window.localStorage.setItem(MARKET_SNAPSHOT_KEY,text);
+    }catch(e){}
+}
+function showMarketSnapshot(code){
+    const snap=readMarketSnapshot(code);
+    if(!snap) return false;
+    try{
+        state.student=snap.student;
+        state.reward=snap.reward;
+        state.ownedItems=Array.isArray(snap.ownedItems)?snap.ownedItems:[];
+        if((!state.gifts || !state.gifts.length) && Array.isArray(snap.gifts) && snap.gifts.length){
+            state.gifts=snap.gifts;
+            rebuildGiftMap();
+        }
+        state.assetsStale=true;
+        renderProfile(
+            state.student,
+            state.ownedItems,
+            state.reward
+        );
+        return true;
+    }catch(error){
+        console.warn("[Profile snapshot]",error);
+        state.assetsStale=false;
+        return false;
+    }
+}
+
 async function searchStudent(){
  
     const code=
@@ -3812,11 +3896,24 @@ async function searchStudent(){
  
     state.submissionCsvText="";
     state.assetProfile=null;
- 
+
     setMultitaskEffect(
         false
     );
- 
+
+    state.assetsStale=false;
+    /* v4.9.12: hiện ngay hồ sơ lưu từ lần trước trong lúc tải số liệu mới */
+    if(
+        code !== RS.normalizeCode(CONFIG.adminCode) &&
+        showMarketSnapshot(code)
+    ){
+        showMessage(
+            "rxMessage",
+            "Đang hiển thị số liệu lần trước, đang cập nhật số liệu mới nhất...",
+            "loading"
+        );
+    }
+
     try{
  
         if(
@@ -4231,12 +4328,16 @@ async function searchStudent(){
         applyCanonicalAssets(
             assetProfile
         );
- 
+
+        state.assetsStale=false;
+
         renderProfile(
             state.student,
             state.ownedItems,
             state.reward
         );
+
+        saveMarketSnapshot();
  
         /* Đồng bộ mã đã xác minh và Context thật sang Minh Hồng. */
         syncStudentSession();
@@ -6256,11 +6357,20 @@ function requestExchange(
 ){
  
     if(!state.student){
- 
+
         alert(
             "Hãy tra cứu hồ sơ học viên trước khi đổi quà."
         );
- 
+
+        return;
+    }
+
+    if(state.assetsStale){
+
+        alert(
+            "Đang cập nhật số dư mới nhất, vui lòng chờ vài giây rồi đổi quà."
+        );
+
         return;
     }
  
@@ -7205,7 +7315,7 @@ async function confirmExchangeDirect(){
     const gift=
         state.selectedGift;
 
-    if(state.exchangeSyncing){
+    if(state.exchangeSyncing || state.assetsStale){
 
         const syncNotice=
             el(
