@@ -3,7 +3,7 @@
 "use strict";
  
 /* =========================================================
-   HỒ SƠ / CHỢ PHIÊN v4.9.1L-R3
+   HỒ SƠ / CHỢ PHIÊN v4.9.11 (báo thành công ngay khi Apps Script đã ghi, đồng bộ túi đồ ở nền)
    CORE CANONICAL ASSETS / MARKET SELF-RECOVERY
  
    GIỮ:
@@ -308,6 +308,9 @@ const state={
     day:null,
  
     submitting:false,
+
+    /* v4.9.11: đang đồng bộ túi đồ sau giao dịch ghi thẳng (chặn mua tiếp để không dùng số dư cũ) */
+    exchangeSyncing:false,
  
     isAdmin:false
 };
@@ -6973,7 +6976,28 @@ async function rebuildStudentFromShared(shared){
         rebuildGiftMap();
     }
 
-    return await refreshCanonicalAssets();
+    /* v4.9.11: dùng luôn dữ liệu chung vừa tải (còn trong bộ nhớ đệm của Core),
+       không bắt Core tải lại toàn bộ lần nữa như refreshCanonicalAssets() */
+    const profile=
+        await loadCanonicalStudentProfile(
+            state.student.code,
+            false
+        );
+
+    renderCanonicalAssets(
+        profile
+    );
+
+    try{
+        window.dispatchEvent(
+            new CustomEvent(
+                "ocdRewardProfileChanged",
+                {detail:{code:RS.normalizeCode(state.student.code),profile:profile,source:"market"}}
+            )
+        );
+    }catch(eventError){}
+
+    return profile;
 }/* =========================================================
    VERIFY EXCHANGE
 ========================================================= */
@@ -7052,6 +7076,118 @@ async function verifyDirectExchange(
  
  
 /* =========================================================
+   v4.9.11: HIỂN THỊ NGAY SAU KHI APPS SCRIPT XÁC NHẬN ĐÃ GHI
+   Apps Script chỉ trả "đã ghi" sau khi dòng PhieuDoi nằm trong Sheet,
+   nên trang trừ Hồng Ngọc + thêm vật phẩm ngay, rồi đồng bộ lại ở nền.
+========================================================= */
+
+function vnNowStamp(){
+
+    const d=new Date();
+    const p=function(n){ return String(n).padStart(2,"0"); };
+
+    return p(d.getDate())+"/"+p(d.getMonth()+1)+"/"+d.getFullYear()+" "+
+        p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());
+}
+
+function applyOptimisticExchange(gift){
+
+    if(!state.student || !gift){
+        return;
+    }
+
+    const price=
+        Number(gift.marketPrice || 0);
+
+    const gems=
+        Object.assign({},state.student.gems || {});
+
+    gems[HONG_KEY]=
+        Math.max(0,Number(gems[HONG_KEY] || 0)-price);
+
+    const reward=
+        gift.rewardInfo || getGemRewardInfo(gift);
+
+    if(reward && reward.gemType){
+        gems[reward.gemType]=
+            Number(gems[reward.gemType] || 0)+Number(reward.amount || 0);
+    }
+
+    state.student.gems=gems;
+
+    if(!reward && !gift.isMysteryBox){
+
+        state.ownedItems=
+            (state.ownedItems || []).concat([{
+                timestamp:vnNowStamp(),
+                code:state.student.code,
+                dealId:gift.transactionDealId || "",
+                giftName:gift.name,
+                gift:gift,
+                image:gift.image || "",
+                description:gift.description || "",
+                rarity:gift.rarity || null,
+                quantity:1,
+                optimistic:true
+            }]);
+    }
+
+    const currentPanel=
+        state.activeProfilePanel;
+
+    renderProfile(
+        state.student,
+        state.ownedItems,
+        state.reward
+    );
+
+    closeProfilePanels();
+
+    if(currentPanel){
+        toggleProfilePanel(currentPanel);
+    }
+
+    if(state.marketLoaded){
+        renderMarket();
+    }
+}
+
+async function syncAfterDirectExchange(gift){
+
+    state.exchangeSyncing=true;
+
+    try{
+
+        /* Apps Script ưu tiên (Core v4.4.8 chờ lâu hơn trước khi dùng CSV); thử tối đa 6 lần */
+        const result=
+            await verifyDirectExchange(
+                gift,
+                true,
+                6
+            );
+
+        if(!result.success){
+            console.warn(
+                "[Direct Exchange] Chưa đọc lại được phiếu "+gift.transactionDealId+
+                "; giữ số liệu tạm, Core sẽ tự cập nhật khi có dữ liệu mới."
+            );
+        }
+
+    }catch(error){
+
+        console.warn(
+            "[Direct Exchange] Đồng bộ nền lỗi:",
+            error
+        );
+
+    }finally{
+
+        state.exchangeSyncing=false;
+    }
+}
+
+
+/* =========================================================
    CONFIRM EXCHANGE
 ========================================================= */
  
@@ -7068,6 +7204,22 @@ async function confirmExchangeDirect(){
  
     const gift=
         state.selectedGift;
+
+    if(state.exchangeSyncing){
+
+        const syncNotice=
+            el(
+                "rxTicketNotice"
+            );
+
+        syncNotice.className=
+            "rx-ticket-notice";
+
+        syncNotice.textContent=
+            "Đang cập nhật túi đồ sau giao dịch trước, vui lòng chờ vài giây rồi bấm lại.";
+
+        return;
+    }
  
     const balance=
         Number(
@@ -7138,11 +7290,20 @@ async function confirmExchangeDirect(){
 
         if(mode==="sent"){
 
-            result=
-                await verifyDirectExchange(
-                    gift,
-                    true
-                );
+            /* Sheet đã có dòng PhieuDoi -> báo thành công ngay, đồng bộ lại ở nền */
+            if(typeof RS.markDataFresh==="function"){
+                RS.markDataFresh(90000);
+            }
+
+            applyOptimisticExchange(
+                gift
+            );
+
+            syncAfterDirectExchange(
+                gift
+            );
+
+            result={success:true};
 
         }else{
 
@@ -7653,6 +7814,11 @@ function handleRewardProfileChanged(event){
     )
     ? event.detail
     : {};
+
+    /* v4.9.11: sự kiện do chính trang này phát sau khi đã vẽ lại -> bỏ qua */
+    if(detail.source==="market"){
+        return;
+    }
 
     const changedCode=
         RS.normalizeCode(

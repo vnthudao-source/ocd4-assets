@@ -4232,7 +4232,11 @@ async function submitGiftDirect(data){
             console.info("[Tặng quà] Apps Script:",json);
 
             if(json && json.ok){
-                return ((json.written && json.written.gift) || (json.dup && json.dup.gift)) ? "sent" : "notsent";
+                const ok = (json.written && json.written.gift) || (json.dup && json.dup.gift);
+                if(ok && typeof RS.markDataFresh === "function"){
+                    RS.markDataFresh(90000);
+                }
+                return ok ? "sent" : "notsent";
             }
             if(json && /lo[aạ]i d[uữ] li[eệ]u ghi kh[oô]ng h[oợ]p l[eệ]/i.test(String(json.error||""))){
                 blockGiftKind();

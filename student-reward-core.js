@@ -891,8 +891,53 @@ function isHardApiError(error){
 function stamp(){ return new Date().toLocaleTimeString("vi-VN",{timeZone:CONFIG.timeZone}); }
 /* Chạy Apps Script; nếu chậm hoặc lỗi thì chạy CSV song song. Bên nào thành công trước thắng.
    Apps Script thắng -> huỷ request CSV. CSV thắng -> Apps Script (dùng chung) vẫn chạy nốt cho lượt sau. */
-function raceApiCsv(apiFn,csvFn,label){
+/* v4.4.8: "cửa sổ dữ liệu mới" – ngay sau khi ghi vào Sheet (mua quà, bán vật phẩm, nhận thưởng…)
+   bản CSV của Google thường chậm vài chục giây. Trong cửa sổ này chờ Apps Script lâu hơn (FRESH_HEDGE_MS)
+   trước khi tải CSV song song, để không lấy nhầm dữ liệu cũ. */
+const FRESH_HEDGE_MS=8000;
+let freshUntil=0;
+function markDataFresh(ms){
+    freshUntil=Math.max(freshUntil,Date.now()+(Number(ms)||60000));
+}
+function hedgeDelay(){ return Date.now()<freshUntil?FRESH_HEDGE_MS:API_HEDGE_MS; }
+/* v4.4.8: CSV về trước nhưng Apps Script về sau có NHIỀU dòng hơn -> dữ liệu đang hiển thị là bản cũ.
+   Tự tải lại (ưu tiên Apps Script) rồi báo cho các trang vẽ lại; tối đa 1 lần mỗi 45 giây để không lặp. */
+const LATE_REFRESH_GAP_MS=45000;
+let lateRefreshHook=null,lateRefreshAt=0,lateRefreshTimer=null;
+function setLateRefreshHook(fn){ lateRefreshHook=typeof fn==="function"?fn:null; }
+function countDataRows(rows){
+    if(!Array.isArray(rows)) return -1;
+    let n=0;
+    for(let i=1;i<rows.length;i++){
+        const r=rows[i];
+        if(Array.isArray(r) && r.some(function(v){ return String(v==null?"":v).trim()!==""; })) n++;
+    }
+    return n;
+}
+function noteLateApiRows(label,apiRows,csvRows){
+    const a=countDataRows(apiRows),c=countDataRows(csvRows);
+    if(a<0 || c<0 || a<=c) return;
+    console.info("[Reward Core] CSV ("+label+") là bản cũ: Apps Script có "+a+" dòng, CSV "+c+" dòng. Tự cập nhật lại.");
+    if(lateRefreshTimer || Date.now()-lateRefreshAt<LATE_REFRESH_GAP_MS) return;
+    lateRefreshTimer=setTimeout(function(){
+        lateRefreshTimer=null;
+        lateRefreshAt=Date.now();
+        markDataFresh(60000);
+        sharedCache=null;
+        sharedCacheTime=0;
+        Promise.resolve().then(function(){
+            return lateRefreshHook?lateRefreshHook():loadSharedRewardData(true);
+        }).then(function(){
+            try{ window.dispatchEvent(new CustomEvent("ocdRewardSharedChanged",{detail:{reason:"late-api",label:label}})); }catch(e){}
+        }).catch(function(error){
+            console.warn("[Reward Core] Tự cập nhật lại chưa được:",error && error.message || error);
+        });
+    },800);
+}
+/* onLate(apiValue,csvValue): gọi khi CSV đã thắng nhưng Apps Script trả kết quả sau đó */
+function raceApiCsv(apiFn,csvFn,label,onLate){
     return new Promise(function(resolve,reject){
+        let csvValue=null;
         let done=false,csvStarted=false,apiDone=false,csvDone=false,apiErr=null,csvErr=null,hedgeTimer=null;
         const csvAc=new AbortController();
         function finish(ok,value){
@@ -906,7 +951,7 @@ function raceApiCsv(apiFn,csvFn,label){
             csvStarted=true;
             Promise.resolve().then(function(){ return csvFn(csvAc.signal); }).then(function(value){
                 csvDone=true;
-                if(!done){ lastDataSource="CSV dự phòng ("+stamp()+")"; finish(true,value); }
+                if(!done){ lastDataSource="CSV dự phòng ("+stamp()+")"; csvValue=value; finish(true,value); }
             },function(error){
                 csvDone=true; csvErr=error;
                 if(apiDone) finish(false,apiErr||error);
@@ -918,6 +963,8 @@ function raceApiCsv(apiFn,csvFn,label){
                 lastDataSource="Apps Script ("+stamp()+")";
                 try{ csvAc.abort(); }catch(e){}
                 finish(true,value);
+            }else if(onLate && csvValue!==null){
+                try{ onLate(value,csvValue); }catch(e){}
             }
         },function(error){
             apiDone=true; apiErr=error;
@@ -926,11 +973,12 @@ function raceApiCsv(apiFn,csvFn,label){
             if(csvStarted){ if(csvDone) finish(false,csvErr||error); }
             else startCsv();
         });
+        const hedgeMs=hedgeDelay();
         hedgeTimer=setTimeout(function(){
             if(done || csvStarted) return;
-            console.info("[Reward Core] Apps Script chưa trả lời sau "+(API_HEDGE_MS/1000)+"s ("+label+"), tải CSV song song.");
+            console.info("[Reward Core] Apps Script chưa trả lời sau "+(hedgeMs/1000)+"s ("+label+"), tải CSV song song.");
             startCsv();
-        },API_HEDGE_MS);
+        },hedgeMs);
     });
 }
 function apiTargetFor(url){
@@ -1049,7 +1097,9 @@ async function apiAppend(kind,row){
             const json=JSON.parse(await res.text());
             console.info("[Reward Core] Ghi thẳng "+kind+" "+(Date.now()-t0)+"ms:",json);
             if(json && json.ok){
-                return ((json.written&&json.written[kind])||(json.dup&&json.dup[kind]))?"sent":"notsent";
+                const ok=((json.written&&json.written[kind])||(json.dup&&json.dup[kind]));
+                if(ok) markDataFresh(90000);
+                return ok?"sent":"notsent";
             }
             if(isUnsupportedKindReply(json)){ blockApiKind(kind); return "notsent"; }
             if(json && (json.busy || /đang bận/i.test(String(json.error||""))) && attempt<2){ await new Promise(function(r){ setTimeout(r,1500); }); continue; }
@@ -1100,7 +1150,8 @@ async function fetchRows(url){
         return raceApiCsv(
             function(){ return apiSheet(apiTarget.src,apiTarget.name); },
             function(signal){ return fetchCSVRaw(url,signal).then(parseCSV); },
-            apiTarget.name
+            apiTarget.name,
+            function(apiRows,csvRows){ noteLateApiRows(apiTarget.name,apiRows,csvRows); }
         );
     }
     if(apiTarget) lastDataSource="CSV (Apps Script tạm tắt, "+stamp()+")";
@@ -7837,6 +7888,10 @@ window.StudentRewardSystem={
 
     apiAppend,
 
+    markDataFresh,
+
+    setLateRefreshHook,
+
     getStudentSheetCsv,
 
     fetchRows,
@@ -8074,7 +8129,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.4.7";
+const V4_VERSION="4.4.8";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -8356,7 +8411,17 @@ async function installV4(RS){
         return Promise.allSettled(tasks);
     };
 
+    /* v4.4.8: nhớ hồ sơ vừa xem để tự làm mới khi phát hiện CSV cũ */
+    let lastProfileArgs=null;
+    if(typeof RS.setLateRefreshHook==="function"){
+        RS.setLateRefreshHook(function(){
+            if(lastProfileArgs) return RS.refreshStudentRewardProfile(lastProfileArgs[0],lastProfileArgs[1],lastProfileArgs[2]);
+            return RS.loadSharedRewardData(true);
+        });
+    }
+
     RS.getStudentRewardProfile=async function(code,submissionCsvText,force,accessOptions){
+        if(code) lastProfileArgs=[code,submissionCsvText,accessOptions];
         if(force){
             /* v4.4.3: dữ liệu chung được tải song song bên dưới */
 
