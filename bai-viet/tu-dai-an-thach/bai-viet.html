@@ -1,0 +1,263 @@
+<!-- ===== BÀI VIẾT: TỨ ĐẠI ẤN THẠCH · dán vào bài đăng Blogspot (chế độ HTML). Gắn nhãn: Ấn triện ===== -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;text=%E5%9B%9B%E5%A4%A7%E5%8D%B0%E7%9F%B3%E5%AF%BF%E5%B1%B1%E9%9D%92%E7%94%B0%E6%98%8C%E5%8C%96%E5%B7%B4%E6%9E%97%E8%B5%8F&amp;display=swap">
+<style>
+#tdat{--giay:#efe7d6;--giay2:#e3d8c1;--muc:#1f1b17;--muc2:#4a423b;--nhat:#7d7064;--chusa:#b3261e;--chusa2:#8c1d17;--vien:#d3c5aa;
+  --tho:#c68f2e;--thanh:#7f9473;--xuong:#8e1c17;--ba:#d6b58a;
+  max-width:760px;margin:0 auto;padding:0 0 40px;color:var(--muc);background:transparent;
+  font-family:"Be Vietnam Pro",Arial,sans-serif;font-size:16.5px;line-height:1.8;text-align:left}
+#tdat *{box-sizing:border-box}
+#tdat img{max-width:100%;height:auto;display:block;border:0;box-shadow:none;padding:0;background:none}
+#tdat a{color:var(--chusa);text-decoration:underline;text-underline-offset:3px}
+#tdat p{margin:0 0 1.05em}
+#tdat h2,#tdat h3{font-family:"Cormorant Garamond",Georgia,serif;color:var(--muc);font-weight:700;letter-spacing:0;margin:0}
+#tdat .han{font-family:"Noto Serif SC","Noto Serif CJK SC","Songti SC","SimSun",serif;font-weight:900}
+
+/* Mở đầu */
+#tdat .mo-dau{margin:0 0 34px}
+#tdat .mo-dau .anh-bia{border-radius:6px;overflow:hidden;background:#2b1c14;aspect-ratio:16/7}
+#tdat .mo-dau .anh-bia img{width:100%;height:100%;object-fit:cover}
+#tdat .tieu-de{display:flex;gap:22px;align-items:flex-start;margin:28px 0 0}
+#tdat .dau-lon{flex:none;width:96px;height:96px;background:var(--chusa);border-radius:5px;padding:10px;transform:rotate(-3deg);margin-top:6px;
+  box-shadow:inset 0 0 0 3px var(--chusa),inset 0 0 0 5px rgba(255,240,230,.85);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+#tdat .dau-lon i,#tdat .dau i{font-style:normal;color:#fff6ee;display:flex;align-items:center;justify-content:center;line-height:1}
+#tdat .dau-lon i{font-size:33px}
+#tdat .tieu-de h2{font-size:clamp(30px,5.4vw,44px);line-height:1.12}
+#tdat .tieu-de p{margin:12px 0 0;color:var(--muc2);font-size:17px;line-height:1.75}
+
+/* Khung hai nghĩa */
+#tdat .hai-nghia{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid var(--muc);border-bottom:1px solid var(--vien);margin:8px 0 34px}
+#tdat .hai-nghia div{padding:16px 18px 16px 0}
+#tdat .hai-nghia div + div{padding:16px 0 16px 18px;border-left:1px solid var(--vien)}
+#tdat .hai-nghia b{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-size:23px;line-height:1.2;margin-bottom:6px}
+#tdat .hai-nghia small{display:block;font-size:14.5px;line-height:1.65;color:var(--muc2)}
+
+#tdat .muc{font-size:clamp(25px,4vw,31px);line-height:1.2;margin:46px 0 14px}
+#tdat .ghi{font-size:14px;color:var(--nhat);line-height:1.65}
+
+/* Từng loại đá */
+#tdat .da{margin:44px 0 0;padding-top:30px;border-top:1px solid var(--vien)}
+#tdat .da-dau{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+#tdat .dau{flex:none;width:64px;height:64px;background:var(--chusa);border-radius:4px;transform:rotate(-2deg);padding:6px 0;
+  box-shadow:inset 0 0 0 2px var(--chusa),inset 0 0 0 4px rgba(255,240,230,.8);display:flex;flex-direction:column;justify-content:center}
+#tdat .dau i{font-size:23px;height:25px}
+#tdat .da-dau h3{font-size:clamp(27px,4.4vw,34px);line-height:1.1}
+#tdat .da-dau small{display:block;font-size:14px;color:var(--nhat);margin-top:3px;line-height:1.4}
+#tdat .da-than{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start}
+#tdat .da:nth-of-type(even) .da-than{grid-template-columns:1fr 220px}
+#tdat .da:nth-of-type(even) figure{order:2}
+#tdat figure{margin:0}
+#tdat figure .khung{background:var(--giay);border-radius:6px;aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden;
+  border-bottom:6px solid var(--mau,var(--chusa))}
+#tdat figure img{width:86%;height:86%;object-fit:contain}
+#tdat figcaption{font-size:13px;color:var(--nhat);margin-top:7px;line-height:1.5}
+#tdat dl{margin:0 0 16px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:15px;line-height:1.6}
+#tdat dt{color:var(--nhat);white-space:nowrap}
+#tdat dd{margin:0}
+#tdat .loi{border-left:3px solid var(--mau,var(--chusa));padding:2px 0 2px 14px;margin:16px 0 0;font-family:"Cormorant Garamond",Georgia,serif;font-size:20px;line-height:1.45;font-style:italic;color:var(--muc2)}
+
+/* Bảng so sánh */
+#tdat .bang{width:100%;border-collapse:collapse;font-size:14.5px;line-height:1.55;margin:6px 0 8px}
+#tdat .bang th{text-align:left;font-weight:600;padding:9px 10px 9px 0;border-bottom:2px solid var(--muc);vertical-align:bottom}
+#tdat .bang td{padding:10px 10px 10px 0;border-bottom:1px solid var(--vien);vertical-align:top}
+#tdat .bang td:first-child{white-space:nowrap;font-weight:600}
+#tdat .cham{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:0;background:var(--mau)}
+#tdat .cuon{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* Đá thưởng ngoạn */
+#tdat .thuong{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:2px solid var(--muc)}
+#tdat .thuong div{padding:16px 18px 14px 0;border-bottom:1px solid var(--vien)}
+#tdat .thuong div:nth-child(even){padding-left:18px;padding-right:0;border-left:1px solid var(--vien)}
+#tdat .thuong b{font-family:"Cormorant Garamond",Georgia,serif;font-size:22px;display:block;line-height:1.25}
+#tdat .thuong i{font-style:normal;color:var(--nhat);font-size:13.5px;display:block;margin:2px 0 6px}
+#tdat .thuong p{font-size:14.5px;line-height:1.7;margin:0}
+
+/* Chọn đá */
+#tdat .chon{list-style:none;padding:0;margin:0}
+#tdat .chon li{position:relative;padding:0 0 14px 30px;margin:0}
+#tdat .chon li:before{content:"";position:absolute;left:4px;top:9px;width:11px;height:11px;background:var(--chusa);transform:rotate(45deg)}
+
+/* Kêu gọi */
+#tdat .moi{margin:46px 0 0;background:var(--muc);color:#efe4d2;border-radius:6px;padding:26px 24px;display:flex;gap:20px;align-items:center}
+#tdat .moi .dau{width:58px;height:58px}
+#tdat .moi .dau i{font-size:21px;height:22px}
+#tdat .moi h3{color:#fff7ea;font-size:26px;line-height:1.2;margin-bottom:6px}
+#tdat .moi p{margin:0 0 14px;font-size:15px;line-height:1.7;color:#d9ccb8}
+#tdat .moi a.nut{display:inline-block;background:var(--chusa);color:#fff;text-decoration:none;font-weight:600;padding:10px 20px;border-radius:999px;font-size:15px}
+#tdat .moi a.nut:hover{background:var(--chusa2)}
+#tdat .moi a.nut:focus-visible,#tdat a:focus-visible{outline:2px solid #e7b94f;outline-offset:3px}
+
+#tdat .nguon{margin-top:40px;font-size:13.5px;color:var(--nhat);line-height:1.7}
+#tdat .nguon b{color:var(--muc2)}
+#tdat .nguon a{color:var(--nhat)}
+
+@media (max-width:640px){
+  #tdat{font-size:16px}
+  #tdat .tieu-de{gap:16px}
+  #tdat .dau-lon{width:74px;height:74px;padding:7px}
+  #tdat .dau-lon i{font-size:25px}
+  #tdat .hai-nghia,#tdat .thuong{grid-template-columns:1fr}
+  #tdat .hai-nghia div + div,#tdat .thuong div:nth-child(even){border-left:0;padding-left:0;border-top:1px solid var(--vien)}
+  #tdat .hai-nghia div{padding-right:0}
+  #tdat .thuong div{padding-right:0}
+  #tdat .da-than,#tdat .da:nth-of-type(even) .da-than{grid-template-columns:1fr}
+  #tdat .da:nth-of-type(even) figure{order:0}
+  #tdat figure{max-width:260px}
+  #tdat .moi{flex-direction:column;align-items:flex-start;padding:22px 18px}
+}
+</style>
+
+<div id="tdat">
+
+  <div class="mo-dau">
+    <div class="anh-bia"><img src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@9fe96f61f1f2748a27b25cf8be7cfe73ca13db80/bai-viet/tu-dai-an-thach/banner-tu-dai-an-thach.webp" alt="Án thư trong phòng thư pháp: giá treo bút, nghiên mực, giấy dó, hộp chu sa và bốn con ấn đá" width="1600" height="700"></div>
+    <div class="tieu-de">
+      <div class="dau-lon han" aria-hidden="true"><i>印</i><i>四</i><i>石</i><i>大</i></div>
+      <div>
+        <h2>Tứ đại ấn thạch: bốn loại đá làm nên một con ấn</h2>
+        <p>Thọ Sơn, Thanh Điền, Xương Hoá, Ba Lâm là bốn dòng đá được giới thư pháp và triện khắc quý trọng nhất. Bài này giúp bạn hiểu mỗi loại đá đến từ đâu, đẹp ở chỗ nào và nên chọn thế nào cho con ấn của mình.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="muc">“Tứ đại danh thạch” có hai nghĩa</h3>
+  <p>Khi nói đến bốn loại đá nổi tiếng của Trung Hoa, người ta có thể đang nói đến hai nhóm hoàn toàn khác nhau, tuỳ ngữ cảnh.</p>
+  <div class="hai-nghia">
+    <div><b>Tứ đại ấn chương thạch</b><small>Đá để khắc ấn và chạm khắc: Thọ Sơn, Thanh Điền, Xương Hoá, Ba Lâm. Chất đá mịn, mềm vừa tay dao, được văn nhân và cả các bậc đế vương yêu chuộng.</small></div>
+    <div><b>Tứ đại thưởng thạch</b><small>Đá tự nhiên để ngắm trong vườn cảnh hay trên án thư: Linh Bích, Thái Hồ, Anh Thạch, Côn Thạch. Quý ở hình dáng, vân đá và âm thanh.</small></div>
+  </div>
+  <p>Với người viết thư pháp, nhóm thứ nhất mới là người bạn đồng hành: con ấn đóng trên tác phẩm gần như luôn được khắc từ một trong bốn dòng đá này.</p>
+
+  <h3 class="muc">Vì sao ấn của văn nhân làm bằng đá?</h3>
+  <p>Trước thời Nguyên, ấn chương chủ yếu được đúc bằng đồng hoặc mài từ ngọc. Những chất liệu ấy quá cứng, người viết phải viết mẫu rồi nhờ thợ thực hiện. Tương truyền cuối đời Nguyên, hoạ sĩ <b>Vương Miện</b> (王冕) dùng loại đá “hoa nhũ thạch” của Thanh Điền để tự tay khắc ấn. Đá mềm vừa đủ cho lưỡi dao, nên người viết có thể tự khắc nét chữ của mình. Từ đó, khắc ấn đá trở thành một nghệ thuật của chính giới văn nhân.</p>
+  <p>Bốn dòng đá ấn đều thuộc nhóm khoáng vật mềm như diệp lạp thạch (pyrophyllite) và dickite. Chúng đủ mềm để dao khắc ăn sâu, nhưng đủ chắc để giữ nét sắc qua hàng nghìn lần đóng.</p>
+
+  <section class="da" style="--mau:var(--tho)">
+    <div class="da-dau">
+      <div class="dau han" aria-hidden="true"><i>寿</i><i>山</i></div>
+      <div><h3>Thọ Sơn thạch</h3><small>寿山石 · thôn Thọ Sơn, ngoại ô phía bắc Phúc Châu, Phúc Kiến</small></div>
+    </div>
+    <div class="da-than">
+      <figure><div class="khung"><img src="https://drive.google.com/thumbnail?id=1GtEYIXVVBPJ8sunCWL0lR-DzDJgSVCyq&amp;sz=w600" alt="Ấn đá Thọ Sơn" loading="lazy" referrerpolicy="no-referrer"></div><figcaption>Ấn Thọ Sơn thạch</figcaption></figure>
+      <div>
+        <dl>
+          <dt>Chất đá</dt><dd>Trong, mịn, “béo” như mỡ đông, cầm ấm tay</dd>
+          <dt>Chủng loại</dt><dd>Rất nhiều, thường chia theo nơi lấy đá: điền khanh (đá ruộng), thuỷ khanh, sơn khanh</dd>
+          <dt>Loại quý nhất</dt><dd>Điền hoàng (田黄), được gọi là “vua của các loại đá”</dd>
+        </dl>
+        <p>Thọ Sơn là dòng đá có nhiều chủng loại nhất trong bốn loại đá ấn. Đá ở đây đã được chạm khắc từ khoảng 1.500 năm trước. Đỉnh cao của Thọ Sơn là <b>điền hoàng</b>, loại đá vàng nằm rải rác dưới lớp ruộng, trữ lượng rất ít. Dân gian có câu “một lạng điền hoàng, một lạng vàng”.</p>
+        <p>Bộ ba con ấn điền hoàng nối bằng xích đá (tam liên chương) của vua Càn Long là một trong những bảo vật nổi tiếng nhất của dòng đá này.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="da" style="--mau:var(--thanh)">
+    <div class="da-dau">
+      <div class="dau han" aria-hidden="true"><i>青</i><i>田</i></div>
+      <div><h3>Thanh Điền thạch</h3><small>青田石 · huyện Thanh Điền, thành phố Lệ Thuỷ, Chiết Giang</small></div>
+    </div>
+    <div class="da-than">
+      <figure><div class="khung"><img src="https://drive.google.com/thumbnail?id=1yHTGPfsbLnGBVy-7GyVp_xhllt85TLOs&amp;sz=w600" alt="Ấn đá Thanh Điền" loading="lazy" referrerpolicy="no-referrer"></div><figcaption>Ấn Thanh Điền thạch</figcaption></figure>
+      <div>
+        <dl>
+          <dt>Khoáng vật</dt><dd>Diệp lạp thạch (pyrophyllite)</dd>
+          <dt>Chất đá</dt><dd>Màu phong phú, chất “giòn”, ăn dao, nét khắc sắc gọn</dd>
+          <dt>Loại quý nhất</dt><dd>Phong môn thanh (封门青) và Đăng quang đống (灯光冻)</dd>
+        </dl>
+        <p>Thanh Điền là dòng đá gắn với sự ra đời của nghệ thuật khắc ấn văn nhân, nhờ câu chuyện Vương Miện ở trên. <b>Phong môn thanh</b> có màu xanh nhạt, chất thuần, được ví là “quân tử trong các loại đá”. <b>Đăng quang đống</b> trong đến mức soi lên đèn thấy ánh sáng xuyên qua như sáp đông.</p>
+        <p>Vì dễ khắc mà nét vẫn sắc, Thanh Điền thường là loại đá đầu tiên người học triện khắc cầm dao luyện tập.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="da" style="--mau:var(--xuong)">
+    <div class="da-dau">
+      <div class="dau han" aria-hidden="true"><i>昌</i><i>化</i></div>
+      <div><h3>Xương Hoá thạch</h3><small>昌化石 · núi Ngọc Nham, vùng Xương Hoá, Lâm An, Chiết Giang</small></div>
+    </div>
+    <div class="da-than">
+      <figure><div class="khung"><img src="https://drive.google.com/thumbnail?id=1o1UZagjjarAkLRHv78xOG_1iMfp0y1Gf&amp;sz=w600" alt="Ấn đá Xương Hoá" loading="lazy" referrerpolicy="no-referrer"></div><figcaption>Ấn Xương Hoá thạch</figcaption></figure>
+      <div>
+        <dl>
+          <dt>Lịch sử</dt><dd>Khai thác và chạm khắc từ thời Chiến Quốc, hơn 2.300 năm</dd>
+          <dt>Đặc trưng</dt><dd>Vân đỏ của thần sa (chu sa, thuỷ ngân sulfua) trên nền đá</dd>
+          <dt>Loại quý nhất</dt><dd>Kê huyết thạch (鸡血石), “hoàng hậu của các loại ấn”</dd>
+        </dl>
+        <p>Xương Hoá nổi tiếng nhất với <b>kê huyết thạch</b>, tức “đá máu gà”: những mảng đỏ tươi như máu gà loang trên nền đá trong như ngọc. Thợ chạm coi các mảng đỏ là mạch của viên đá và tìm cách giữ lại nhiều nhất có thể.</p>
+        <p>Năm 2016, bộ ấn chân dung các nguyên thủ khắc trên đá kê huyết đã được chọn làm quà tặng tại Hội nghị G20 ở Hàng Châu.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="da" style="--mau:var(--ba)">
+    <div class="da-dau">
+      <div class="dau han" aria-hidden="true"><i>巴</i><i>林</i></div>
+      <div><h3>Ba Lâm thạch</h3><small>巴林石 · Ba Lâm Hữu kỳ, Xích Phong, Nội Mông Cổ</small></div>
+    </div>
+    <div class="da-than">
+      <figure><div class="khung"><img src="https://drive.google.com/thumbnail?id=1xw9kNZjckB4LHseVwtAMjEggvnJ0zFIZ&amp;sz=w600" alt="Ấn đá Ba Lâm" loading="lazy" referrerpolicy="no-referrer"></div><figcaption>Ấn Ba Lâm thạch</figcaption></figure>
+      <div>
+        <dl>
+          <dt>Khoáng vật</dt><dd>Diệp lạp thạch (pyrophyllite)</dd>
+          <dt>Chủng loại</dt><dd>Hơn 100 loại, chia 5 nhóm: kê huyết, phúc hoàng, đống thạch, thải thạch, đồ án thạch</dd>
+          <dt>Chất đá</dt><dd>Mịn, sạch, nhuận, mượt, ấm, đặc; nhiều loại trong như mật ong</dd>
+        </dl>
+        <p>Ba Lâm là dòng đá “trẻ” nhất trong bốn loại khi xét về danh tiếng làm ấn. Nhưng các hiện vật chạm bằng đá này đã xuất hiện từ văn hoá Hưng Long Oa (khoảng 8.000 năm) và văn hoá Hồng Sơn (khoảng 6.000 năm). Tương truyền Thành Cát Tư Hãn gọi đây là “đá trời ban”.</p>
+        <p>Ba Lâm cũng có kê huyết thạch và <b>phúc hoàng thạch</b> (vàng như điền hoàng), với giá dễ tiếp cận hơn hai “đàn anh” ở phương nam.</p>
+      </div>
+    </div>
+  </section>
+
+  <h3 class="muc">Bốn loại đá đặt cạnh nhau</h3>
+  <div class="cuon">
+    <table class="bang">
+      <thead><tr><th>Loại đá</th><th>Nơi khai thác</th><th>Nét riêng</th><th>Loại nổi tiếng</th></tr></thead>
+      <tbody>
+        <tr><td><span class="cham" style="--mau:var(--tho)"></span>Thọ Sơn</td><td>Phúc Châu, Phúc Kiến</td><td>Nhiều chủng loại nhất, chất béo ngậy</td><td>Điền hoàng</td></tr>
+        <tr><td><span class="cham" style="--mau:var(--thanh)"></span>Thanh Điền</td><td>Lệ Thuỷ, Chiết Giang</td><td>Giòn, ăn dao, nét sắc</td><td>Phong môn thanh, Đăng quang đống</td></tr>
+        <tr><td><span class="cham" style="--mau:var(--xuong)"></span>Xương Hoá</td><td>Lâm An, Chiết Giang</td><td>Vân đỏ thần sa</td><td>Kê huyết thạch</td></tr>
+        <tr><td><span class="cham" style="--mau:var(--ba)"></span>Ba Lâm</td><td>Xích Phong, Nội Mông Cổ</td><td>Trong, ấm, màu đa dạng</td><td>Kê huyết, Phúc hoàng</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="ghi">Tên gọi và mức độ quý hiếm của từng loại có thể khác nhau tuỳ tài liệu; bảng trên chỉ tóm tắt những đặc điểm được nhắc đến nhiều nhất.</p>
+
+  <h3 class="muc">Tứ đại thưởng thạch: bốn loại đá để ngắm</h3>
+  <p>Nhóm thứ hai không dùng để khắc ấn mà để bày trong vườn hay trên án thư. Người xưa đánh giá chúng theo bốn tiêu chí <b>sấu, lậu, thấu, trứu</b> (gầy, có lỗ, thông suốt, nhăn nếp). Về sau người ta thêm hình, văn, chất, sắc, vận.</p>
+  <div class="thuong">
+    <div><b>Linh Bích thạch</b><i>灵璧石 · huyện Linh Bích, An Huy</i><p>Cứng như ngọc, gõ vào ngân vang như đồ đồng, nên được khen “ngọc chấn kim thanh”. Dàn khánh đá trong Cố Cung và Khổng miếu được cho là làm từ đá Linh Bích.</p></div>
+    <div><b>Thái Hồ thạch</b><i>太湖石 · quanh hồ Thái Hồ, Giang Tô và Chiết Giang</i><p>Hình dáng tự nhiên với đủ “gầy, lỗ, thông, nhăn”, thường dùng đắp núi giả. Nổi tiếng nhất là Quan Vân phong ở Lưu Viên (Tô Châu) và Ngọc Linh Lung ở Dự Viên (Thượng Hải).</p></div>
+    <div><b>Anh thạch</b><i>英石 · Anh Đức, Quảng Đông</i><p>Đá vôi phong hoá, màu đen xám, dáng gầy và cổ kính. Đã được ghi chép kỹ trong “Vân Lâm thạch phổ” (1133). Tô Đông Pha từng có đôi đá xanh, trắng và đặt tên là “Cừu Trì”.</p></div>
+    <div><b>Côn thạch</b><i>昆石 · núi Ngọc Phong, Côn Sơn, Giang Tô</i><p>Trắng như tuyết, tinh thể thạch anh đan thành mạng như xương gà hay bông tuyết. Được khai thác và thưởng ngoạn từ thời Tây Hán, hơn 2.200 năm.</p></div>
+  </div>
+
+  <h3 class="muc">Chọn đá cho con ấn của bạn</h3>
+  <p>Với người viết thư pháp, con ấn đẹp trước hết phải khắc được nét sắc và đóng ra rõ. Khi chọn đá, bạn có thể để ý mấy điều sau:</p>
+  <ul class="chon">
+    <li><b>Soi đá dưới đèn.</b> Vết nứt chân chim thường chỉ hiện ra khi có ánh sáng xuyên qua. Đá nứt có thể vỡ khi khắc hoặc khi đóng mạnh.</li>
+    <li><b>Tránh sa đinh và ổ trùng.</b> Sa đinh là những hạt cứng lẫn trong đá, làm mẻ dao và đứt nét. Ổ trùng là những lỗ rỗ bên trong. Đá tốt hạn chế được cả hai.</li>
+    <li><b>Chọn độ trong theo mục đích.</b> Đá thấu quang (hơi trong) đẹp để ngắm và làm quà. Để luyện khắc, một viên đá đục, đều và ăn dao là đủ.</li>
+    <li><b>Kích thước theo khổ chữ.</b> Ấn 0,8 đến 1,5 cm hợp với thiệp, quạt. Ấn 2 đến 3 cm hợp với khổ lớn. Ấn không nên lấn át chữ ký.</li>
+    <li><b>Bảo quản nhẹ nhàng.</b> Lau sạch chu sa sau khi đóng, cất trong hộp, tránh va đập và nắng gắt. Đá kê huyết để lâu dưới ánh sáng mạnh có thể sẫm màu dần.</li>
+  </ul>
+
+  <div class="moi">
+    <div class="dau han" aria-hidden="true"><i>印</i><i>石</i></div>
+    <div>
+      <h3>Đặt khắc một con ấn của riêng bạn</h3>
+      <p>Chọn loại ấn, kích thước và loại đá, trang đăng ký sẽ tính sẵn giá tạm tính. GVCN sẽ liên hệ để thống nhất nội dung và mẫu khắc.</p>
+      <!-- Đổi đường dẫn dưới đây khi trang Đăng ký làm ấn có địa chỉ chính thức -->
+      <a class="nut" href="https://www.thudao.com/p/ang-tai-bang-xep-hang-gan-nhat.html">Đăng ký làm ấn</a>
+    </div>
+  </div>
+
+  <div class="nguon">
+    <b>Tài liệu tham khảo</b><br>
+    <a href="https://baike.baidu.com/item/%E5%9B%9B%E5%A4%A7%E5%90%8D%E7%9F%B3/6355229" rel="nofollow noopener" target="_blank">Baidu Baike: 四大名石</a><br>
+    <a href="https://m.sohu.com/a/715136809_121089602/" rel="nofollow noopener" target="_blank">Sohu: 中国传统四大名石，你知道几个？</a><br>
+    <a href="https://www.ihchina.cn/project_details/24976.html" rel="nofollow noopener" target="_blank">Di sản phi vật thể Trung Quốc: Chạm khắc kê huyết thạch Xương Hoá</a><br>
+    <a href="https://www.ihchina.cn/project_details/23725.html" rel="nofollow noopener" target="_blank">Di sản phi vật thể Trung Quốc: Chạm khắc đá Ba Lâm</a>
+  </div>
+
+</div>
+<!-- ===== HẾT BÀI VIẾT ===== -->
