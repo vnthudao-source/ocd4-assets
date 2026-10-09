@@ -1,10 +1,25 @@
 /* Đăng ký làm ấn – thudao.com. Cấu hình (API_URL, bảng giá) đặt trong window.DLA_CONFIG trên trang Blogspot. */
 (function(){
   "use strict";
-  function showErr(m){ m = "(v1.1) " + m; try { var w = document.getElementById("dla-who"); if (w){ w.className = "who warn"; w.textContent = "Lỗi trang: " + m; } } catch(e){} }
+  function showErr(m){ m = "(v1.2) " + m; try { var w = document.getElementById("dla-who"); if (w){ w.className = "who warn"; w.textContent = "Lỗi trang: " + m; } } catch(e){} }
   window.addEventListener("error", function(ev){ if (ev && ev.message) showErr(ev.message); });
 
-  var C = window.DLA_CONFIG || {};
+  /* Blogger hay đổi ký tự đặc biệt trong <script> thành mã HTML (vd "–" thành "&#8211;"): giải mã lại toàn bộ cấu hình */
+  function decodeEnt(s){
+    return String(s)
+      .replace(/&#(\d+);/g, function(m, n){ return String.fromCharCode(Number(n)); })
+      .replace(/&#x([0-9a-f]+);/gi, function(m, n){ return String.fromCharCode(parseInt(n, 16)); })
+      .replace(/&(amp|quot|lt|gt|nbsp|ndash|mdash|hellip);/g, function(m, n){
+        return { amp: "&", quot: '"', lt: "<", gt: ">", nbsp: " ", ndash: "\u2013", mdash: "\u2014", hellip: "\u2026" }[n];
+      });
+  }
+  function deepDecode(v){
+    if (typeof v === "string") return decodeEnt(v);
+    if (Array.isArray(v)) return v.map(deepDecode);
+    if (v && typeof v === "object"){ var o = {}; Object.keys(v).forEach(function(k){ o[k] = deepDecode(v[k]); }); return o; }
+    return v;
+  }
+  var C = deepDecode(window.DLA_CONFIG || {});
   var API_URL = C.API_URL || "", DESIGN_FEE = C.DESIGN_FEE || 0, MAX_ITEMS = C.MAX_ITEMS || 10, MAX_QTY = C.MAX_QTY || 20, PRICES = C.PRICES;
 
   var SESSION_KEY = "ocd_student_session_v1";
@@ -325,8 +340,153 @@
   items = [newItem()];
   render();
 
+  /* ====== BANNER ẤN TRIỆN (ảnh lấy từ bảng tính DoiQua, tab QuaTang) ====== */
+  var B = C.BANNER || {};
+  var BANNER_NAMES = B.items || ["Ấn Thọ Sơn Thạch", "Ấn Thanh Điền Thạch", "Ấn Xương Hoá Thạch", "Ấn Ba Lâm Thạch"];
+  var BANNER_FALLBACK = {   // dùng khi không đọc được bảng tính
+    "an tho son thach": "1GtEYIXVVBPJ8sunCWL0lR-DzDJgSVCyq",
+    "an thanh dien thach": "1yHTGPfsbLnGBVy-7GyVp_xhllt85TLOs",
+    "an xuong hoa thach": "1o1UZagjjarAkLRHv78xOG_1iMfp0y1Gf",
+    "an ba lam thach": "1xw9kNZjckB4LHseVwtAMjEggvnJ0zFIZ"
+  };
+  var bannerImgs = null;   // { tên đã chuẩn hoá: driveId }
+
+  function nk(s){
+    return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D")
+      .toLowerCase().replace(/\s+/g, " ").trim();
+  }
+  function driveId(u){
+    var m = String(u || "").match(/\/d\/([\w-]{20,})/) || String(u || "").match(/[?&]id=([\w-]{20,})/);
+    return m ? m[1] : (/^[\w-]{20,}$/.test(String(u || "").trim()) ? String(u).trim() : "");
+  }
+  function driveImg(id, w){ return "https://drive.google.com/thumbnail?id=" + encodeURIComponent(id) + "&sz=w" + (w || 400); }
+  function parseCSV(t){
+    var rows = [], row = [], v = "", q = false;
+    for (var i = 0; i < t.length; i++){
+      var c = t[i];
+      if (q){ if (c === '"'){ if (t[i + 1] === '"'){ v += '"'; i++; } else q = false; } else v += c; continue; }
+      if (c === '"') q = true;
+      else if (c === ","){ row.push(v); v = ""; }
+      else if (c === "\n" || c === "\r"){ if (c === "\r" && t[i + 1] === "\n") i++; row.push(v); rows.push(row); row = []; v = ""; }
+      else v += c;
+    }
+    if (v || row.length){ row.push(v); rows.push(row); }
+    return rows;
+  }
+  function loadBannerImages(){
+    var map = {};
+    Object.keys(BANNER_FALLBACK).forEach(function(k){ map[k] = BANNER_FALLBACK[k]; });
+    var url = "https://docs.google.com/spreadsheets/d/" + (B.sheetId || "1-IkcpEkKQtIavl5DIf6Sbwx3p0aAfnSS4HjT6dn1u_E") +
+      "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(B.sheetName || "QuaTang");
+    return fetch(url, { cache: "no-store", credentials: "omit" })
+      .then(function(r){ return r.text(); })
+      .then(function(t){
+        var rows = parseCSV(t), h = (rows[0] || []).map(nk);
+        var cn = h.indexOf("ten qua"), ci = h.indexOf("icon");
+        if (cn < 0) cn = 0;
+        if (ci < 0) ci = 1;
+        rows.slice(1).forEach(function(r){ var id = driveId(r[ci]); if (r[cn] && id) map[nk(r[cn])] = id; });
+        return map;
+      })
+      .catch(function(){ return map; });
+  }
+  function renderBanner(){
+    var el = $("dla-banner"); if (!el) return;
+    var title = B.title || "Ấn triện thủ công, nâng tầm nét chữ";
+    var sub = B.subtitle || "Mỗi con ấn được chọn đá, chọn chữ và khắc tay riêng cho người viết.";
+    el.className = "banner";
+    el.innerHTML =
+      '<div class="bn-in"><div class="bn-text"><span class="bn-mark">印</span>' +
+      '<h2 class="bn-title">' + esc(title) + '</h2><p class="bn-sub">' + esc(sub) + '</p>' +
+      '<button type="button" class="bn-cta" id="dla-cta">Đăng ký làm ấn</button></div>' +
+      '<div class="bn-seals">' + BANNER_NAMES.map(function(n, i){
+        var id = bannerImgs && bannerImgs[nk(n)];
+        return '<figure class="bn-seal" style="--i:' + i + '"><div class="bn-img">' +
+          (id ? '<img src="' + driveImg(id, 400) + '" alt="' + esc(n) + '" loading="lazy" referrerpolicy="no-referrer">' : '<span class="bn-ph">印</span>') +
+          '</div><figcaption>' + esc(String(n).replace(/^Ấn\s+/i, "")) + '</figcaption></figure>';
+      }).join("") + "</div></div>";
+  }
+  on("dla-cta", "click", function(){ var f = $("dla-form"); if (f) f.scrollIntoView({ behavior: "smooth", block: "start" }); });
+
+  /* ====== BÀI VIẾT LIÊN QUAN (nhãn Blogger) ====== */
+  var R = C.RELATED || {};
+  var RELATED_LABEL = R.label || "Ấn triện";
+  var RELATED_SHOW = R.show || 6;
+  var related = null, relatedErr = false, relatedAll = false;
+
+  function blogBase(){
+    if (R.blogUrl) return String(R.blogUrl).replace(/\/+$/, "");
+    var h = location.hostname;
+    return /blogspot\.|thudao\.com$/.test(h) ? location.protocol + "//" + h : "https://www.thudao.com";
+  }
+  function postThumb(e){
+    var u = e.media$thumbnail && e.media$thumbnail.url;
+    if (!u){
+      var html = (e.content && e.content.$t) || (e.summary && e.summary.$t) || "";
+      var m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+      u = m ? m[1] : "";
+    }
+    if (!u) return "";
+    return u.replace(/\/s\d+(-c)?\//, "/w480-h320-c/").replace(/=s\d+(-c)?$/, "=w480-h320-c");
+  }
+  function loadRelated(){
+    var cb = "dlaRelated_" + Date.now().toString(36);
+    var done = false;
+    window[cb] = function(data){
+      done = true;
+      var list = (data && data.feed && data.feed.entry) || [];
+      related = list.map(function(e){
+        var link = (e.link || []).filter(function(l){ return l.rel === "alternate"; })[0];
+        return {
+          title: (e.title && e.title.$t) || "(Không tiêu đề)",
+          url: link ? link.href : "#",
+          date: e.published ? new Date(e.published.$t) : null,
+          img: postThumb(e)
+        };
+      });
+      renderRelated();
+      try { delete window[cb]; } catch(x){ window[cb] = undefined; }
+    };
+    var s = document.createElement("script");
+    s.src = blogBase() + "/feeds/posts/default/-/" + encodeURIComponent(RELATED_LABEL) +
+      "?alt=json-in-script&max-results=" + (R.max || 50) + "&orderby=published&callback=" + cb;
+    s.onerror = function(){ relatedErr = true; renderRelated(); };
+    setTimeout(function(){ if (!done && !related){ relatedErr = true; renderRelated(); } }, 15000);
+    (document.body || document.documentElement).appendChild(s);
+  }
+  function renderRelated(){
+    var el = $("dla-related"); if (!el) return;
+    var more = blogBase() + "/search/label/" + encodeURIComponent(RELATED_LABEL);
+    var head = '<h3>Các bài viết liên quan</h3>';
+    if (!related){
+      el.innerHTML = head + '<p class="hint">' + (relatedErr ? "Chưa tải được bài viết. Bạn xem tại <a href='" + more + "'>mục " + esc(RELATED_LABEL) + "</a>." : "Đang tải bài viết…") + "</p>";
+      return;
+    }
+    if (!related.length){
+      el.innerHTML = head + '<p class="hint">Chưa có bài viết nào gắn nhãn “' + esc(RELATED_LABEL) + '”.</p>';
+      return;
+    }
+    var shown = relatedAll ? related : related.slice(0, RELATED_SHOW);
+    el.innerHTML = head + '<div class="rel-grid">' + shown.map(function(p){
+      return '<a class="rel-card" href="' + esc(p.url) + '"><div class="rel-img">' +
+        (p.img ? '<img src="' + esc(p.img) + '" alt="" loading="lazy">' : '<span>印</span>') +
+        '</div><div class="rel-body"><b>' + esc(p.title) + '</b>' +
+        (p.date && !isNaN(p.date) ? '<small>' + p.date.toLocaleDateString("vi-VN") + "</small>" : "") + "</div></a>";
+    }).join("") + "</div>" +
+      (related.length > RELATED_SHOW && !relatedAll ? '<button type="button" class="btn ghost" id="dla-rel-more" style="margin-top:12px">Xem thêm ' + (related.length - RELATED_SHOW) + " bài</button>" : "") +
+      '<p class="hint" style="text-align:right"><a href="' + more + '">Tất cả bài viết “' + esc(RELATED_LABEL) + '” →</a></p>';
+  }
+  on("dla-rel-more", "click", function(){ relatedAll = true; renderRelated(); });
+
+  renderBanner();
+  loadBannerImages().then(function(m){ bannerImgs = m; renderBanner(); });
+  renderRelated();
+  loadRelated();
+
   /* Nếu phần thân bài bị vẽ lại sau khi trang nạp, vẽ lại form từ trạng thái đang có */
   function refresh(){
+    renderBanner();
+    renderRelated();
     if (!$("dla-items")) return;
     render();
     if (lastWho) setWho(lastWho.cls, lastWho.html);

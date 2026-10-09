@@ -69,3 +69,45 @@
 #dla .faq p{margin:8px 0 0;color:#4a423c;font-size:14.5px}
 #dla .hidden{display:none!important}
 @media (max-width:420px){#dla .stones{grid-template-columns:1fr}}
+
+/* ===== Banner ấn triện (v1.2) ===== */
+#dla .banner{position:relative;overflow:hidden;border-radius:18px;margin:0 0 20px;color:#f8efe2;
+  background:radial-gradient(120% 90% at 85% 10%,rgba(179,38,30,.55),transparent 60%),linear-gradient(160deg,#2a1d18 0%,#3b221b 55%,#5a1d17 100%);
+  box-shadow:0 10px 30px rgba(42,29,24,.18)}
+#dla .banner:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.08;
+  background-image:repeating-linear-gradient(90deg,#fff 0 1px,transparent 1px 42px),repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 42px)}
+#dla .bn-in{position:relative;padding:24px 18px 20px}
+#dla .bn-text{position:relative;max-width:520px}
+#dla .bn-mark{display:inline-grid;place-items:center;width:44px;height:44px;border:2px solid #e05a4e;border-radius:5px;color:#ffd9d3;
+  font-size:24px;font-weight:700;transform:rotate(-5deg);background:rgba(179,38,30,.35);margin-bottom:12px}
+#dla .bn-title{font-size:27px;line-height:1.25;color:#fff8ee;margin:0 0 8px;letter-spacing:.3px}
+#dla .bn-sub{margin:0 0 16px;font-size:14.5px;color:#e9dccb;line-height:1.55}
+#dla .bn-cta{border:none;border-radius:999px;background:#f3d9a4;color:#3a2117;font:inherit;font-weight:700;font-size:15px;padding:10px 20px;cursor:pointer}
+#dla .bn-cta:active{transform:translateY(1px)}
+#dla .bn-seals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+#dla .bn-seal{margin:0;text-align:center;animation:dlaRise .7s ease both;animation-delay:calc(var(--i) * .12s)}
+#dla .bn-img{aspect-ratio:1/1;border-radius:14px;background:rgba(255,248,238,.95);display:grid;place-items:center;overflow:hidden;
+  box-shadow:inset 0 0 0 1px rgba(154,123,60,.35),0 6px 14px rgba(0,0,0,.25)}
+#dla .bn-img img{width:88%;height:88%;object-fit:contain;display:block}
+#dla .bn-ph{color:#b3261e;font-size:28px;font-weight:700;opacity:.5}
+#dla .bn-seal figcaption{font-size:12px;line-height:1.3;margin-top:7px;color:#f3e6d4}
+@keyframes dlaRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#dla .bn-seal{animation:none}}
+@media (min-width:640px){
+  #dla .bn-in{display:grid;grid-template-columns:1.05fr 1fr;gap:22px;align-items:center;padding:30px 28px}
+  #dla .bn-title{font-size:32px}
+  #dla .bn-seals{grid-template-columns:repeat(2,1fr);margin-top:0;gap:12px}
+}
+
+/* ===== Bài viết liên quan (v1.2) ===== */
+#dla .rel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+#dla .rel-card{display:block;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#dla .rel-card:hover{border-color:var(--red)}
+#dla .rel-img{aspect-ratio:3/2;background:#f3eee4;display:grid;place-items:center;overflow:hidden}
+#dla .rel-img img{width:100%;height:100%;object-fit:cover;display:block}
+#dla .rel-img span{color:var(--red);font-size:28px;opacity:.4;font-weight:700}
+#dla .rel-body{padding:9px 10px 11px}
+#dla .rel-body b{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.4}
+#dla .rel-body small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+#dla .faq a,#dla #dla-related a{color:var(--red)}
+@media (min-width:640px){#dla .rel-grid{grid-template-columns:repeat(3,1fr)}}
