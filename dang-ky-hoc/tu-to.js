@@ -1,6 +1,6 @@
 /* =========================================================
    TỨ TỔ THƯ MÔN – BANNER + SỐ LIỆU TỔ (giữ nguyên từ trang đăng ký cũ)
-   OCDTeamSlider.mount(host,{team:"2"}) -> trả về phần tử #ocd4TeamSlider (có .otsShow(team))
+   OCDTeamSlider.mount(host,{team:"2"}) – thêm only:true để chỉ hiện slide tổ đó -> trả về phần tử #ocd4TeamSlider (có .otsShow(team))
 ========================================================= */
 (function(){
 "use strict";
@@ -102,7 +102,7 @@ function init(root,opts){
  function formatNumber(value,digits){if(value===null||value===undefined||!Number.isFinite(Number(value)))return "—";return Number(value).toLocaleString("vi-VN",{minimumFractionDigits:digits||0,maximumFractionDigits:digits||0})}
  function restartBar(){bar.classList.remove("is-running");void bar.offsetWidth;if(!paused&&!document.hidden)bar.classList.add("is-running")}
  function stop(){if(timer)clearTimeout(timer);timer=null;bar.classList.remove("is-running")}
- function play(){stop();if(!root.isConnected)return;if(paused||document.hidden)return;restartBar();timer=setTimeout(function(){show(current+1);play()},AUTO_DELAY)}
+ function play(){stop();if(!root.isConnected||slides.length<2)return;if(paused||document.hidden)return;restartBar();timer=setTimeout(function(){show(current+1);play()},AUTO_DELAY)}
  function show(index){
   current=(index+slides.length)%slides.length;
   slides.forEach(function(slide,i){var on=i===current;slide.classList.toggle("is-active",on);slide.setAttribute("aria-hidden",on?"false":"true")});
@@ -130,6 +130,13 @@ function init(root,opts){
 function mount(host,opts){
  host.innerHTML=OTS_HTML;
  var root=host.querySelector("#ocd4TeamSlider");
+ /* opts.only: chỉ giữ slide của tổ opts.team (học viên đã có tổ) */
+ if(opts&&opts.only&&root.querySelector('.ots-slide[data-team="'+String(opts.team)+'"]')){
+  [].slice.call(root.querySelectorAll(".ots-slide")).forEach(function(sl){if(sl.getAttribute("data-team")!==String(opts.team))sl.remove()});
+  [].slice.call(root.querySelectorAll(".ots-dot,[data-ots-action]")).forEach(function(el){el.remove()});
+  root.classList.add("ots-single");
+  var tb=root.querySelector("#otsTimeBar");if(tb)tb.style.visibility="hidden";
+ }
  init(root,opts);
  return root;
 }

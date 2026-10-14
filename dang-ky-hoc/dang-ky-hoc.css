@@ -417,3 +417,8 @@ html.dk-noscroll,html.dk-noscroll body{overflow:hidden}
 .dk-status.pending{background:#fef3c7;color:#92400e;border:1px solid #f6d68a}
 .dk-status.paused{background:#f1f0ee;color:#57534e;border:1px solid #dcd8d3}
 .dk-status.ok{background:#e9f4e6;color:var(--dk-ok);border:1px solid #c6e2bf}
+/* v1.5: đồng bộ tiến độ */
+.dk-sync-box{padding:14px 16px;border-radius:14px;background:#fff6ee;border:1px solid #efd3bd;color:#4b3325}
+.dk-sync-box strong{display:block;font:bold 16px/1.4 Georgia,"Times New Roman",serif;color:var(--dk-red);margin-bottom:6px}
+.dk-sync-box p{margin:0;font-size:14px}
+.dk-sync .dk-actions{margin-top:16px}
