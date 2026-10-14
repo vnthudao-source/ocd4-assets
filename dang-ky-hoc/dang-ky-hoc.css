@@ -439,3 +439,50 @@ html.dk-noscroll,html.dk-noscroll body{overflow:hidden}
 /* v1.5.2: thông tin kỳ chiêu sinh trên tiêu đề khoá */
 .dk-recruit{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px}
 .dk-recruit span{padding:6px 12px;border-radius:999px;background:#fef3c7;color:#7c2d12;font-size:13px;font-weight:bold}
+
+/* ===== v1.6.0 ===== */
+/* Nút dạng liên kết (vd "Hồ sơ & Chợ phiên"): không để giao diện blog đổi màu chữ / gạch chân */
+#ocdRegisterApp a.dk-btn,#ocdRegisterApp a.dk-btn:link,#ocdRegisterApp a.dk-btn:visited,#ocdRegisterApp a.dk-btn:hover,#ocdRegisterApp a.dk-btn:active,
+.dk-modal a.dk-btn,.dk-modal a.dk-btn:link,.dk-modal a.dk-btn:visited,.dk-modal a.dk-btn:hover{color:#fffaf0!important;text-decoration:none!important;border-bottom:0!important}
+#ocdRegisterApp a.dk-btn.dk-ghost,#ocdRegisterApp a.dk-btn.dk-ghost:visited,.dk-modal a.dk-btn.dk-ghost,.dk-modal a.dk-btn.dk-ghost:visited{color:var(--dk-red,#8b3328)!important}
+#ocdRegisterApp a.dk-btn:focus-visible,.dk-modal .dk-btn:focus-visible{outline:3px solid #f4c46a;outline-offset:2px}
+
+/* Lightbox bài học: đầu + chân cố định, chỉ phần giữa cuộn */
+.dk-modal{box-sizing:border-box;bottom:auto;height:100vh;height:100dvh}
+.dk-modal-box{max-height:calc(100dvh - 32px)}
+.dk-modal-head,.dk-modal-foot{flex:none}
+.dk-modal-body{flex:1 1 auto;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.dk-modal-foot{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid #eadfce;background:#fffaf2}
+.dk-modal-foot .dk-btn{min-height:42px;padding:9px 14px;white-space:nowrap}
+.dk-modal-foot .dk-nav-main{justify-self:center;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+
+/* Ảnh bài tập tham khảo: vuốt ngang */
+.dk-samples .dk-hint{margin:0 0 8px}
+.dk-swipe{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;padding:2px 2px 10px;margin:0 -2px;scrollbar-width:thin}
+.dk-swipe-item{flex:0 0 46%;max-width:210px;scroll-snap-align:start;border-radius:12px;overflow:hidden;background:#fff;border:1px solid #eadfce;text-decoration:none!important;color:#2c241b!important}
+.dk-swipe-img{aspect-ratio:3/4;background:#f3ede4}
+.dk-swipe-img img{width:100%;height:100%;object-fit:cover;display:block}
+.dk-swipe-name{padding:6px 9px 0;font-size:12.5px;font-weight:bold;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dk-swipe-meta{padding:0 9px 8px;font-size:11.5px;color:#8b7b6a}
+
+@media (max-width:600px){
+    .dk-modal{padding:8px}
+    .dk-modal-box{max-height:calc(100dvh - 16px);border-radius:14px;border-top-width:4px}
+    .dk-modal-head{padding:8px 10px 8px 14px}
+    .dk-modal-x{font-size:30px;min-width:40px;min-height:40px}
+    .dk-modal-body{padding:12px 14px 14px}
+    .dk-lesson-title{font-size:18px}
+    .dk-lesson-sec p,.dk-lesson-sec li{font-size:13.5px}
+    .dk-modal-foot{gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px))}
+    .dk-modal-foot .dk-btn{min-height:42px;padding:8px 10px;font-size:12.5px}
+    .dk-swipe-item{flex-basis:62%}
+}
+/* Nhóm nút tài khoản: nút chính nổi bật, hai nút phụ chia đều */
+#ocdRegisterApp .dk-acct-actions{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px}
+#ocdRegisterApp .dk-acct-actions .dk-btn{width:100%;min-height:46px;padding:10px 12px;white-space:nowrap}
+#ocdRegisterApp a.dk-acct-main{background:linear-gradient(135deg,#9b3a2d,#6d261d)!important;box-shadow:0 6px 16px rgba(109,38,29,.25);font-size:14.5px;letter-spacing:.2px}
+#ocdRegisterApp a.dk-acct-main:hover{background:linear-gradient(135deg,#8b3328,#5a1f18)!important}
+@media (max-width:600px){
+    #ocdRegisterApp .dk-acct-actions{grid-template-columns:1fr 1fr}
+    #ocdRegisterApp .dk-acct-actions .dk-acct-main{grid-column:1/-1;min-height:50px;font-size:15px}
+}
