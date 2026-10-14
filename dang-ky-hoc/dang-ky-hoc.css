@@ -495,3 +495,13 @@ html.dk-noscroll,html.dk-noscroll body{overflow:hidden}
 .dk-heart.on{background:#fde8e6;border-color:#e9928a}
 .dk-heart[disabled]{opacity:.6}
 .dk-sync .dk-sync-btn{min-height:50px;font-size:15px;white-space:normal;line-height:1.35}
+/* v1.7.2: chuyển bài ở đầu khung (iPhone: thanh công cụ dưới che mất chân khung) */
+.dk-modal-head .dk-modal-title{flex:1;min-width:0}
+.dk-head-nav{display:flex;gap:6px;flex:none}
+.dk-head-btn{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #e3d3bd;border-radius:10px;background:#f6ecdc;color:#8b3328;font:bold 24px/1 Georgia,serif;cursor:pointer;padding:0 0 3px}
+.dk-head-btn[disabled]{opacity:.35;cursor:default}
+.dk-modal-body{padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}
+@media (max-width:600px){
+    .dk-modal-body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))} /* còn chỗ cuộn lên khỏi thanh công cụ nổi */
+    .dk-head-btn{width:38px;height:38px}
+}

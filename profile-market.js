@@ -8090,11 +8090,13 @@ function setCardMode(on){
     if(note && !on) note.remove();
 }
 
+/* Mã thành viên TV (TV000001…) – KHÔNG gồm mã học viên Tự học dạng TV+STT+tổ+01 (vd TV010401) */
+function isMemberTV(code){ code=String(code||"").toUpperCase(); return /^TV\d+$/.test(code) && !/^TV(?!00)\d{2,3}0[1-4]01$/.test(code); }
 /* Mã cần hiện dạng danh thiếp? (đã bảo mật và người xem không phải chủ tài khoản; mã thành viên TV luôn là danh thiếp) */
 async function needsCardOnly(code){
     const A=authApi();
     if(!A) return false;
-    if(/^TV\d+$/.test(code)) return true;
+    if(isMemberTV(code)) return true;
     if(A.isMe(code)) return false;
     try{
         return await A.isProtected(code);
@@ -8112,7 +8114,7 @@ async function renderCardOnly(code){
     const card=results[0], shared=results[1];
     if(!card || !card.ok) throw new Error((card && card.error) || "Không tải được danh thiếp.");
     if(!card.protected){
-        if(/^TV\d+$/.test(code)) throw new Error("Không tìm thấy mã thành viên "+code+".");
+        if(isMemberTV(code)) throw new Error("Không tìm thấy mã thành viên "+code+".");
         return false; // không còn bảo mật -> tra cứu đầy đủ như cũ
     }
     if(shared && Array.isArray(shared.gifts) && shared.gifts.length){

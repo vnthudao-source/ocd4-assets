@@ -25,7 +25,7 @@
 (function(){
 "use strict";
 if(window.OCDRegisterPage) return;
-window.OCDRegisterPage={version:"1.7.0"};
+window.OCDRegisterPage={version:"1.7.2"};
 const SCRIPT_BASE=(function(){ try{ const src=document.currentScript&&document.currentScript.src||""; return src.slice(0,src.lastIndexOf("/")+1); }catch(e){ return ""; } })();
 
 const ROOT_ID="ocdRegisterApp";
@@ -994,12 +994,14 @@ function openLesson(id,enrolled){
             if(l.references&&l.references.length){ const r=sec("Bài viết tham khảo"); l.references.forEach(function(x){ if(/^https:\/\//.test(x.url)) r.appendChild(h("a",{class:"dk-ref",href:x.url,target:"_blank",rel:"noopener",text:x.title})); }); }
             if(l.source) body.appendChild(h("p",{class:"dk-hint",text:"Nội dung biên soạn từ "+l.source}));
         }
-        /* Chân khung cố định: luôn nằm trong tầm bấm, không bị cuộn mất */
-        foot.append(
-            h("button",{type:"button",class:"dk-btn dk-ghost dk-nav-btn",text:"← Trước","aria-label":"Bài trước",disabled:id===0,onclick:function(){ openLesson(id-1,enrolled); }}),
-            enrolled&&l.submitUrl?h("a",{class:"dk-btn dk-nav-main",href:l.submitUrl,target:"_blank",rel:"noopener",text:l.submitLabel||"Nộp bài"}):h("span",{class:"dk-nav-space"}),
-            h("button",{type:"button",class:"dk-btn dk-ghost dk-nav-btn",text:"Tiếp →","aria-label":"Bài tiếp",disabled:id===52,onclick:function(){ openLesson(id+1,enrolled); }})
-        );
+        /* Nút chuyển bài đặt ở đầu khung (luôn nhìn thấy, không bị thanh công cụ Safari/iPhone che);
+           nút nộp bài nằm ngay dưới phần nhiệm vụ */
+        if(enrolled && l.submitUrl) body.appendChild(h("div",{class:"dk-actions"},[h("a",{class:"dk-btn",href:l.submitUrl,target:"_blank",rel:"noopener",text:l.submitLabel||"Nộp bài"})]));
+        const nav=h("div",{class:"dk-head-nav"},[
+            h("button",{type:"button",class:"dk-head-btn",text:"‹","aria-label":"Bài trước",title:"Bài trước",disabled:id===0,onclick:function(){ openLesson(id-1,enrolled); }}),
+            h("button",{type:"button",class:"dk-head-btn",text:"›","aria-label":"Bài tiếp",title:"Bài tiếp",disabled:id===52,onclick:function(){ openLesson(id+1,enrolled); }})
+        ]);
+        const x=head.querySelector(".dk-modal-x"); head.insertBefore(nav,x);
     });
 }
 
