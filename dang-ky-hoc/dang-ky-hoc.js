@@ -1,5 +1,8 @@
 /* =========================================================
-   TRANG ĐĂNG KÝ HỌC v1.3 – Thanh Phong Thư Môn (thay Google Form)
+   TRANG ĐĂNG KÝ HỌC v1.4 – Thanh Phong Thư Môn (thay Google Form)
+   v1.4: kỳ khai giảng đọc từ tab KyKhaiGiang (bảng học viên); khoá Tự học 3 gói, chọn tổ,
+         cấp mã TV+STT+tổ+01 chờ giáo viên duyệt (PENDING→ACTIVE); Tự học học thêm Meet giữ mã;
+         học viên Meet chỉ đăng ký Tự học khi mã đang tạm dừng (PAUSED). Cần Auth.gs v1.4
    v1.3: 2 khoá (52 buổi qua Meet · Tự học), mỗi khoá là một thẻ đóng/mở; nội quy chuyển lên
          dưới phần tài khoản; chỉ học viên có mã (khoá trước) mới được coi là học khoá Meet,
          tài khoản thành viên (TV…) chỉ thuộc khoá mình đã đăng ký; khoá Meet chọn kỳ (D5) + tổ,
@@ -18,7 +21,7 @@
 (function(){
 "use strict";
 if(window.OCDRegisterPage) return;
-window.OCDRegisterPage={version:"1.3.0"};
+window.OCDRegisterPage={version:"1.4.0"};
 const SCRIPT_BASE=(function(){ try{ const src=document.currentScript&&document.currentScript.src||""; return src.slice(0,src.lastIndexOf("/")+1); }catch(e){ return ""; } })();
 
 const ROOT_ID="ocdRegisterApp";
@@ -44,7 +47,7 @@ const RULES=[
         "Tương tác tích cực: Khuyến khích học viên thường xuyên trao đổi, bình luận xây dựng bài."]}
 ];
 
-/* Gói học dùng chung cho các khoá */
+/* Gói học (khoá Tự học dùng 3 gói trả phí) */
 const PACKAGES=[
     {value:"Gói Miễn phí (0Đ) - Tự chuẩn bị đồ dùng dụng cụ",name:"Gói Miễn phí",price:0,
      yes:["Vào lớp khi khoá mới khai giảng","Hướng dẫn lý thuyết và kỹ thuật cơ bản","Video bài giảng ghi lại"],
@@ -58,36 +61,34 @@ const PACKAGES=[
      yes:["Vào học ngay khoá đang diễn ra","Bộ dụng cụ cao cấp và giáo trình nâng cao","02 triện khắc tay đá tốt (triện tên và nhàn chương)","Giảng viên nhận xét 1:1 trực tiếp","Tham gia các buổi workshop riêng"]}
 ];
 
-/* Các khoá học. "value" phải trùng với ENROLL_COURSES trong Auth.gs (v1.3).
-   - legacy:true  → mọi học viên đã có mã học viên (khoá trước) được coi là đang học khoá này.
-   - cohorts      → các kỳ khai giảng; chỉ kỳ open:true nhận đăng ký.
-   - codes:true   → bắt buộc chọn tổ; đăng ký xong được cấp mã học viên STT-tổ-khoá.
-   - payTag       → ghi vào nội dung chuyển khoản để phân biệt khoá. */
+/* Các khoá học. "value" phải trùng với ENROLL_COURSES trong Auth.gs (v1.4).
+   - kind:"meet" → kỳ khai giảng đọc từ tab KyKhaiGiang; mã học viên STT-tổ-khoá (vd 010205), có hiệu lực ngay.
+     Mọi học viên có mã khoá trước (không phải mã TV) được coi là đang học khoá này.
+   - kind:"self" → mã TV+STT+tổ+01 (vd TV010201), có hiệu lực khi giáo viên duyệt (HocVien: PENDING → ACTIVE).
+   - payTag → ghi vào nội dung chuyển khoản để phân biệt khoá. */
 const COURSES=[
     {
-        id:"OCD-MEET",
+        id:"OCD-MEET", kind:"meet",
         name:"Khoá học Thư pháp Việt căn bản Online (OCD4) - 52 buổi qua Meet",
         value:"Thư pháp Online 52 buổi qua Meet (OCD)",
-        open:true, legacy:true, codes:true, teams:true, roadmap:true,
-        cohorts:[
-            {value:"D4",name:"Khoá D4",open:false,note:"Đã kết thúc đăng ký"},
-            {value:"D5",name:"Khoá D5",open:true,note:"Đang nhận đăng ký"}
-        ],
+        open:true, codes:true, teams:true, roadmap:true,
         summary:"Chương trình đào tạo toàn diện 52 buổi học trực tuyến qua Google Meet – hành trình giúp bạn đi từ người mới bắt đầu đến khi làm chủ nét chữ.",
         meta:["Học trực tuyến qua Meet","52 buổi","Giảng viên & trợ giảng chấm bài","Có chứng nhận hoàn thành"],
         packages:PACKAGES
     },
     {
-        id:"OCD-TUHOC",
+        id:"OCD-TUHOC", kind:"self",
         name:"Khoá học thư pháp Việt căn bản Online - Tự học",
         value:"Thư pháp Online căn bản - Tự học",
         payTag:"TUHOC",
-        open:true, teams:false, roadmap:true,
+        open:true, codes:true, teams:true, roadmap:true,
         summary:"Học theo lộ trình 52 bài thư pháp Việt căn bản theo tốc độ của riêng bạn, với video bài giảng và tài liệu của lớp.",
-        meta:["Tự học Online","Lộ trình 52 bài","Học theo tốc độ riêng"],
-        packages:PACKAGES
+        meta:["Tự học Online","Lộ trình 52 bài","Học theo tốc độ riêng","Mã học viên có hiệu lực khi được duyệt"],
+        packages:PACKAGES.filter(function(p){ return p.price>0; })
     }
 ];
+/* Tab quản trị kỳ khai giảng (bảng học viên, đã chia sẻ "ai có link đều xem được") */
+const COHORT_SRC={sheet:"1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",tab:"KyKhaiGiang"};
 
 /* ---------------- tiện ích ---------------- */
 function $(id){ return document.getElementById(id); }
@@ -486,6 +487,7 @@ function renderCourses(){
         h("p",{text:"Bấm vào một khoá để xem lộ trình, chọn gói học và đăng ký."})
     ])]));
     courses().forEach(function(c){ box.appendChild(courseCard(c)); });
+    if(!CO.list) loadCohorts().then(redrawCourses);
     ensureLessons().then(function(){ return loadViewer(false); }).then(function(){
         const k=viewerKey();
         if(k!==lastViewerKey){
@@ -505,17 +507,20 @@ function redrawCourses(){
 function ensureLessons(){ return ensureScript("lo-trinh-52"); }
 
 function courseCard(c){
-    const enrolled=isEnrolled(c);
+    const st=courseState(c), enrolled=st.enrolled;
     const open=!!S.expanded[c.id];
+    const isMeet=c.kind==="meet";
+    const meetOpen=!isMeet || !!openCohort(c);
     const card=h("article",{class:"dk-course dk-fold"+(enrolled?" is-enrolled":"")+(open?" is-open":""),id:"dkCourse-"+c.id});
-    const badge=enrolled?"BẠN ĐANG HỌC KHOÁ NÀY":(c.open?"ĐANG NHẬN ĐĂNG KÝ":"CHƯA MỞ ĐĂNG KÝ");
+    const badge=enrolled?(st.status==="PENDING"?"ĐÃ ĐĂNG KÝ · CHỜ DUYỆT":"BẠN ĐANG HỌC KHOÁ NÀY"):
+        (st.block?"CHỈ ĐĂNG KÝ KHI TẠM DỪNG KHOÁ MEET":(isMeet && CO.list && !meetOpen?"CHỜ KỲ KHAI GIẢNG MỚI":(c.open?"ĐANG NHẬN ĐĂNG KÝ":"CHƯA MỞ ĐĂNG KÝ")));
     const toggle=function(){
         S.expanded[c.id]=!S.expanded[c.id];
         const fresh=courseCard(c); card.replaceWith(fresh);
         if(S.expanded[c.id]) fresh.scrollIntoView({behavior:"smooth",block:"start"});
     };
     card.appendChild(h("button",{type:"button",class:"dk-course-head dk-fold-head","aria-expanded":open?"true":"false",onclick:toggle},[
-        h("span",{class:"dk-badge"+(c.open||enrolled?"":" closed"),text:badge}),
+        h("span",{class:"dk-badge"+((c.open&&meetOpen&&!st.block)||enrolled?"":" closed"),text:badge}),
         h("h4",{text:c.name}),
         c.summary?h("p",{text:c.summary}):null,
         c.meta&&c.meta.length?h("div",{class:"dk-course-meta"},c.meta.map(function(m){ return h("span",{class:"dk-chip",text:m}); })):null,
@@ -524,47 +529,87 @@ function courseCard(c){
     if(!open) return card;
     const body=h("div",{class:"dk-course-body"});
     card.appendChild(body);
-    const done=S.lastDone[c.id];
-    const showForm=c.open && !enrolled && !done;
-    if(!showForm && (done || enrolled)) body.appendChild(enrollArea(c,enrolled)); /* kết quả đăng ký hiện ngay đầu thẻ */
-    if(showForm && c.cohorts && c.cohorts.length){
-        body.appendChild(h("div",{class:"dk-sub",text:"1. Chọn khoá khai giảng"}));
-        body.appendChild(cohortPicker(c));
+    const unlocked=enrolled && st.active;
+    if(enrolled){
+        body.appendChild(enrollArea(c,st)); /* kết quả đăng ký hiện ngay đầu thẻ */
+        if(c.teams!==false){ body.appendChild(h("div",{class:"dk-sub",text:"Tứ tổ Thư Môn"})); body.appendChild(teamSlider(c,true,"")); }
+        if(c.roadmap!==false){ body.appendChild(h("div",{class:"dk-sub",text:"Lộ trình 52 buổi"})); body.appendChild(roadmap(c,unlocked)); }
+        return card;
     }
-    if(c.teams!==false && (showForm || enrolled)){
-        body.appendChild(h("div",{class:"dk-sub",text:showForm?"2. Chọn tổ – Tứ tổ Thư Môn":"Tứ tổ Thư Môn"}));
-        body.appendChild(teamSlider(c,enrolled));
+    if(st.block){
+        body.appendChild(h("div",{class:"dk-msg info",text:st.block}));
+        if(c.roadmap!==false){ body.appendChild(h("div",{class:"dk-sub",text:"Lộ trình 52 buổi"})); body.appendChild(roadmap(c,false)); }
+        return card;
+    }
+    let n=0;
+    if(isMeet){
+        body.appendChild(h("div",{class:"dk-sub",text:(++n)+". Chọn khoá khai giảng"}));
+        if(!CO.list){ body.appendChild(h("div",{class:"dk-loading",text:"Đang tải lịch khai giảng…"})); }
+        else{
+            if(cohortsOf(c).length) body.appendChild(cohortPicker(c));
+            if(!meetOpen) body.appendChild(h("div",{class:"dk-msg info",text:CO.error||"Hiện chưa có kỳ khai giảng nhận đăng ký. Vui lòng quay lại khi có kỳ khai giảng mới."}));
+        }
+    }
+    if(c.teams!==false){
+        body.appendChild(h("div",{class:"dk-sub",text:(++n)+". "+(st.fixedTeam?"Tổ của bạn":"Chọn tổ")+" – Tứ tổ Thư Môn"}));
+        body.appendChild(teamSlider(c,false,st.fixedTeam));
     }
     if(c.roadmap!==false){
         body.appendChild(h("div",{class:"dk-sub",text:"Lộ trình 52 buổi"}));
-        body.appendChild(roadmap(c,enrolled));
+        body.appendChild(roadmap(c,false));
     }
-    if(!c.open && !enrolled){
-        body.appendChild(h("div",{class:"dk-msg info",text:"Khoá học này chưa mở đăng ký. Vui lòng quay lại sau."}));
+    if(!c.open || !CO.list && isMeet || !meetOpen){
+        if(c.packages&&c.packages.length){ body.appendChild(h("div",{class:"dk-sub",text:"Gói học"})); body.appendChild(packageGrid(c,null)); }
         return card;
     }
-    if(showForm) body.appendChild(enrollArea(c,enrolled));
+    body.appendChild(enrollArea(c,st,n));
     return card;
 }
 
 function redrawChoice(c){ setTimeout(function(){ const s=document.querySelector("#dkCourse-"+c.id+" .dk-choice-summary"); if(s && s._draw) s._draw(); },0); }
 
-/* ---------- chọn kỳ khai giảng ---------- */
-function openCohort(c){ return (c.cohorts||[]).filter(function(k){ return k.open; })[0]||null; }
+/* ---------- kỳ khai giảng (tab KyKhaiGiang) ---------- */
+const CO={list:null,promise:null,error:""};
+function vnToday(){ const d=new Date(Date.now()+7*3600e3); return d.getUTCFullYear()*10000+(d.getUTCMonth()+1)*100+d.getUTCDate(); }
+function dayNum(s){ const m=clean(s).match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/); return m?(+m[3])*10000+(+m[2])*100+(+m[1]):0; }
+function loadCohorts(){
+    if(CO.promise) return CO.promise;
+    const url="https://docs.google.com/spreadsheets/d/"+COHORT_SRC.sheet+"/gviz/tq?tqx=out:csv&headers=1&sheet="+encodeURIComponent(COHORT_SRC.tab)+"&_="+Math.floor(Date.now()/60000);
+    CO.promise=fetch(url,{cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.text(); }).then(function(text){
+        if(/^\s*</.test(text)) throw new Error("not csv");
+        const rows=parseCsv(text), today=vnToday();
+        CO.list=rows.slice(1).map(function(r){
+            const code=upCode(r[0]), no=Number(clean(r[1]));
+            if(!code || !(no>0)) return null;
+            const until=dayNum(r[4]);
+            const open=/^(true|x|có|co|1)$/i.test(clean(r[2])) && (!until || today<=until);
+            return {value:code,no:no,open:open,start:clean(r[3]),until:clean(r[4]),note:clean(r[5])};
+        }).filter(Boolean);
+        CO.error="";
+        return CO.list;
+    }).catch(function(){ CO.list=CO.list||[]; CO.error="Chưa tải được lịch khai giảng. Vui lòng tải lại trang."; CO.promise=null; return CO.list; });
+    return CO.promise;
+}
+function cohortsOf(c){ return c.kind==="meet"?(CO.list||[]):[]; }
+function openCohort(c){ return cohortsOf(c).filter(function(k){ return k.open; })[0]||null; }
 function chosenCohort(c){
-    const v=S.cohort[c.id], k=(c.cohorts||[]).filter(function(x){ return x.value===v && x.open; })[0];
+    const v=S.cohort[c.id], k=cohortsOf(c).filter(function(x){ return x.value===v && x.open; })[0];
     return k||openCohort(c);
+}
+function cohortText(k){
+    if(k.open) return [k.start?"Khai giảng "+k.start:"",k.until?"Hạn đăng ký "+k.until:"",k.note||"Đang nhận đăng ký"].filter(Boolean).join(" · ");
+    return k.note||"Đã đóng đăng ký";
 }
 function cohortPicker(c){
     const cur=chosenCohort(c);
     const row=h("div",{class:"dk-cohorts"});
-    c.cohorts.forEach(function(k){
+    cohortsOf(c).forEach(function(k){
         const on=!!(cur && cur.value===k.value);
         row.appendChild(h("button",{type:"button",class:"dk-cohort"+(on?" on":"")+(k.open?"":" off"),disabled:!k.open,"aria-pressed":on?"true":"false",onclick:function(){
             S.cohort[c.id]=k.value; redrawChoice(c);
             row.querySelectorAll(".dk-cohort").forEach(function(b){ b.classList.remove("on"); b.setAttribute("aria-pressed","false"); });
             this.classList.add("on"); this.setAttribute("aria-pressed","true");
-        }},[h("b",{text:k.name}),h("span",{text:k.note||(k.open?"Đang nhận đăng ký":"Đã đóng")})]));
+        }},[h("b",{text:"Khoá "+k.value}),h("span",{text:cohortText(k)})]));
     });
     return row;
 }
@@ -636,7 +681,8 @@ function vnTime(s){ const m=String(s||"").match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(
 /* ---------- học viên đang xem (tài khoản / Minh Hồng) ---------- */
 const ST={code:"",info:null,profile:null,done:new Set(),loaded:false,busy:false,error:""};
 /* Mã học viên thật (khoá trước hoặc được cấp khi đăng ký): không phải mã thành viên TV…, không phải ADMIN */
-function isStudentCode(c){ c=upCode(c); return !!c && c!=="ADMIN" && !/^TV\d*$/.test(c); }
+function isSelfCode(c){ return /^TV(?!00)\d{2,3}0[1-4]01$/.test(upCode(c)); } /* mã Tự học, vd TV010201 */
+function isStudentCode(c){ c=upCode(c); return !!c && c!=="ADMIN" && (!/^TV/.test(c) || isSelfCode(c)); }
 /* mã học viên được cấp khi đăng ký trên trang này (phòng khi phiên đăng nhập chưa cập nhật mã gắn) */
 function issuedCode(){ const l=(S.enrolled||[]).filter(function(x){ return isStudentCode(x.code); })[0]; return l?upCode(l.code):""; }
 async function viewerCode(){
@@ -652,11 +698,26 @@ async function viewerCode(){
     if(auth){ try{ if(!auth.isMe(code) && await auth.isProtected(code)) return ""; }catch(e){} }
     return code;
 }
-/* Đang học khoá c?  – khoá legacy: có mã học viên;  khoá khác: đã đăng ký khoá đó bằng tài khoản */
-function isEnrolled(c){
-    if(c.legacy && isStudentCode(ST.code)) return true;
-    return !!(A() && A().me() && enrolledFor(c));
+/* Trạng thái của người đang xem với khoá c */
+function courseState(c){
+    const code=ST.code, info=ST.info||{}, rec=(A()&&A().me())?enrolledFor(c):null, done=S.lastDone[c.id];
+    const self=isSelfCode(code), stu=isStudentCode(code), infoCourse=norm(info.course||"");
+    let enrolled=!!(rec||done);
+    if(c.kind==="meet") enrolled=enrolled || (stu && (!self || /^\d+$/.test(infoCourse)));
+    else enrolled=enrolled || self || (stu && infoCourse.indexOf("tu hoc")>=0);
+    let status=upCode(done&&done.status || info.status || "");
+    if(!status && stu) status=(self && !/^\d+$/.test(infoCourse))?"PENDING":"ACTIVE";
+    const st={enrolled:enrolled,rec:rec,code:code,status:status,active:status==="ACTIVE",fixedTeam:"",block:""};
+    if(!enrolled && stu){
+        if(c.kind==="meet" && self) st.fixedTeam=String(Number(code.slice(-4,-2))); /* Tự học → Meet: giữ mã, giữ tổ */
+        if(c.kind==="self" && !self){
+            if(status==="PAUSED") st.fixedTeam=clean(info.team);
+            else st.block="Bạn đang là học viên khoá 52 buổi qua Meet (mã "+code+"). Bạn chỉ đăng ký được khoá Tự học khi tài khoản ở trạng thái tạm dừng. Vui lòng liên hệ giáo viên nếu cần.";
+        }
+    }
+    return st;
 }
+function isEnrolled(c){ return courseState(c).enrolled; }
 let viewerPromise=null;
 function loadViewer(force){
     if(viewerPromise) return viewerPromise;
@@ -714,18 +775,22 @@ function closeModal(){
 }
 
 /* ---------- tứ tổ (banner cũ + chọn tổ) ---------- */
-function teamSlider(c,enrolled){
+function teamSlider(c,enrolled,fixedTeam){
     const wrap=h("div",{class:"dk-teams"});
     const host=h("div",{class:"dk-team-host"});
     wrap.appendChild(host);
     const rec=enrolledFor(c);
-    const myTeam=(ST.info && ST.info.team) || (rec && rec.team) || "";
+    const myTeam=(ST.info && ST.info.team) || (rec && rec.team) || (isStudentCode(ST.code)&&/^(TV)?\d{6,7}$/.test(ST.code)?String(Number(ST.code.slice(-4,-2))):"");
     let root=null;
     ensureScript("tu-to").then(function(){
-        if(window.OCDTeamSlider) root=window.OCDTeamSlider.mount(host,{team:enrolled&&myTeam?myTeam:S.team});
+        if(window.OCDTeamSlider) root=window.OCDTeamSlider.mount(host,{team:fixedTeam||(enrolled&&myTeam?myTeam:S.team)});
     });
     const pick=h("div",{class:"dk-team-pick"});
-    if(enrolled && myTeam && TEAMS.some(function(t){ return t.no===myTeam; })){
+    if(fixedTeam){
+        const t=TEAMS.filter(function(x){ return x.no===fixedTeam; })[0];
+        pick.appendChild(h("div",{class:"dk-team-mine"},[h("span",{text:"Tổ của bạn"}),h("strong",{text:t?"Tổ "+t.no+" · "+t.name:"Tổ "+fixedTeam})]));
+        pick.appendChild(h("p",{class:"dk-hint",text:"Bạn giữ nguyên mã học viên "+ST.code+" và tổ hiện tại; tiến độ lộ trình được đồng bộ."}));
+    }else if(enrolled && myTeam && TEAMS.some(function(t){ return t.no===myTeam; })){
         const t=TEAMS.filter(function(x){ return x.no===myTeam; })[0];
         pick.appendChild(h("div",{class:"dk-team-mine"},[h("span",{text:"Tổ của bạn"}),h("strong",{text:"Tổ "+t.no+" · "+t.name})]));
     }else if(enrolled){
@@ -769,7 +834,7 @@ function teamText(c){
 function roadmap(c,enrolled){
     const L=lessons(), wrap=h("div",{class:"dk-path"});
     if(!L.length){ wrap.appendChild(h("p",{class:"dk-hint",text:"Đang tải lộ trình…"})); return wrap; }
-    const prog=!!(enrolled && ST.code && c.legacy);
+    const prog=!!(enrolled && isStudentCode(ST.code));
     const cur=prog?currentLesson():-1;
     if(enrolled){
         const total=L.filter(lessonDone).length;
@@ -823,8 +888,8 @@ function openLesson(id,enrolled){
         if(!enrolled){
             body.appendChild(h("div",{class:"dk-lesson-lock"},[
                 h("div",{class:"dk-lesson-lock-icon",text:"🔒"}),
-                h("p",{text:"Nội dung bài học (mô tả, hướng dẫn, nhiệm vụ và bài tham khảo) dành cho học viên đã đăng ký khoá Thư pháp Online 52 buổi."}),
-                h("button",{type:"button",class:"dk-btn",text:A()&&A().me()?"ĐĂNG KÝ KHOÁ HỌC":"TẠO TÀI KHOẢN / ĐĂNG NHẬP",onclick:function(){
+                h("p",{text:"Nội dung bài học (mô tả, hướng dẫn, nhiệm vụ và bài tham khảo) dành cho học viên đã đăng ký và có mã học viên đang hoạt động."}),
+                ST.code?null:h("button",{type:"button",class:"dk-btn",text:A()&&A().me()?"ĐĂNG KÝ KHOÁ HỌC":"TẠO TÀI KHOẢN / ĐĂNG NHẬP",onclick:function(){
                     closeModal();
                     const me=A()&&A().me();
                     const target=me?document.querySelector(".dk-enroll-cta"):$("dkAccount");
@@ -942,43 +1007,50 @@ function enrolledFor(c){
 }
 function packOf(c,value){ return (c.packages||[]).filter(function(p){ return p.value===value; })[0]||null; }
 
-function enrollArea(c,enrolled){
+function statusLine(st){
+    if(st.status==="PENDING") return h("div",{class:"dk-status pending",text:"⏳ Mã học viên đang chờ giáo viên phê duyệt. Mã có hiệu lực (nộp bài, Phòng Luyện Công, xem nội dung bài học) sau khi được duyệt."});
+    if(st.status==="PAUSED") return h("div",{class:"dk-status paused",text:"⏸ Mã học viên đang tạm dừng. Vui lòng liên hệ giáo viên."});
+    if(st.status==="ACTIVE") return h("div",{class:"dk-status ok",text:"✓ Mã học viên đang hoạt động."});
+    return null;
+}
+function enrollArea(c,st,n){
     const wrap=h("div",{class:"dk-enroll-area"});
     const done=S.lastDone[c.id];
-    if(done){ wrap.appendChild(doneBox(c,done)); return wrap; }
-    if(enrolled){
-        const rec=enrolledFor(c);
+    if(done){ wrap.appendChild(doneBox(c,done,st)); return wrap; }
+    if(st.enrolled){
+        const rec=st.rec;
+        const code=rec&&isStudentCode(rec.code)?upCode(rec.code):(isStudentCode(st.code)?st.code:"");
         if(rec){
             const pack=packOf(c,rec.package);
-            const code=isStudentCode(rec.code)?upCode(rec.code):"";
             wrap.appendChild(h("div",{class:"dk-done"},[
                 h("strong",{text:"✅ Bạn đã đăng ký khoá này"}),
                 h("div",{text:["Thời gian: "+rec.time,rec.cohort?"Khoá "+rec.cohort:"",rec.team?"Tổ "+rec.team:"",rec.package||""].filter(Boolean).join(" · ")}),
                 code?h("div",{class:"dk-code"},[h("span",{text:"Mã học viên"}),h("b",{text:code})]):null,
+                statusLine(st),
                 h("div",{class:"dk-hint",text:"Muốn đổi gói học, vui lòng liên hệ giáo viên."})
             ]));
             if(pack && pack.price) wrap.appendChild(payBox(pack,payTag(c,rec.cohort),code));
-        }else if(c.legacy && ST.code){
-            wrap.appendChild(h("div",{class:"dk-done"},[h("strong",{text:"🎓 Bạn là học viên khoá Online 52 buổi"}),
-                h("div",{text:"Mã học viên "+ST.code+(ST.info&&ST.info.course?" · Khoá "+ST.info.course:"")+(ST.info&&ST.info.team?" · Tổ "+ST.info.team:"")})]));
+        }else if(code){
+            wrap.appendChild(h("div",{class:"dk-done"},[h("strong",{text:c.kind==="meet"?"🎓 Bạn là học viên khoá 52 buổi qua Meet":"🎓 Bạn là học viên khoá Tự học"}),
+                h("div",{text:"Mã học viên "+code+(ST.info&&ST.info.course?" · Khoá "+ST.info.course:"")+(ST.info&&ST.info.team?" · Tổ "+ST.info.team:"")}),
+                statusLine(st)]));
         }
         return wrap;
     }
-    wrap.appendChild(enrollForm(c));
+    wrap.appendChild(enrollForm(c,st,n||0));
     return wrap;
 }
 
-function enrollForm(c){
+function enrollForm(c,st,step){
     const auth=A(), me=auth&&auth.me(), p=S.profile||{};
-    let step=(c.cohorts&&c.cohorts.length?1:0)+(c.teams!==false?1:0);
     const form=h("div",{class:"dk-enroll dk-enroll-cta"});
     form.appendChild(h("div",{class:"dk-sub",text:(++step)+". Chọn gói học"}));
     const packHolder=h("div");
     const summary=h("div",{class:"dk-team-chosen-row dk-choice-summary"});
     function drawSummary(){
         summary.innerHTML="";
-        const k=c.cohorts?chosenCohort(c):null, pk=packOf(c,S.pack[c.id]);
-        summary.append(h("span",{text:"Bạn đang chọn: "}),h("strong",{text:[k?k.name:"",c.teams!==false?teamText(c):"",pk?pk.name+" ("+money(pk.price)+")":"chưa chọn gói"].filter(Boolean).join(" · ")}));
+        const k=c.kind==="meet"?chosenCohort(c):null, pk=packOf(c,S.pack[c.id]);
+        summary.append(h("span",{text:"Bạn đang chọn: "}),h("strong",{text:[k?"Khoá "+k.value:"",c.teams!==false?(st.fixedTeam?"Tổ "+st.fixedTeam+" (giữ mã "+st.code+")":teamText(c)):"",pk?pk.name+" ("+money(pk.price)+")":"chưa chọn gói"].filter(Boolean).join(" · ")}));
     }
     function drawPacks(){
         packHolder.innerHTML="";
@@ -1031,9 +1103,10 @@ function enrollForm(c){
         hush(msg);
         const lv=(learned.querySelector("input:checked")||{}).value||"";
         const pack=packOf(c,S.pack[c.id]);
-        const cohort=c.cohorts?chosenCohort(c):null;
-        if(c.cohorts && !cohort){ say(msg,"Hiện chưa có khoá khai giảng nào đang nhận đăng ký."); return; }
-        if(c.codes && !/^[1-4]$/.test(S.team||"")){ say(msg,"Vui lòng chọn tổ bạn muốn tham gia (mục 2)."); return; }
+        const cohort=c.kind==="meet"?chosenCohort(c):null;
+        if(c.kind==="meet" && !cohort){ say(msg,"Hiện chưa có kỳ khai giảng nào đang nhận đăng ký."); return; }
+        const team=st.fixedTeam||S.team||"";
+        if(c.codes && !/^[1-4]$/.test(team)){ say(msg,"Vui lòng chọn tổ bạn muốn tham gia."); return; }
         if(!pack){ say(msg,"Vui lòng chọn gói học."); return; }
         if(!clean(birth.value)||!clean(address.value)||!clean(zalo.value)){ say(msg,"Vui lòng điền ngày sinh, địa chỉ và tên Zalo."); return; }
         if(!lv){ say(msg,"Vui lòng cho biết bạn đã học thư pháp trước đó hay chưa."); return; }
@@ -1043,16 +1116,16 @@ function enrollForm(c){
         try{
             r=await auth.post("enroll",{token:auth.token(),fields:{
                 course:c.value||c.name,cohort:cohort?cohort.value:"",package:pack.value,birth:clean(birth.value),address:clean(address.value),zalo:clean(zalo.value),
-                learned:lv,teacher:lv===LEARNED[1]?clean(teacher.value):"",thought:clean(thought.value),agree:true,team:c.teams!==false?(S.team||""):""
+                learned:lv,teacher:lv===LEARNED[1]?clean(teacher.value):"",thought:clean(thought.value),agree:true,team:c.teams!==false?team:""
             }});
         }catch(e){ r={ok:false}; }
         busy(submit,false);
         if(!r || !r.ok){
             say(msg,(r&&r.error)||"Chưa gửi được đăng ký. Vui lòng thử lại.");
-            if(r && r.already){ loadMine().then(function(){ return loadViewer(true); }).then(function(){ lastViewerKey=""; renderAll(); }); }
+            if(r && (r.already||r.blocked)){ loadMine().then(function(){ return loadViewer(true); }).then(function(){ lastViewerKey=""; renderAll(); }); }
             return;
         }
-        S.lastDone[c.id]={pack:pack,cohort:r.cohort||(cohort?cohort.value:""),team:c.teams!==false?S.team:"",code:isStudentCode(r.studentCode)?upCode(r.studentCode):""};
+        S.lastDone[c.id]={pack:pack,cohort:r.cohort||(cohort?cohort.value:""),team:r.team||(c.teams!==false?team:""),code:isStudentCode(r.studentCode)?upCode(r.studentCode):"",status:upCode(r.status||"")};
         if(S.profile){ S.profile.birth=clean(birth.value); S.profile.address=clean(address.value); S.profile.zalo=clean(zalo.value); }
         /* tài khoản vừa được gắn mã học viên → cập nhật phiên để Minh Hồng / các trang nhận diện ngay */
         if(r.me && r.expires){ try{ auth.acceptSession({token:auth.token(),expires:r.expires,me:r.me}); }catch(e){} }
@@ -1066,11 +1139,13 @@ function enrollForm(c){
 
 function payTag(c,cohort){ return c.payTag||cohort||""; }
 
-function doneBox(c,d){
+function doneBox(c,d,st){
+    const pending=d.status==="PENDING";
     const wrap=h("div",{class:"dk-done"},[
         h("strong",{text:"✅ Tiếp nhận thông tin đăng ký báo danh thành công!"}),
         h("div",{text:[c.name,d.cohort?"Khoá "+d.cohort:"",d.team?"Tổ "+d.team:"",d.pack?d.pack.name:""].filter(Boolean).join(" · ")}),
         d.code?h("div",{class:"dk-code"},[h("span",{text:"Mã học viên của bạn"}),h("b",{text:d.code})]):null,
+        pending?statusLine({status:"PENDING"}):null,
         h("div",{class:"dk-hint",text:(d.code?"Hãy ghi lại mã này: bạn dùng nó khi nộp bài và tra cứu hồ sơ. Tài khoản của bạn đã được gắn với mã học viên. ":"")+"Thư xác nhận đã được gửi tới email của bạn."})
     ]);
     if(d.pack && d.pack.price) wrap.appendChild(payBox(d.pack,payTag(c,d.cohort),d.code));
