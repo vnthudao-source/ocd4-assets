@@ -1243,6 +1243,9 @@ function hydrateLatestFromCache(){
         }
         state.latestSource=
             "cache";
+        el("swpLoading")
+            .classList
+            .remove("visible");
         afterLatestApplied();
         return true;
     }catch(error){
