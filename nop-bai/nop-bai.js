@@ -14,7 +14,7 @@
 (function(){
 "use strict";
 if(window.OCDSubmitWork) return;
-window.OCDSubmitWork={version:"1.1.1"};
+window.OCDSubmitWork={version:"1.1.2"};
 
 const DEFAULT_API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
 const MAX_SIDE=2000, QUALITY=0.86, TIMEOUT=120000;
@@ -131,7 +131,8 @@ function dataUrlBytes(d){ const i=d.indexOf(","); return Math.floor((d.length-i-
 async function send(payload){
     const ac=new AbortController(), timer=setTimeout(function(){ ac.abort(); },TIMEOUT);
     try{
-        const res=await fetch(API(),{method:"POST",body:JSON.stringify(Object.assign({action:"enroll",op:"submitWork",device:navigator.userAgent.slice(0,100)},payload)),
+        const res=await fetch(API(),{method:"POST",body:JSON.stringify({action:"enroll",op:"submitWork",token:payload.token,code:payload.code,device:navigator.userAgent.slice(0,100),
+            fields:Object.assign({op:"submitWork"},payload)}), /* dữ liệu bài nằm trong fields (Code.gs có thể chỉ chuyển token + fields) */
             headers:{"Content-Type":"text/plain;charset=utf-8"},credentials:"omit",cache:"no-store",signal:ac.signal});
         const json=JSON.parse(await res.text());
         if(json && json.expired && auth()){ try{ await auth().logout(false); }catch(e){} }
@@ -261,7 +262,7 @@ async function openModal(){
         submit.disabled=false; submit.textContent="GỬI BÀI";
         if(!r || !r.ok){
             let e=(r&&r.error)||"Chưa gửi được bài. Vui lòng thử lại.";
-            if(!r || (!r.op && !r.network)) e="Máy chủ chưa được cập nhật chức năng nộp bài mới. Vui lòng báo GVCN (Apps Script cần bản Auth.gs v1.6.1 và triển khai phiên bản mới).";
+            if(!r || (!r.op && !r.network)) e="Máy chủ chưa nhận lệnh nộp bài mới (Apps Script cần bản Auth.gs v1.6.2 và triển khai phiên bản mới). Máy chủ trả lời: \""+((r&&r.error)||"không rõ")+"\"";
             say(msg,e); return;
         }
         body.innerHTML="";
