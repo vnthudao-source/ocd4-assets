@@ -436,3 +436,6 @@ html.dk-noscroll,html.dk-noscroll body{overflow:hidden}
 @media (max-width:560px){
     .dk-packages.n4,.dk-packages.n3,.dk-packages.n2{grid-template-columns:minmax(0,1fr)}
 }
+/* v1.5.2: thông tin kỳ chiêu sinh trên tiêu đề khoá */
+.dk-recruit{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px}
+.dk-recruit span{padding:6px 12px;border-radius:999px;background:#fef3c7;color:#7c2d12;font-size:13px;font-weight:bold}

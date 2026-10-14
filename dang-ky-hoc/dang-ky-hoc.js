@@ -25,7 +25,7 @@
 (function(){
 "use strict";
 if(window.OCDRegisterPage) return;
-window.OCDRegisterPage={version:"1.5.1"};
+window.OCDRegisterPage={version:"1.5.2"};
 const SCRIPT_BASE=(function(){ try{ const src=document.currentScript&&document.currentScript.src||""; return src.slice(0,src.lastIndexOf("/")+1); }catch(e){ return ""; } })();
 
 const ROOT_ID="ocdRegisterApp";
@@ -73,6 +73,7 @@ const COURSES=[
     {
         id:"OCD-MEET", kind:"meet",
         name:"Khoá học Thư pháp Việt căn bản Online - 52 buổi qua Meet",
+        cohortTitle:"Khoá {ky} - Học Thư pháp Việt căn bản Online - 52 buổi qua Meet", /* tiêu đề khi có kỳ đang chiêu sinh */
         value:"Thư pháp Online 52 buổi qua Meet (OCD)",
         open:true, codes:true, teams:true, roadmap:true,
         summary:"Chương trình đào tạo toàn diện 52 buổi học trực tuyến qua Google Meet – hành trình giúp bạn đi từ người mới bắt đầu đến khi làm chủ nét chữ.",
@@ -519,8 +520,11 @@ function courseCard(c){
     const open=!!S.expanded[c.id];
     const isMeet=c.kind==="meet";
     const card=h("article",{class:"dk-course dk-fold"+(enrolled?" is-enrolled":"")+(open?" is-open":""),id:"dkCourse-"+c.id});
+    const recruit=isMeet && !enrolled ? openCohort(c) : null; /* kỳ đang chiêu sinh */
     const badge=enrolled?(st.status==="PENDING"?"ĐÃ ĐĂNG KÝ · CHỜ DUYỆT":"BẠN ĐANG HỌC KHOÁ NÀY"):
-        (st.block?"CHỈ ĐĂNG KÝ KHI TẠM DỪNG KHOÁ MEET":(st.sync?"ĐỒNG BỘ TIẾN ĐỘ TỪ KHOÁ TỰ HỌC":(c.open?"ĐANG NHẬN ĐĂNG KÝ":"CHƯA MỞ ĐĂNG KÝ")));
+        (st.block?"CHỈ ĐĂNG KÝ KHI TẠM DỪNG KHOÁ MEET":(st.sync?"ĐỒNG BỘ TIẾN ĐỘ TỪ KHOÁ TỰ HỌC":(recruit?"ĐANG CHIÊU SINH KHOÁ "+recruit.value:(c.open?"ĐANG NHẬN ĐĂNG KÝ":"CHƯA MỞ ĐĂNG KÝ"))));
+    const title=recruit && c.cohortTitle ? c.cohortTitle.replace("{ky}",recruit.value) : c.name;
+    const recruitInfo=recruit?[recruit.start?"Khai giảng "+recruit.start:"",recruit.until?"Hạn đăng ký "+recruit.until:"",recruit.note].filter(Boolean):[];
     const toggle=function(){
         S.expanded[c.id]=!S.expanded[c.id];
         const fresh=courseCard(c); card.replaceWith(fresh);
@@ -528,7 +532,8 @@ function courseCard(c){
     };
     card.appendChild(h("button",{type:"button",class:"dk-course-head dk-fold-head","aria-expanded":open?"true":"false",onclick:toggle},[
         h("span",{class:"dk-badge"+((c.open&&!st.block)||enrolled?"":" closed"),text:badge}),
-        h("h4",{text:c.name}),
+        h("h4",{text:title}),
+        recruitInfo.length?h("div",{class:"dk-recruit"},recruitInfo.map(function(x){ return h("span",{text:"🗓 "+x}); })):null,
         c.summary?h("p",{text:c.summary}):null,
         c.meta&&c.meta.length?h("div",{class:"dk-course-meta"},c.meta.map(function(m){ return h("span",{class:"dk-chip",text:m}); })):null,
         h("span",{class:"dk-fold-cta",text:open?"Thu gọn ▲":(enrolled?"Xem khoá học ▼":(st.sync?"Xem & đồng bộ tiến độ ▼":"Xem chi tiết & đăng ký ▼"))})
