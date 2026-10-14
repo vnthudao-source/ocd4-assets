@@ -14,7 +14,7 @@
 (function(){
 "use strict";
 if(window.OCDSubmitWork) return;
-window.OCDSubmitWork={version:"1.2.0"};
+window.OCDSubmitWork={version:"1.2.1"};
 
 const DEFAULT_API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
 const MAX_SIDE=2000, QUALITY=0.86, TIMEOUT=120000;
@@ -211,7 +211,7 @@ async function openModal(){
 
     const v=viewer();
     if(!v.code){
-        body.appendChild(h("div",{class:"osw-msg err",text:v.member?"Tài khoản của bạn chưa có mã học viên. Hãy đăng ký khoá học trước khi nộp bài.":"Chưa nhận diện được mã học viên. Vui lòng nhập mã học viên tại Minh Hồng (hoặc ô Tra cứu phía trên) rồi thử lại."}));
+        body.appendChild(h("div",{class:"osw-msg err",text:v.member?"Tài khoản của bạn chưa có mã học viên. Hãy đăng ký khoá học trước khi nộp bài.":"Chưa nhận diện được mã học viên. Vui lòng nhập mã học viên tại Minh Hồng (biểu tượng ở góc màn hình) rồi thử lại."}));
         return;
     }
     const who=h("div",{class:"osw-who",text:"Đang kiểm tra mã học viên "+v.code+"…"});
