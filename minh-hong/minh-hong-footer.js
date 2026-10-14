@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1574__=
 const CONFIG={
  
     version:
-        "1.6.1",
+        "1.6.2",
  
     enabled:
         true,
@@ -1165,6 +1165,30 @@ const OCDStudentSession=
  
 window.OCDStudentSession=
     OCDStudentSession;
+
+
+/* =========================================================
+   v1.6.2: CHẶN MÃ HỌC VIÊN ĐÃ TẠM DỪNG (PAUSED trong tab HocVien)
+========================================================= */
+
+function pausedStudentMessage(code){
+    return "Tài khoản học viên "+code+" đã dừng hoạt động.\n\nVui lòng tạo lại tài khoản mới hoặc liên hệ GVCN để xin mở lại tài khoản.";
+}
+
+async function isStudentPaused(code,force){
+    try{
+        if(!code) return false;
+        if(window.StudentRewardSystemReady){
+            await window.StudentRewardSystemReady;
+        }
+        const RS=window.StudentRewardSystem;
+        if(!RS || typeof RS.getStudentAccess!=="function") return false;
+        const access=await RS.getStudentAccess(code,{forceRefresh:Boolean(force)});
+        return Boolean(access && access.exists && access.status==="paused");
+    }catch(error){
+        return false;
+    }
+}
  
  
 /* =========================================================
@@ -3965,6 +3989,12 @@ const MinhHongAssistant=
                 }
  
  
+                /* v1.6.2: mã đã tạm dừng -> không cho truy cập */
+                if(await isStudentPaused(result.code,true)){
+                    alert(pausedStudentMessage(result.code));
+                    return;
+                }
+
                 /* v1.6.0: mã đã bảo mật -> phải đăng nhập bằng mật khẩu */
                 if(window.OCDAuth){
                     const allowed=await window.OCDAuth.ensureAccess(result.code,{onSuccess:function(){ guestView="home"; refreshContext(); }});
@@ -5053,6 +5083,12 @@ const MinhHongAssistant=
                 }
  
  
+                /* v1.6.2: mã đã tạm dừng -> không cho truy cập */
+                if(await isStudentPaused(result.code,true)){
+                    alert(pausedStudentMessage(result.code));
+                    return;
+                }
+
                 /* v1.6.0: mã đã bảo mật -> phải đăng nhập bằng mật khẩu */
                 if(window.OCDAuth){
                     const allowed=await window.OCDAuth.ensureAccess(result.code,{onSuccess:function(){ guestView="home"; refreshContext(); }});
@@ -5526,9 +5562,26 @@ const MinhHongAssistant=
        START
     ===================================================== */
  
+    /* v1.6.2: phiên đang lưu thuộc mã đã tạm dừng -> xoá phiên và báo một lần */
+    async function guardPausedSession(){
+        try{
+            if(!OCDStudentSession.isVerified()) return;
+            const code=OCDStudentSession.normalizeCode(OCDStudentSession.getCode());
+            if(!code || code==="ADMIN") return;
+            if(!(await isStudentPaused(code,false))) return;
+            OCDStudentSession.clear("paused");
+            try{ refreshContext(); }catch(e){}
+            const key="ocd_mh_paused_notice_"+code;
+            let shown=false;
+            try{ shown=sessionStorage.getItem(key)==="1"; sessionStorage.setItem(key,"1"); }catch(e){}
+            if(!shown) alert(pausedStudentMessage(code));
+        }catch(error){}
+    }
+
     function start(){
  
         createDOM();
+        setTimeout(guardPausedSession,1200);
  
  
         refreshPersonalEvents();

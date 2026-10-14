@@ -25,7 +25,7 @@
 (function(){
 "use strict";
 if(window.OCDRegisterPage) return;
-window.OCDRegisterPage={version:"1.5.0"};
+window.OCDRegisterPage={version:"1.5.1"};
 const SCRIPT_BASE=(function(){ try{ const src=document.currentScript&&document.currentScript.src||""; return src.slice(0,src.lastIndexOf("/")+1); }catch(e){ return ""; } })();
 
 const ROOT_ID="ocdRegisterApp";
@@ -51,17 +51,16 @@ const RULES=[
 ];
 
 /* Gói học (khoá Tự học dùng 3 gói trả phí) */
+const PACK_SUPPORT=["Tài liệu \"Thư pháp Việt – Dành cho người mới bắt đầu\" Quyển 1 (bản PDF)","Xem lại video trọn đời","Học ngay lập tức, không cần chờ khoá khai giảng","Mở đầy đủ: nộp bài, xem tiến trình, làm nhiệm vụ","Tham gia mini-game và Chợ phiên"];
+const PACK_STANDARD=PACK_SUPPORT.concat(["Dụng cụ viết thư pháp gửi tận nhà","Sách \"Thư pháp Việt\" Quyển 1 (bản in)","01 danh chương tên thật, vuông 1,5 cm"]);
+const PACK_VIP=PACK_STANDARD.concat(["Thêm 01 ấn nhàn chương 1,5 cm đá đẹp","Được Giảng viên ưu tiên nhận xét, chấm điểm"]);
 const PACKAGES=[
     {value:"Gói Miễn phí (0Đ) - Tự chuẩn bị đồ dùng dụng cụ",name:"Gói Miễn phí",price:0,
      yes:["Vào lớp khi khoá mới khai giảng","Hướng dẫn lý thuyết và kỹ thuật cơ bản","Video bài giảng ghi lại"],
      no:["Tự chuẩn bị bút, mực, giấy, nghiên","Không kèm triện và tài liệu"]},
-    {value:"Gói ủng hộ",name:"Gói Ủng hộ",price:800000,
-     yes:["Tài liệu \"Thư pháp Việt – Dành cho người mới bắt đầu\" Quyển 1 (bản PDF)","Xem lại video trọn đời","Học ngay lập tức, không cần chờ khoá khai giảng","Mở đầy đủ: nộp bài, xem tiến trình, làm nhiệm vụ","Tham gia mini-game và Chợ phiên"],
-     no:["Tự chuẩn bị đồ dùng học tập"]},
-    {value:"Gói phổ thông",name:"Gói Phổ thông",price:3500000,oldPrice:5000000,hot:true,
-     yes:["Toàn bộ quyền lợi Gói Ủng hộ","Dụng cụ viết thư pháp gửi tận nhà","Sách \"Thư pháp Việt\" Quyển 1 (bản in)","01 danh chương tên thật, vuông 1,5 cm"]},
-    {value:"Gói VIP",name:"Gói VIP",price:9000000,oldPrice:12000000,
-     yes:["Toàn bộ quyền lợi Gói Phổ thông","Thêm 01 ấn nhàn chương 1,5 cm đá đẹp","Được Giảng viên ưu tiên nhận xét, chấm điểm"]}
+    {value:"Gói ủng hộ",name:"Gói Ủng hộ",price:800000,yes:PACK_SUPPORT,no:["Tự chuẩn bị đồ dùng học tập"]},
+    {value:"Gói phổ thông",name:"Gói Phổ thông",price:3500000,oldPrice:5000000,hot:true,yes:PACK_STANDARD},
+    {value:"Gói VIP",name:"Gói VIP",price:9000000,oldPrice:12000000,yes:PACK_VIP}
 ];
 function isPaid(packValue){ const p=PACKAGES.filter(function(x){ return x.value===packValue; })[0]; return p?p.price>0:!/mi[eễ]n ph[ií]/i.test(packValue||""); }
 
@@ -73,7 +72,7 @@ function isPaid(packValue){ const p=PACKAGES.filter(function(x){ return x.value=
 const COURSES=[
     {
         id:"OCD-MEET", kind:"meet",
-        name:"Khoá học Thư pháp Việt căn bản Online (OCD4) - 52 buổi qua Meet",
+        name:"Khoá học Thư pháp Việt căn bản Online - 52 buổi qua Meet",
         value:"Thư pháp Online 52 buổi qua Meet (OCD)",
         open:true, codes:true, teams:true, roadmap:true,
         summary:"Chương trình đào tạo toàn diện 52 buổi học trực tuyến qua Google Meet – hành trình giúp bạn đi từ người mới bắt đầu đến khi làm chủ nét chữ.",
@@ -767,6 +766,7 @@ function courseState(c){
     }
     if(c.kind==="meet" && !enrolled && CO.list && !openCohort(c)) st.hidden=true; /* không có kỳ nhận đăng ký */
     if(c.kind==="meet" && !enrolled && !CO.list) st.hidden=true;                  /* đang tải lịch khai giảng */
+    if(c.kind==="self" && !enrolled && (!CO.list || openCohort(courses().filter(function(x){ return x.kind==="meet"; })[0]||{}))) st.hidden=true; /* khoá Meet đang nhận đăng ký: khách chỉ thấy khoá Meet */
     if(c.kind==="self" && self){ const meet=courses().filter(function(x){ return x.kind==="meet"; })[0]; if(meet && courseState(meet).enrolled) st.hidden=true; } /* đã đồng bộ sang Meet */
     return st;
 }
@@ -1027,7 +1027,7 @@ function openGuestbook(){ galleryModal("lb"); }
 
 function packageGrid(c,selectedValue,onPick){
     const name="dkPack-"+c.id+(onPick?"-form":"");
-    return h("div",{class:"dk-packages"},c.packages.map(function(p){
+    return h("div",{class:"dk-packages n"+c.packages.length},c.packages.map(function(p){
         const radio=onPick?h("input",{type:"radio",name:name,value:p.value,checked:selectedValue===p.value}):null;
         const label=h(onPick?"label":"div",{class:"dk-pack"+(p.hot?" hot":"")+(onPick&&selectedValue===p.value?" selected":"")},[
             radio,
