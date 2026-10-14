@@ -1,5 +1,6 @@
 /* =========================================================
    TRANG ĐĂNG KÝ HỌC v1.1 – Thanh Phong Thư Môn (thay Google Form)
+   v1.2: học viên đã nhận diện (Minh Hồng / đăng nhập) thấy thẻ học viên thay cho khung tài khoản
    v1.1: slide tứ tổ + chọn tổ, khung lộ trình 4 giai đoạn (khoá nội dung với người chưa đăng ký),
          tiến độ học viên, bài tập đẹp và lưu bút
    ---------------------------------------------------------
@@ -13,7 +14,7 @@
 (function(){
 "use strict";
 if(window.OCDRegisterPage) return;
-window.OCDRegisterPage={version:"1.1.0"};
+window.OCDRegisterPage={version:"1.2.0"};
 const SCRIPT_BASE=(function(){ try{ const src=document.currentScript&&document.currentScript.src||""; return src.slice(0,src.lastIndexOf("/")+1); }catch(e){ return ""; } })();
 
 const ROOT_ID="ocdRegisterApp";
@@ -132,12 +133,12 @@ async function loadMine(){
 function renderAll(){
     const root=$(ROOT_ID); if(!root) return;
     root.innerHTML="";
-    const logged=!!(A() && A().me());
+    const logged=!!(A() && A().me()) || !!ST.code;
     root.appendChild(h("div",{class:"dk-hero"},[
         h("div",{class:"dk-kicker",text:"THANH PHONG THƯ MÔN · ĐĂNG KÝ HỌC"}),
         h("h2",{text:"Tham gia cộng đồng lớp học thư pháp Online"}),
         h("p",{text:"Tạo tài khoản một lần, sau đó chọn khoá học và gói học phù hợp. Thông tin đăng ký được gửi thẳng tới giáo viên, bạn sẽ nhận email xác nhận."}),
-        h("div",{class:"dk-steps"},[
+        h("div",{class:"dk-steps",id:"dkSteps"},[
             h("span",{class:"dk-step"+(logged?" done":"")},[h("b",{text:logged?"✓":"1"}),"Tài khoản"]),
             h("span",{class:"dk-step"},[h("b",{text:"2"}),"Chọn khoá học"]),
             h("span",{class:"dk-step"},[h("b",{text:"3"}),"Nhận mã học viên qua email"])
@@ -153,6 +154,14 @@ function renderAll(){
     renderCourses();
 }
 
+function renderHeroSteps(){
+    const el=$("dkSteps"); if(!el) return;
+    const first=el.querySelector(".dk-step"); if(!first) return;
+    const logged=!!(A() && A().me()) || !!ST.code;
+    first.classList.toggle("done",logged);
+    first.querySelector("b").textContent=logged?"✓":"1";
+}
+
 /* =========================================================
    PHẦN TÀI KHOẢN
 ========================================================= */
@@ -165,6 +174,8 @@ function renderAccount(){
         return;
     }
     const me=auth.me();
+    if(ST.code){ renderStudentCard(box); return; }
+    if(!ST.loaded && sessionHint()){ box.appendChild(h("div",{class:"dk-loading",text:"Đang nhận diện học viên từ Minh Hồng…"})); return; }
     if(me){ renderLoggedIn(box,me); return; }
     box.appendChild(h("div",{class:"dk-section-head"},[h("div",null,[
         h("h3",{text:"Tài khoản của bạn"}),
@@ -308,11 +319,85 @@ async function afterLogin(text){
     S.busyLogin=true;
     const box=$("dkAccount");
     if(box){ box.innerHTML=""; box.appendChild(h("div",{class:"dk-loading",text:"Đang tải thông tin tài khoản..."})); }
-    try{ await loadMine(); }finally{ S.busyLogin=false; }
+    try{ await loadMine(); await loadViewer(true); lastViewerKey=""; }finally{ S.busyLogin=false; }
     renderAll();
     const m=$("dkAccountMsg"); if(m && text) say(m,text,"ok");
 }
 
+function sessionHint(){
+    try{ const s=window.OCDStudentSession; const c=s&&typeof s.getCode==="function"?upCode(s.getCode()):""; if(c && c!=="ADMIN") return true; }catch(e){}
+    const me=A()&&A().me();
+    return !!(me && (me.linked || me.type!=="TV"));
+}
+function renderStudentCard(box){
+    const auth=A(), RS=RSX(), me=auth&&auth.me(), code=ST.code, p=ST.profile||{}, info=ST.info||{};
+    const mine=!!(auth && auth.isMe(code));
+    box.appendChild(h("div",{class:"dk-section-head"},[h("div",null,[
+        h("h3",{text:"Hồ sơ học viên"}),
+        h("p",{text:mine?"Bạn đang đăng nhập bằng tài khoản đã bảo mật.":"Minh Hồng đã nhận diện bạn theo mã học viên."})
+    ])]));
+    const items=(p.ownedItems||[]).filter(function(it){ return Number(it.quantity===undefined?1:it.quantity)>0; });
+    const img=function(raw,size){ if(!raw) return ""; try{ return RS&&RS.convertDriveImageUrl?RS.convertDriveImageUrl(raw,size):raw; }catch(e){ return raw; } };
+    const avatar=p.avatar||(RS&&RS.getProfileAvatar?RS.getProfileAvatar(items,code):"");
+    const frame=p.avatarFrame||(RS&&RS.getProfileAvatarFrame?RS.getProfileAvatarFrame(items,code):"");
+    const bg=p.profileBackground||(RS&&RS.getProfileBackground?RS.getProfileBackground(items,code):"");
+    const av=h("div",{class:"dk-stu-av"+(frame?" has-frame":"")});
+    const core=h("div",{class:"dk-stu-av-core",text:"👤"});
+    if(avatar){ const i=h("img",{src:img(avatar,400),alt:"Avatar"}); i.onerror=function(){ core.textContent="👤"; }; core.textContent=""; core.appendChild(i); }
+    av.appendChild(core);
+    if(frame){ const f=h("img",{class:"dk-stu-frame",src:img(frame,500),alt:""}); f.onerror=function(){ f.remove(); av.classList.remove("has-frame"); }; av.appendChild(f); }
+    const name=h("strong",{class:"dk-stu-name",text:info.name||p.name||(me&&me.name)||("Học viên "+code)});
+    const nameWrap=h("div",{class:"dk-stu-name-wrap"},[name]);
+    let title=null; try{ title=RS&&RS.getProfileTitle?RS.getProfileTitle(p.rewardData||{}):null; }catch(e){}
+    const card=h("article",{class:"dk-stu"+(bg?" has-bg":"")},[
+        h("div",{class:"dk-stu-shade"}),
+        h("div",{class:"dk-stu-inner"},[
+            av,
+            h("div",{class:"dk-stu-info"},[
+                h("div",{class:"dk-stu-kicker",text:"HỌC VIÊN THANH PHONG THƯ MÔN"}),
+                nameWrap,
+                h("div",{class:"dk-stu-meta"},[
+                    h("span",{text:"Mã "+code}),
+                    info.team?h("span",{text:"Tổ "+info.team}):null,
+                    info.course?h("span",{text:"Khoá "+info.course}):null
+                ]),
+                title&&title.name?h("div",{class:"dk-stu-title",text:((title.icon||"")+" "+title.name).trim()}):null,
+                h("div",{class:"dk-stu-badge"+(mine?" ok":" warn"),text:mine?"🔒 Đã bảo mật":"⚠️ Chưa bảo mật"})
+            ])
+        ])
+    ]);
+    if(bg) card.style.backgroundImage='url("'+img(bg,1600).replace(/"/g,"%22")+'")';
+    box.appendChild(card);
+    try{
+        const potion=p.hasMultitaskPotion||(RS&&RS.hasMultitaskPotion&&RS.hasMultitaskPotion(items));
+        if(potion && RS.applyMultitaskEffect) RS.applyMultitaskEffect(nameWrap,name,{size:"large"});
+    }catch(e){}
+    const msg=h("div",{class:"dk-msg",id:"dkAccountMsg"});
+    if(mine){
+        box.appendChild(h("div",{class:"dk-actions"},[
+            h("a",{class:"dk-btn",href:"https://www.thudao.com/p/tra-cuu.html",text:"Hồ sơ & Chợ phiên"}),
+            h("button",{type:"button",class:"dk-btn dk-ghost",text:"Đổi mật khẩu",onclick:function(){ auth.openAccount({onLogout:function(){ S.profile=null; S.enrolled=null; resetViewer(); }}); }}),
+            h("button",{type:"button",class:"dk-btn dk-ghost",text:"Đăng xuất",onclick:async function(){ this.disabled=true; await auth.logout(false); S.profile=null; S.enrolled=null; resetViewer(); }})
+        ]));
+        const det=h("details",{class:"dk-rules dk-basic"},[h("summary",{text:"📝 Thông tin cơ bản (ngày sinh, địa chỉ, Zalo)"})]);
+        const inner=h("div",{class:"dk-rules-body"}); det.appendChild(inner);
+        box.appendChild(det);
+        det.addEventListener("toggle",function(){ if(det.open && !inner.childNodes.length) basicInfoForm(inner,false); });
+        box.appendChild(msg);
+    }else{
+        box.appendChild(h("div",{class:"dk-upgrade"},[
+            h("div",{class:"dk-upgrade-title",text:"🔒 Bảo mật tài khoản học viên"}),
+            h("p",{text:"Hiện ai biết mã "+code+" cũng xem được hồ sơ và dùng mã này trên các trang. Nâng cấp bảo mật để đặt mật khẩu: chỉ bạn xem được hồ sơ, chọn được avatar, khung, nền và lưu thông tin đăng ký."}),
+            h("div",{class:"dk-actions"},[
+                h("button",{type:"button",class:"dk-btn",text:"NÂNG CẤP BẢO MẬT TÀI KHOẢN",onclick:function(){ openUpgrade(code); }}),
+                h("a",{class:"dk-btn dk-ghost",href:"https://www.thudao.com/p/tra-cuu.html",text:"Xem hồ sơ"})
+            ]),
+            h("p",{class:"dk-hint",text:"Không phải bạn? Đổi mã học viên tại icon Minh Hồng."})
+        ]));
+        box.appendChild(msg);
+    }
+}
+function resetViewer(){ ST.loaded=false; ST.code=""; ST.profile=null; lastViewerKey=""; renderAll(); }
 function renderLoggedIn(box,me){
     const auth=A(), p=S.profile||{};
     const isTV=(me.type||p.type)==="TV";
@@ -331,6 +416,10 @@ function renderLoggedIn(box,me){
             h("button",{type:"button",class:"dk-btn dk-ghost",text:"Đăng xuất",onclick:async function(){ this.disabled=true; await auth.logout(false); S.profile=null; S.enrolled=null; renderAll(); }})
         ])
     ]));
+    basicInfoForm(box,isTV);
+}
+function basicInfoForm(box,isTV){
+    const auth=A(), p=S.profile||{};
     const msg=h("div",{class:"dk-msg",id:"dkAccountMsg"});
     if(!S.profile){
         box.appendChild(h("div",{class:"dk-loading",text:"Đang tải thông tin cơ bản..."}));
@@ -376,11 +465,19 @@ function renderCourses(){
         h("p",{text:"Chọn khoá học đang mở để xem chương trình, gói học và đăng ký."})
     ])]));
     courses().forEach(function(c){ box.appendChild(courseCard(c)); });
-    ensureLessons().then(function(){ return loadViewer(false); }).then(function(changed){
-        if(viewerKey()!==box.dataset.viewer){ box.dataset.viewer=viewerKey(); redrawCourses(); }
+    ensureLessons().then(function(){ return loadViewer(false); }).then(function(){
+        const k=viewerKey();
+        if(k!==lastViewerKey){
+            const a=lastViewerKey.split("|"), b=k.split("|");
+            const accountChanged=a[0]!==b[0] || a[4]!==b[4] || a[5]!==b[5];
+            lastViewerKey=k;
+            redrawCourses();
+            if(accountChanged){ renderAccount(); renderHeroSteps(); }
+        }
     }).catch(function(){});
 }
-function viewerKey(){ return [ST.code,ST.done.size,lessons().length,S.enrolled?S.enrolled.length:-1].join("|"); }
+let lastViewerKey="";
+function viewerKey(){ return [ST.code,ST.done.size,lessons().length,S.enrolled?S.enrolled.length:-1,ST.profile?1:0,ST.loaded?1:0].join("|"); }
 function redrawCourses(){
     courses().forEach(function(c){ const card=$("dkCourse-"+c.id); if(card) card.replaceWith(courseCard(c)); });
 }
@@ -488,7 +585,7 @@ function loadDeleted(){ return once("deleted",async function(){
 function vnTime(s){ const m=String(s||"").match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/); return m?Date.UTC(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0)):0; }
 
 /* ---------- học viên đang xem (tài khoản / Minh Hồng) ---------- */
-const ST={code:"",info:null,done:new Set(),loaded:false,busy:false,error:""};
+const ST={code:"",info:null,profile:null,done:new Set(),loaded:false,busy:false,error:""};
 async function viewerCode(){
     const auth=A(), me=auth&&auth.me();
     if(me){ if(me.linked) return upCode(me.linked); if(me.type!=="TV") return upCode(me.code); }
@@ -502,11 +599,16 @@ function isEnrolled(c){
     if(ST.code) return true; // mọi học viên có mã đều đang học khoá 52 buổi
     return !!(A() && A().me() && enrolledFor(c));
 }
-async function loadViewer(force){
-    if(ST.busy) return;
+let viewerPromise=null;
+function loadViewer(force){
+    if(viewerPromise) return viewerPromise;
+    viewerPromise=loadViewerNow(force).finally(function(){ viewerPromise=null; });
+    return viewerPromise;
+}
+async function loadViewerNow(force){
     const code=await viewerCode();
     if(!force && ST.loaded && code===ST.code) return;
-    ST.busy=true; ST.code=code; ST.done=new Set(); ST.info=null; ST.error="";
+    ST.busy=true; ST.code=code; ST.done=new Set(); ST.info=null; ST.profile=null; ST.error="";
     try{
         if(code){
             const reg=await loadRegistry().catch(function(){ return null; });
@@ -520,6 +622,7 @@ async function loadViewer(force){
                 const t=clean(r[bi]).toUpperCase(); let m; pat.lastIndex=0;
                 while((m=pat.exec(t))) ST.done.add(m[2]);
             });
+            try{ if(RS && typeof RS.getStudentRewardProfile==="function") ST.profile=await RS.getStudentRewardProfile(code,text,!!force); }catch(e){ ST.profile=null; }
         }
     }catch(e){ ST.error="Chưa tải được tiến độ học tập. Vui lòng thử lại sau."; }
     finally{ ST.busy=false; ST.loaded=true; }
@@ -926,9 +1029,12 @@ function start(){
             const auth=A();
             if(auth && auth.token()) loadMine().then(renderAll,renderAll);
             else renderAll();
+            const onSession=function(){ loadViewer(true).then(function(){ lastViewerKey=""; renderAll(); }); };
+            window.addEventListener("ocdStudentSessionChanged",onSession);
+            window.addEventListener("storage",function(e){ if(e && e.key && /student_session/i.test(e.key)) onSession(); });
             window.addEventListener("ocdAuthChanged",function(e){
                 const d=e&&e.detail||{};
-                if(!d.loggedIn){ S.profile=null; S.enrolled=null; renderAll(); return; }
+                if(!d.loggedIn){ S.profile=null; S.enrolled=null; ST.loaded=false; lastViewerKey=""; renderAll(); return; }
                 /* đăng nhập từ nơi khác trên trang (vd. Minh Hồng) */
                 setTimeout(function(){ if(!S.profile && !S.loading && !S.busyLogin) afterLogin(""); },400);
             });
