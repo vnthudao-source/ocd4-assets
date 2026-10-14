@@ -486,3 +486,4 @@ html.dk-noscroll,html.dk-noscroll body{overflow:hidden}
     #ocdRegisterApp .dk-acct-actions{grid-template-columns:1fr 1fr}
     #ocdRegisterApp .dk-acct-actions .dk-acct-main{grid-column:1/-1;min-height:50px;font-size:15px}
 }
+.dk-samples-btn{margin:2px 0 6px}

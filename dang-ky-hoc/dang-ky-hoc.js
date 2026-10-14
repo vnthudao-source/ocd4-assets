@@ -25,7 +25,7 @@
 (function(){
 "use strict";
 if(window.OCDRegisterPage) return;
-window.OCDRegisterPage={version:"1.6.0"};
+window.OCDRegisterPage={version:"1.6.1"};
 const SCRIPT_BASE=(function(){ try{ const src=document.currentScript&&document.currentScript.src||""; return src.slice(0,src.lastIndexOf("/")+1); }catch(e){ return ""; } })();
 
 const ROOT_ID="ocdRegisterApp";
@@ -1013,7 +1013,8 @@ function loadSamples(codes){
     const where=codes.map(function(c){ return "lower(G) contains '"+String(c).toLowerCase().replace(/[^a-z0-9]/g,"")+"'"; }).join(" or ");
     const url="https://docs.google.com/spreadsheets/d/"+GALLERY.sheet+"/gviz/tq?tqx=out:csv&headers=1&sheet="+encodeURIComponent(GALLERY.tab)+"&tq="+encodeURIComponent("select A,B,F,G where "+where+" order by A desc")+"&_="+Math.floor(Date.now()/300000);
     const re=codeRegex(codes);
-    return (sampleCache[key]=Promise.all([fetch(url,{cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.text(); }),loadDeleted()]).then(function(res){
+    const ac=window.AbortController?new AbortController():null, timer=setTimeout(function(){ if(ac) ac.abort(); },15000); /* không bao giờ treo quá 15 giây */
+    return (sampleCache[key]=Promise.all([fetch(url,{cache:"no-store",signal:ac?ac.signal:undefined}).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.text(); }).finally(function(){ clearTimeout(timer); }),loadDeleted()]).then(function(res){
         const text=res[0], del=res[1];
         if(/^\s*</.test(text)||/setResponse/.test(text)) throw new Error("Sheet chưa trả về CSV");
         const out=[], seen={};
@@ -1031,10 +1032,12 @@ function lessonSamples(l){
     const codes=(l.acceptedCodes&&l.acceptedCodes.length?l.acceptedCodes:[l.code]).filter(Boolean);
     const s=h("section",{class:"dk-lesson-sec dk-samples"},[h("h4",{text:"Ảnh bài tập tham khảo"})]);
     if(!codes.length){ s.appendChild(h("p",{class:"dk-hint",text:"Chưa có bài tập tham khảo."})); return s; }
-    const note=h("p",{class:"dk-hint",text:"Đang tải bài của các học viên…"});
+    const note=h("p",{class:"dk-hint",text:"Xem bài của các học viên khác đã nộp với mã "+codes.join(" / ")+"."});
     const track=h("div",{class:"dk-swipe",role:"list"});
-    s.append(note,track);
-    loadSamples(codes).then(function(list){
+    /* Chỉ tải khi học viên bấm xem – không làm chậm trang hay khung bài học */
+    const btn=h("button",{type:"button",class:"dk-btn dk-ghost dk-samples-btn",text:"🖼 Xem ảnh bài tập tham khảo",onclick:function(){ btn.remove(); note.textContent="Đang tải bài của các học viên…"; show(); }});
+    s.append(note,btn,track);
+    function show(){ loadSamples(codes).then(function(list){
         if(!list.length){ note.textContent="Chưa có học viên nộp bài "+codes.join(" / ")+". Bạn có thể là người đầu tiên!"; return; }
         note.textContent=list.length+" bài của học viên với mã "+codes.join(" / ")+" · vuốt ngang để xem, bấm vào ảnh để mở lớn.";
         list.forEach(function(w,k){
@@ -1046,7 +1049,7 @@ function lessonSamples(l){
                 h("div",{class:"dk-swipe-meta",text:w.time.split(" ")[0]})
             ]));
         });
-    }).catch(function(){ note.textContent="Chưa tải được ảnh bài tập tham khảo. Vui lòng thử lại sau."; });
+    }).catch(function(){ note.textContent="Chưa tải được ảnh bài tập tham khảo. Vui lòng thử lại sau."; }); }
     return s;
 }
 
