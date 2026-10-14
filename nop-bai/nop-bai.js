@@ -14,7 +14,7 @@
 (function(){
 "use strict";
 if(window.OCDSubmitWork) return;
-window.OCDSubmitWork={version:"1.1.3"};
+window.OCDSubmitWork={version:"1.1.4"};
 
 const DEFAULT_API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
 const MAX_SIDE=2000, QUALITY=0.86, TIMEOUT=120000;
@@ -277,7 +277,7 @@ async function openModal(){
         body.appendChild(h("div",{class:"osw-done"},[
             h("div",{class:"osw-msg ok",text:"✅ Đã nộp bài "+r.desc+" lúc "+r.time+" (bài thứ "+r.today+"/"+r.limit+" hôm nay)."}),
             h("img",{src:picked,alt:"Bài vừa nộp"}),
-            h("div",{class:"osw-hint",text:"Bài sẽ hiện trong danh sách sau khi tải lại trang (có thể mất 1–2 phút)."}),
+            h("div",{class:"osw-hint",text:"Bài sẽ hiện trong danh sách và mục Tác phẩm mới nhất sau vài phút (Google cần thời gian cập nhật dữ liệu công khai)."}),
             h("div",{class:"osw-actions"},[
                 h("button",{type:"button",class:"osw-btn",text:"Tải lại trang",onclick:function(){ location.reload(); }}),
                 h("button",{type:"button",class:"osw-btn ghost",text:"Đóng",onclick:closeModal})
