@@ -1,5 +1,7 @@
 /* =========================================================
-   NỘP BÀI KHÔNG QUA GOOGLE FORM v1.0 – Thanh Phong Thư Môn
+   NỘP BÀI KHÔNG QUA GOOGLE FORM v1.1 – Thanh Phong Thư Môn
+   v1.1: danh sách bài chỉ hiện mã + tuần + số bài đã nộp (vd "T1 - Tuần 1 - Đã nộp (1 bài)");
+         "Bài khác" bắt buộc mô tả theo yêu cầu nhiệm vụ / GVCN
    ---------------------------------------------------------
    Gắn vào trang Nộp bài (Tác phẩm học viên). Thay nút "Nộp bài tập" (mở Google Form)
    bằng khung nộp bài ngay trên trang, gửi ảnh thẳng tới Apps Script (action "submitWork").
@@ -12,12 +14,11 @@
 (function(){
 "use strict";
 if(window.OCDSubmitWork) return;
-window.OCDSubmitWork={version:"1.0.0"};
+window.OCDSubmitWork={version:"1.1.0"};
 
 const DEFAULT_API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
 const MAX_SIDE=2000, QUALITY=0.86, TIMEOUT=120000;
 const SCRIPT_BASE=(function(){ try{ const s=document.currentScript&&document.currentScript.src||""; return s.slice(0,s.lastIndexOf("/")+1); }catch(e){ return ""; } })();
-const LESSONS_URL=window.OCD_SUBMIT_LESSONS_URL || SCRIPT_BASE.replace(/nop-bai\/$/,"dang-ky-hoc/")+"lo-trinh-52.min.js";
 
 /* ---------------- tiện ích ---------------- */
 function $(id){ return document.getElementById(id); }
@@ -42,27 +43,46 @@ function upCode(v){ return clean(v).toUpperCase().replace(/\s+/g,""); }
 function API(){ const RS=window.StudentRewardSystem; return (RS&&RS.CONFIG&&RS.CONFIG.appsScriptUrl)||DEFAULT_API; }
 function auth(){ return window.OCDAuth && typeof window.OCDAuth.token==="function" ? window.OCDAuth : null; }
 
-/* ---------------- danh sách bài ---------------- */
-let lessonsPromise=null;
-function loadLessons(){
-    if(Array.isArray(window.OCD_LESSONS_52) && window.OCD_LESSONS_52.length) return Promise.resolve(window.OCD_LESSONS_52);
-    if(lessonsPromise) return lessonsPromise;
-    lessonsPromise=new Promise(function(resolve){
-        const s=document.createElement("script"); s.src=LESSONS_URL;
-        s.onload=s.onerror=function(){ resolve(Array.isArray(window.OCD_LESSONS_52)?window.OCD_LESSONS_52:[]); };
-        document.head.appendChild(s);
-    });
-    return lessonsPromise;
+/* ---------------- danh sách bài + số bài đã nộp ---------------- */
+function parseCsv(text){
+    const rows=[]; let row=[], cell="", q=false; text=String(text||"").replace(/^\uFEFF/,"");
+    for(let i=0;i<text.length;i++){
+        const c=text[i];
+        if(q){ if(c==='"'){ if(text[i+1]==='"'){ cell+='"'; i++; } else q=false; } else cell+=c; continue; }
+        if(c==='"') q=true; else if(c===","){ row.push(cell); cell=""; }
+        else if(c==="\n"||c==="\r"){ if(c==="\r"&&text[i+1]==="\n") i++; row.push(cell); rows.push(row); row=[]; cell=""; }
+        else cell+=c;
+    }
+    if(cell!==""||row.length){ row.push(cell); rows.push(row); }
+    return rows;
 }
-function lessonOptions(list){
+const CODE_RE=/(^|[^A-Z0-9])(VPTB|LM|LB|T(?:5[0-2]|[1-4][0-9]|[1-9]))(?=$|[^A-Z0-9])/g;
+/* Đếm số bài đã nộp theo mã bài (VPTB, T1…T52, LM, LB) của học viên */
+async function submittedCounts(code){
+    const out={};
+    try{
+        const RS=window.StudentRewardSystem;
+        if(window.StudentRewardSystemReady) await window.StudentRewardSystemReady;
+        if(!RS || typeof RS.getStudentSubmissionsCsv!=="function") return out;
+        const rows=parseCsv(await RS.getStudentSubmissionsCsv(code,true)), head=(rows[0]||[]).map(function(x){ return clean(x).toLowerCase(); });
+        let ci=head.findIndex(function(x){ return x.indexOf("mã học viên")===0; });
+        let di=head.findIndex(function(x){ return x.indexOf("mô tả")===0; }); if(di<0) di=6;
+        rows.slice(1).forEach(function(r){
+            if(ci>=0 && upCode(r[ci])!==code) return;
+            const text=clean(r[di]).toUpperCase(), seen={}; let m; CODE_RE.lastIndex=0;
+            while((m=CODE_RE.exec(text))){ if(!seen[m[2]]){ seen[m[2]]=true; out[m[2]]=(out[m[2]]||0)+1; } }
+        });
+    }catch(e){}
+    return out;
+}
+function lessonOptions(counts){
+    const done=function(k){ if(!counts) return ""; const n=counts[k]||0; return n?" - Đã nộp ("+n+" bài)":" - Chưa nộp"; };
     const opts=[{value:"",text:"— Chọn bài tập —"}];
-    const byId={}; (list||[]).forEach(function(l){ byId[l.id]=l; });
-    const title=function(i){ const l=byId[i]; return l?clean(l.shortTitle||l.title).replace(/^Tuần \d+ - /,""):""; };
-    opts.push({value:"VPTB",text:"VPTB · Chuẩn bị – Văn phòng tứ bảo"});
-    for(let i=1;i<=52;i++){ const t=title(i); opts.push({value:"T"+i,text:"T"+i+" · Tuần "+i+(t&&!/^Bài \d+$/.test(t)?" – "+t:"")}); }
-    opts.push({value:"LM",text:"LM · Bài lâm mô"});
-    opts.push({value:"LB",text:"LB · Lưu bút"});
-    opts.push({value:"KHAC",text:"Bài khác (ghi rõ ở phần mô tả)"});
+    opts.push({value:"VPTB",text:"VPTB - Chuẩn bị"+done("VPTB")});
+    for(let i=1;i<=52;i++) opts.push({value:"T"+i,text:"T"+i+" - Tuần "+i+done("T"+i)});
+    opts.push({value:"LM",text:"LM - Lâm mô"+done("LM")});
+    opts.push({value:"LB",text:"LB - Lưu bút"+done("LB")});
+    opts.push({value:"KHAC",text:"Bài khác"});
     return opts;
 }
 
@@ -139,6 +159,7 @@ const CSS=`
 .osw-req{color:#dc2626}
 .osw-select,.osw-text{width:100%;box-sizing:border-box;padding:12px;border:1px solid #d1d5db;border-radius:10px;background:#fff;color:#172033;font:16px Arial,Helvetica,sans-serif}
 .osw-text{min-height:74px;resize:vertical}
+.osw-text.osw-must{border-color:#f59e0b;background:#fffbeb}
 .osw-hint{margin-top:5px;font-size:11.5px;line-height:1.5;color:#64748b}
 .osw-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:150px;padding:14px;border:2px dashed #fbbf24;border-radius:14px;background:#fffdf7;color:#92400e;text-align:center;cursor:pointer;font-size:13px;font-weight:900}
 .osw-drop img{max-width:100%;max-height:300px;border-radius:10px;object-fit:contain}
@@ -188,9 +209,13 @@ async function openModal(){
     }
 
     const sel=h("select",{class:"osw-select",id:"oswLesson"});
-    loadLessons().then(function(list){ sel.innerHTML=""; lessonOptions(list).forEach(function(o){ sel.appendChild(h("option",{value:o.value,text:o.text})); }); });
-    lessonOptions([]).forEach(function(o){ sel.appendChild(h("option",{value:o.value,text:o.text})); });
-    const note=h("textarea",{class:"osw-text",id:"oswNote",maxlength:"300",placeholder:"Không bắt buộc – ghi thêm khi GVCN yêu cầu (vd: viết lại lần 2, chữ \"Nhẫn\"…)"});
+    const fill=function(counts){ const keep=sel.value; sel.innerHTML=""; lessonOptions(counts).forEach(function(o){ sel.appendChild(h("option",{value:o.value,text:o.text})); }); sel.value=keep; };
+    fill(null);
+    submittedCounts(v.code).then(fill);
+    const NOTE_OPTIONAL="Không bắt buộc – ghi thêm khi GVCN yêu cầu";
+    const NOTE_REQUIRED="Bắt buộc - Ghi đúng theo yêu cầu của nhiệm vụ hoặc của GVCN";
+    const note=h("textarea",{class:"osw-text",id:"oswNote",maxlength:"300",placeholder:NOTE_OPTIONAL});
+    const noteStar=h("span",{class:"osw-req osw-hidden",text:"*"});
     const fileInput=h("input",{type:"file",accept:"image/*"});
     const preview=h("div",{text:""});
     const drop=h("label",{class:"osw-drop"},[fileInput,h("span",{text:"📷"}),h("span",{text:"Bấm để chọn ảnh bài viết"}),preview]);
@@ -198,12 +223,17 @@ async function openModal(){
     const submit=h("button",{type:"button",class:"osw-btn",text:"GỬI BÀI"});
     body.append(
         h("label",{class:"osw-label",for:"oswLesson"},["Bài tập ",h("span",{class:"osw-req",text:"*"})]), sel,
-        h("label",{class:"osw-label",for:"oswNote"},"Mô tả thêm"), note,
-        h("div",{class:"osw-hint",text:"Chọn \"Bài khác\" thì bắt buộc ghi mô tả."}),
+        h("label",{class:"osw-label",for:"oswNote"},["Mô tả thêm ",noteStar]), note,
         h("span",{class:"osw-label"},["Ảnh bài tập ",h("span",{class:"osw-req",text:"*"})]), drop,
         h("div",{class:"osw-hint",text:"Chụp thẳng, đủ sáng, thấy rõ toàn bộ tờ giấy. Mỗi ngày nộp tối đa 2 bài; ảnh đã nộp rồi sẽ không nộp lại được."}),
         msg, h("div",{class:"osw-actions"},[submit])
     );
+    sel.addEventListener("change",function(){
+        const req=sel.value==="KHAC";
+        note.placeholder=req?NOTE_REQUIRED:NOTE_OPTIONAL;
+        noteStar.classList.toggle("osw-hidden",!req);
+        note.classList.toggle("osw-must",req);
+    });
     let picked=null;
     fileInput.addEventListener("change",async function(){
         msg.className="osw-msg";
@@ -222,14 +252,18 @@ async function openModal(){
         msg.className="osw-msg";
         const lesson=sel.value, n=clean(note.value);
         if(!lesson){ say(msg,"Vui lòng chọn bài tập."); sel.focus(); return; }
-        if(lesson==="KHAC" && !n){ say(msg,"Bài khác: vui lòng ghi mô tả bài tập."); note.focus(); return; }
+        if(lesson==="KHAC" && !n){ say(msg,"Bài khác: bắt buộc ghi mô tả đúng theo yêu cầu của nhiệm vụ hoặc của GVCN."); note.focus(); return; }
         if(!picked){ say(msg,"Vui lòng chọn ảnh bài tập."); return; }
         submit.disabled=true; submit.textContent="ĐANG GỬI BÀI…";
         say(msg,"Đang gửi ảnh, vui lòng không đóng trang…","info");
         const A=auth();
         const r=await send({token:A&&A.token()?A.token():"",code:v.code,lesson:lesson,note:n,data:picked});
         submit.disabled=false; submit.textContent="GỬI BÀI";
-        if(!r || !r.ok){ say(msg,(r&&r.error)||"Chưa gửi được bài. Vui lòng thử lại."); return; }
+        if(!r || !r.ok){
+            let e=(r&&r.error)||"Chưa gửi được bài. Vui lòng thử lại.";
+            if(/thao tác không hợp lệ/i.test(e)) e="Máy chủ chưa được cập nhật chức năng nộp bài mới. Vui lòng báo GVCN (Apps Script cần bản Auth.gs v1.6 và triển khai phiên bản mới).";
+            say(msg,e); return;
+        }
         body.innerHTML="";
         body.appendChild(h("div",{class:"osw-done"},[
             h("div",{class:"osw-msg ok",text:"✅ Đã nộp bài "+r.desc+" lúc "+r.time+" (bài thứ "+r.today+"/"+r.limit+" hôm nay)."}),
@@ -256,7 +290,6 @@ function mount(){
     const sync=function(){ btn.classList.toggle("osw-hidden",link.classList.contains("is-hidden")); };
     sync();
     new MutationObserver(sync).observe(link,{attributes:true,attributeFilter:["class"]});
-    loadLessons();
     return true;
 }
 function start(){
