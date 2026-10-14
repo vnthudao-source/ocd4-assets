@@ -6914,11 +6914,43 @@ function getLatestOwnedItemByPrefix(
 }
 
 
+/* v4.5.1: avatar / khung / nền chủ tài khoản đã chọn (OCDAuth) – chỉ dùng khi đang sở hữu */
+function getChosenOwnedItem(
+    items,
+    prefix,
+    kind,
+    code
+){
+    try{
+        const list=items || [];
+        const who=normalizeCode(
+            code ||
+            (list[0] && (list[0].code || list[0].studentCode)) ||
+            ""
+        );
+        const auth=window.OCDAuth;
+        if(!who || !auth || typeof auth.lookCached!=="function") return null;
+        const look=auth.lookCached(who);
+        const name=look && look[kind];
+        if(!name) return null;
+        const wanted=normalizeText(name);
+        if(!wanted.startsWith(normalizeText(prefix))) return null;
+        return sortOwnedItemsNewest(list).find(function(item){
+            return normalizeText(item.giftName)===wanted;
+        }) || null;
+    }catch(error){
+        return null;
+    }
+}
+
+
 function getProfileAvatar(
-    items
+    items,
+    code
 ){
 
     const item=
+        getChosenOwnedItem(items,CONFIG.avatarGiftPrefix,"avatar",code) ||
         getLatestOwnedItemByPrefix(
 
             items,
@@ -6942,10 +6974,12 @@ function getProfileAvatar(
 
 
 function getProfileAvatarFrame(
-    items
+    items,
+    code
 ){
 
     const item=
+        getChosenOwnedItem(items,CONFIG.avatarFramePrefix,"frame",code) ||
         getLatestOwnedItemByPrefix(
 
             items,
@@ -6969,10 +7003,12 @@ function getProfileAvatarFrame(
 
 
 function getProfileBackground(
-    items
+    items,
+    code
 ){
 
     const item=
+        getChosenOwnedItem(items,CONFIG.profileBackgroundPrefix,"bg",code) ||
         getLatestOwnedItemByPrefix(
 
             items,
@@ -7867,17 +7903,20 @@ async function getStudentRewardProfile(
 
         avatar:
             getProfileAvatar(
-                unifiedOwnedItems
+                unifiedOwnedItems,
+                studentCode
             ),
 
         avatarFrame:
             getProfileAvatarFrame(
-                unifiedOwnedItems
+                unifiedOwnedItems,
+                studentCode
             ),
 
         profileBackground:
             getProfileBackground(
-                unifiedOwnedItems
+                unifiedOwnedItems,
+                studentCode
             ),
 
         hasMultitaskPotion:
@@ -8233,7 +8272,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.5.0";
+const V4_VERSION="4.5.1";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -8753,13 +8792,14 @@ window.StudentRewardSystemReady = installV4(window.StudentRewardSystem)
 })();
 
 /* =========================================================
-   OCD AUTH v1.0 – Tài khoản bảo mật (đi kèm Reward Core)
+   OCD AUTH v1.1 – Tài khoản bảo mật (đi kèm Reward Core)
    ---------------------------------------------------------
    - window.OCDAuth / StudentRewardSystem.auth
    - Lưu phiên đăng nhập (localStorage, dùng chung mọi trang thudao.com)
    - Tự gắn mã phiên vào mọi yêu cầu gửi tới Apps Script của hệ thống
    - Chặn tra cứu hồ sơ đã bảo mật nếu người xem không phải chủ tài khoản
    - Hộp thoại: Đăng nhập · Nâng cấp bảo mật · Quên mật khẩu · Tài khoản
+   - v1.1: acceptSession (trang đăng ký), setLook / lookCached (avatar · khung · nền đã chọn)
 ========================================================= */
 (function(){
 "use strict";
@@ -8828,7 +8868,8 @@ async function post(action,body){
 }
 
 /* Danh sách công khai: mã đã bảo mật + lựa chọn avatar/khung/nền */
-let pubPromise=null;
+let pubPromise=null, lastPub=null;
+try{ lastPub=JSON.parse(sessionStorage.getItem(PUB_KEY)||"null"); }catch(e){}
 function publicInfo(force){
     if(!force){
         try{ const c=JSON.parse(sessionStorage.getItem(PUB_KEY)||"null"); if(c && Date.now()-c.at<PUB_TTL) return Promise.resolve(c); }catch(e){}
@@ -8840,6 +8881,7 @@ function publicInfo(force){
             const j=JSON.parse(await res.text());
             if(!j || !j.ok) throw new Error("authPublic");
             const out={at:Date.now(),protected:(j.protected||[]).map(up),look:j.look||{}};
+            lastPub=out;
             try{ sessionStorage.setItem(PUB_KEY,JSON.stringify(out)); }catch(e){}
             return out;
         }catch(e){
@@ -8850,7 +8892,20 @@ function publicInfo(force){
 }
 async function isProtected(code){ const p=await publicInfo(); return p.protected.indexOf(up(code))>=0; }
 async function canView(code){ code=up(code); if(!code) return true; if(isMe(code)) return true; return !(await isProtected(code)); }
-async function lookOf(code){ const p=await publicInfo(); return p.look[up(code)]||null; }
+async function lookOf(code){ if(isMe(code) && session.me && session.me.look) return session.me.look; const p=await publicInfo(); return p.look[up(code)]||null; }
+/* Đọc ngay (không chờ mạng) lựa chọn avatar/khung/nền: của mình lấy theo phiên, người khác theo danh sách công khai đã tải */
+function lookCached(code){
+    code=up(code); if(!code) return null;
+    if(isMe(code) && session.me && session.me.look) return session.me.look;
+    return (lastPub && lastPub.look && lastPub.look[code]) || null;
+}
+function setLook(look){
+    if(!token()) return;
+    session.me=Object.assign({},session.me,{look:Object.assign({},look||{})}); store(KEY,session);
+    try{ sessionStorage.removeItem(PUB_KEY); }catch(e){}
+    if(lastPub && lastPub.look){ const c=up(session.me.linked||session.me.code); lastPub.look[c]=session.me.look; }
+    emit("ocdAuthLookChanged",{look:session.me.look});
+}
 
 /* Kiểm tra lại phiên (mỗi 10 phút) */
 async function refreshMe(){
@@ -9145,7 +9200,9 @@ function installGuard(RS){
 }
 
 window.OCDAuth={
-    version:"1.0.0",
+    version:"1.1.0",
+    acceptSession:function(res){ if(res && res.token && res.expires) saveSession(res); },
+    setLook:setLook, lookCached:lookCached,
     token:token, me:me, isMe:isMe, refreshMe:refreshMe,
     publicInfo:publicInfo, isProtected:isProtected, canView:canView, lookOf:lookOf,
     post:post, ensureAccess:ensureAccess, securityCard:securityCard, lockedToast:lockedToast,
@@ -9158,4 +9215,5 @@ if(window.StudentRewardSystemReady && window.StudentRewardSystemReady.then){
     window.StudentRewardSystemReady.then(function(RS){ installGuard(RS||window.StudentRewardSystem); }).catch(function(){});
 }
 if(token()) setTimeout(refreshMe,1500);
+setTimeout(function(){ publicInfo().catch(function(){}); },600);
 })();

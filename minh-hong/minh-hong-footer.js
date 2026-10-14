@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1574__=
 const CONFIG={
  
     version:
-        "1.6.0",
+        "1.6.1",
  
     enabled:
         true,
@@ -4080,6 +4080,15 @@ const MinhHongAssistant=
                     false,
                     function(){
                         window.OCDAuth.openLogin({onSuccess:function(){ guestView="home"; refreshContext(); }});
+                    }
+                )
+            );
+            actions.appendChild(
+                createActionButton(
+                    "Tạo tài khoản mới",
+                    false,
+                    function(){
+                        window.location.href="https://www.thudao.com/p/dang-ky-hoc.html";
                     }
                 )
             );

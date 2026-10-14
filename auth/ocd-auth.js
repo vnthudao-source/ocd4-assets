@@ -1,11 +1,12 @@
 /* =========================================================
-   OCD AUTH v1.0 – Tài khoản bảo mật (đi kèm Reward Core)
+   OCD AUTH v1.1 – Tài khoản bảo mật (đi kèm Reward Core)
    ---------------------------------------------------------
    - window.OCDAuth / StudentRewardSystem.auth
    - Lưu phiên đăng nhập (localStorage, dùng chung mọi trang thudao.com)
    - Tự gắn mã phiên vào mọi yêu cầu gửi tới Apps Script của hệ thống
    - Chặn tra cứu hồ sơ đã bảo mật nếu người xem không phải chủ tài khoản
    - Hộp thoại: Đăng nhập · Nâng cấp bảo mật · Quên mật khẩu · Tài khoản
+   - v1.1: acceptSession (trang đăng ký), setLook / lookCached (avatar · khung · nền đã chọn)
 ========================================================= */
 (function(){
 "use strict";
@@ -74,7 +75,8 @@ async function post(action,body){
 }
 
 /* Danh sách công khai: mã đã bảo mật + lựa chọn avatar/khung/nền */
-let pubPromise=null;
+let pubPromise=null, lastPub=null;
+try{ lastPub=JSON.parse(sessionStorage.getItem(PUB_KEY)||"null"); }catch(e){}
 function publicInfo(force){
     if(!force){
         try{ const c=JSON.parse(sessionStorage.getItem(PUB_KEY)||"null"); if(c && Date.now()-c.at<PUB_TTL) return Promise.resolve(c); }catch(e){}
@@ -86,6 +88,7 @@ function publicInfo(force){
             const j=JSON.parse(await res.text());
             if(!j || !j.ok) throw new Error("authPublic");
             const out={at:Date.now(),protected:(j.protected||[]).map(up),look:j.look||{}};
+            lastPub=out;
             try{ sessionStorage.setItem(PUB_KEY,JSON.stringify(out)); }catch(e){}
             return out;
         }catch(e){
@@ -96,7 +99,20 @@ function publicInfo(force){
 }
 async function isProtected(code){ const p=await publicInfo(); return p.protected.indexOf(up(code))>=0; }
 async function canView(code){ code=up(code); if(!code) return true; if(isMe(code)) return true; return !(await isProtected(code)); }
-async function lookOf(code){ const p=await publicInfo(); return p.look[up(code)]||null; }
+async function lookOf(code){ if(isMe(code) && session.me && session.me.look) return session.me.look; const p=await publicInfo(); return p.look[up(code)]||null; }
+/* Đọc ngay (không chờ mạng) lựa chọn avatar/khung/nền: của mình lấy theo phiên, người khác theo danh sách công khai đã tải */
+function lookCached(code){
+    code=up(code); if(!code) return null;
+    if(isMe(code) && session.me && session.me.look) return session.me.look;
+    return (lastPub && lastPub.look && lastPub.look[code]) || null;
+}
+function setLook(look){
+    if(!token()) return;
+    session.me=Object.assign({},session.me,{look:Object.assign({},look||{})}); store(KEY,session);
+    try{ sessionStorage.removeItem(PUB_KEY); }catch(e){}
+    if(lastPub && lastPub.look){ const c=up(session.me.linked||session.me.code); lastPub.look[c]=session.me.look; }
+    emit("ocdAuthLookChanged",{look:session.me.look});
+}
 
 /* Kiểm tra lại phiên (mỗi 10 phút) */
 async function refreshMe(){
@@ -391,7 +407,9 @@ function installGuard(RS){
 }
 
 window.OCDAuth={
-    version:"1.0.0",
+    version:"1.1.0",
+    acceptSession:function(res){ if(res && res.token && res.expires) saveSession(res); },
+    setLook:setLook, lookCached:lookCached,
     token:token, me:me, isMe:isMe, refreshMe:refreshMe,
     publicInfo:publicInfo, isProtected:isProtected, canView:canView, lookOf:lookOf,
     post:post, ensureAccess:ensureAccess, securityCard:securityCard, lockedToast:lockedToast,
@@ -404,4 +422,5 @@ if(window.StudentRewardSystemReady && window.StudentRewardSystemReady.then){
     window.StudentRewardSystemReady.then(function(RS){ installGuard(RS||window.StudentRewardSystem); }).catch(function(){});
 }
 if(token()) setTimeout(refreshMe,1500);
+setTimeout(function(){ publicInfo().catch(function(){}); },600);
 })();

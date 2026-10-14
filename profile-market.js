@@ -3,7 +3,8 @@
 "use strict";
  
 /* =========================================================
-   HỒ SƠ / CHỢ PHIÊN v4.9.12 (hiện ngay hồ sơ lưu lần trước; báo thành công ngay khi Apps Script đã ghi)
+   HỒ SƠ / CHỢ PHIÊN v4.10.0 (danh thiếp cho hồ sơ đã bảo mật; chủ tài khoản chọn avatar · khung · nền)
+   v4.9.12: hiện ngay hồ sơ lưu lần trước; báo thành công ngay khi Apps Script đã ghi
    CORE CANONICAL ASSETS / MARKET SELF-RECOVERY
  
    GIỮ:
@@ -2436,7 +2437,8 @@ function renderProfile(
  
         background=
             RS.getProfileBackground(
-                ownedItems
+                ownedItems,
+                student && student.code
             );
     }
  
@@ -2468,7 +2470,8 @@ function renderProfile(
         "function"
         ?
         RS.getProfileAvatar(
-            ownedItems
+            ownedItems,
+            student && student.code
         )
         :
         "",
@@ -2477,7 +2480,8 @@ function renderProfile(
         "function"
         ?
         RS.getProfileAvatarFrame(
-            ownedItems
+            ownedItems,
+            student && student.code
         )
         :
         ""
@@ -2610,7 +2614,10 @@ function renderProfile(
     renderProfileItems(
         ownedItems
     );
- 
+
+    setCardMode(false);
+    updateLookUi();
+
     profile.style.display=
         "block";
 }
@@ -2621,9 +2628,12 @@ function renderProfile(
 ========================================================= */
  
 function closeProfilePanels(){
- 
+
     state.activeProfilePanel=
         null;
+
+    if(el("profileLookPanel")) el("profileLookPanel").classList.remove("visible");
+    if(el("profileLookButton")) el("profileLookButton").classList.remove("active");
  
     [
         "profileLearningPanel",
@@ -3902,6 +3912,25 @@ async function searchStudent(){
     );
 
     state.assetsStale=false;
+    setCardMode(false);
+    hideLookUi();
+    /* v4.10.0: mã đã bảo mật mà người xem không phải chủ tài khoản -> chỉ hiện danh thiếp */
+    if(code !== RS.normalizeCode(CONFIG.adminCode)){
+        try{
+            if(await needsCardOnly(code) && await renderCardOnly(code)){
+                showMessage("rxMessage","🔒 Hồ sơ "+code+" đã được bảo mật – chỉ hiển thị danh thiếp.","success");
+                button.disabled=false;
+                button.textContent="TRA CỨU";
+                return;
+            }
+        }catch(error){
+            console.error("[Profile card]",error);
+            showMessage("rxMessage",error.message || "Không tải được danh thiếp.","error");
+            button.disabled=false;
+            button.textContent="TRA CỨU";
+            return;
+        }
+    }
     /* v4.9.12: hiện ngay hồ sơ lưu từ lần trước trong lúc tải số liệu mới */
     if(
         code !== RS.normalizeCode(CONFIG.adminCode) &&
@@ -7973,10 +8002,421 @@ function handleRewardProfileChanged(event){
 
 
 /* =========================================================
+   v4.10.0: TRANG CÁ NHÂN (tài khoản bảo mật)
+   - Người khác tra cứu mã đã bảo mật: chỉ hiện DANH THIẾP
+     (avatar · khung · nền chủ tài khoản đã chọn, họ tên, mã).
+     Ẩn thông tin học tập, linh thạch, vật phẩm, Chợ phiên, phân tích.
+   - Chủ tài khoản (đã đăng nhập): nút "Trang trí" để chọn avatar /
+     khung / nền đang sở hữu; vật phẩm chưa sở hữu hiện mờ.
+   - Mã chưa bảo mật: như cũ, kèm lời mời nâng cấp trong bảng Trang trí.
+========================================================= */
+
+const LOOK_KINDS=[
+    {kind:"avatar",label:"Avatar",prefix:function(){ return RS.CONFIG.avatarGiftPrefix || "Thẻ đổi Avatar"; },size:300},
+    {kind:"frame",label:"Khung",prefix:function(){ return RS.CONFIG.avatarFramePrefix || "Khung "; },size:300},
+    {kind:"bg",label:"Nền hồ sơ",prefix:function(){ return RS.CONFIG.profileBackgroundPrefix || "Nền hồ sơ "; },size:600}
+];
+
+const LOOK_CSS=`
+#rewardExchangeApp.rx-card-only .student-profile-actions,
+#rewardExchangeApp.rx-card-only .rx-expand-panel,
+#rewardExchangeApp.rx-card-only .market-toggle-wrap,
+#rewardExchangeApp.rx-card-only #studentInsightSection{display:none!important}
+.student-profile-module.card-only .student-profile-label::after{content:" · DANH THIẾP"}
+.rx-card-note{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:#f6efe2;border:1px solid #e3d5bd;color:#5a4a3a;font:13px/1.55 Arial,sans-serif}
+.rx-card-note button{margin-top:8px;border:0;border-radius:999px;padding:8px 14px;background:#8b3328;color:#fffaf0;font:bold 12px Arial,sans-serif;cursor:pointer}
+.look-panel-text{margin:0 0 10px;color:#6b5d4f;font:13px/1.55 Arial,sans-serif}
+.look-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.look-tab{border:1px solid #e3d5bd;background:#fffaf2;color:#8b3328;border-radius:999px;padding:7px 13px;font:bold 12px Arial,sans-serif;cursor:pointer}
+.look-tab.active{background:#8b3328;color:#fffaf0;border-color:#8b3328}
+.look-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.look-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 6px 9px;border:2px solid #eadfce;border-radius:12px;background:#fff;cursor:pointer;font:12px/1.35 Arial,sans-serif;color:#4b3325;text-align:center;min-width:0}
+.look-card img{width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:8px;background:#faf6ef}
+.look-card.bg img{aspect-ratio:16/9;object-fit:cover}
+.look-card.bg .look-none{aspect-ratio:16/9}
+.look-card .look-none{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#faf6ef;font-size:26px;color:#a8998a}
+.look-card .look-name{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.look-card.selected{border-color:#b45309;box-shadow:0 0 0 3px rgba(245,158,11,.25)}
+.look-card.selected::after{content:"✓";position:absolute;top:4px;right:6px;width:20px;height:20px;border-radius:50%;background:#b45309;color:#fff;font:bold 12px/20px Arial,sans-serif}
+.look-card.locked{cursor:not-allowed;opacity:.42;filter:grayscale(1)}
+.look-card.locked .look-lock{font-size:10px;font-weight:bold;color:#78716c}
+.look-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.look-actions button{flex:1;min-width:130px;border:0;border-radius:10px;padding:11px;font:bold 13px Arial,sans-serif;cursor:pointer}
+.look-save{background:#8b3328;color:#fffaf0}
+.look-save[disabled]{opacity:.6;cursor:wait}
+.look-reset{background:#f1e6d3;color:#8b3328}
+.look-msg{margin-top:9px;font:13px/1.5 Arial,sans-serif;min-height:1px}
+.look-msg.err{color:#b91c1c}.look-msg.ok{color:#15803d}
+`;
+
+const lookState={kind:"avatar",draft:null,saving:false};
+
+function authApi(){
+    return window.OCDAuth && typeof window.OCDAuth.isMe==="function" ? window.OCDAuth : null;
+}
+
+function injectLookCss(){
+    if(document.getElementById("rxLookStyle410")) return;
+    const style=document.createElement("style");
+    style.id="rxLookStyle410";
+    style.textContent=LOOK_CSS;
+    (document.head || document.documentElement).appendChild(style);
+}
+
+function giftImageByName(name,size){
+    if(!name) return "";
+    const gift=getCanonicalGiftByName(name);
+    const image=gift && (gift.image || gift.icon);
+    if(!image) return "";
+    return typeof RS.convertDriveImageUrl==="function" ? RS.convertDriveImageUrl(image,size||500) : image;
+}
+
+function applyProfileBackground(url){
+    const profile=el("studentProfileModule");
+    profile.classList.remove("has-profile-background");
+    profile.style.backgroundImage="";
+    if(url){
+        profile.style.backgroundImage='url("'+String(url).replace(/"/g,"%22")+'")';
+        profile.classList.add("has-profile-background");
+    }
+}
+
+function setCardMode(on){
+    injectLookCss();
+    const app=el("rewardExchangeApp");
+    if(app) app.classList.toggle("rx-card-only",!!on);
+    el("studentProfileModule").classList.toggle("card-only",!!on);
+    const note=el("rxCardNote");
+    if(note && !on) note.remove();
+}
+
+/* Mã cần hiện dạng danh thiếp? (đã bảo mật và người xem không phải chủ tài khoản; mã thành viên TV luôn là danh thiếp) */
+async function needsCardOnly(code){
+    const A=authApi();
+    if(!A) return false;
+    if(/^TV\d+$/.test(code)) return true;
+    if(A.isMe(code)) return false;
+    try{
+        return await A.isProtected(code);
+    }catch(error){
+        return false;
+    }
+}
+
+async function renderCardOnly(code){
+    const A=authApi();
+    const results=await Promise.all([
+        A.post("authCard",{code:code}),
+        RS.loadSharedRewardData(false).catch(function(){ return null; })
+    ]);
+    const card=results[0], shared=results[1];
+    if(!card || !card.ok) throw new Error((card && card.error) || "Không tải được danh thiếp.");
+    if(!card.protected){
+        if(/^TV\d+$/.test(code)) throw new Error("Không tìm thấy mã thành viên "+code+".");
+        return false; // không còn bảo mật -> tra cứu đầy đủ như cũ
+    }
+    if(shared && Array.isArray(shared.gifts) && shared.gifts.length){
+        state.gifts=shared.gifts;
+        rebuildGiftMap();
+    }
+    state.student=null;
+    state.reward=null;
+    state.ownedItems=[];
+    state.isAdmin=false;
+    closeProfilePanels();
+    setMultitaskEffect(false);
+    setCardMode(true);
+
+    const look=card.look || {};
+    const mine=A.isMe(code);
+    applyProfileBackground(giftImageByName(look.bg,1600));
+    renderProfileAvatar(giftImageByName(look.avatar,500),giftImageByName(look.frame,700));
+    el("studentProfileName").textContent=card.name || code;
+    el("profileStreakIcon").textContent="🔒";
+    el("profileStreakText").textContent="Hồ sơ riêng tư";
+    el("profileHighIcon").textContent="🪪";
+    el("profileHighText").textContent="Mã "+(card.code || code);
+    el("profileTitleIcon").textContent=card.type==="TV" ? "🌱" : "🎓";
+    el("profileTitleText").textContent=card.type==="TV" ? "Thành viên" : "Học viên Thanh Phong";
+
+    const old=el("rxCardNote");
+    if(old) old.remove();
+    const note=document.createElement("div");
+    note.id="rxCardNote";
+    note.className="rx-card-note";
+    if(mine){
+        note.textContent="Đây là tài khoản thành viên của bạn. Khi đăng ký khoá học và được cấp mã học viên, hồ sơ học tập sẽ hiển thị tại đây.";
+        const go=document.createElement("button");
+        go.type="button";
+        go.textContent="ĐĂNG KÝ KHOÁ HỌC";
+        go.onclick=function(){ window.location.href="https://www.thudao.com/p/dang-ky-hoc.html"; };
+        note.appendChild(document.createElement("br"));
+        note.appendChild(go);
+    }else{
+        note.textContent="Chủ tài khoản đã bảo mật hồ sơ, nên chỉ danh thiếp được hiển thị. Nếu đây là bạn, hãy đăng nhập để xem đầy đủ.";
+        const login=document.createElement("button");
+        login.type="button";
+        login.textContent="ĐÂY LÀ TÔI – ĐĂNG NHẬP";
+        login.onclick=function(){
+            A.openLogin({code:code,onSuccess:function(){ searchStudent(); }});
+        };
+        note.appendChild(document.createElement("br"));
+        note.appendChild(login);
+    }
+    el("studentProfileModule").insertAdjacentElement("afterend",note);
+    el("studentProfileModule").style.display="block";
+    return true;
+}
+
+/* ---------- Bảng Trang trí (chủ tài khoản) ---------- */
+
+function ownedLookNames(kindInfo){
+    const prefix=RS.normalizeText(kindInfo.prefix());
+    const set=new Set();
+    (state.ownedItems || []).forEach(function(item){
+        const n=RS.normalizeText(item.giftName);
+        if(n.startsWith(prefix)) set.add(n);
+    });
+    return set;
+}
+
+function catalogLookGifts(kindInfo){
+    const prefix=RS.normalizeText(kindInfo.prefix());
+    const seen=new Set(), out=[];
+    (state.gifts || []).forEach(function(gift){
+        const n=RS.normalizeText(gift && gift.name);
+        if(!n || !n.startsWith(prefix) || seen.has(n)) return;
+        seen.add(n);
+        out.push(gift);
+    });
+    /* vật phẩm đã sở hữu nhưng không còn trong danh mục */
+    (state.ownedItems || []).forEach(function(item){
+        const n=RS.normalizeText(item.giftName);
+        if(!n.startsWith(prefix) || seen.has(n)) return;
+        seen.add(n);
+        out.push({name:item.giftName,image:item.image});
+    });
+    return out;
+}
+
+function currentLook(){
+    const A=authApi();
+    const me=A && A.me();
+    return Object.assign({avatar:"",frame:"",bg:""},(me && me.look) || {});
+}
+
+function ensureLookUi(){
+    injectLookCss();
+    let button=el("profileLookButton");
+    if(!button){
+        const actions=document.querySelector("#studentProfileModule .student-profile-actions");
+        if(!actions) return false;
+        button=document.createElement("button");
+        button.type="button";
+        button.id="profileLookButton";
+        button.className="student-profile-action";
+        const icon=document.createElement("span");
+        icon.textContent="🎨";
+        const label=document.createElement("span");
+        label.textContent="Trang trí";
+        button.append(icon,label);
+        button.addEventListener("click",toggleLookPanel);
+        actions.appendChild(button);
+    }
+    if(!el("profileLookPanel")){
+        const panel=document.createElement("div");
+        panel.id="profileLookPanel";
+        panel.className="rx-expand-panel";
+        const anchor=el("profileItemPanel");
+        anchor.insertAdjacentElement("afterend",panel);
+    }
+    return true;
+}
+
+function hideLookUi(){
+    const b=el("profileLookButton"), p=el("profileLookPanel");
+    if(b){ b.style.display="none"; b.classList.remove("active"); }
+    if(p) p.classList.remove("visible");
+}
+
+function updateLookUi(){
+    const A=authApi();
+    if(!A || state.isAdmin || !state.student){
+        hideLookUi();
+        return;
+    }
+    if(!ensureLookUi()) return;
+    el("profileLookButton").style.display="";
+    if(el("profileLookPanel").classList.contains("visible")) renderLookPanel();
+}
+
+function toggleLookPanel(){
+    const panel=el("profileLookPanel"), button=el("profileLookButton");
+    const open=!panel.classList.contains("visible");
+    closeProfilePanels();
+    if(open){
+        lookState.draft=currentLook();
+        renderLookPanel();
+        panel.classList.add("visible");
+        button.classList.add("active");
+    }
+}
+
+function renderLookPanel(){
+    const A=authApi(), panel=el("profileLookPanel");
+    if(!A || !panel || !state.student) return;
+    const code=RS.normalizeCode(state.student.code);
+    panel.innerHTML="";
+    const title=document.createElement("div");
+    title.className="rx-panel-title";
+    title.textContent="Trang trí danh thiếp";
+    panel.appendChild(title);
+
+    if(!A.isMe(code)){
+        const text=document.createElement("p");
+        text.className="look-panel-text";
+        text.textContent="Chọn avatar, khung và nền cho danh thiếp dành cho tài khoản đã nâng cấp bảo mật. Sau khi nâng cấp, người khác chỉ xem được danh thiếp của bạn.";
+        panel.appendChild(text);
+        const actions=document.createElement("div");
+        actions.className="look-actions";
+        const up=document.createElement("button");
+        up.type="button";
+        up.className="look-save";
+        up.textContent="NÂNG CẤP BẢO MẬT MÃ "+code;
+        up.onclick=function(){ A.openUpgrade({code:code,onSuccess:function(){ searchStudent(); }}); };
+        actions.appendChild(up);
+        panel.appendChild(actions);
+        return;
+    }
+
+    const draft=lookState.draft || (lookState.draft=currentLook());
+    const intro=document.createElement("p");
+    intro.className="look-panel-text";
+    intro.textContent="Chọn vật phẩm bạn đang sở hữu để hiển thị trên danh thiếp. Vật phẩm mờ là vật phẩm chưa sở hữu.";
+    panel.appendChild(intro);
+
+    const tabs=document.createElement("div");
+    tabs.className="look-tabs";
+    LOOK_KINDS.forEach(function(k){
+        const t=document.createElement("button");
+        t.type="button";
+        t.className="look-tab"+(lookState.kind===k.kind?" active":"");
+        t.textContent=k.label;
+        t.onclick=function(){ lookState.kind=k.kind; renderLookPanel(); };
+        tabs.appendChild(t);
+    });
+    panel.appendChild(tabs);
+
+    const info=LOOK_KINDS.find(function(k){ return k.kind===lookState.kind; }) || LOOK_KINDS[0];
+    const owned=ownedLookNames(info);
+    const grid=document.createElement("div");
+    grid.className="look-grid";
+
+    function addCard(name,image,isOwned,labelText){
+        const card=document.createElement("div");
+        card.className="look-card"+(info.kind==="bg"?" bg":"");
+        const selected=RS.normalizeText(draft[info.kind]||"")===RS.normalizeText(name||"");
+        if(selected) card.classList.add("selected");
+        if(!isOwned) card.classList.add("locked");
+        if(image){
+            const img=document.createElement("img");
+            img.src=image; img.alt=""; img.loading="lazy"; img.decoding="async";
+            img.onerror=function(){ this.style.visibility="hidden"; };
+            card.appendChild(img);
+        }else{
+            const none=document.createElement("div");
+            none.className="look-none";
+            none.textContent=name?"🎁":"✦";
+            card.appendChild(none);
+        }
+        const label=document.createElement("div");
+        label.className="look-name";
+        label.textContent=labelText;
+        card.appendChild(label);
+        if(!isOwned){
+            const lock=document.createElement("div");
+            lock.className="look-lock";
+            lock.textContent="Chưa sở hữu";
+            card.appendChild(lock);
+            card.title="Bạn chưa sở hữu vật phẩm này";
+        }else{
+            card.setAttribute("role","button");
+            card.tabIndex=0;
+            const pick=function(){ draft[info.kind]=name||""; renderLookPanel(); };
+            card.addEventListener("click",pick);
+            card.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(); } });
+        }
+        grid.appendChild(card);
+    }
+
+    addCard("","",true,"Mặc định (vật phẩm mới nhận)");
+    const gifts=catalogLookGifts(info).sort(function(a,b){
+        const ao=owned.has(RS.normalizeText(a.name))?0:1, bo=owned.has(RS.normalizeText(b.name))?0:1;
+        return ao-bo;
+    });
+    gifts.forEach(function(gift){
+        const short=String(gift.name).slice(info.prefix().length).trim() || gift.name;
+        const image=gift.image && typeof RS.convertDriveImageUrl==="function" ? RS.convertDriveImageUrl(gift.image,info.size) : (gift.image||"");
+        addCard(gift.name,image,owned.has(RS.normalizeText(gift.name)),short);
+    });
+    if(!gifts.length){
+        const empty=document.createElement("p");
+        empty.className="look-panel-text";
+        empty.textContent="Chưa có vật phẩm loại này trong danh mục.";
+        panel.appendChild(grid);
+        panel.appendChild(empty);
+    }else{
+        panel.appendChild(grid);
+    }
+
+    const actions=document.createElement("div");
+    actions.className="look-actions";
+    const save=document.createElement("button");
+    save.type="button"; save.className="look-save"; save.textContent=lookState.saving?"ĐANG LƯU...":"LƯU LỰA CHỌN";
+    save.disabled=lookState.saving;
+    const reset=document.createElement("button");
+    reset.type="button"; reset.className="look-reset"; reset.textContent="HOÀN TÁC";
+    reset.onclick=function(){ lookState.draft=currentLook(); renderLookPanel(); };
+    actions.append(save,reset);
+    panel.appendChild(actions);
+    const msg=document.createElement("div");
+    msg.className="look-msg";
+    msg.id="profileLookMsg";
+    panel.appendChild(msg);
+
+    save.onclick=async function(){
+        if(lookState.saving) return;
+        lookState.saving=true;
+        save.disabled=true; save.textContent="ĐANG LƯU...";
+        const r=await A.post("lookSave",{token:A.token(),avatar:draft.avatar||"",frame:draft.frame||"",bg:draft.bg||""});
+        lookState.saving=false;
+        if(!r || !r.ok){
+            save.disabled=false; save.textContent="LƯU LỰA CHỌN";
+            msg.className="look-msg err";
+            msg.textContent=(r && r.error) || "Chưa lưu được lựa chọn.";
+            return;
+        }
+        A.setLook(r.look || draft);
+        lookState.draft=currentLook();
+        renderProfile(state.student,state.ownedItems,state.reward);
+        renderLookPanel();
+        const m=el("profileLookMsg");
+        if(m){ m.className="look-msg ok"; m.textContent="✅ Đã lưu. Danh thiếp của bạn đã được cập nhật."; }
+        el("profileLookPanel").classList.add("visible");
+        el("profileLookButton").classList.add("active");
+    };
+}
+
+
+/* =========================================================
    EVENTS
 ========================================================= */
  
 function bindEvents(){
+
+    window.addEventListener("ocdAuthChanged",function(){
+        if(state.student && !state.isAdmin) updateLookUi();
+    });
  
     window.addEventListener(
         "ocdRewardProfileChanged",

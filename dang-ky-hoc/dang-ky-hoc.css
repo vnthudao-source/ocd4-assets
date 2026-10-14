@@ -1,0 +1,163 @@
+/* =========================================================
+   TRANG ĐĂNG KÝ HỌC v1.0 – Thanh Phong Thư Môn
+   Tài khoản (tạo / đăng nhập / thông tin cơ bản) + danh sách khoá học
+========================================================= */
+#ocdRegisterApp{
+    --dk-red:#8b3328;
+    --dk-red-dark:#6d261d;
+    --dk-gold:#b45309;
+    --dk-cream:#fffaf2;
+    --dk-paper:#f6efe2;
+    --dk-line:#e3d5bd;
+    --dk-ink:#2c241b;
+    --dk-muted:#6b5d4f;
+    --dk-ok:#2f5d26;
+    max-width:980px;
+    margin:0 auto;
+    padding:0 0 32px;
+    color:var(--dk-ink);
+    font:15px/1.6 Arial,Helvetica,sans-serif;
+    box-sizing:border-box;
+}
+#ocdRegisterApp *,#ocdRegisterApp *::before,#ocdRegisterApp *::after{box-sizing:border-box}
+#ocdRegisterApp h2,#ocdRegisterApp h3,#ocdRegisterApp h4{font-family:Georgia,"Times New Roman",serif;color:var(--dk-red);margin:0;line-height:1.3}
+#ocdRegisterApp p{margin:0 0 10px}
+#ocdRegisterApp button{font-family:Arial,Helvetica,sans-serif}
+
+/* ---------- HERO ---------- */
+.dk-hero{
+    padding:30px 22px 26px;
+    border-radius:18px;
+    background:radial-gradient(circle at 92% 0%,rgba(180,83,9,.18),transparent 38%),linear-gradient(135deg,#fffaf1,#f6eadb);
+    border:1px solid var(--dk-line);
+    text-align:center;
+}
+.dk-kicker{font-size:11px;font-weight:bold;letter-spacing:.16em;color:var(--dk-gold);margin-bottom:6px}
+.dk-hero h2{font-size:27px}
+.dk-hero p{max-width:640px;margin:10px auto 0;color:var(--dk-muted);font-size:14px}
+.dk-steps{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:16px}
+.dk-step{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--dk-line);font-size:12px;font-weight:bold;color:var(--dk-muted)}
+.dk-step b{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--dk-red);color:#fff;font-size:11px}
+.dk-step.done b{background:var(--dk-ok)}
+
+/* ---------- SECTION ---------- */
+.dk-section{margin-top:22px;padding:22px;border-radius:18px;background:#fff;border:1px solid var(--dk-line);box-shadow:0 8px 24px rgba(72,48,30,.07)}
+.dk-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.dk-section-head h3{font-size:21px}
+.dk-section-head p{margin:4px 0 0;color:var(--dk-muted);font-size:13px}
+
+/* ---------- TABS ---------- */
+.dk-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;border-bottom:1px solid var(--dk-line);padding-bottom:10px}
+.dk-tab{border:1px solid var(--dk-line);background:var(--dk-cream);color:var(--dk-red);border-radius:999px;padding:8px 15px;font-size:13px;font-weight:bold;cursor:pointer}
+.dk-tab.active{background:var(--dk-red);border-color:var(--dk-red);color:#fffaf0}
+
+/* ---------- FORM ---------- */
+.dk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+.dk-grid .dk-full{grid-column:1/-1}
+.dk-field label{display:block;font-size:13px;font-weight:bold;color:#5a4a3a;margin-bottom:5px}
+.dk-field label .dk-req{color:#b91c1c}
+.dk-input,.dk-textarea,.dk-select{width:100%;padding:11px 12px;border:1px solid #d8ccb8;border-radius:9px;background:#fff;color:var(--dk-ink);font-size:16px;font-family:inherit}
+.dk-textarea{min-height:84px;resize:vertical}
+.dk-input:focus,.dk-textarea:focus{outline:2px solid #c9a45c;border-color:#c9a45c}
+.dk-input[readonly]{background:var(--dk-paper);color:var(--dk-muted)}
+.dk-hint{font-size:12px;color:#8b7b6a;margin-top:5px;line-height:1.5}
+.dk-pw{position:relative}
+.dk-pw .dk-input{padding-right:44px}
+.dk-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;font-size:16px;cursor:pointer;padding:6px;color:#8b7b6a}
+.dk-radio-group{display:flex;flex-direction:column;gap:7px}
+.dk-radio{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border:1px solid var(--dk-line);border-radius:10px;background:var(--dk-cream);cursor:pointer;font-size:14px}
+.dk-radio input{margin-top:4px;accent-color:var(--dk-red)}
+.dk-check{display:flex;align-items:flex-start;gap:9px;font-size:14px;cursor:pointer}
+.dk-check input{margin-top:4px;width:17px;height:17px;accent-color:var(--dk-red);flex:none}
+
+/* ---------- BUTTONS ---------- */
+.dk-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.dk-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:11px 20px;border:0;border-radius:10px;background:var(--dk-red);color:#fffaf0;font-size:14px;font-weight:bold;letter-spacing:.3px;cursor:pointer;text-decoration:none}
+.dk-btn:hover{background:var(--dk-red-dark)}
+.dk-btn[disabled]{opacity:.6;cursor:wait}
+.dk-btn.dk-ghost{background:#f1e6d3;color:var(--dk-red)}
+.dk-btn.dk-ghost:hover{background:#eadbc2}
+.dk-btn.dk-wide{width:100%}
+.dk-link{border:0;background:none;color:var(--dk-red);text-decoration:underline;cursor:pointer;font-size:13px;padding:0}
+
+/* ---------- MESSAGES ---------- */
+.dk-msg{display:none;margin-top:12px;padding:10px 12px;border-radius:9px;font-size:14px;line-height:1.55}
+.dk-msg.err{display:block;background:#fbe9e6;color:#8b2a1f}
+.dk-msg.ok{display:block;background:#e9f4e6;color:var(--dk-ok)}
+.dk-msg.info{display:block;background:#eff6ff;color:#1d4ed8}
+.dk-msg .dk-btn{margin-top:8px;min-height:38px;padding:8px 14px;font-size:13px}
+
+/* ---------- ACCOUNT CARD ---------- */
+.dk-me{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#fff9e9,#fff);border:1px solid #ead9bc;margin-bottom:16px}
+.dk-me-icon{flex:none;display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#fef3c7;font-size:24px}
+.dk-me-name{font:bold 18px/1.3 Georgia,"Times New Roman",serif;color:#5c361f}
+.dk-me-sub{font-size:13px;color:var(--dk-muted)}
+.dk-me-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.dk-me-actions .dk-btn{min-height:38px;padding:8px 14px;font-size:13px}
+
+/* ---------- COURSES ---------- */
+.dk-course{border:1px solid var(--dk-line);border-radius:16px;overflow:hidden;background:#fff}
+.dk-course + .dk-course{margin-top:16px}
+.dk-course-head{padding:20px;background:linear-gradient(135deg,#8b3328,#5c1f17);color:#fffaf0}
+#ocdRegisterApp .dk-course-head h4{color:#fffaf0;font-size:21px}
+.dk-course-head p{margin:6px 0 0;color:#f5e6d3;font-size:14px}
+.dk-badge{display:inline-block;margin-bottom:8px;padding:4px 10px;border-radius:999px;background:#fef3c7;color:#92400e;font-size:11px;font-weight:bold;letter-spacing:.06em}
+.dk-badge.closed{background:#e7e5e4;color:#57534e}
+.dk-course-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.dk-chip{padding:5px 10px;border-radius:999px;background:rgba(255,250,240,.14);border:1px solid rgba(255,250,240,.3);font-size:12px;font-weight:bold}
+.dk-course-body{padding:18px 20px 20px}
+.dk-sub{font:bold 16px/1.4 Georgia,"Times New Roman",serif;color:var(--dk-red);margin:18px 0 10px}
+.dk-sub:first-child{margin-top:0}
+.dk-stages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dk-stage{padding:13px 14px;border-radius:12px;background:var(--dk-cream);border:1px solid #eee5d9}
+.dk-stage-no{font-size:11px;font-weight:bold;letter-spacing:.08em;color:var(--dk-gold)}
+.dk-stage-title{font-weight:bold;color:#4b3325;margin:3px 0 4px}
+.dk-stage-text{font-size:13px;color:var(--dk-muted);line-height:1.55}
+.dk-packages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.dk-pack{position:relative;display:flex;flex-direction:column;padding:14px 13px;border:2px solid #eadfce;border-radius:14px;background:#fff;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.dk-pack:hover{border-color:#d9c3a0}
+.dk-pack.selected{border-color:var(--dk-red);box-shadow:0 0 0 3px rgba(139,51,40,.14)}
+.dk-pack.hot::before{content:"Đề xuất";position:absolute;top:-10px;right:10px;padding:2px 8px;border-radius:999px;background:var(--dk-gold);color:#fff;font-size:10px;font-weight:bold}
+.dk-pack input{position:absolute;opacity:0;pointer-events:none}
+.dk-pack-name{font-weight:bold;color:#4b3325;font-size:14px}
+.dk-pack-price{margin-top:4px;font:bold 19px/1.2 Georgia,"Times New Roman",serif;color:var(--dk-red)}
+.dk-pack-old{font-size:12px;color:#a8998a;text-decoration:line-through;margin-left:4px;font-family:Arial,sans-serif;font-weight:normal}
+.dk-pack ul{list-style:none;margin:10px 0 0;padding:0;font-size:12.5px;line-height:1.5;color:var(--dk-muted)}
+.dk-pack li{padding-left:18px;position:relative;margin-bottom:4px}
+.dk-pack li::before{content:"✓";position:absolute;left:0;color:var(--dk-ok);font-weight:bold}
+.dk-pack li.no::before{content:"–";color:#a8998a}
+.dk-rules{border:1px solid var(--dk-line);border-radius:12px;background:var(--dk-cream);margin-top:14px}
+.dk-rules summary{cursor:pointer;padding:12px 14px;font-weight:bold;color:var(--dk-red)}
+.dk-rules-body{padding:0 16px 12px;font-size:13.5px;color:#4e4436;line-height:1.6}
+.dk-rules-body h5{margin:10px 0 4px;font-size:14px;color:#5c361f}
+.dk-rules-body ul{margin:0 0 6px;padding-left:18px}
+.dk-enroll{margin-top:18px;padding:18px;border-radius:14px;background:var(--dk-paper);border:1px dashed #d9c3a0}
+.dk-enroll h5{margin:0 0 12px;font:bold 17px/1.3 Georgia,"Times New Roman",serif;color:var(--dk-red)}
+.dk-done{margin-top:16px;padding:16px;border-radius:14px;background:#e9f4e6;border:1px solid #c6e2bf;color:var(--dk-ok)}
+.dk-done strong{color:#1f4518}
+.dk-pay{display:grid;grid-template-columns:180px minmax(0,1fr);gap:14px;align-items:center;margin-top:12px;padding:14px;border-radius:12px;background:#fff;border:1px solid var(--dk-line);color:var(--dk-ink)}
+.dk-pay img{width:100%;border-radius:8px;background:#fff}
+.dk-pay dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;font-size:14px}
+.dk-pay dt{color:var(--dk-muted)}
+.dk-pay dd{margin:0;font-weight:bold;word-break:break-word}
+.dk-contact{margin-top:22px;text-align:center;font-size:13px;color:var(--dk-muted)}
+.dk-contact a{color:var(--dk-red)}
+.dk-loading{padding:18px;border-radius:12px;background:#eff6ff;color:#1d4ed8;text-align:center;font-size:13px;font-weight:bold}
+
+@media(max-width:760px){
+    .dk-packages{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+    #ocdRegisterApp{padding:0 0 24px}
+    .dk-hero{padding:22px 16px 20px;border-radius:14px}
+    .dk-hero h2{font-size:22px}
+    .dk-section{padding:16px;border-radius:14px}
+    .dk-grid,.dk-stages{grid-template-columns:1fr}
+    .dk-packages{grid-template-columns:1fr}
+    .dk-me{flex-wrap:wrap}
+    .dk-me-actions{margin-left:0;width:100%}
+    .dk-me-actions .dk-btn{flex:1}
+    .dk-course-head,.dk-course-body{padding:16px}
+    .dk-pay{grid-template-columns:1fr}
+    .dk-pay img{max-width:220px;margin:0 auto}
+}
