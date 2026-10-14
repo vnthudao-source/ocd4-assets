@@ -14,7 +14,7 @@
 (function(){
 "use strict";
 if(window.OCDSubmitWork) return;
-window.OCDSubmitWork={version:"1.1.4"};
+window.OCDSubmitWork={version:"1.2.0"};
 
 const DEFAULT_API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
 const MAX_SIDE=2000, QUALITY=0.86, TIMEOUT=120000;
@@ -149,6 +149,8 @@ const CSS=`
 .osw-btn.ghost{background:#f1f5f9;color:#172033;box-shadow:none}
 .osw-hidden{display:none!important}
 .osw-back{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px 12px;background:rgba(15,23,42,.55);font-family:Arial,Helvetica,sans-serif}
+.osw-back *,.osw-back *::before,.osw-back *::after{box-sizing:border-box}
+.osw-back{box-sizing:border-box}
 .osw-box{width:100%;max-width:520px;max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);display:flex;flex-direction:column;overflow:hidden;border-radius:18px;background:#fff;color:#172033;box-shadow:0 20px 60px rgba(0,0,0,.3);border-top:5px solid #d97706}
 .osw-head{flex:0 0 auto}
 .osw-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 4px}
@@ -170,7 +172,10 @@ const CSS=`
 .osw-msg.err{display:block;background:#fee2e2;color:#991b1b}
 .osw-msg.ok{display:block;background:#dcfce7;color:#166534}
 .osw-msg.info{display:block;background:#eff6ff;color:#1d4ed8}
-.osw-actions{position:sticky;bottom:0;z-index:2;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px -18px 0;padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid #f1f5f9}
+.osw-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.osw-foot{flex:0 0 auto;padding:10px 18px calc(12px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid #e2e8f0;box-shadow:0 -6px 16px rgba(15,23,42,.06)}
+.osw-foot .osw-msg{margin:0 0 8px;max-height:96px;overflow:auto}
+.osw-body{padding-bottom:14px!important}
 .osw-done{text-align:center;padding:6px 0}
 .osw-done img{max-width:100%;max-height:260px;max-height:min(260px,35vh);border-radius:12px;margin:10px 0}
 .osw-noscroll{overflow:hidden!important}
@@ -178,7 +183,8 @@ const CSS=`
 .osw-back{padding:8px}
 .osw-box{max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);border-radius:14px}
 .osw-head{padding:12px 14px 2px}.osw-title{font-size:18px}
-.osw-body{padding:6px 14px 0}.osw-actions{margin:12px -14px 0;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
+.osw-body{padding:6px 14px 0}.osw-foot{padding:8px 14px calc(10px + env(safe-area-inset-bottom,0px))}
+.osw-drop img{max-height:26vh}
 .osw-drop{min-height:110px}.osw-label{margin-top:10px}
 .osw-btn{width:100%}
 }
@@ -195,7 +201,13 @@ async function openModal(){
     const back=h("div",{class:"osw-back",id:"oswModal",onclick:function(e){ if(e.target===back) closeModal(); }},[box]);
     box.appendChild(h("div",{class:"osw-head"},[h("h3",{class:"osw-title",id:"oswTitle",text:"📝 Nộp bài tập"}),h("button",{type:"button",class:"osw-x","aria-label":"Đóng",text:"×",onclick:closeModal})]));
     const body=h("div",{class:"osw-body"}); box.appendChild(body);
-    document.body.appendChild(back); document.documentElement.classList.add("osw-noscroll"); document.addEventListener("keydown",onKey);
+    const foot=h("div",{class:"osw-foot osw-hidden"}); box.appendChild(foot); /* nút gửi luôn nằm ngoài vùng cuộn */
+    /* chiều cao theo màn hình thật (thanh địa chỉ điện thoại co giãn) */
+    const fit=function(){ if(!back.isConnected){ window.removeEventListener("resize",fit); if(window.visualViewport) visualViewport.removeEventListener("resize",fit); return; }
+        const vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
+        back.style.height=vh+"px"; box.style.maxHeight=Math.max(280,vh-(window.innerWidth<=600?16:40))+"px"; };
+    window.addEventListener("resize",fit); if(window.visualViewport) window.visualViewport.addEventListener("resize",fit);
+    document.body.appendChild(back); document.documentElement.classList.add("osw-noscroll"); document.addEventListener("keydown",onKey); fit();
 
     const v=viewer();
     if(!v.code){
@@ -234,9 +246,10 @@ async function openModal(){
         h("label",{class:"osw-label",for:"oswLesson"},["Bài tập ",h("span",{class:"osw-req",text:"*"})]), sel,
         h("label",{class:"osw-label",for:"oswNote"},["Mô tả thêm ",noteStar]), note,
         h("span",{class:"osw-label"},["Ảnh bài tập ",h("span",{class:"osw-req",text:"*"})]), drop,
-        h("div",{class:"osw-hint",text:"Chụp thẳng, đủ sáng, thấy rõ toàn bộ tờ giấy. Mỗi ngày nộp tối đa 2 bài; ảnh đã nộp rồi sẽ không nộp lại được."}),
-        msg, h("div",{class:"osw-actions"},[submit])
+        h("div",{class:"osw-hint",text:"Chụp thẳng, đủ sáng, thấy rõ toàn bộ tờ giấy. Mỗi ngày nộp tối đa 2 bài; ảnh đã nộp rồi sẽ không nộp lại được."})
     );
+    foot.append(msg, h("div",{class:"osw-actions"},[submit]));
+    foot.classList.remove("osw-hidden");
     sel.addEventListener("change",function(){
         const req=sel.value==="KHAC";
         note.placeholder=req?NOTE_REQUIRED:NOTE_OPTIONAL;
@@ -277,11 +290,13 @@ async function openModal(){
         body.appendChild(h("div",{class:"osw-done"},[
             h("div",{class:"osw-msg ok",text:"✅ Đã nộp bài "+r.desc+" lúc "+r.time+" (bài thứ "+r.today+"/"+r.limit+" hôm nay)."}),
             h("img",{src:picked,alt:"Bài vừa nộp"}),
-            h("div",{class:"osw-hint",text:"Bài sẽ hiện trong danh sách và mục Tác phẩm mới nhất sau vài phút (Google cần thời gian cập nhật dữ liệu công khai)."}),
-            h("div",{class:"osw-actions"},[
-                h("button",{type:"button",class:"osw-btn",text:"Tải lại trang",onclick:function(){ location.reload(); }}),
-                h("button",{type:"button",class:"osw-btn ghost",text:"Đóng",onclick:closeModal})
-            ])
+            h("div",{class:"osw-hint",text:"Bài sẽ hiện trong danh sách và mục Tác phẩm mới nhất sau vài phút (Google cần thời gian cập nhật dữ liệu công khai)."})
+        ]));
+        body.scrollTop=0;
+        foot.innerHTML="";
+        foot.appendChild(h("div",{class:"osw-actions"},[
+            h("button",{type:"button",class:"osw-btn",text:"Tải lại trang",onclick:function(){ location.reload(); }}),
+            h("button",{type:"button",class:"osw-btn ghost",text:"Đóng",onclick:closeModal})
         ]));
         try{ window.dispatchEvent(new CustomEvent("ocdWorkSubmitted",{detail:r})); }catch(e){}
     };
