@@ -387,3 +387,28 @@ html.dk-noscroll,html.dk-noscroll body{overflow:hidden}
     .dk-upgrade .dk-btn{width:100%}
 }
 .dk-upgrade .dk-hint{margin-top:10px}
+
+/* ===== v1.3: thẻ khoá đóng/mở, chọn kỳ khai giảng, mã học viên ===== */
+.dk-rules-section{padding:16px 22px}
+.dk-rules-section .dk-rules-wrap{margin:0}
+#ocdRegisterApp .dk-fold-head{display:block;width:100%;border:0;text-align:left;cursor:pointer;font:inherit}
+.dk-fold-head:focus-visible{outline:3px solid #f2c94c;outline-offset:-3px}
+.dk-fold-cta{display:inline-block;margin-top:14px;padding:7px 14px;border-radius:999px;background:#fffaf0;color:var(--dk-red);font-size:12.5px;font-weight:bold;letter-spacing:.03em}
+.dk-fold.is-open .dk-fold-cta{background:rgba(255,250,240,.16);color:#fffaf0;border:1px solid rgba(255,250,240,.35)}
+.dk-fold:not(.is-open) .dk-fold-head:hover .dk-fold-cta{background:#fef3c7}
+.dk-team-chips.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.dk-cohorts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.dk-cohort{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:12px 14px;border:2px solid #eadfce;border-radius:12px;background:#fff;color:#4b3325;text-align:left;cursor:pointer;font-size:13px}
+.dk-cohort b{font:bold 16px/1.3 Georgia,"Times New Roman",serif;color:var(--dk-red)}
+.dk-cohort.on{border-color:var(--dk-red);background:#fff6ee;box-shadow:0 0 0 3px rgba(139,51,40,.12)}
+.dk-cohort.off{cursor:not-allowed;background:#f5f3f0;color:#8a8178}
+.dk-cohort.off b{color:#8a8178;text-decoration:line-through}
+.dk-choice-summary{margin-top:14px;padding:10px 12px;border-radius:10px;background:var(--dk-cream);border:1px dashed var(--dk-line);font-size:14px}
+.dk-code{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px;margin:12px 0 6px;padding:10px 14px;border-radius:12px;background:#fff;border:1px solid #c6e2bf}
+.dk-code span{font-size:12px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:var(--dk-muted)}
+.dk-code b{font:bold 26px/1.1 "Courier New",monospace;letter-spacing:.12em;color:var(--dk-red)}
+@media (max-width:640px){
+    .dk-rules-section{padding:14px 16px}
+    .dk-team-chips.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+.dk-course-body > .dk-enroll-area:first-child .dk-done{margin-top:0}
