@@ -14,7 +14,7 @@
 (function(){
 "use strict";
 if(window.OCDSubmitWork) return;
-window.OCDSubmitWork={version:"1.1.2"};
+window.OCDSubmitWork={version:"1.1.3"};
 
 const DEFAULT_API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
 const MAX_SIDE=2000, QUALITY=0.86, TIMEOUT=120000;
@@ -148,12 +148,13 @@ const CSS=`
 .osw-btn:disabled{background:#94a3b8;cursor:wait}
 .osw-btn.ghost{background:#f1f5f9;color:#172033;box-shadow:none}
 .osw-hidden{display:none!important}
-.osw-back{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px;background:rgba(15,23,42,.55);font-family:Arial,Helvetica,sans-serif}
-.osw-box{width:100%;max-width:520px;margin:auto 0;border-radius:18px;background:#fff;color:#172033;box-shadow:0 20px 60px rgba(0,0,0,.3);border-top:5px solid #d97706}
+.osw-back{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px 12px;background:rgba(15,23,42,.55);font-family:Arial,Helvetica,sans-serif}
+.osw-box{width:100%;max-width:520px;max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);display:flex;flex-direction:column;overflow:hidden;border-radius:18px;background:#fff;color:#172033;box-shadow:0 20px 60px rgba(0,0,0,.3);border-top:5px solid #d97706}
+.osw-head{flex:0 0 auto}
 .osw-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 4px}
 .osw-title{margin:0;color:#92400e;font:900 20px/1.3 Arial,Helvetica,sans-serif}
 .osw-x{border:0;background:none;color:#64748b;font-size:26px;line-height:1;cursor:pointer;padding:2px 6px}
-.osw-body{padding:8px 18px 18px}
+.osw-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:8px 18px 0}
 .osw-who{padding:10px 12px;border-radius:11px;background:#fffbeb;border:1px solid #fde68a;font-size:13px;line-height:1.55;color:#78350f}
 .osw-who b{color:#7c2d12}
 .osw-label{display:block;margin:14px 0 6px;font-size:13px;font-weight:900;color:#334155}
@@ -163,17 +164,24 @@ const CSS=`
 .osw-text.osw-must{border-color:#f59e0b;background:#fffbeb}
 .osw-hint{margin-top:5px;font-size:11.5px;line-height:1.5;color:#64748b}
 .osw-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:150px;padding:14px;border:2px dashed #fbbf24;border-radius:14px;background:#fffdf7;color:#92400e;text-align:center;cursor:pointer;font-size:13px;font-weight:900}
-.osw-drop img{max-width:100%;max-height:300px;border-radius:10px;object-fit:contain}
+.osw-drop img{max-width:100%;max-height:300px;max-height:min(300px,32vh);border-radius:10px;object-fit:contain}
 .osw-drop input{display:none}
 .osw-msg{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.55}
 .osw-msg.err{display:block;background:#fee2e2;color:#991b1b}
 .osw-msg.ok{display:block;background:#dcfce7;color:#166534}
 .osw-msg.info{display:block;background:#eff6ff;color:#1d4ed8}
-.osw-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.osw-actions{position:sticky;bottom:0;z-index:2;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px -18px 0;padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid #f1f5f9}
 .osw-done{text-align:center;padding:6px 0}
-.osw-done img{max-width:100%;max-height:260px;border-radius:12px;margin:10px 0}
+.osw-done img{max-width:100%;max-height:260px;max-height:min(260px,35vh);border-radius:12px;margin:10px 0}
 .osw-noscroll{overflow:hidden!important}
-@media(max-width:600px){.osw-back{padding:10px 8px}.osw-btn{width:100%}}
+@media(max-width:600px){
+.osw-back{padding:8px}
+.osw-box{max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px);border-radius:14px}
+.osw-head{padding:12px 14px 2px}.osw-title{font-size:18px}
+.osw-body{padding:6px 14px 0}.osw-actions{margin:12px -14px 0;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px))}
+.osw-drop{min-height:110px}.osw-label{margin-top:10px}
+.osw-btn{width:100%}
+}
 `;
 function injectCss(){ if($("oswCss")) return; const s=document.createElement("style"); s.id="oswCss"; s.textContent=CSS; document.head.appendChild(s); }
 
