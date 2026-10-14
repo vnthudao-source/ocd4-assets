@@ -14,7 +14,7 @@
 (function(){
 "use strict";
 if(window.OCDSubmitWork) return;
-window.OCDSubmitWork={version:"1.1.0"};
+window.OCDSubmitWork={version:"1.1.1"};
 
 const DEFAULT_API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
 const MAX_SIDE=2000, QUALITY=0.86, TIMEOUT=120000;
@@ -131,7 +131,7 @@ function dataUrlBytes(d){ const i=d.indexOf(","); return Math.floor((d.length-i-
 async function send(payload){
     const ac=new AbortController(), timer=setTimeout(function(){ ac.abort(); },TIMEOUT);
     try{
-        const res=await fetch(API(),{method:"POST",body:JSON.stringify(Object.assign({action:"submitWork",device:navigator.userAgent.slice(0,100)},payload)),
+        const res=await fetch(API(),{method:"POST",body:JSON.stringify(Object.assign({action:"enroll",op:"submitWork",device:navigator.userAgent.slice(0,100)},payload)),
             headers:{"Content-Type":"text/plain;charset=utf-8"},credentials:"omit",cache:"no-store",signal:ac.signal});
         const json=JSON.parse(await res.text());
         if(json && json.expired && auth()){ try{ await auth().logout(false); }catch(e){} }
@@ -261,7 +261,7 @@ async function openModal(){
         submit.disabled=false; submit.textContent="GỬI BÀI";
         if(!r || !r.ok){
             let e=(r&&r.error)||"Chưa gửi được bài. Vui lòng thử lại.";
-            if(/thao tác không hợp lệ/i.test(e)) e="Máy chủ chưa được cập nhật chức năng nộp bài mới. Vui lòng báo GVCN (Apps Script cần bản Auth.gs v1.6 và triển khai phiên bản mới).";
+            if(!r || (!r.op && !r.network)) e="Máy chủ chưa được cập nhật chức năng nộp bài mới. Vui lòng báo GVCN (Apps Script cần bản Auth.gs v1.6.1 và triển khai phiên bản mới).";
             say(msg,e); return;
         }
         body.innerHTML="";
