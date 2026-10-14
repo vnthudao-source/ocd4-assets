@@ -24,7 +24,7 @@ window.__OCD_MINH_HONG_FOOTER_V1574__=
 const CONFIG={
  
     version:
-        "1.5.8.2",
+        "1.6.0",
  
     enabled:
         true,
@@ -3965,6 +3965,12 @@ const MinhHongAssistant=
                 }
  
  
+                /* v1.6.0: mã đã bảo mật -> phải đăng nhập bằng mật khẩu */
+                if(window.OCDAuth){
+                    const allowed=await window.OCDAuth.ensureAccess(result.code,{onSuccess:function(){ guestView="home"; refreshContext(); }});
+                    if(!allowed) return;
+                }
+
                 OCDStudentSession
                 .confirmStudent(
                     result.code,
@@ -4067,6 +4073,17 @@ const MinhHongAssistant=
         );
  
  
+        if(window.OCDAuth){
+            actions.appendChild(
+                createActionButton(
+                    "Đăng nhập tài khoản",
+                    false,
+                    function(){
+                        window.OCDAuth.openLogin({onSuccess:function(){ guestView="home"; refreshContext(); }});
+                    }
+                )
+            );
+        }
         actions.appendChild(
             createActionButton(
                 "Tôi là người mới",
@@ -4898,6 +4915,11 @@ const MinhHongAssistant=
         /* Nội dung Google Sheet dành riêng cho học viên.
            Đặt trước Community / Insight / Class Pulse để
            không thay đổi logic của các engine cũ. */
+        /* v1.6.0: thẻ bảo mật tài khoản */
+        if(window.OCDAuth && state.code){
+            panelBody.appendChild(window.OCDAuth.securityCard(state.code,function(){ refreshContext(); }));
+        }
+
         appendStudentSheetContent(state);
  
         /* Rao bán vật phẩm: chỉ hiện với học viên đã xác minh. */
@@ -5022,6 +5044,12 @@ const MinhHongAssistant=
                 }
  
  
+                /* v1.6.0: mã đã bảo mật -> phải đăng nhập bằng mật khẩu */
+                if(window.OCDAuth){
+                    const allowed=await window.OCDAuth.ensureAccess(result.code,{onSuccess:function(){ guestView="home"; refreshContext(); }});
+                    if(!allowed) return;
+                }
+
                 OCDStudentSession
                 .confirmStudent(
                     result.code,
@@ -5125,6 +5153,8 @@ const MinhHongAssistant=
                 "Thoát phiên học viên",
                 false,
                 function(){
+ 
+                    if(window.OCDAuth && window.OCDAuth.token()){ window.OCDAuth.logout(false); }
  
                     OCDStudentSession
                     .clear(
