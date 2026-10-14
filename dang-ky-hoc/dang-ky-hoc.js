@@ -25,7 +25,7 @@
 (function(){
 "use strict";
 if(window.OCDRegisterPage) return;
-window.OCDRegisterPage={version:"1.6.1"};
+window.OCDRegisterPage={version:"1.7.0"};
 const SCRIPT_BASE=(function(){ try{ const src=document.currentScript&&document.currentScript.src||""; return src.slice(0,src.lastIndexOf("/")+1); }catch(e){ return ""; } })();
 
 const ROOT_ID="ocdRegisterApp";
@@ -586,8 +586,8 @@ function syncArea(c,st,myTeam){
     const selfCourse=courses().filter(function(x){ return x.kind==="self"; })[0];
     const selfRec=selfCourse?enrolledFor(selfCourse):null;
     wrap.appendChild(h("div",{class:"dk-sync-box"},[
-        h("strong",{text:"🔄 Đồng bộ tiến độ học sang khoá học qua Meet"}),
-        h("p",{text:"Bạn đang học khoá Tự học với mã "+st.code+". Khi đồng bộ, bạn tham gia khoá học qua Meet và giữ nguyên mã học viên, tổ, gói học"+(selfRec&&selfRec.package?" ("+selfRec.package+")":"")+" cùng toàn bộ tiến độ đã nộp. Khoá Tự học sẽ được ẩn khỏi trang này."})
+        h("strong",{text:"🔄 Tham gia khoá học qua Meet"}),
+        h("p",{text:"Bạn đang học khoá Tự học với mã "+st.code+". Khi đồng bộ, bạn tham gia khoá học qua Meet và giữ nguyên mã học viên, tổ, gói học"+(selfRec&&selfRec.package?" ("+selfRec.package+")":"")+" cùng toàn bộ tiến độ đã nộp."})
     ]));
     if(cohortsOf(c).filter(function(k){ return k.open; }).length>1){
         wrap.appendChild(h("div",{class:"dk-sub",text:"Chọn khoá khai giảng"}));
@@ -595,10 +595,11 @@ function syncArea(c,st,myTeam){
     }else{
         const k=openCohort(c); if(k) wrap.appendChild(h("p",{class:"dk-hint",text:"Kỳ khai giảng: Khoá "+k.value+" · "+cohortText(k)}));
     }
-    if(c.teams!==false && myTeam){ wrap.appendChild(h("div",{class:"dk-sub",text:"Tổ của bạn"})); wrap.appendChild(teamSlider(c,true,myTeam)); }
-    if(c.roadmap!==false){ wrap.appendChild(h("div",{class:"dk-sub",text:"Tiến độ của bạn – Lộ trình 52 buổi"})); wrap.appendChild(roadmap(c,st.active)); }
+    /* Chỉ thông tin cơ bản + một nút (không hiện tổ, lộ trình) */
     const msg=h("div",{class:"dk-msg"});
-    const btn=h("button",{type:"button",class:"dk-btn dk-wide",text:"ĐỒNG BỘ TIẾN ĐỘ HỌC"});
+    const syncLabel=function(){ const k=chosenCohort(c)||openCohort(c); return "Đồng bộ tiến độ học"+(k?" - Tham gia khoá "+k.value:""); };
+    const btn=h("button",{type:"button",class:"dk-btn dk-wide dk-sync-btn",text:syncLabel()});
+    btn._label=syncLabel;
     const auth=A(), me=auth&&auth.me();
     btn.onclick=async function(){
         hush(msg);
@@ -663,6 +664,7 @@ function cohortPicker(c){
         const on=!!(cur && cur.value===k.value);
         row.appendChild(h("button",{type:"button",class:"dk-cohort"+(on?" on":"")+(k.open?"":" off"),disabled:!k.open,"aria-pressed":on?"true":"false",onclick:function(){
             S.cohort[c.id]=k.value; redrawChoice(c);
+            const sb=document.querySelector("#dkCourse-"+c.id+" .dk-sync-btn"); if(sb && sb._label && !sb.disabled) sb.textContent=sb._label();
             row.querySelectorAll(".dk-cohort").forEach(function(b){ b.classList.remove("on"); b.setAttribute("aria-pressed","false"); });
             this.classList.add("on"); this.setAttribute("aria-pressed","true");
         }},[h("b",{text:"Khoá "+k.value}),h("span",{text:cohortText(k)})]));
@@ -986,7 +988,7 @@ function openLesson(id,enrolled){
             const sec=function(t,txt,list){ const s=h("section",{class:"dk-lesson-sec"},[h("h4",{text:t})]); if(txt) s.appendChild(h("p",{text:txt})); if(list&&list.length) s.appendChild(h("ol",null,list.map(function(x){ return h("li",{text:x}); }))); body.appendChild(s); return s; };
             sec("Mô tả bài học",l.description);
             sec("Hướng dẫn","",l.guide&&l.guide.length?l.guide:["Hướng dẫn sẽ được bổ sung khi bài học được công bố."]);
-            body.appendChild(lessonSamples(l));
+            body.appendChild(l.id===0?lessonSamples(l):lamMoSamples(l));
             const tasks=sec("Nhiệm vụ","",l.tasks||[]);
             if(l.code) tasks.appendChild(h("p",{class:"dk-hint",text:"Mã bài khi nộp: "+(l.acceptedCodes||[l.code]).join(" hoặc ")}));
             if(l.references&&l.references.length){ const r=sec("Bài viết tham khảo"); l.references.forEach(function(x){ if(/^https:\/\//.test(x.url)) r.appendChild(h("a",{class:"dk-ref",href:x.url,target:"_blank",rel:"noopener",text:x.title})); }); }
@@ -1027,6 +1029,100 @@ function loadSamples(codes){
         out.sort(function(a,b){ return b.t-a.t||a.i-b.i; });
         return out;
     }).catch(function(e){ sampleCache[key]=null; throw e; }));
+}
+/* ---------- Tuần 1–52: bài mẫu trong Thư viện lâm mô + bài lâm của học viên (có thả tim) ----------
+   Sheet "Tạo bài lâm mô": Sheet1 (bài mẫu; cột "Tuần học" = số tuần, có thể ghi nhiều số "1, 5"),
+   BanLamHocVien (bài học viên khoe theo MaBaiLamMo, chỉ lấy TrangThai "Hiển thị"),
+   TimBanLam (MaTim · NgayCapNhat · MaKhoe · MaHocVien · DangThaTim) – dùng chung với trang Thư viện lâm mô. */
+const LAMMO={
+    sheet:"1MmqY19BSi8L6xdsF5cg1qZssrERSrqBH6nEGZjqOMLI",
+    gids:{mau:179109844,ban:176543211,tim:176543212},
+    page:"https://www.thudao.com/p/thu-vien-lam-mo.html"
+};
+function lamMoUrl(gid){ return "https://docs.google.com/spreadsheets/d/"+LAMMO.sheet+"/export?format=csv&gid="+gid+"&_="+Math.floor(Date.now()/60000); }
+function fetchText(url,ms){
+    const ac=window.AbortController?new AbortController():null, t=setTimeout(function(){ if(ac) ac.abort(); },ms||15000);
+    return fetch(url,{cache:"no-store",signal:ac?ac.signal:undefined}).then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.text(); }).finally(function(){ clearTimeout(t); });
+}
+function lamMoRows(gid){
+    return fetchText(lamMoUrl(gid)).then(function(text){
+        if(/^\s*</.test(text)) throw new Error("not csv");
+        const rows=parseCsv(text), head=(rows[0]||[]).map(norm);
+        return rows.slice(1).map(function(r){ const o={}; head.forEach(function(k,i){ if(k) o[k]=clean(r[i]); }); return o; });
+    });
+}
+let lamMoPromise=null;
+function loadLamMo(force){
+    if(lamMoPromise && !force) return lamMoPromise;
+    return (lamMoPromise=Promise.all([lamMoRows(LAMMO.gids.mau),lamMoRows(LAMMO.gids.ban),lamMoRows(LAMMO.gids.tim).catch(function(){ return []; })]).then(function(res){
+        return {mau:res[0],ban:res[1],tim:res[2]};
+    }).catch(function(e){ lamMoPromise=null; throw e; }));
+}
+function weekList(v){ return String(v||"").split(/[^0-9]+/).filter(Boolean).map(Number); }
+/* Tim: mỗi MaTim lấy trạng thái mới nhất; đếm DangThaTim = TRUE theo MaKhoe */
+function heartWho(c){ return upCode(c).replace(/^0+(?=\d)/,""); } /* sheet có thể mất số 0 đầu (050303 → 50303) */
+function heartState(tim){
+    const last={};
+    tim.forEach(function(r,i){ const id=r["matim"]||(r["makhoe"]+"|"+heartWho(r["mahocvien"])); last[id]={k:r["makhoe"],who:heartWho(r["mahocvien"]),on:/^(true|1|x|yes|co)$/i.test(norm(r["dangthatim"]))}; });
+    const count={}, mine={};
+    Object.keys(last).forEach(function(id){ const x=last[id]; if(!x.on) return; count[x.k]=(count[x.k]||0)+1; mine[x.k+"|"+x.who]=true; });
+    return {count:count,mine:mine};
+}
+/* Ghi tim: dùng chung API của trang Thư viện lâm mô nếu trang đó cung cấp (window.OCDLamMoHeart),
+   nếu không có thì mở trang Thư viện lâm mô để thả tim ở đó. */
+function lamMoHeartApi(){ const f=window.OCDLamMoHeart; return f && typeof f.toggle==="function" ? f : null; }
+function lamMoSamples(l){
+    const s=h("section",{class:"dk-lesson-sec dk-samples"},[h("h4",{text:"Bài mẫu lâm mô & bài của học viên"})]);
+    const note=h("p",{class:"dk-hint",text:"Bài mẫu trong Thư viện lâm mô dành cho tuần "+l.id+" và bài lâm của các học viên."});
+    const out=h("div");
+    const btn=h("button",{type:"button",class:"dk-btn dk-ghost dk-samples-btn",text:"🖼 Xem bài mẫu tham khảo",onclick:function(){ btn.remove(); note.textContent="Đang tải bài mẫu…"; show(); }});
+    s.append(note,btn,out);
+    function card(img,title,meta,href,extra){
+        const im=h("img",{src:"https://drive.google.com/thumbnail?id="+img+"&sz=w600",alt:title,loading:"lazy",decoding:"async"});
+        im.addEventListener("error",function(){ if(!im.dataset.r){ im.dataset.r="1"; im.src="https://lh3.googleusercontent.com/d/"+img+"=w600"; } else im.style.visibility="hidden"; });
+        return h("div",{class:"dk-swipe-item",role:"listitem"},[
+            h("a",{class:"dk-swipe-link",href:href||("https://drive.google.com/file/d/"+img+"/view"),target:"_blank",rel:"noopener"},[h("div",{class:"dk-swipe-img"},[im]),h("div",{class:"dk-swipe-name",text:title}),meta?h("div",{class:"dk-swipe-meta",text:meta}):null]),
+            extra||null
+        ]);
+    }
+    function show(){ loadLamMo(false).then(function(D){
+        const models=D.mau.filter(function(r){ return weekList(r["tuan hoc"]).indexOf(l.id)>=0; });
+        if(!models.length){ note.textContent="Chưa có bài mẫu lâm mô cho tuần "+l.id+"."; return; }
+        note.textContent=models.length+" bài mẫu · vuốt ngang để xem, bấm vào ảnh để mở lớn.";
+        const t1=h("div",{class:"dk-swipe",role:"list"});
+        const ids={};
+        models.forEach(function(r){
+            const id=driveId(r["hinh anh"]); ids[r["mabailammo"]]=r;
+            if(id) t1.appendChild(card(id,r["noi dung"]||"Bài mẫu",[r["chu de"],r["nguoi viet"]].filter(Boolean).join(" · ")));
+        });
+        out.appendChild(t1);
+        const hs=heartState(D.tim), viewer=heartWho(ST.code);
+        const works=D.ban.filter(function(r){ return ids[r["mabailammo"]] && /hien thi/.test(norm(r["trangthai"])) && clean(r["fileanh"]); })
+            .sort(function(a,b){ return (hs.count[b["makhoe"]]||0)-(hs.count[a["makhoe"]]||0) || vnTime(b["ngaykhoe"])-vnTime(a["ngaykhoe"]); });
+        out.appendChild(h("div",{class:"dk-samples-sub",text:works.length?("Bài lâm của học viên ("+works.length+")"):"Chưa có học viên khoe bài lâm cho các bài mẫu này."}));
+        if(!works.length) return;
+        const t2=h("div",{class:"dk-swipe",role:"list"});
+        works.forEach(function(r){
+            const k=r["makhoe"], file=driveId(r["linkbainop"])||r["fileanh"];
+            let on=!!hs.mine[k+"|"+viewer], n=hs.count[k]||0;
+            const heart=h("button",{type:"button",class:"dk-heart"+(on?" on":""),"aria-pressed":on?"true":"false","aria-label":"Thả tim"});
+            const draw=function(){ heart.textContent=(on?"♥ ":"♡ ")+n; heart.classList.toggle("on",on); heart.setAttribute("aria-pressed",on?"true":"false"); };
+            draw();
+            heart.onclick=async function(){
+                const api=lamMoHeartApi();
+                if(!api){ window.open(LAMMO.page,"_blank","noopener"); return; }
+                if(!viewer){ alert("Vui lòng nhận diện học viên (Minh Hồng) hoặc đăng nhập để thả tim."); return; }
+                heart.disabled=true; const prev=[on,n]; on=!on; n+=on?1:-1; draw();
+                try{ const r=await api.toggle({showId:k,code:upCode(ST.code),on:on}); if(r && typeof r.count==="number"){ n=r.count; draw(); } }
+                catch(e){ on=prev[0]; n=prev[1]; draw(); }
+                finally{ heart.disabled=false; }
+            };
+            const meta=[r["to"]?"Tổ "+r["to"]:"",r["khoa"]?"Khoá "+r["khoa"]:"",r["noidungmau"]].filter(Boolean).join(" · ");
+            t2.appendChild(card(file,r["hoten"]||"Học viên",meta,r["linkbainop"],heart));
+        });
+        out.appendChild(t2);
+    }).catch(function(){ note.textContent="Chưa tải được bài mẫu. Vui lòng thử lại sau."; }); }
+    return s;
 }
 function lessonSamples(l){
     const codes=(l.acceptedCodes&&l.acceptedCodes.length?l.acceptedCodes:[l.code]).filter(Boolean);

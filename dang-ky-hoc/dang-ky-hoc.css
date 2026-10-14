@@ -217,7 +217,7 @@
 
 /* modal */
 html.dk-noscroll,html.dk-noscroll body{overflow:hidden}
-.dk-modal{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(30,22,16,.6);font:15px/1.6 Arial,Helvetica,sans-serif;color:#2c241b}
+.dk-modal{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(30,22,16,.6);font:15px/1.6 Arial,Helvetica,sans-serif;color:#2c241b}
 .dk-modal *{box-sizing:border-box}
 .dk-modal-box{width:100%;max-width:620px;max-height:92vh;display:flex;flex-direction:column;border-radius:16px;background:#fffaf2;border-top:5px solid #8b3328;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
 .dk-modal-box.wide{max-width:960px}
@@ -487,3 +487,11 @@ html.dk-noscroll,html.dk-noscroll body{overflow:hidden}
     #ocdRegisterApp .dk-acct-actions .dk-acct-main{grid-column:1/-1;min-height:50px;font-size:15px}
 }
 .dk-samples-btn{margin:2px 0 6px}
+/* v1.7: bài mẫu lâm mô + tim */
+.dk-swipe-item{display:flex;flex-direction:column}
+.dk-swipe-link{display:block;text-decoration:none!important;color:#2c241b!important}
+.dk-samples-sub{margin:12px 0 6px;font:bold 14px/1.4 Georgia,"Times New Roman",serif;color:#5c361f}
+.dk-heart{margin:0 9px 9px;align-self:flex-start;min-height:34px;padding:5px 12px;border:1px solid #f1c4bd;border-radius:999px;background:#fff;color:#b4232c;font:bold 13px Arial,sans-serif;cursor:pointer}
+.dk-heart.on{background:#fde8e6;border-color:#e9928a}
+.dk-heart[disabled]{opacity:.6}
+.dk-sync .dk-sync-btn{min-height:50px;font-size:15px;white-space:normal;line-height:1.35}
