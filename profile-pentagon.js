@@ -1,5 +1,5 @@
 /* =========================================================
-   NGŨ GIÁC CHỈ SỐ v1.1.1 – Trang Tra cứu hồ sơ / Chợ phiên
+   NGŨ GIÁC CHỈ SỐ v1.2.0 – Trang Tra cứu hồ sơ / Chợ phiên
    ---------------------------------------------------------
    - Dùng đúng danh sách bài nộp mà trang đã tải (analysis.works,
      đã loại bài bị xoá) -> không gọi thêm Sheet / Apps Script.
@@ -9,7 +9,8 @@
        Thức thế  : điểm TB các bài có mô tả "Thức thế"
        Khoả thúc : điểm TB các bài có mô tả "Khoả thúc"
        Kiên trì  : chuỗi ngày nộp bài liên tiếp dài nhất trong 30 ngày gần nhất / 30 × 10
-     Dưới 10 bài -> mặc định: Dụng bút / Thức thế / Khoả thúc = 3 (bài đúng mô tả đã chấm);
+     Dụng bút / Thức thế / Khoả thúc: có ít nhất 1 bài đúng mô tả đã chấm -> điểm TB của giáo viên;
+     chưa có bài nào -> mặc định 3 (v1.2.0).
      Học lực = 1 (bài đã chấm); Kiên trì = 1 (tổng số bài).
    - Banner là nút: bấm để mở / đóng phần "Hồ sơ phân tích cá nhân" (.insight-shell).
    Trang gọi: OCDPentagon.loading(mã) / render(analysis) / fail() / hide().
@@ -19,12 +20,12 @@
 if(window.OCDPentagon && window.OCDPentagon.version) return;
 
 const CONFIG={
-    version:"1.1.1",
+    version:"1.2.0",
     timeZone:"Asia/Ho_Chi_Minh",
     minWorks:10,          // dưới số bài này -> chỉ số = 1
     streakWindowDays:30,  // Kiên trì: xét 30 ngày gần nhất
     floor:1,
-    skillDefault:3,       // v1.1.0: Dụng bút / Thức thế / Khoả thúc chưa đủ bài -> 3
+    skillDefault:3,       // v1.2.0: Dụng bút / Thức thế / Khoả thúc chưa có bài đã chấm nào -> 3
     max:10,
     sectionId:"studentInsightSection",
     shellSelector:".insight-shell"
@@ -39,6 +40,7 @@ const AXES=[
     {key:"kienTri",  label:"Kiên trì"}
 ];
 
+const SKILLS={dungBut:1,thucThe:1,khoaThuc:1};
 /* Nhận diện mô tả bài (đã bỏ dấu, chữ thường) – chỉ cần CHỨA cụm từ ở bất kỳ vị trí nào,
    giữa 2 chữ có thể là dấu cách, gạch, gạch dưới… hoặc viết liền:
    "Bài tập dụng bút", "dụng bút tuần 20", "DUNG-BUT", "dungbut" đều được tính là Dụng bút. (v1.1.1) */
@@ -113,15 +115,17 @@ function compute(works,nowMs){
             if(MATCHERS[k].some(function(re){ return re.test(d); })) byKey[k].push(s);
         });
     });
+    /* v1.2.0: kỹ năng tính ngay từ bài đầu tiên được chấm */
+    function skillAvg(list){ return list.length ? clamp(round1(mean(list))) : CONFIG.skillDefault; }
     function avgOrDefault(list,fallback){
         return list.length>=CONFIG.minWorks ? clamp(round1(mean(list))) : fallback;
     }
     const streak=streakInWindow(works,nowMs);
     const values={
         hocLuc: avgOrDefault(graded,CONFIG.floor),
-        dungBut: avgOrDefault(byKey.dungBut,CONFIG.skillDefault),
-        thucThe: avgOrDefault(byKey.thucThe,CONFIG.skillDefault),
-        khoaThuc: avgOrDefault(byKey.khoaThuc,CONFIG.skillDefault),
+        dungBut: skillAvg(byKey.dungBut),
+        thucThe: skillAvg(byKey.thucThe),
+        khoaThuc: skillAvg(byKey.khoaThuc),
         kienTri: works.length>=CONFIG.minWorks ? clamp(round1(streak/CONFIG.streakWindowDays*10)) : CONFIG.floor
     };
     return {
@@ -298,14 +302,15 @@ function build(code,result){
         AXES.forEach(function(a){
             const v=result.values[a.key];
             const li=document.createElement("li");
-            li.className="pg-row"+(result.counts[a.key]<CONFIG.minWorks?" is-low":"");
+            const need=SKILLS[a.key]?1:CONFIG.minWorks;
+            li.className="pg-row"+(result.counts[a.key]<need?" is-low":"");
             const n=document.createElement("span"); n.className="pg-row-name"; n.textContent=a.label;
             const bar=document.createElement("span"); bar.className="pg-bar";
             const fill=document.createElement("i"); fill.style.width=(v/CONFIG.max*100).toFixed(0)+"%"; bar.appendChild(fill);
             const val=document.createElement("span"); val.className="pg-row-val"; val.textContent=String(v);
             li.title=a.key==="kienTri"
                 ? "Chuỗi dài nhất trong 30 ngày: "+result.streak+" ngày"+(result.counts.kienTri<CONFIG.minWorks?" · cần ít nhất "+CONFIG.minWorks+" bài":"")
-                : result.counts[a.key]+" bài đã chấm"+(result.counts[a.key]<CONFIG.minWorks?" · cần ít nhất "+CONFIG.minWorks+" bài":"");
+                : result.counts[a.key]+" bài đã chấm"+(SKILLS[a.key]?(result.counts[a.key]?"":" · đang tính mặc định "+CONFIG.skillDefault):(result.counts[a.key]<CONFIG.minWorks?" · cần ít nhất "+CONFIG.minWorks+" bài":""));
             li.appendChild(n); li.appendChild(bar); li.appendChild(val);
             list.appendChild(li);
         });
