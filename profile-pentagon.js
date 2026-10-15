@@ -1,5 +1,5 @@
 /* =========================================================
-   NGŨ GIÁC CHỈ SỐ v1.1.0 – Trang Tra cứu hồ sơ / Chợ phiên
+   NGŨ GIÁC CHỈ SỐ v1.1.1 – Trang Tra cứu hồ sơ / Chợ phiên
    ---------------------------------------------------------
    - Dùng đúng danh sách bài nộp mà trang đã tải (analysis.works,
      đã loại bài bị xoá) -> không gọi thêm Sheet / Apps Script.
@@ -19,7 +19,7 @@
 if(window.OCDPentagon && window.OCDPentagon.version) return;
 
 const CONFIG={
-    version:"1.1.0",
+    version:"1.1.1",
     timeZone:"Asia/Ho_Chi_Minh",
     minWorks:10,          // dưới số bài này -> chỉ số = 1
     streakWindowDays:30,  // Kiên trì: xét 30 ngày gần nhất
@@ -39,11 +39,13 @@ const AXES=[
     {key:"kienTri",  label:"Kiên trì"}
 ];
 
-/* Nhận diện mô tả bài (đã bỏ dấu, chữ thường) */
+/* Nhận diện mô tả bài (đã bỏ dấu, chữ thường) – chỉ cần CHỨA cụm từ ở bất kỳ vị trí nào,
+   giữa 2 chữ có thể là dấu cách, gạch, gạch dưới… hoặc viết liền:
+   "Bài tập dụng bút", "dụng bút tuần 20", "DUNG-BUT", "dungbut" đều được tính là Dụng bút. (v1.1.1) */
 const MATCHERS={
-    dungBut: [/dung\s*but/],
-    thucThe: [/thuc\s*the/],
-    khoaThuc:[/khoa\s*thuc/]
+    dungBut: [/dung[^a-z0-9]*but/],
+    thucThe: [/thuc[^a-z0-9]*the/],
+    khoaThuc:[/khoa[^a-z0-9]*thuc/]
 };
 
 function clean(v){ return String(v===undefined||v===null?"":v).trim(); }
