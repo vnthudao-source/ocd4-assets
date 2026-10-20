@@ -8272,7 +8272,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.5.1";
+const V4_VERSION="4.6.0";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -8465,6 +8465,36 @@ function applySalesToItems(items,sales,RS){
     return {items:lots.filter(x=>Number(x.quantity===undefined?1:x.quantity)>0),applied,rejected};
 }
 
+/* v4.6.0: sổ cái chung (phiếu đổi + quà GVCN + tiền Minh Hồng thu mua) duyệt theo đúng thứ tự thời gian.
+   Lặp tối đa 4 lần vì: phiếu đổi hợp lệ -> có vật phẩm -> bán được cho Minh Hồng -> có thêm linh thạch -> phiếu đổi sau hợp lệ. */
+function buildUnifiedLedger(profile,sales,RS,legacy){
+    const raw=(profile.rawTransactions||[]).filter(function(t){ return !(t && t.isMinhHongSale); });
+    const earned=profile.earnedGems||RS.createEmptyGems();
+    const teacherItems=profile.teacherOwnedItems||[];
+    const build=typeof RS.buildOwnedItems==="function"?RS.buildOwnedItems.bind(RS):null;
+    let applied=(sales||[]).slice(), accounting=null, itemResult=null, prevKey=null;
+    for(let round=0;round<4;round++){
+        const income=applied.map(function(s,i){
+            return {
+                transactionType:"teacher-gem", isMinhHongSale:true,
+                index:"MH-"+i, rowIndex:s.rowIndex, timestamp:s.timestamp, code:s.code,
+                giftName:"Minh Hồng thu mua "+s.giftName, giver:"Minh Hồng",
+                rewardGemType:s.rewardGemType, rewardGemAmount:s.rewardGemAmount, sellId:s.sellId
+            };
+        });
+        accounting=legacy.processTransactions(earned,raw.concat(income));
+        const paidItems=build?build(accounting.validTransactions||[]):(profile.ownedItems||[]);
+        const owned=legacy.mergeOwnedItems?legacy.mergeOwnedItems(paidItems,teacherItems):paidItems.concat(teacherItems);
+        itemResult=applySalesToItems(owned,sales||[],RS);
+        const key=itemResult.applied.map(function(s){ return s.sellId; }).join("|");
+        const same=key===applied.map(function(s){ return s.sellId; }).join("|");
+        applied=itemResult.applied;
+        if(same || key===prevKey) break;
+        prevKey=key;
+    }
+    return {accounting:accounting,itemResult:itemResult};
+}
+
 function applySalesToGems(gems,applied,RS){
     let result=Object.assign({},gems||{});
     (applied||[]).forEach(s=>{ result=RS.addGemReward(result,s.rewardGemType,s.rewardGemAmount); });
@@ -8606,11 +8636,24 @@ async function installV4(RS){
         const profile=results[0], mh=results[1];
         const studentCode=RS.normalizeCode(code);
         const sales=mh.salesByCode.get(studentCode)||[];
-        const itemResult=applySalesToItems(profile.ownedItems||[],sales,RS);
-        const gems=applySalesToGems(profile.gems||profile.balance||{},itemResult.applied,RS);
+        /* v4.6.0: MỘT SỔ CÁI THEO THỜI GIAN
+           - Trước đây linh thạch Minh Hồng thu mua được cộng SAU khi đã duyệt mọi phiếu đổi quà, nên số dư hiện trên trang
+             cao hơn số dư dùng để duyệt phiếu: phiếu đổi bị từ chối (không trừ linh thạch) nhưng số dư vẫn y nguyên,
+             học viên đổi tiếp được mãi.
+           - Vật phẩm từ phiếu đổi bị từ chối (chưa trả linh thạch) trước đây vẫn được vào túi đồ rồi bán lại cho Minh Hồng.
+           Nay: tiền Minh Hồng trả được ghi đúng thời điểm bán vào cùng sổ cái với phiếu đổi; chỉ phiếu đổi đã trả đủ mới cho vật phẩm. */
+        const ledger=buildUnifiedLedger(profile,sales,RS,legacy);
+        const itemResult=ledger.itemResult;
+        const gems=ledger.accounting.gems;
         profile.code=profile.code||studentCode;
         profile.gems=gems;
         profile.balance=gems;
+        profile.transactions=ledger.accounting.validTransactions;
+        profile.validTransactions=ledger.accounting.validTransactions;
+        profile.rejectedTransactions=ledger.accounting.rejectedTransactions;
+        profile.gemRewards=ledger.accounting.gemRewards||profile.gemRewards;
+        profile.consumedDealIds=ledger.accounting.consumedDealIds||profile.consumedDealIds;
+        profile.accounting=ledger.accounting;
         profile.ownedItems=itemResult.items;
         profile.redeemedItems=itemResult.items;
         profile.minhHong={
