@@ -821,7 +821,8 @@ async function fetchCSV(url,noApi){
         return raceApiCsv(
             function(){ return apiSheet(apiTarget.src,apiTarget.name).then(rowsToCsv); },
             function(signal){ return fetchCSVRaw(url,signal); },
-            apiTarget.name
+            apiTarget.name,
+            function(apiCsv,csvText){ try{ noteLateApiRows(apiTarget.name,parseCSV(apiCsv),parseCSV(csvText)); }catch(e){} }
         );
     }
     if(apiTarget) lastDataSource="CSV (Apps Script tạm tắt, "+stamp()+")";
@@ -954,10 +955,22 @@ function countDataRows(rows){
     }
     return n;
 }
+/* v4.6.1: đếm cả số ô có dữ liệu – CSV gviz có thể giữ đủ dòng nhưng làm trống ô (cột lẫn số/chữ) */
+function countDataCells(rows){
+    if(!Array.isArray(rows)) return -1;
+    let n=0;
+    for(let i=1;i<rows.length;i++){
+        const r=rows[i];
+        if(Array.isArray(r)) r.forEach(function(v){ if(String(v==null?"":v).trim()!=="") n++; });
+    }
+    return n;
+}
 function noteLateApiRows(label,apiRows,csvRows){
     const a=countDataRows(apiRows),c=countDataRows(csvRows);
-    if(a<0 || c<0 || a<=c) return;
-    console.info("[Reward Core] CSV ("+label+") là bản cũ: Apps Script có "+a+" dòng, CSV "+c+" dòng. Tự cập nhật lại.");
+    if(a<0 || c<0) return;
+    const ac=countDataCells(apiRows),cc=countDataCells(csvRows);
+    if(a<=c && ac<=cc) return;
+    console.info("[Reward Core] CSV ("+label+") khác Apps Script: "+a+"/"+c+" dòng, "+ac+"/"+cc+" ô có dữ liệu. Tự cập nhật lại.");
     if(lateRefreshTimer || Date.now()-lateRefreshAt<LATE_REFRESH_GAP_MS) return;
     lateRefreshTimer=setTimeout(function(){
         lateRefreshTimer=null;
@@ -996,10 +1009,30 @@ function showFallbackNotice(on){
         fallbackNoticeTimer=setTimeout(function(){ el.style.display="none"; },12000);
     }catch(e){}
 }
+/* v4.6.1: CSV gviz đoán kiểu cột theo đa số; cột "Mã học viên" lẫn số và chữ -> ô kiểu thiểu số bị trả về rỗng.
+   Bản CSV có dòng dữ liệu mà trống mã học viên thì không dùng ngay: chờ Apps Script,
+   chỉ dùng CSV khi Apps Script lỗi hẳn. */
+const CODE_HEADERS=["mã học viên","ma hoc vien","mã hv","studentcode","student code"];
+function csvMissingCodes(value){
+    try{
+        const rows=typeof value==="string"?parseCSV(value):value;
+        if(!Array.isArray(rows) || rows.length<2 || !Array.isArray(rows[0])) return 0;
+        const ci=rows[0].findIndex(function(h){ return CODE_HEADERS.indexOf(String(h==null?"":h).trim().toLowerCase())>=0; });
+        if(ci<0) return 0;
+        let miss=0;
+        for(let i=1;i<rows.length;i++){
+            const r=rows[i];
+            if(!Array.isArray(r)) continue;
+            const filled=r.filter(function(v){ return String(v==null?"":v).trim()!==""; }).length;
+            if(filled>=2 && String(r[ci]==null?"":r[ci]).trim()==="") miss++;
+        }
+        return miss;
+    }catch(e){ return 0; }
+}
 /* onLate(apiValue,csvValue): gọi khi CSV đã thắng nhưng Apps Script trả kết quả sau đó */
 function raceApiCsv(apiFn,csvFn,label,onLate){
     return new Promise(function(resolve,reject){
-        let csvValue=null;
+        let csvValue=null,heldCsv=null;
         let done=false,csvStarted=false,apiDone=false,csvDone=false,apiErr=null,csvErr=null,hedgeTimer=null;
         const csvAc=new AbortController();
         function finish(ok,value){
@@ -1013,7 +1046,15 @@ function raceApiCsv(apiFn,csvFn,label,onLate){
             csvStarted=true;
             Promise.resolve().then(function(){ return csvFn(csvAc.signal); }).then(function(value){
                 csvDone=true;
-                if(!done){ lastDataSource="CSV dự phòng ("+stamp()+")"; csvValue=value; showFallbackNotice(true); finish(true,value); }
+                if(done) return;
+                const miss=csvMissingCodes(value);
+                if(miss>0){
+                    heldCsv=value;
+                    console.warn("[Reward Core] CSV ("+label+") có "+miss+" dòng trống mã học viên, chờ Apps Script.");
+                    if(apiDone && apiErr){ lastDataSource="CSV dự phòng ("+stamp()+")"; csvValue=value; showFallbackNotice(true); finish(true,value); }
+                    return;
+                }
+                lastDataSource="CSV dự phòng ("+stamp()+")"; csvValue=value; showFallbackNotice(true); finish(true,value);
             },function(error){
                 csvDone=true; csvErr=error;
                 if(apiDone) finish(false,apiErr||error);
@@ -1035,6 +1076,7 @@ function raceApiCsv(apiFn,csvFn,label,onLate){
             if(error && error.locked){ finish(false,error); return; } /* v4.5.0: hồ sơ đã bảo mật */
             if(!done && !pageLeaving) console.warn("[Reward Core] Apps Script lỗi ("+label+"), dùng CSV:",error && error.message || error);
             if(isHardApiError(error)) pauseApi();
+            if(heldCsv!==null){ lastDataSource="CSV dự phòng ("+stamp()+")"; csvValue=heldCsv; showFallbackNotice(true); finish(true,heldCsv); return; }
             if(csvStarted){ if(csvDone) finish(false,csvErr||error); }
             else startCsv();
         });
@@ -8272,7 +8314,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.6.0";
+const V4_VERSION="4.6.1";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
