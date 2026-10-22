@@ -76,8 +76,10 @@ function calculate(memberRows,rosterRows,core){
   gemWork=core.loadSharedRewardData().then(function(shared){
    var totals={"1":0,"2":0,"3":0,"4":0};
    Object.keys(members).forEach(function(code){
-    var reward=core.calculateStudentRewardData(submissionsByCode[code]||[]),earned=core.cloneGems(reward.gems),normalized=core.normalizeCode?core.normalizeCode(code):code;
-    var transactions=shared.redemptionMap.get(normalized)||[],accounting=core.processTransactions(earned,transactions),gemTypes=core.GEM_ORDER||Object.keys(accounting.gems||{});
+    var reward=core.calculateStudentRewardData(submissionsByCode[code]||[]),normalized=core.normalizeCode?core.normalizeCode(code):code;
+    /* Reward Core v4.7.0 – chốt sổ: số dư tại mốc đã nằm trong giao dịch, chỉ cộng linh thạch học tập phát sinh sau mốc */
+    var snap=shared.snapshots&&shared.snapshots.get(normalized),earned=snap&&core.snapshotStartGems?core.snapshotStartGems(reward.rawGems,snap):core.cloneGems(reward.gems);
+    var transactions=shared.redemptionMap.get(normalized)||[],accounting=core.processTransactions(earned,transactions,snap?snap.deals:null),gemTypes=core.GEM_ORDER||Object.keys(accounting.gems||{});
     totals[members[code].team]+=gemTypes.reduce(function(total,type){return total+core.getGemValueInHong(type,(accounting.gems||{})[type])},0);
    });
    Object.keys(stats).forEach(function(team){stats[team].gemValue=totals[team]});

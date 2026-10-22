@@ -69,6 +69,12 @@ const CONFIG={
     teacherGiftSheetName:
         "QuaTangGVCN",
 
+    /* v4.7.0: Chốt sổ – số dư từng học viên tại mốc chốt.
+       Các dòng PhieuDoi / QuaTangGVCN / MinhHongGiaoDich có thời gian
+       TRƯỚC HOẶC BẰNG mốc chốt của học viên được bỏ qua (đã nằm trong số dư). */
+    snapshotSheetName:
+        "SoDuChot",
+
 
     formConfirmValue:
         "Tôi xác nhận đổi món quà này",
@@ -4926,6 +4932,199 @@ function buildTeacherGemTransactionMap(
 
 
 /* =========================================================
+   CHỐT SỔ v4.7.0 (tab SoDuChot)
+
+   Mỗi học viên 1 dòng "Đang hiệu lực":
+   - số dư 6 loại linh thạch tại mốc chốt,
+   - linh thạch học tập (chưa quy đổi) đã tính tới mốc,
+   - vật phẩm đang giữ, giao dịch đã dùng,
+   Các "dấu đã nhận" (lý do thưởng, đã bán Minh Hồng, hộp bí ẩn đã mở, vé PLC)
+   nằm ở tab riêng SoDuChotDaNhan – trang Nhiệm vụ và Apps Script đọc, Core không cần.
+
+   Số dư hiện tại = số dư chốt
+                  + linh thạch học tập phát sinh sau mốc
+                  + giao dịch sau mốc.
+   Các dòng có thời gian <= mốc chốt của học viên đó được bỏ qua.
+========================================================= */
+
+const SNAPSHOT_HEADERS={
+    code:"Mã học viên",
+    cut:"Mốc chốt",
+    version:"Mã lần chốt",
+    raw:"Linh thạch học tập lúc chốt",
+    items:"Vật phẩm",
+    deals:"Giao dịch đã dùng",
+    reasons:"Thưởng đã nhận",
+    sold:"Đã bán Minh Hồng",
+    mystery:"Hộp bí ẩn đã mở",
+    tickets:"Vé PLC",
+    status:"Trạng thái"
+};
+
+function snapshotJson(value,fallback){
+    const text=String(value===undefined||value===null?"":value).trim();
+    if(!text) return fallback;
+    try{ return JSON.parse(text); }catch(error){ return fallback; }
+}
+
+function snapshotNumber(value){
+    const n=Number(String(value===undefined||value===null?"":value).replace(",","."));
+    return Number.isFinite(n)?n:0;
+}
+
+function mapSnapshotRows(rows){
+    const map=new Map();
+    if(!rows || rows.length<2) return map;
+    const headers=rows[0].map(normalizeText);
+    const at=function(name){ return headers.indexOf(normalizeText(name)); };
+    const ci=at(SNAPSHOT_HEADERS.code), ti=at(SNAPSHOT_HEADERS.cut), ii=at(SNAPSHOT_HEADERS.items);
+    /* Thiếu cột bắt buộc -> không phải tab SoDuChot (vd tab chưa tạo) -> chạy như chưa chốt sổ. */
+    if(ci<0 || ti<0 || ii<0) return map;
+    const vi=at(SNAPSHOT_HEADERS.version), ri=at(SNAPSHOT_HEADERS.raw), di=at(SNAPSHOT_HEADERS.deals),
+          rsi=at(SNAPSHOT_HEADERS.reasons), soi=at(SNAPSHOT_HEADERS.sold), mi=at(SNAPSHOT_HEADERS.mystery),
+          tki=at(SNAPSHOT_HEADERS.tickets), si=at(SNAPSHOT_HEADERS.status);
+    const gemIndex={};
+    GEM_ORDER.forEach(function(key){ gemIndex[key]=at(GEM_TYPES[key].displayName); });
+    rows.slice(1).forEach(function(row){
+        const code=normalizeCode(row[ci]);
+        if(!code) return;
+        if(si>=0){
+            const st=normalizeText(row[si]);
+            if(st && st!=="dang hieu luc" && st!=="active") return;
+        }
+        const cutText=String(row[ti]||"").trim();
+        const cutDate=parseVietnameseDate(cutText);
+        if(!cutDate) return;
+        const cutMs=cutDate.getTime();
+        const old=map.get(code);
+        if(old && old.cutMs>=cutMs) return;
+        const gems=createEmptyGems();
+        GEM_ORDER.forEach(function(key){
+            if(gemIndex[key]>=0) gems[key]=Math.max(0,Math.floor(snapshotNumber(row[gemIndex[key]])));
+        });
+        /* [hoàng, hải lam, thạch anh tím, lam bảo, lục, hồng] theo GEM_ORDER (hoặc {key:số}) */
+        const rawObj=ri>=0?snapshotJson(row[ri],[]):[];
+        const raw=createEmptyGems();
+        GEM_ORDER.forEach(function(key,k){
+            const v=Array.isArray(rawObj)?rawObj[k]:(rawObj&&rawObj[key]);
+            raw[key]=Math.max(0,Math.floor(Number(v||0)));
+        });
+        const items=snapshotJson(row[ii],[]);
+        map.set(code,{
+            code:code,
+            cutText:cutText,
+            cutMs:cutMs,
+            version:vi>=0?String(row[vi]||"").trim():"",
+            gems:gems,
+            raw:raw,
+            items:Array.isArray(items)?items:[],
+            deals:di>=0?(snapshotJson(row[di],[])||[]):[],
+            reasons:rsi>=0?(snapshotJson(row[rsi],[])||[]):[],
+            sold:soi>=0?(snapshotJson(row[soi],{})||{}):{},
+            mystery:mi>=0?Math.max(0,Math.floor(snapshotNumber(row[mi]))):0,
+            tickets:tki>=0?Math.floor(snapshotNumber(row[tki])):0
+        });
+    });
+    return map;
+}
+
+/* true nếu dòng có thời gian SAU mốc chốt của học viên (hoặc học viên chưa chốt sổ) */
+function isAfterSnapshot(snapshot,timestamp){
+    if(!snapshot) return true;
+    const date=parseVietnameseDate(timestamp);
+    if(!date) return true;
+    return date.getTime()>snapshot.cutMs;
+}
+
+function snapshotKeepFn(snapshots){
+    return function(item){
+        if(!snapshots || !snapshots.size || !item) return true;
+        return isAfterSnapshot(snapshots.get(normalizeCode(item.code)),item.timestamp);
+    };
+}
+
+/* Số dư chốt -> giao dịch "quà linh thạch" đặt đúng tại mốc chốt (trước mọi giao dịch sau mốc) */
+function buildSnapshotGemTransactions(snapshot){
+    const result=[];
+    if(!snapshot) return result;
+    const day=snapshot.cutText.split(" ")[0]||snapshot.cutText;
+    GEM_ORDER.forEach(function(key){
+        const amount=Number(snapshot.gems[key]||0);
+        if(amount<=0) return;
+        result.push({
+            index:0,
+            rowIndex:0,
+            transactionType:"teacher-gem",
+            timestamp:snapshot.cutText,
+            code:snapshot.code,
+            studentName:"",
+            giftName:"Số dư chốt sổ "+day+" – "+GEM_TYPES[key].displayName,
+            gift:null,
+            rewardGemType:key,
+            rewardGemAmount:amount,
+            price:0,
+            gemType:null,
+            dealId:"",
+            accountingStatus:"pending",
+            ownershipSource:"snapshot",
+            isSnapshot:true,
+            reason:"CHOT_SO:"+(snapshot.version||day),
+            giver:"Chốt sổ"
+        });
+    });
+    return result;
+}
+
+function buildSnapshotItems(snapshot,giftMap){
+    const result=[];
+    if(!snapshot) return result;
+    (snapshot.items||[]).forEach(function(entry,i){
+        const name=String(Array.isArray(entry)?entry[0]:(entry&&entry.name)||"").trim();
+        if(!name) return;
+        const quantity=Math.max(1,Math.floor(Number(Array.isArray(entry)?entry[1]:(entry&&entry.quantity))||1));
+        const timestamp=String(Array.isArray(entry)?(entry[2]||""):(entry&&entry.timestamp||""))||snapshot.cutText;
+        const source=String(Array.isArray(entry)?(entry[3]||""):(entry&&entry.source||""))||"snapshot";
+        const gift=(giftMap&&giftMap[normalizeText(name)])||{name:name,image:"",description:""};
+        result.push({
+            index:0,
+            rowIndex:0,
+            timestamp:timestamp,
+            studentName:"",
+            code:snapshot.code,
+            giftName:gift.name||name,
+            gift:gift,
+            image:gift.image||"",
+            description:gift.description||"",
+            rarity:gift.rarity||null,
+            rarityInfo:gift.rarityInfo||null,
+            rarityGemType:gift.rarityGemType||null,
+            price:0,
+            gemType:null,
+            quantity:quantity,
+            format:"snapshot",
+            ownershipSource:source,
+            fromSnapshot:true,
+            accountingStatus:"valid",
+            reason:"",
+            giver:"Chốt sổ",
+            status:"",
+            group:"",
+            course:""
+        });
+    });
+    return result;
+}
+
+/* Linh thạch học tập dùng cho sổ cái khi đã chốt: chỉ phần phát sinh sau mốc */
+function snapshotStartGems(rawNow,snapshot){
+    const delta=createEmptyGems();
+    GEM_ORDER.forEach(function(key){
+        delta[key]=Math.max(0,Number(rawNow&&rawNow[key]||0)-Number(snapshot.raw[key]||0));
+    });
+    return normalizeGemBalance(delta);
+}
+
+/* =========================================================
    SORT TRANSACTIONS
 ========================================================= */
 
@@ -5054,7 +5253,8 @@ function canAffordTransaction(
 
 function processTransactions(
     startingGems,
-    transactions
+    transactions,
+    seedDealIds
 ){
 
     const normalizedStart=
@@ -5075,8 +5275,11 @@ function processTransactions(
     const ownedItems=[];
     const gemRewards=[];
 
+    /* v4.7.0: giao dịch đã dùng trước mốc chốt sổ vẫn bị chặn trùng */
     const consumedDealIds=
-        new Set();
+        new Set(
+            seedDealIds || []
+        );
 
 
     const ordered=
@@ -7344,7 +7547,21 @@ async function loadSharedRewardDataRaw(
                 sheetNameCsvUrl(
                     CONFIG.teacherGiftSheetName
                 )
-            )
+            ),
+
+            /*
+               v4.7.0: SoDuChot (chưa có tab -> coi như chưa chốt sổ)
+            */
+            CONFIG.snapshotSheetName
+                ? fetchRows(
+                    sheetNameCsvUrl(
+                        CONFIG.snapshotSheetName
+                    )
+                ).catch(function(error){
+                    console.warn("[Reward Core] Chưa đọc được "+CONFIG.snapshotSheetName+", tính như chưa chốt sổ.",error);
+                    return [];
+                })
+                : Promise.resolve([])
         ]);
 
 
@@ -7358,6 +7575,18 @@ async function loadSharedRewardDataRaw(
 
     const rawTeacherRows=
         results[2];
+
+
+    const snapshots=
+        mapSnapshotRows(
+            results[3]
+        );
+
+
+    const keepAfterSnapshot=
+        snapshotKeepFn(
+            snapshots
+        );
 
 
     /* =====================================================
@@ -7384,6 +7613,9 @@ async function loadSharedRewardDataRaw(
         mapFormResponseRows(
             responseRows,
             gifts
+        )
+        .filter(
+            keepAfterSnapshot
         );
 
 
@@ -7426,6 +7658,9 @@ async function loadSharedRewardDataRaw(
         mapTeacherGiftRows(
             rawTeacherRows,
             gifts
+        )
+        .filter(
+            keepAfterSnapshot
         );
 
 
@@ -7439,6 +7674,45 @@ async function loadSharedRewardDataRaw(
         buildTeacherGemTransactionMap(
             teacherGifts
         );
+
+
+    /* v4.7.0: số dư + vật phẩm tại mốc chốt sổ */
+    snapshots.forEach(
+        function(snapshot,code){
+
+            const gemTx=
+                buildSnapshotGemTransactions(
+                    snapshot
+                );
+
+            if(gemTx.length){
+                teacherGemTransactionMap.set(
+                    code,
+                    sortTransactionsChronologically(
+                        gemTx.concat(
+                            teacherGemTransactionMap.get(code) || []
+                        )
+                    )
+                );
+            }
+
+            const items=
+                buildSnapshotItems(
+                    snapshot,
+                    giftMap
+                );
+
+            if(items.length){
+                teacherOwnedItemMap.set(
+                    code,
+                    mergeOwnedItems(
+                        items,
+                        teacherOwnedItemMap.get(code) || []
+                    )
+                );
+            }
+        }
+    );
 
 
     /* =====================================================
@@ -7660,6 +7934,12 @@ async function loadSharedRewardDataRaw(
 
 
         /*
+           v4.7.0: Chốt sổ (Map mã học viên -> số dư tại mốc).
+        */
+        snapshots,
+
+
+        /*
            Kho chuẩn.
         */
         ownedItemMap,
@@ -7851,10 +8131,37 @@ async function getStudentRewardProfile(
     /*
        TẤT CẢ linh thạch được hợp nhất tại đây.
     */
+    /*
+       v4.7.0: đã chốt sổ -> sổ cái bắt đầu từ linh thạch học tập
+       phát sinh SAU mốc; số dư tại mốc là giao dịch đặt đúng mốc.
+    */
+    const snapshot=
+        (
+            shared.snapshots &&
+            shared.snapshots.get(
+                studentCode
+            )
+        )
+        ||
+        null;
+
+
+    const ledgerStartGems=
+        snapshot
+        ? snapshotStartGems(
+            rewardData.rawGems,
+            snapshot
+        )
+        : earnedGems;
+
+
     const accounting=
         processTransactions(
-            earnedGems,
-            rawTransactions
+            ledgerStartGems,
+            rawTransactions,
+            snapshot
+            ? snapshot.deals
+            : null
         );
 
 
@@ -7877,6 +8184,11 @@ async function getStudentRewardProfile(
         rewardData,
 
         earnedGems,
+
+        /* v4.7.0 */
+        ledgerStartGems,
+
+        snapshot,
 
 
         /*
@@ -8211,6 +8523,13 @@ window.StudentRewardSystem={
 
     processTransactions,
 
+    /* v4.7.0: chốt sổ */
+    mapSnapshotRows,
+    isAfterSnapshot,
+    buildSnapshotItems,
+    snapshotStartGems,
+    SNAPSHOT_HEADERS,
+
     applyTransactions,
 
     calculateGemBalance,
@@ -8314,7 +8633,7 @@ try{
 ========================================================= */
 (function(){
 "use strict";
-const V4_VERSION="4.6.1";
+const V4_VERSION="4.7.0";
 const MH_CONFIG={
     policySheetName:"MinhHongThuMua",
     transactionSheetName:"MinhHongGiaoDich",
@@ -8511,7 +8830,9 @@ function applySalesToItems(items,sales,RS){
    Lặp tối đa 4 lần vì: phiếu đổi hợp lệ -> có vật phẩm -> bán được cho Minh Hồng -> có thêm linh thạch -> phiếu đổi sau hợp lệ. */
 function buildUnifiedLedger(profile,sales,RS,legacy){
     const raw=(profile.rawTransactions||[]).filter(function(t){ return !(t && t.isMinhHongSale); });
-    const earned=profile.earnedGems||RS.createEmptyGems();
+    /* v4.7.0: đã chốt sổ -> chỉ phần linh thạch học tập phát sinh sau mốc */
+    const earned=profile.ledgerStartGems||profile.earnedGems||RS.createEmptyGems();
+    const seedDeals=profile.snapshot?profile.snapshot.deals:null;
     const teacherItems=profile.teacherOwnedItems||[];
     const build=typeof RS.buildOwnedItems==="function"?RS.buildOwnedItems.bind(RS):null;
     let applied=(sales||[]).slice(), accounting=null, itemResult=null, prevKey=null;
@@ -8524,7 +8845,7 @@ function buildUnifiedLedger(profile,sales,RS,legacy){
                 rewardGemType:s.rewardGemType, rewardGemAmount:s.rewardGemAmount, sellId:s.sellId
             };
         });
-        accounting=legacy.processTransactions(earned,raw.concat(income));
+        accounting=legacy.processTransactions(earned,raw.concat(income),seedDeals);
         const paidItems=build?build(accounting.validTransactions||[]):(profile.ownedItems||[]);
         const owned=legacy.mergeOwnedItems?legacy.mergeOwnedItems(paidItems,teacherItems):paidItems.concat(teacherItems);
         itemResult=applySalesToItems(owned,sales||[],RS);
@@ -8610,6 +8931,12 @@ async function installV4(RS){
     RS.CONFIG.minhHongFormEntries=Object.assign({},MH_CONFIG.formEntries);
 
     RS.loadMinhHongData=function(force){ return loadMinhHongData(Boolean(force),RS); };
+    /* v4.7.0: dòng chốt sổ của 1 học viên (null nếu chưa chốt) – trang Nhiệm vụ dùng
+       snapshot.reasons / sold / mystery để biết các phần thưởng, giao dịch trước mốc. */
+    RS.getStudentSnapshot=async function(code,force){
+        const shared=await legacy.loadSharedRewardData(Boolean(force));
+        return (shared && shared.snapshots && shared.snapshots.get(RS.normalizeCode(code)))||null;
+    };
 
     RS.loadSharedRewardData=async function(force){
         const results=await Promise.all([legacy.loadSharedRewardData(force),loadMinhHongData(Boolean(force),RS)]);
@@ -8677,7 +9004,10 @@ async function installV4(RS){
         ]);
         const profile=results[0], mh=results[1];
         const studentCode=RS.normalizeCode(code);
-        const sales=mh.salesByCode.get(studentCode)||[];
+        /* v4.7.0: giao dịch Minh Hồng trước mốc chốt sổ đã nằm trong số dư chốt */
+    const sales=(mh.salesByCode.get(studentCode)||[]).filter(function(s){
+        return RS.isAfterSnapshot(profile.snapshot||null,s.timestamp);
+    });
         /* v4.6.0: MỘT SỔ CÁI THEO THỜI GIAN
            - Trước đây linh thạch Minh Hồng thu mua được cộng SAU khi đã duyệt mọi phiếu đổi quà, nên số dư hiện trên trang
              cao hơn số dư dùng để duyệt phiếu: phiếu đổi bị từ chối (không trừ linh thạch) nhưng số dư vẫn y nguyên,
