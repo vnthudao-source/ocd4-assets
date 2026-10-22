@@ -4,7 +4,11 @@
  
  
 /* =========================================================
-   PROFILE RANKING v4.8.1
+   PROFILE RANKING v4.9.0
+   v4.9.0: tài sản / vật phẩm / avatar đọc từ tab SoDuHienTai
+           (Apps Script tự tính bằng Reward Core mỗi 10 phút, ?action=soDu – Code.gs v30).
+           Không còn tải toàn bộ sổ giao dịch để tính lại từng học viên;
+           máy chủ lỗi / số liệu cũ quá 30 phút / khác bản Core -> tự quay về cách tính cũ.
    FULL DELETE SYNC
    REWARD CORE v4.2.0+
    CANONICAL ASSET PROFILE
@@ -112,7 +116,7 @@ function startRankingWhenCoreReady(){
  
  
     console.log(
-        "[Ranking v4.8.0] Reward Core:",
+        "[Ranking v4.9.0] Reward Core:",
         RS.version
     );
  
@@ -2898,6 +2902,163 @@ function renderTopRankingExtra(
    ACCOUNTING
 ========================================================= */
  
+/* =========================================================
+   v4.9.0 — SỐ DƯ HIỆN TẠI (tab SoDuHienTai qua Apps Script ?action=soDu)
+   Mỗi dòng: [mã, trạng thái, [6 linh thạch], tài sản, avatar, khung, nền,
+              thuốc đa nhiệm 0/1, [[vật phẩm, số lượng, ảnh]], {thành tích}]
+========================================================= */
+
+const SODU_STORE="ocdRankingSoDu_v1";
+const SODU_MAX_AGE_MS=30*60*1000;
+const SODU_TIMEOUT_MS=10000;
+
+function loadSoDuBalances(){
+    const base=
+        RS.CONFIG &&
+        RS.CONFIG.appsScriptUrl;
+    if(!base || typeof fetch!=="function"){
+        return Promise.resolve(null);
+    }
+    let cached=null;
+    try{
+        cached=JSON.parse(window.localStorage.getItem(SODU_STORE)||"null");
+    }catch(error){
+        cached=null;
+    }
+    const controller=
+        typeof AbortController==="function"
+        ?
+        new AbortController()
+        :
+        null;
+    const timer=setTimeout(function(){
+        if(controller) controller.abort();
+    },SODU_TIMEOUT_MS);
+    const url=
+        base +
+        (base.indexOf("?")>=0?"&":"?") +
+        "action=soDu" +
+        (
+            cached && cached.h && Array.isArray(cached.rows)
+            ?
+            "&h=" + encodeURIComponent(cached.h)
+            :
+            ""
+        );
+    return fetch(url,{
+        credentials:"omit",
+        cache:"no-store",
+        signal:controller?controller.signal:undefined
+    })
+    .then(function(response){
+        return response.json();
+    })
+    .then(function(json){
+        if(!json || !json.ok){
+            console.warn("[Ranking v4.9.0] SoDuHienTai chưa sẵn sàng:",json && json.error);
+            return null;
+        }
+        let data=json;
+        if(json.same){
+            if(!cached) return null;
+            data=cached;
+        }else{
+            try{
+                window.localStorage.setItem(SODU_STORE,JSON.stringify({h:json.h,at:json.at,core:json.core,rows:json.rows}));
+            }catch(error){}
+        }
+        const checkedAt=Number(json.checkedAt||0);
+        const serverNow=Number(json.now||Date.now());
+        if(!checkedAt || serverNow-checkedAt>SODU_MAX_AGE_MS){
+            console.warn("[Ranking v4.9.0] SoDuHienTai cũ quá 30 phút -> tính trực tiếp.");
+            return null;
+        }
+        if(data.core && RS.coreVersion && String(data.core)!==String(RS.coreVersion)){
+            console.warn("[Ranking v4.9.0] SoDuHienTai tính bằng Core "+data.core+", trang dùng "+RS.coreVersion+" -> tính trực tiếp.");
+            return null;
+        }
+        if(!Array.isArray(data.rows)) return null;
+        const map=new Map();
+        data.rows.forEach(function(row){
+            if(Array.isArray(row) && row[0]){
+                map.set(RS.normalizeCode(row[0]),row);
+            }
+        });
+        return {map:map,at:data.at||"",checkedAt:checkedAt};
+    })
+    .catch(function(error){
+        console.warn("[Ranking v4.9.0] Không đọc được SoDuHienTai -> tính trực tiếp:",error && error.message || error);
+        return null;
+    })
+    .finally(function(){
+        clearTimeout(timer);
+    });
+}
+
+function studentFromSoDu(
+    basicStudent,
+    row
+){
+    const gems=
+        createEmptyGemsSafe();
+    const gemValues=
+        Array.isArray(row[2])
+        ?
+        row[2]
+        :
+        [];
+    RS.GEM_ORDER.forEach(
+        function(key,index){
+            gems[key]=Number(gemValues[index]||0);
+        }
+    );
+    const ownedItems=
+        (Array.isArray(row[8])?row[8]:[])
+        .map(
+            function(item){
+                return{
+                    giftName:String(item && item[0] || ""),
+                    quantity:Number(item && item[1] || 0),
+                    image:String(item && item[2] || "")
+                };
+            }
+        )
+        .filter(
+            function(item){
+                return item.giftName;
+            }
+        );
+    const reward=
+        Object.assign(
+            createEmptyReward(),
+            row[9] && typeof row[9]==="object" ? row[9] : {}
+        );
+    return Object.assign(
+        {},
+        basicStudent,
+        {
+            reward:reward,
+            gems:gems,
+            wealthHoangNgoc:calculateWealthInHoangNgoc(gems),
+            rawTransactions:[],
+            transactions:[],
+            validTransactions:[],
+            rejectedTransactions:[],
+            ownedItems:ownedItems,
+            gemRewards:[],
+            consumedDealIds:[],
+            avatar:String(row[4]||""),
+            avatarFrame:String(row[5]||""),
+            profileBackground:String(row[6]||""),
+            hasMultitaskPotion:Boolean(row[7]),
+            canonicalProfile:null,
+            submissionCsvText:"",
+            fromSoDu:true
+        }
+    );
+}
+
+
 async function buildStudentRewardProfile(
     basicStudent,
     submissions,
@@ -3327,8 +3488,13 @@ async function loadData(){
             );
  
  
-        const sharedPromise=
-            RS.loadSharedRewardData();
+        /* v4.9.0: dữ liệu chung (cả sổ giao dịch) chỉ tải khi thật sự cần */
+        let sharedPromise=null;
+        const getShared=function(){
+            if(!sharedPromise) sharedPromise=RS.loadSharedRewardData();
+            return sharedPromise;
+        };
+        const soDuPromise=loadSoDuBalances();
  
  
         const deletePromise=
@@ -3669,8 +3835,15 @@ async function loadData(){
            =================================================
         */
  
+        const soDu=
+            await soDuPromise;
         const shared=
-            await sharedPromise;
+            (!soDu || ADMIN_CONFIG.enabled)
+            ?
+            await getShared()
+            :
+            null;
+        let soDuUsed=0;
  
  
         const ENRICH_BATCH_SIZE=24;
@@ -3694,12 +3867,26 @@ async function loadData(){
                 [];
  
  
+            const soDuRow=
+                soDu &&
+                soDu.map.get(
+                    student.code
+                );
             const enriched=
+                soDuRow &&
+                soDuRow[1] === "OK"
+                ?
+                studentFromSoDu(
+                    student,
+                    soDuRow
+                )
+                :
                 await buildStudentRewardProfile(
                     student,
                     rewardSubmissions,
                     submissionHeaderRow
                 );
+            if(enriched.fromSoDu) soDuUsed++;
  
  
             enriched.rewardDataReady=true;
@@ -3758,6 +3945,12 @@ async function loadData(){
  
  
         rewardDataReady=true;
+        if(soDu){
+            console.info(
+                "[Ranking v4.9.0] Số dư hiện tại (SoDuHienTai " + soDu.at + "): " +
+                soDuUsed + "/" + students.length + " học viên, còn lại tính trực tiếp."
+            );
+        }
  
  
         /*
