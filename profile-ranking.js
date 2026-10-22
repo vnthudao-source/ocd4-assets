@@ -4,7 +4,9 @@
  
  
 /* =========================================================
-   PROFILE RANKING v4.9.0
+   PROFILE RANKING v4.10.0
+   v4.10.0: điểm rank (bài hợp lệ, tổng điểm, số bài đã chấm) cũng lấy từ SoDuHienTai (Code.gs v31)
+            -> không tải danh sách bài nộp + XoaBai nữa (trừ khi thiếu học viên / máy chủ lỗi).
    v4.9.0: tài sản / vật phẩm / avatar đọc từ tab SoDuHienTai
            (Apps Script tự tính bằng Reward Core mỗi 10 phút, ?action=soDu – Code.gs v30).
            Không còn tải toàn bộ sổ giao dịch để tính lại từng học viên;
@@ -116,7 +118,7 @@ function startRankingWhenCoreReady(){
  
  
     console.log(
-        "[Ranking v4.9.0] Reward Core:",
+        "[Ranking v4.10.0] Reward Core:",
         RS.version
     );
  
@@ -2910,7 +2912,7 @@ function renderTopRankingExtra(
 
 const SODU_STORE="ocdRankingSoDu_v1";
 const SODU_MAX_AGE_MS=30*60*1000;
-const SODU_TIMEOUT_MS=10000;
+const SODU_TIMEOUT_MS=8000;
 
 function loadSoDuBalances(){
     const base=
@@ -2955,7 +2957,7 @@ function loadSoDuBalances(){
     })
     .then(function(json){
         if(!json || !json.ok){
-            console.warn("[Ranking v4.9.0] SoDuHienTai chưa sẵn sàng:",json && json.error);
+            console.warn("[Ranking v4.10.0] SoDuHienTai chưa sẵn sàng:",json && json.error);
             return null;
         }
         let data=json;
@@ -2970,11 +2972,11 @@ function loadSoDuBalances(){
         const checkedAt=Number(json.checkedAt||0);
         const serverNow=Number(json.now||Date.now());
         if(!checkedAt || serverNow-checkedAt>SODU_MAX_AGE_MS){
-            console.warn("[Ranking v4.9.0] SoDuHienTai cũ quá 30 phút -> tính trực tiếp.");
+            console.warn("[Ranking v4.10.0] SoDuHienTai cũ quá 30 phút -> tính trực tiếp.");
             return null;
         }
         if(data.core && RS.coreVersion && String(data.core)!==String(RS.coreVersion)){
-            console.warn("[Ranking v4.9.0] SoDuHienTai tính bằng Core "+data.core+", trang dùng "+RS.coreVersion+" -> tính trực tiếp.");
+            console.warn("[Ranking v4.10.0] SoDuHienTai tính bằng Core "+data.core+", trang dùng "+RS.coreVersion+" -> tính trực tiếp.");
             return null;
         }
         if(!Array.isArray(data.rows)) return null;
@@ -2987,12 +2989,26 @@ function loadSoDuBalances(){
         return {map:map,at:data.at||"",checkedAt:checkedAt};
     })
     .catch(function(error){
-        console.warn("[Ranking v4.9.0] Không đọc được SoDuHienTai -> tính trực tiếp:",error && error.message || error);
+        console.warn("[Ranking v4.10.0] Không đọc được SoDuHienTai -> tính trực tiếp:",error && error.message || error);
         return null;
     })
     .finally(function(){
         clearTimeout(timer);
     });
+}
+
+/* v4.10.0: [bài hợp lệ, tổng điểm đã chấm, số bài đã chấm] -> cùng dạng calculateScoreData */
+function scoreDataFromSoDu(values){
+    const submissionCount=Number(values && values[0] || 0);
+    const totalScore=Number(values && values[1] || 0);
+    const gradedCount=Number(values && values[2] || 0);
+    return{
+        submissionCount:submissionCount,
+        totalScore:totalScore,
+        gradedCount:gradedCount,
+        averageScore:gradedCount>0?totalScore/gradedCount:0,
+        rankingPoints:submissionCount+totalScore
+    };
 }
 
 function studentFromSoDu(
@@ -3480,14 +3496,6 @@ async function loadData(){
             RS.fetchCSV(
                 RANKING_CSV_URL
             );
- 
- 
-        const submissionPromise=
-            RS.fetchCSV(
-                SUBMISSION_CSV_URL
-            );
- 
- 
         /* v4.9.0: dữ liệu chung (cả sổ giao dịch) chỉ tải khi thật sự cần */
         let sharedPromise=null;
         const getShared=function(){
@@ -3495,82 +3503,83 @@ async function loadData(){
             return sharedPromise;
         };
         const soDuPromise=loadSoDuBalances();
- 
- 
-        const deletePromise=
-            RS.fetchCSV(
-                DELETE_LOG_CSV_URL
-            );
- 
- 
-        /*
-           Rank / điểm / bài nộp / XoaBai có thể dựng trước.
-        */
- 
-        const basicResults=
-            await Promise.all(
-                [
-                    rankingPromise,
-                    submissionPromise,
-                    deletePromise
-                ]
-            );
- 
- 
+        /* v4.10.0: bài nộp + XoaBai chỉ tải khi SoDuHienTai không có đủ điểm rank cho mọi học viên */
+        let submissionDataPromise=null;
+        const getSubmissionData=function(){
+            if(!submissionDataPromise){
+                submissionDataPromise=Promise.all([
+                    RS.fetchCSV(SUBMISSION_CSV_URL),
+                    RS.fetchCSV(DELETE_LOG_CSV_URL)
+                ]).then(function(results){
+                    const ids=buildDeletedSubmissionIds(results[1]);
+                    return{
+                        deletedIds:ids,
+                        submissionMap:buildSubmissionMap(results[0],ids),
+                        submissionHeaderRow:RS.parseCSV(results[0])[0]||[]
+                    };
+                });
+            }
+            return submissionDataPromise;
+        };
         const rankingRows=
             RS.parseCSV(
-                basicResults[0]
+                await rankingPromise
             );
- 
- 
         if(
             rankingRows.length < 2
         ){
- 
             throw new Error(
                 "Sheet bảng xếp hạng chưa có dữ liệu."
             );
         }
- 
- 
-        /*
-           =================================================
-           XOABAI
-           =================================================
-        */
- 
-        const deletedIds=
-            buildDeletedSubmissionIds(
-                basicResults[2]
-            );
- 
- 
-        const submissionMap=
-            buildSubmissionMap(
-                basicResults[1],
-                deletedIds
-            );
- 
- 
-        /*
-           Header gốc của sheet bài nộp để tạo CSV riêng
-           cho từng học viên sau khi đã áp dụng XoaBai.
-        */
-        const submissionRowsForCore=
-            RS.parseCSV(
-                basicResults[1]
-            );
- 
- 
-        const submissionHeaderRow=
-            submissionRowsForCore[0] ||
-            [];
- 
- 
         const columns=
             detectRankingColumns(
                 rankingRows
             );
+        const soDuEarly=
+            await soDuPromise;
+        const soDuHasScores=
+            Boolean(soDuEarly) &&
+            rankingRows
+            .slice(1)
+            .every(
+                function(row){
+                    const code=RS.normalizeCode(row[columns.code]);
+                    const name=String(row[columns.name]||"").trim();
+                    if(!code || !name) return true;
+                    const soDuRow=soDuEarly.map.get(code);
+                    return Boolean(soDuRow) && Array.isArray(soDuRow[10]);
+                }
+            );
+        /*
+           =================================================
+           XOABAI (chỉ khi phải tự tính điểm rank)
+           =================================================
+        */
+        let submissionData=
+            soDuHasScores
+            ?
+            null
+            :
+            await getSubmissionData();
+        const deletedIds=
+            submissionData
+            ?
+            submissionData.deletedIds
+            :
+            new Set();
+        let submissionMap=
+            submissionData
+            ?
+            submissionData.submissionMap
+            :
+            new Map();
+        let submissionHeaderRow=
+            submissionData
+            ?
+            submissionData.submissionHeaderRow
+            :
+            [];
  
  
         rewardDataReady=false;
@@ -3661,7 +3670,18 @@ async function loadData(){
                         [];
  
  
+                    const soDuScoreRow=
+                        soDuHasScores &&
+                        soDuEarly.map.get(
+                            code
+                        );
                     const scoreData=
+                        soDuScoreRow
+                        ?
+                        scoreDataFromSoDu(
+                            soDuScoreRow[10]
+                        )
+                        :
                         calculateScoreData(
                             rewardSubmissions
                         );
@@ -3836,7 +3856,7 @@ async function loadData(){
         */
  
         const soDu=
-            await soDuPromise;
+            soDuEarly;
         const shared=
             (!soDu || ADMIN_CONFIG.enabled)
             ?
@@ -3881,11 +3901,18 @@ async function loadData(){
                     soDuRow
                 )
                 :
-                await buildStudentRewardProfile(
-                    student,
-                    rewardSubmissions,
-                    submissionHeaderRow
-                );
+                await (async function(){
+                    if(!submissionData){
+                        submissionData=await getSubmissionData();
+                        submissionMap=submissionData.submissionMap;
+                        submissionHeaderRow=submissionData.submissionHeaderRow;
+                    }
+                    return buildStudentRewardProfile(
+                        student,
+                        submissionMap.get(student.code)||[],
+                        submissionHeaderRow
+                    );
+                })();
             if(enriched.fromSoDu) soDuUsed++;
  
  
@@ -3947,7 +3974,7 @@ async function loadData(){
         rewardDataReady=true;
         if(soDu){
             console.info(
-                "[Ranking v4.9.0] Số dư hiện tại (SoDuHienTai " + soDu.at + "): " +
+                "[Ranking v4.10.0] Số dư hiện tại (SoDuHienTai " + soDu.at + "): " +
                 soDuUsed + "/" + students.length + " học viên, còn lại tính trực tiếp."
             );
         }
