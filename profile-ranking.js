@@ -4,7 +4,8 @@
  
  
 /* =========================================================
-   PROFILE RANKING v4.10.0
+   PROFILE RANKING v4.10.1
+   v4.10.1: khung avatar theo túi đồ sau khi bán Minh Hồng (giống bản đang chạy trên trang).
    v4.10.0: điểm rank (bài hợp lệ, tổng điểm, số bài đã chấm) cũng lấy từ SoDuHienTai (Code.gs v31)
             -> không tải danh sách bài nộp + XoaBai nữa (trừ khi thiếu học viên / máy chủ lỗi).
    v4.9.0: tài sản / vật phẩm / avatar đọc từ tab SoDuHienTai
@@ -118,7 +119,7 @@ function startRankingWhenCoreReady(){
  
  
     console.log(
-        "[Ranking v4.10.0] Reward Core:",
+        "[Ranking v4.10.1] Reward Core:",
         RS.version
     );
  
@@ -2957,7 +2958,7 @@ function loadSoDuBalances(){
     })
     .then(function(json){
         if(!json || !json.ok){
-            console.warn("[Ranking v4.10.0] SoDuHienTai chưa sẵn sàng:",json && json.error);
+            console.warn("[Ranking v4.10.1] SoDuHienTai chưa sẵn sàng:",json && json.error);
             return null;
         }
         let data=json;
@@ -2972,11 +2973,11 @@ function loadSoDuBalances(){
         const checkedAt=Number(json.checkedAt||0);
         const serverNow=Number(json.now||Date.now());
         if(!checkedAt || serverNow-checkedAt>SODU_MAX_AGE_MS){
-            console.warn("[Ranking v4.10.0] SoDuHienTai cũ quá 30 phút -> tính trực tiếp.");
+            console.warn("[Ranking v4.10.1] SoDuHienTai cũ quá 30 phút -> tính trực tiếp.");
             return null;
         }
         if(data.core && RS.coreVersion && String(data.core)!==String(RS.coreVersion)){
-            console.warn("[Ranking v4.10.0] SoDuHienTai tính bằng Core "+data.core+", trang dùng "+RS.coreVersion+" -> tính trực tiếp.");
+            console.warn("[Ranking v4.10.1] SoDuHienTai tính bằng Core "+data.core+", trang dùng "+RS.coreVersion+" -> tính trực tiếp.");
             return null;
         }
         if(!Array.isArray(data.rows)) return null;
@@ -2989,7 +2990,7 @@ function loadSoDuBalances(){
         return {map:map,at:data.at||"",checkedAt:checkedAt};
     })
     .catch(function(error){
-        console.warn("[Ranking v4.10.0] Không đọc được SoDuHienTai -> tính trực tiếp:",error && error.message || error);
+        console.warn("[Ranking v4.10.1] Không đọc được SoDuHienTai -> tính trực tiếp:",error && error.message || error);
         return null;
     })
     .finally(function(){
@@ -3194,6 +3195,10 @@ async function buildStudentRewardProfile(
                 profile.consumedDealIds ||
                 [],
  
+            /*
+               v4.10.1: giống trang đang chạy – khung avatar lấy từ túi đồ CUỐI CÙNG
+               (profile.avatarFrame của Core có thể còn khung đã bán cho Minh Hồng).
+            */
             avatar:
                 profile.avatar ||
                 RS.getProfileAvatar(
@@ -3201,7 +3206,6 @@ async function buildStudentRewardProfile(
                 ),
  
             avatarFrame:
-                profile.avatarFrame ||
                 RS.getProfileAvatarFrame(
                     ownedItems
                 ),
@@ -3974,7 +3978,7 @@ async function loadData(){
         rewardDataReady=true;
         if(soDu){
             console.info(
-                "[Ranking v4.10.0] Số dư hiện tại (SoDuHienTai " + soDu.at + "): " +
+                "[Ranking v4.10.1] Số dư hiện tại (SoDuHienTai " + soDu.at + "): " +
                 soDuUsed + "/" + students.length + " học viên, còn lại tính trực tiếp."
             );
         }
