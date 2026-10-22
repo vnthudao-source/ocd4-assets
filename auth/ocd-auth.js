@@ -1,5 +1,5 @@
 /* =========================================================
-   OCD AUTH v1.1 – Tài khoản bảo mật (đi kèm Reward Core)
+   OCD AUTH v1.1.1 – Tài khoản bảo mật (đi kèm Reward Core)
    ---------------------------------------------------------
    - window.OCDAuth / StudentRewardSystem.auth
    - Lưu phiên đăng nhập (localStorage, dùng chung mọi trang thudao.com)
@@ -387,6 +387,8 @@ function bulkAllowed(options){
     if(window.OCD_AUTH_PUBLIC_LIST===true) return true;
     return !!document.getElementById("rankingContent"); // Bảng xếp hạng hiển thị toàn bộ học viên
 }
+const toastSeen={};
+function sessionStudent(){ try{ const ss=window.OCDStudentSession; return up(ss && ss.getCode ? ss.getCode() : ""); }catch(e){ return ""; } }
 function lockedError(code){
     const e=new Error("🔒 Hồ sơ "+up(code)+" đã được chủ tài khoản bảo mật. Nếu đây là bạn, hãy đăng nhập tại icon Minh Hồng.");
     e.code="STUDENT_PROTECTED"; e.studentCode=up(code); return e;
@@ -397,8 +399,13 @@ function installGuard(RS){
     const original=RS.assertStudentActive.bind(RS);
     RS.assertStudentActive=async function(code,options){
         if(!bulkAllowed(options) && !(await canView(code))){
-            lockedToast(code);
-            emit("ocdProfileLocked",{code:up(code)});
+            /* v1.1.1: chỉ mời đăng nhập khi đó là mã CỦA CHÍNH người đang dùng (mã đang nhận diện ở Minh Hồng)
+               hoặc khi trang gọi rõ là tra cứu (options.interactive). Trang tự tải hồ sơ người khác (thành viên phòng,
+               đồng đội, tác giả bài…) thì im lặng bỏ qua – trước đây hiện "Hồ sơ … đã được chủ tài khoản bảo mật"
+               liên tục cho học viên khác. Mỗi mã chỉ hiện 1 lần trên mỗi trang. */
+            const c=up(code);
+            if((c===sessionStudent() || (options && options.interactive)) && !toastSeen[c]){ toastSeen[c]=1; lockedToast(code); }
+            emit("ocdProfileLocked",{code:c,silent:c!==sessionStudent()});
             throw lockedError(code);
         }
         return original(code,options);
@@ -407,7 +414,7 @@ function installGuard(RS){
 }
 
 window.OCDAuth={
-    version:"1.1.0",
+    version:"1.1.1",
     acceptSession:function(res){ if(res && res.token && res.expires) saveSession(res); },
     setLook:setLook, lookCached:lookCached,
     token:token, me:me, isMe:isMe, refreshMe:refreshMe,
