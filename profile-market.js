@@ -3,7 +3,7 @@
 "use strict";
  
 /* =========================================================
-   HỒ SƠ / CHỢ PHIÊN v4.11.0 (nút Lịch sử Phiếu đổi - Quà tặng) · v4.10.0 (danh thiếp cho hồ sơ đã bảo mật; chủ tài khoản chọn avatar · khung · nền)
+   HỒ SƠ / CHỢ PHIÊN v4.11.1 (Lịch sử: luôn thấy nút ✕ trên iPhone, bỏ tab Minh Hồng) · v4.10.0 (danh thiếp cho hồ sơ đã bảo mật; chủ tài khoản chọn avatar · khung · nền)
    v4.9.12: hiện ngay hồ sơ lưu lần trước; báo thành công ngay khi Apps Script đã ghi
    CORE CANONICAL ASSETS / MARKET SELF-RECOVERY
  
@@ -377,17 +377,18 @@ function el(id){
 const HX_CSS=`
 .hx-open{position:fixed;inset:0;z-index:2147483000;background:rgba(28,20,14,.58);display:flex;align-items:flex-end;justify-content:center}
 @media(min-width:700px){.hx-open{align-items:center}}
-.hx-box{width:100%;max-width:560px;max-height:92vh;background:#fffaf2;border-radius:18px 18px 0 0;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.25);font-family:Arial,Helvetica,sans-serif;color:#3a2c20}
-@media(min-width:700px){.hx-box{border-radius:18px;max-height:86vh}}
+.hx-box{width:100%;max-width:560px;max-height:85vh;max-height:calc(100dvh - 20px);overflow:hidden;box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom);background:#fffaf2;border-radius:18px 18px 0 0;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.25);font-family:Arial,Helvetica,sans-serif;color:#3a2c20}
+@media(min-width:700px){.hx-box{border-radius:18px;max-height:86vh;max-height:calc(100dvh - 60px)}}
+.hx-head,.hx-tabs,.hx-note{flex:none}
 .hx-head{display:flex;align-items:center;gap:10px;padding:14px 14px 8px;border-bottom:1px solid #eadfcd}
 .hx-title{flex:1;font:700 16px/1.3 Georgia,serif;color:#6b3f24}
-.hx-x{border:0;background:#f1e6d4;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer;color:#6b3f24}
+.hx-x{flex:none;padding:0!important;line-height:34px!important;background:#f1e6d4;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer;color:#6b3f24}
 .hx-tabs{display:flex;gap:6px;padding:8px 14px;border-bottom:1px solid #f0e6d6;overflow-x:auto}
 .hx-tab{border:1px solid #e3d3b8;background:#fff;border-radius:999px;padding:6px 12px;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;gap:5px;flex:0 0 auto;white-space:nowrap;width:auto;min-width:0;margin:0;height:auto}
 .hx-box .hx-tab{height:36px!important;min-height:36px!important;padding:0 12px!important;box-sizing:border-box;font-size:18px!important}
 .hx-tab small{font-size:11px;white-space:nowrap;color:#8a7560}
 .hx-tab.on{background:#6b3f24;border-color:#6b3f24}.hx-tab.on small{color:#f6e7cf}
-.hx-list{overflow-y:auto;padding:4px 10px 18px;-webkit-overflow-scrolling:touch}
+.hx-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px 10px 18px;-webkit-overflow-scrolling:touch}
 .hx-day{position:sticky;top:0;background:#fffaf2;font:700 12px/1 Arial;color:#9a7a55;padding:12px 4px 6px;z-index:1}
 .hx-row{display:flex;align-items:center;gap:8px;padding:8px 6px;border-radius:12px;margin:2px 0}
 .hx-row:nth-child(even){background:#fbf3e6}
@@ -411,7 +412,7 @@ const HX_SRC={
     beast:["🐉","Thưởng Linh Thú"], plc:["🏯","Phòng Luyện Công"], sell:["💱","Bán cho Minh Hồng"], ticket:["🎟️","Dùng vé Phòng Luyện Công"],
     refund:["↩️","Hoàn vé Phòng Luyện Công"], snap:["📦","Số dư chốt sổ"], bad:["⛔","Phiếu không hợp lệ (không tính)"]
 };
-const HX_TABS=[["all","📋","Tất cả"],["buy","🛒","Đổi quà"],["gift","🎁","Quà tặng"],["sell","💱","Minh Hồng"]];
+const HX_TABS=[["all","📋","Tất cả"],["buy","🛒","Đổi quà"],["gift","🎁","Quà tặng"]];
 function hxEsc(v){ return String(v==null?"":v).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
 function hxTime(ts){ try{ const d=RS.parseVietnameseDate(ts); return d&&isFinite(d.getTime())?d.getTime():0; }catch(e){ return 0; } }
 function hxGemKey(v){ if(GEM_TYPES[v]) return v; try{ return typeof RS.normalizeGemType==="function"?RS.normalizeGemType(v):""; }catch(e){ return ""; } }
@@ -548,8 +549,12 @@ async function openHistory(){
         HX_TABS.map(function(t,i){ return '<button class="hx-tab'+(i?"":" on")+'" type="button" data-tab="'+t[0]+'" aria-label="'+hxEsc(t[2])+'">'+t[1]+'<small>'+hxEsc(t[2])+'</small></button>'; }).join("")+
         '</div><div class="hx-list"><div class="hx-empty">⏳</div></div><div class="hx-note">Bấm vào biểu tượng để xem tên · ⛔ phiếu không được tính · 📦 số dư lúc chốt sổ</div></div>';
     document.body.appendChild(wrap);
+    /* iPhone: 100vh cao hơn vùng nhìn thấy (thanh địa chỉ) -> giới hạn theo chiều cao thật để luôn thấy nút ✕ */
+    const hxBox=wrap.querySelector(".hx-box");
+    const fit=function(){ const vv=window.visualViewport; const h=Math.round(vv?vv.height:window.innerHeight)||0; if(h>0) hxBox.style.maxHeight=Math.max(240,h-(window.innerWidth>=700?60:16))+"px"; };
+    fit(); window.addEventListener("resize",fit); if(window.visualViewport) window.visualViewport.addEventListener("resize",fit);
     const prevOverflow=document.body.style.overflow; document.body.style.overflow="hidden";
-    const close=function(){ wrap.remove(); document.body.style.overflow=prevOverflow; document.querySelectorAll(".hx-tip").forEach(function(x){ x.remove(); }); document.removeEventListener("keydown",onKey); };
+    const close=function(){ window.removeEventListener("resize",fit); if(window.visualViewport) window.visualViewport.removeEventListener("resize",fit); wrap.remove(); document.body.style.overflow=prevOverflow; document.querySelectorAll(".hx-tip").forEach(function(x){ x.remove(); }); document.removeEventListener("keydown",onKey); };
     const onKey=function(ev){ if(ev.key==="Escape") close(); };
     document.addEventListener("keydown",onKey);
     wrap.addEventListener("click",function(ev){

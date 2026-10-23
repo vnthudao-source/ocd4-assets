@@ -8828,6 +8828,31 @@ function applySalesToItems(items,sales,RS){
 
 /* v4.6.0: sổ cái chung (phiếu đổi + quà GVCN + tiền Minh Hồng thu mua) duyệt theo đúng thứ tự thời gian.
    Lặp tối đa 4 lần vì: phiếu đổi hợp lệ -> có vật phẩm -> bán được cho Minh Hồng -> có thêm linh thạch -> phiếu đổi sau hợp lệ. */
+/* Mã giao dịch trừ vé Phòng Luyện Công – giống ticketSaleId_() trong Code.gs */
+function plcTicketSaleId(roomId,code){
+    code=String(code||"").trim().toUpperCase();
+    const text="PLC|"+["PLC-TICKET",roomId,code].join("|")+"|"+code;
+    let h=2166136261;
+    for(let i=0;i<text.length;i++){ h^=text.charCodeAt(i); h=Math.imul(h,16777619); }
+    return "PLC-"+code+"-"+(h>>>0).toString(36).toUpperCase();
+}
+function plcRefundCancel(items,sales,code,RS){
+    const bySell=new Map(); (sales||[]).forEach(function(s){ bySell.set(s.sellId,s); });
+    const drop=new Set(), keep=[], cancelled=[];
+    (items||[]).forEach(function(it){
+        const m=/PLC-REFUND\|([^|\s]+)\|([A-Za-z0-9_-]+)/.exec(String(it&&it.reason||""));
+        if(m && RS.normalizeCode(m[2])===code && itemQty(it)===1){
+            const id=plcTicketSaleId(m[1],code), s=bySell.get(id);
+            if(s && !drop.has(id) && RS.normalizeText(s.giftName)===RS.normalizeText(itemAssetName(it))){
+                drop.add(id); cancelled.push({sellId:id,roomId:m[1],timestamp:it.timestamp||"",refundTimestamp:it.timestamp||"",saleTimestamp:s.timestamp});
+                return;
+            }
+        }
+        keep.push(it);
+    });
+    return {n:drop.size,items:keep,sales:(sales||[]).filter(function(s){ return !drop.has(s.sellId); }),cancelled:cancelled};
+}
+
 function buildUnifiedLedger(profile,sales,RS,legacy){
     const raw=(profile.rawTransactions||[]).filter(function(t){ return !(t && t.isMinhHongSale); });
     /* v4.7.0: đã chốt sổ -> chỉ phần linh thạch học tập phát sinh sau mốc */
@@ -9005,7 +9030,7 @@ async function installV4(RS){
         const profile=results[0], mh=results[1];
         const studentCode=RS.normalizeCode(code);
         /* v4.7.0: giao dịch Minh Hồng trước mốc chốt sổ đã nằm trong số dư chốt */
-    const sales=(mh.salesByCode.get(studentCode)||[]).filter(function(s){
+    let sales=(mh.salesByCode.get(studentCode)||[]).filter(function(s){
         return RS.isAfterSnapshot(profile.snapshot||null,s.timestamp);
     });
         /* v4.6.0: MỘT SỔ CÁI THEO THỜI GIAN
@@ -9014,6 +9039,12 @@ async function installV4(RS){
              học viên đổi tiếp được mãi.
            - Vật phẩm từ phiếu đổi bị từ chối (chưa trả linh thạch) trước đây vẫn được vào túi đồ rồi bán lại cho Minh Hồng.
            Nay: tiền Minh Hồng trả được ghi đúng thời điểm bán vào cùng sổ cái với phiếu đổi; chỉ phiếu đổi đã trả đủ mới cho vật phẩm. */
+        /* v4.7.1: HOÀN VÉ PHÒNG LUYỆN CÔNG = HUỶ LẦN DÙNG VÉ
+           Dùng vé được ghi là "Minh Hồng thu mua vé" (+linh thạch); trước đây khi giải tán phòng / bị mời ra,
+           học viên được tặng lại 1 vé nhưng vẫn giữ linh thạch của lần bán -> tạo rồi giải tán phòng liên tục để kiếm linh thạch.
+           Nay mỗi dòng hoàn vé (PLC-REFUND|phòng|mã) huỷ đúng giao dịch trừ vé của phòng đó: không cộng linh thạch, không thêm vé. */
+        const cut=plcRefundCancel(profile.teacherOwnedItems||[],sales,studentCode,RS);
+        if(cut.n){ sales=cut.sales; profile.teacherOwnedItems=cut.items; profile.cancelledTicketSales=cut.cancelled; }
         const ledger=buildUnifiedLedger(profile,sales,RS,legacy);
         const itemResult=ledger.itemResult;
         const gems=ledger.accounting.gems;
