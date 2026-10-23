@@ -3,7 +3,7 @@
 "use strict";
  
 /* =========================================================
-   HỒ SƠ / CHỢ PHIÊN v4.10.0 (danh thiếp cho hồ sơ đã bảo mật; chủ tài khoản chọn avatar · khung · nền)
+   HỒ SƠ / CHỢ PHIÊN v4.11.0 (nút Lịch sử Phiếu đổi - Quà tặng) · v4.10.0 (danh thiếp cho hồ sơ đã bảo mật; chủ tài khoản chọn avatar · khung · nền)
    v4.9.12: hiện ngay hồ sơ lưu lần trước; báo thành công ngay khi Apps Script đã ghi
    CORE CANONICAL ASSETS / MARKET SELF-RECOVERY
  
@@ -364,6 +364,216 @@ function el(id){
     return document.getElementById(
         id
     );
+}
+
+/* =========================================================
+   v4.11.0 – LỊCH SỬ PHIẾU ĐỔI - QUÀ TẶNG
+   - Một nút trong hồ sơ: mở danh sách giao dịch theo ngày (mới nhất trên cùng)
+   - Dữ liệu lấy từ hồ sơ Reward Core đã tính (không đọc thêm Sheet):
+     phiếu đổi Chợ phiên, Hộp quà bí ẩn, túi linh thạch, quà / linh thạch GVCN,
+     thưởng Nhiệm vụ · Linh Thú · Phòng Luyện Công, bán cho Minh Hồng, dùng vé PLC, số dư chốt sổ
+   - Ưu tiên icon: bấm vào icon để xem tên
+========================================================= */
+const HX_CSS=`
+.hx-open{position:fixed;inset:0;z-index:2147483000;background:rgba(28,20,14,.58);display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:700px){.hx-open{align-items:center}}
+.hx-box{width:100%;max-width:560px;max-height:92vh;background:#fffaf2;border-radius:18px 18px 0 0;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.25);font-family:Arial,Helvetica,sans-serif;color:#3a2c20}
+@media(min-width:700px){.hx-box{border-radius:18px;max-height:86vh}}
+.hx-head{display:flex;align-items:center;gap:10px;padding:14px 14px 8px;border-bottom:1px solid #eadfcd}
+.hx-title{flex:1;font:700 16px/1.3 Georgia,serif;color:#6b3f24}
+.hx-x{border:0;background:#f1e6d4;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer;color:#6b3f24}
+.hx-tabs{display:flex;gap:6px;padding:8px 14px;border-bottom:1px solid #f0e6d6;overflow-x:auto}
+.hx-tab{border:1px solid #e3d3b8;background:#fff;border-radius:999px;padding:6px 12px;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;gap:5px;flex:0 0 auto;white-space:nowrap;width:auto;min-width:0;margin:0;height:auto}
+.hx-box .hx-tab{height:36px!important;min-height:36px!important;padding:0 12px!important;box-sizing:border-box;font-size:18px!important}
+.hx-tab small{font-size:11px;white-space:nowrap;color:#8a7560}
+.hx-tab.on{background:#6b3f24;border-color:#6b3f24}.hx-tab.on small{color:#f6e7cf}
+.hx-list{overflow-y:auto;padding:4px 10px 18px;-webkit-overflow-scrolling:touch}
+.hx-day{position:sticky;top:0;background:#fffaf2;font:700 12px/1 Arial;color:#9a7a55;padding:12px 4px 6px;z-index:1}
+.hx-row{display:flex;align-items:center;gap:8px;padding:8px 6px;border-radius:12px;margin:2px 0}
+.hx-row:nth-child(even){background:#fbf3e6}
+.hx-row.bad{opacity:.55}
+.hx-src{width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center;font-size:18px;border-radius:9px;background:#f3e7d3}
+.hx-main{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-width:0}
+.hx-chip{position:relative;display:inline-flex;align-items:center;cursor:pointer}
+.hx-chip img{width:34px;height:34px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid #eadcc4}
+.hx-chip b{position:absolute;right:-5px;bottom:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#6b3f24;color:#fff;font:700 10px/17px Arial;text-align:center}
+.hx-gem{display:inline-flex;align-items:center;gap:2px;font:700 13px/1 Arial;cursor:pointer;white-space:nowrap}
+.hx-gem img{width:20px;height:20px;object-fit:contain}
+.hx-gem.plus{color:#2f7a4c}.hx-gem.minus{color:#a2443a}
+.hx-arrow{color:#b49a78;font-size:14px}
+.hx-time{flex:none;font-size:11px;color:#a08a70;align-self:flex-start;padding-top:2px}
+.hx-empty{padding:40px 10px;text-align:center;color:#9a8670;font-size:14px}
+.hx-tip{position:fixed;z-index:2147483001;max-width:240px;background:#2d2118;color:#fff;font:13px/1.35 Arial;padding:7px 10px;border-radius:9px;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.hx-note{padding:6px 14px 10px;font-size:11px;color:#9a8670}
+`;
+const HX_SRC={
+    buy:["🛒","Phiếu đổi Chợ phiên"], box:["🎲","Hộp quà bí ẩn"], gift:["🎁","Quà GVCN"], quest:["📜","Thưởng nhiệm vụ"],
+    beast:["🐉","Thưởng Linh Thú"], plc:["🏯","Phòng Luyện Công"], sell:["💱","Bán cho Minh Hồng"], ticket:["🎟️","Dùng vé Phòng Luyện Công"],
+    refund:["↩️","Hoàn vé Phòng Luyện Công"], snap:["📦","Số dư chốt sổ"], bad:["⛔","Phiếu không hợp lệ (không tính)"]
+};
+const HX_TABS=[["all","📋","Tất cả"],["buy","🛒","Đổi quà"],["gift","🎁","Quà tặng"],["sell","💱","Minh Hồng"]];
+function hxEsc(v){ return String(v==null?"":v).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+function hxTime(ts){ try{ const d=RS.parseVietnameseDate(ts); return d&&isFinite(d.getTime())?d.getTime():0; }catch(e){ return 0; } }
+function hxGemKey(v){ if(GEM_TYPES[v]) return v; try{ return typeof RS.normalizeGemType==="function"?RS.normalizeGemType(v):""; }catch(e){ return ""; } }
+function hxItem(name,qty){
+    const src=giftImageByName(name,160)||"";
+    const tip=name+(qty>1?" ×"+qty:"");
+    return '<span class="hx-chip" data-tip="'+hxEsc(tip)+'">'+(src?'<img src="'+hxEsc(src)+'" alt="'+hxEsc(name)+'" loading="lazy">':'<span style="font-size:22px">🎁</span>')+(qty>1?'<b>'+qty+'</b>':'')+'</span>';
+}
+function hxGem(key,amount,sign){
+    key=hxGemKey(key); if(!key||!amount) return "";
+    const g=GEM_TYPES[key], n=RS.formatNumber?RS.formatNumber(amount):amount;
+    return '<span class="hx-gem '+(sign<0?"minus":"plus")+'" data-tip="'+(sign<0?"−":"+")+hxEsc(n+" "+g.displayName)+'">'+(sign<0?"−":"+")+hxEsc(n)+'<img src="'+hxEsc(RS.convertDriveImageUrl(g.image,64))+'" alt="'+hxEsc(g.displayName)+'"></span>';
+}
+const HX_ARROW='<span class="hx-arrow">➜</span>';
+function hxSourceOf(reason,giver){
+    const r=String(reason||""), g=String(giver||"");
+    if(/^BEAST:/i.test(r)) return "beast";
+    if(/PLC-REFUND|Hoàn vé Phòng Luyện Công/i.test(r)) return "refund";
+    if(/Phòng Luyện Công|PLC\|/i.test(r)||/Phòng Luyện Công/i.test(g)) return "plc";
+    if(/^QUEST:/i.test(r)||/Minh Hồng/i.test(g)) return "quest";
+    return "gift";
+}
+function hxReasonText(reason){
+    const r=String(reason||"").trim(); if(!r) return "";
+    if(/^QUEST:/i.test(r)) return "Nhiệm vụ "+r.slice(6);
+    if(/^BEAST:/i.test(r)){ const m=r.match(/RANK(\d+)/i); return "Linh Thú"+(m?" · hạng "+m[1]:""); }
+    return r.split("·")[0].replace(/\s*PLC[-|].*$/,"").trim()||r;
+}
+/* Gom dữ liệu hồ sơ thành các dòng lịch sử */
+function buildHistoryEntries(p){
+    const out=[];
+    if(!p) return out;
+    const valid=Array.isArray(p.validTransactions)?p.validTransactions:(p.transactions||[]);
+    /* số dư chốt sổ: 1 dòng */
+    if(p.snapshot){
+        const s=p.snapshot, gems=[], items={};
+        Object.keys(s.gems||{}).forEach(function(k){ if(Number(s.gems[k])>0) gems.push([k,Number(s.gems[k])]); });
+        (p.teacherOwnedItems||[]).forEach(function(it){ if(it&&it.fromSnapshot){ items[it.giftName]=(items[it.giftName]||0)+Math.max(1,Number(it.quantity)||1); } });
+        out.push({t:Number(s.cutMs)||hxTime(s.cutText), kind:"snap", tab:"gift", gems:gems, items:items, tip:"Số dư chốt sổ "+String(s.cutText||"").split(" ")[0]});
+    }
+    valid.forEach(function(tx){
+        if(!tx||tx.isSnapshot) return;
+        const t=hxTime(tx.timestamp);
+        if(tx.transactionType==="redemption"){
+            const g=tx.grantedGemReward;
+            if(tx.isMysteryBox){
+                out.push({t:t,kind:"box",tab:"buy",name:tx.giftName,cost:[[tx.gemType,Number(tx.price)||0]],reward:tx.mysteryRewardName||"",gem:g?[g.gemType,Number(g.amount)||0]:null});
+            }else{
+                out.push({t:t,kind:"buy",tab:"buy",name:tx.giftName,cost:[[tx.gemType,Number(tx.price)||0]],gem:g?[g.gemType,Number(g.amount)||0]:null});
+            }
+            return;
+        }
+        if(tx.transactionType==="teacher-gem" && !tx.isMinhHongSale){
+            const src=hxSourceOf(tx.reason,tx.giver);
+            out.push({t:t,kind:src,tab:"gift",gems:[[tx.rewardGemType,Number(tx.rewardGemAmount)||0]],tip:hxReasonText(tx.reason)||HX_SRC[src][1]});
+        }
+    });
+    (p.teacherOwnedItems||[]).forEach(function(it){
+        if(!it||it.fromSnapshot) return;
+        const src=hxSourceOf(it.reason,it.giver), items={}; items[it.giftName]=Math.max(1,Number(it.quantity)||1);
+        out.push({t:hxTime(it.timestamp),kind:src,tab:"gift",items:items,tip:hxReasonText(it.reason)||HX_SRC[src][1]});
+    });
+    ((p.minhHong&&p.minhHong.sales)||[]).forEach(function(s){
+        const plc=/^PLC-/i.test(String(s.sellId||""));
+        out.push({t:hxTime(s.timestamp),kind:plc?"ticket":"sell",tab:plc?"buy":"sell",name:s.giftName,qty:Math.max(1,Number(s.quantity)||1),gems:[[s.rewardGemType,Number(s.rewardGemAmount)||0]]});
+    });
+    (p.rejectedTransactions||[]).forEach(function(tx){
+        if(!tx||tx.transactionType!=="redemption") return;
+        out.push({t:hxTime(tx.timestamp),kind:"bad",tab:"buy",name:tx.giftName,cost:[[tx.gemType,Number(tx.price)||0]],tip:tx.rejectionReason==="insufficient-balance"?"Không đủ linh thạch lúc đổi – phiếu không được tính":tx.rejectionReason==="duplicate-deal"?"Phiếu gửi trùng – chỉ tính 1 lần":"Phiếu không hợp lệ – không được tính"});
+    });
+    out.sort(function(a,b){ return b.t-a.t; });
+    /* gom các Hộp quà bí ẩn mua liền nhau trong cùng ngày */
+    const merged=[];
+    out.forEach(function(e){
+        const last=merged[merged.length-1];
+        if(e.kind==="box"&&last&&last.kind==="box"&&hxDay(last.t)===hxDay(e.t)){
+            last.n++; last.cost[0][1]+=e.cost[0][1];
+            if(e.gem&&e.gem[1]){ const k=hxGemKey(e.gem[0]); last.gemSum[k]=(last.gemSum[k]||0)+e.gem[1]; }
+            else if(e.reward){ last.got[e.reward]=(last.got[e.reward]||0)+1; }
+            last.tMin=Math.min(last.tMin,e.t);
+            return;
+        }
+        if(e.kind==="box"){
+            const x={t:e.t,tMin:e.t,kind:"box",tab:"buy",name:e.name,n:1,cost:[[e.cost[0][0],e.cost[0][1]]],got:{},gemSum:{}};
+            if(e.gem&&e.gem[1]){ x.gemSum[hxGemKey(e.gem[0])]=e.gem[1]; } else if(e.reward){ x.got[e.reward]=1; }
+            merged.push(x); return;
+        }
+        merged.push(e);
+    });
+    return merged;
+}
+function hxDay(t){ if(!t) return "—"; try{ return new Intl.DateTimeFormat("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date(t)); }catch(e){ return "—"; } }
+function hxClock(t){ if(!t) return ""; try{ return new Intl.DateTimeFormat("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit"}).format(new Date(t)); }catch(e){ return ""; } }
+function hxRowHtml(e){
+    const src=HX_SRC[e.kind]||HX_SRC.gift;
+    let main="";
+    if(e.kind==="buy"||e.kind==="bad"){
+        main=hxItem(e.name,1)+(e.cost||[]).map(function(c){ return hxGem(c[0],c[1],-1); }).join("")+(e.gem&&e.gem[1]?HX_ARROW+hxGem(e.gem[0],e.gem[1],1):"");
+    }else if(e.kind==="box"){
+        const got=Object.keys(e.got).map(function(n){ return hxItem(n,e.got[n]); }).join("")+Object.keys(e.gemSum).map(function(k){ return hxGem(k,e.gemSum[k],1); }).join("");
+        main=hxItem(e.name,e.n)+(e.cost||[]).map(function(c){ return hxGem(c[0],c[1],-1); }).join("")+HX_ARROW+got;
+    }else if(e.kind==="sell"||e.kind==="ticket"){
+        main=hxItem(e.name,e.qty)+HX_ARROW+(e.gems||[]).map(function(g){ return hxGem(g[0],g[1],1); }).join("");
+    }else{
+        main=Object.keys(e.items||{}).map(function(n){ return hxItem(n,e.items[n]); }).join("")+(e.gems||[]).map(function(g){ return hxGem(g[0],g[1],1); }).join("");
+    }
+    const tip=e.tip?src[1]+" · "+e.tip:src[1];
+    return '<div class="hx-row'+(e.kind==="bad"?" bad":"")+'"><span class="hx-src" data-tip="'+hxEsc(tip)+'">'+src[0]+'</span><div class="hx-main">'+main+'</div><span class="hx-time">'+hxClock(e.kind==="box"?e.tMin:e.t)+'</span></div>';
+}
+function hxRender(box,entries,tab){
+    const list=box.querySelector(".hx-list");
+    const rows=entries.filter(function(e){ return tab==="all"||e.tab===tab; });
+    if(!rows.length){ list.innerHTML='<div class="hx-empty">📭</div>'; return; }
+    let html="", day="";
+    rows.forEach(function(e){ const d=e.kind==="snap"?"📦 "+hxDay(e.t):hxDay(e.t); if(d!==day){ day=d; html+='<div class="hx-day">'+hxEsc(d)+'</div>'; } html+=hxRowHtml(e); });
+    list.innerHTML=html;
+    list.scrollTop=0;
+}
+function hxShowTip(target){
+    document.querySelectorAll(".hx-tip").forEach(function(x){ x.remove(); });
+    const text=target.getAttribute("data-tip"); if(!text) return;
+    const tip=document.createElement("div"); tip.className="hx-tip"; tip.textContent=text; document.body.appendChild(tip);
+    const r=target.getBoundingClientRect(), w=tip.offsetWidth, h=tip.offsetHeight;
+    tip.style.left=Math.max(8,Math.min(window.innerWidth-w-8,r.left+r.width/2-w/2))+"px";
+    tip.style.top=(r.top-h-8<8?r.bottom+8:r.top-h-8)+"px";
+    clearTimeout(hxShowTip.timer); hxShowTip.timer=setTimeout(function(){ tip.remove(); },2200);
+}
+async function openHistory(){
+    if(!state.student) return;
+    if(!document.getElementById("hxStyle")){ const st=document.createElement("style"); st.id="hxStyle"; st.textContent=HX_CSS; (document.head||document.documentElement).appendChild(st); }
+    const code=RS.normalizeCode(state.student.code);
+    const wrap=document.createElement("div"); wrap.className="hx-open"; wrap.setAttribute("role","dialog"); wrap.setAttribute("aria-label","Lịch sử Phiếu đổi - Quà tặng");
+    wrap.innerHTML='<div class="hx-box"><div class="hx-head"><div class="hx-title">📜 Lịch sử Phiếu đổi - Quà tặng<br><small style="font:12px Arial;color:#9a8670">'+hxEsc((state.student.name||"")+" · "+code)+'</small></div><button class="hx-x" type="button" aria-label="Đóng">✕</button></div><div class="hx-tabs">'+
+        HX_TABS.map(function(t,i){ return '<button class="hx-tab'+(i?"":" on")+'" type="button" data-tab="'+t[0]+'" aria-label="'+hxEsc(t[2])+'">'+t[1]+'<small>'+hxEsc(t[2])+'</small></button>'; }).join("")+
+        '</div><div class="hx-list"><div class="hx-empty">⏳</div></div><div class="hx-note">Bấm vào biểu tượng để xem tên · ⛔ phiếu không được tính · 📦 số dư lúc chốt sổ</div></div>';
+    document.body.appendChild(wrap);
+    const prevOverflow=document.body.style.overflow; document.body.style.overflow="hidden";
+    const close=function(){ wrap.remove(); document.body.style.overflow=prevOverflow; document.querySelectorAll(".hx-tip").forEach(function(x){ x.remove(); }); document.removeEventListener("keydown",onKey); };
+    const onKey=function(ev){ if(ev.key==="Escape") close(); };
+    document.addEventListener("keydown",onKey);
+    wrap.addEventListener("click",function(ev){
+        if(ev.target===wrap||ev.target.closest(".hx-x")){ close(); return; }
+        const tabBtn=ev.target.closest(".hx-tab");
+        if(tabBtn){ wrap.querySelectorAll(".hx-tab").forEach(function(b){ b.classList.toggle("on",b===tabBtn); }); hxRender(wrap,wrap._entries||[],tabBtn.dataset.tab); return; }
+        const tipEl=ev.target.closest("[data-tip]"); if(tipEl) hxShowTip(tipEl);
+    });
+    let profile=state.assetProfile&&RS.normalizeCode(state.assetProfile.code||"")===code?state.assetProfile:null;
+    try{ if(!profile) profile=await loadCanonicalStudentProfile(code,false); }
+    catch(err){ wrap.querySelector(".hx-list").innerHTML='<div class="hx-empty">⚠️ '+hxEsc(err&&err.message||err)+'</div>'; return; }
+    if(!wrap.isConnected) return;
+    wrap._entries=buildHistoryEntries(profile);
+    const on=wrap.querySelector(".hx-tab.on");
+    hxRender(wrap,wrap._entries,on?on.dataset.tab:"all");
+}
+function ensureHistoryButton(){
+    const bar=document.querySelector("#studentProfileModule .student-profile-actions");
+    if(!bar||document.getElementById("profileHistoryButton")) return;
+    const b=document.createElement("button");
+    b.className="student-profile-action"; b.id="profileHistoryButton"; b.type="button";
+    b.innerHTML='<span aria-hidden="true">📜</span><span>Lịch sử Phiếu đổi - Quà tặng</span>';
+    b.addEventListener("click",function(){ openHistory().catch(function(e){ console.warn("[Lịch sử]",e); }); });
+    bar.appendChild(b);
 }
  
  
@@ -2417,6 +2627,8 @@ function renderProfile(
     ownedItems,
     reward
 ){
+    ensureHistoryButton();
+
  
     const profile=
         el(
@@ -3450,6 +3662,8 @@ function renderCanonicalAssets(profile){
 
         renderMarket();
     }
+
+    ensureHistoryButton();
 
     syncStudentSession();
 
