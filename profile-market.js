@@ -3,7 +3,7 @@
 "use strict";
  
 /* =========================================================
-   HỒ SƠ / CHỢ PHIÊN v4.11.1 (Lịch sử: luôn thấy nút ✕ trên iPhone, bỏ tab Minh Hồng) · v4.10.0 (danh thiếp cho hồ sơ đã bảo mật; chủ tài khoản chọn avatar · khung · nền)
+   HỒ SƠ / CHỢ PHIÊN v4.11.2 (Trang trí: nhận vật phẩm trong túi dù tên lệch dấu/khoảng trắng, nút Tải lại túi đồ, phiên hết hạn -> mời đăng nhập) · v4.11.1 (Lịch sử: luôn thấy nút ✕ trên iPhone, bỏ tab Minh Hồng) · v4.10.0 (danh thiếp cho hồ sơ đã bảo mật; chủ tài khoản chọn avatar · khung · nền)
    v4.9.12: hiện ngay hồ sơ lưu lần trước; báo thành công ngay khi Apps Script đã ghi
    CORE CANONICAL ASSETS / MARKET SELF-RECOVERY
  
@@ -8391,35 +8391,71 @@ async function renderCardOnly(code){
 
 /* ---------- Bảng Trang trí (chủ tài khoản) ---------- */
 
+/* v4.11.2: khoá so khớp "lỏng" – bỏ dấu, bỏ khoảng trắng và ký tự lạ,
+   để "Khung Trăng", "khung trang", "Khung  Trăng ×1" đều trùng nhau. */
+function looseLookKey(value){
+    return RS.normalizeText(value)
+        .replace(/\s*[x×]\s*\d+\s*$/,"")   /* "… ×1" */
+        .replace(/\[.*?\]/g,"")           /* "[DEAL:…]" */
+        .replace(/\s*-\s*\d+\s*(hong ngoc|hoang ngoc|hai lam ngoc|lam bao thach|thach anh tim|luc thach)\s*$/,"")
+        .replace(/[^a-z0-9]+/g,"");
+}
+function lookItemName(item){
+    if(!item) return "";
+    if(typeof item==="string") return item;
+    return item.giftName || item.name || (item.gift && item.gift.name) || item.giftLabel || "";
+}
+/* Túi đồ hiện tại: gộp mọi nguồn (state, hồ sơ chuẩn của Core, và chính
+   danh sách Vật phẩm đang hiển thị) để không bỏ sót vật phẩm nào. */
+function ownedLookKeys(){
+    const keys=new Set();
+    function add(name){ const k=looseLookKey(name); if(k) keys.add(k); }
+    (state.ownedItems || []).forEach(function(item){ add(lookItemName(item)); });
+    try{
+        const canonical=state.assetProfile && Array.isArray(state.assetProfile.ownedItems) ? state.assetProfile.ownedItems : [];
+        canonical.forEach(function(item){ add(lookItemName(item)); });
+    }catch(error){}
+    try{
+        document.querySelectorAll("#profileItemGrid .profile-item-name").forEach(function(node){ add(node.textContent); });
+    }catch(error){}
+    return keys;
+}
 function ownedLookNames(kindInfo){
-    const prefix=RS.normalizeText(kindInfo.prefix());
+    const prefix=looseLookKey(kindInfo.prefix());
     const set=new Set();
-    (state.ownedItems || []).forEach(function(item){
-        const n=RS.normalizeText(item.giftName);
-        if(n.startsWith(prefix)) set.add(n);
+    ownedLookKeys().forEach(function(k){
+        set.add(k);
     });
     return set;
 }
-
+function isLookOwned(owned,giftName,kindInfo){
+    const key=looseLookKey(giftName);
+    if(!key) return false;
+    if(owned.has(key)) return true;
+    /* tên trong túi có thể thiếu/thừa tiền tố ("Trăng" ↔ "Khung Trăng") */
+    const prefix=looseLookKey(kindInfo.prefix());
+    const short=key.indexOf(prefix)===0 ? key.slice(prefix.length) : key;
+    return !!short && (owned.has(prefix+short) || owned.has(short));
+}
 function catalogLookGifts(kindInfo){
-    const prefix=RS.normalizeText(kindInfo.prefix());
+    const prefix=looseLookKey(kindInfo.prefix());
     const seen=new Set(), out=[];
     (state.gifts || []).forEach(function(gift){
-        const n=RS.normalizeText(gift && gift.name);
-        if(!n || !n.startsWith(prefix) || seen.has(n)) return;
+        const n=looseLookKey(gift && gift.name);
+        if(!n || n.indexOf(prefix)!==0 || seen.has(n)) return;
         seen.add(n);
         out.push(gift);
     });
     /* vật phẩm đã sở hữu nhưng không còn trong danh mục */
     (state.ownedItems || []).forEach(function(item){
-        const n=RS.normalizeText(item.giftName);
-        if(!n.startsWith(prefix) || seen.has(n)) return;
+        const name=lookItemName(item);
+        const n=looseLookKey(name);
+        if(!n || n.indexOf(prefix)!==0 || seen.has(n)) return;
         seen.add(n);
-        out.push({name:item.giftName,image:item.image});
+        out.push({name:name,image:item.image || (item.gift && item.gift.image) || ""});
     });
     return out;
 }
-
 function currentLook(){
     const A=authApi();
     const me=A && A.me();
@@ -8496,15 +8532,30 @@ function renderLookPanel(){
     if(!A.isMe(code)){
         const text=document.createElement("p");
         text.className="look-panel-text";
-        text.textContent="Chọn avatar, khung và nền cho danh thiếp dành cho tài khoản đã nâng cấp bảo mật. Sau khi nâng cấp, người khác chỉ xem được danh thiếp của bạn.";
-        panel.appendChild(text);
         const actions=document.createElement("div");
         actions.className="look-actions";
         const up=document.createElement("button");
         up.type="button";
         up.className="look-save";
-        up.textContent="NÂNG CẤP BẢO MẬT MÃ "+code;
-        up.onclick=function(){ A.openUpgrade({code:code,onSuccess:function(){ searchStudent(); }}); };
+        /* v4.11.2: mã đã bảo mật (hoặc phiên đăng nhập vừa hết hạn) -> mời đăng nhập, không mời nâng cấp lại */
+        let protectedNow=false;
+        try{ protectedNow=!!(typeof A.isProtectedCached==="function" ? A.isProtectedCached(code) : false); }catch(error){}
+        function paint(isProtected){
+            if(isProtected){
+                text.textContent="Mã "+code+" đã bảo mật. Hãy đăng nhập bằng mật khẩu của bạn để chọn avatar, khung và nền cho danh thiếp.";
+                up.textContent="ĐĂNG NHẬP ĐỂ TRANG TRÍ";
+                up.onclick=function(){ A.openLogin({code:code,onSuccess:function(){ searchStudent(); }}); };
+            }else{
+                text.textContent="Chọn avatar, khung và nền cho danh thiếp dành cho tài khoản đã nâng cấp bảo mật. Sau khi nâng cấp, người khác chỉ xem được danh thiếp của bạn.";
+                up.textContent="NÂNG CẤP BẢO MẬT MÃ "+code;
+                up.onclick=function(){ A.openUpgrade({code:code,onSuccess:function(){ searchStudent(); }}); };
+            }
+        }
+        paint(protectedNow);
+        if(!protectedNow && typeof A.isProtected==="function"){
+            A.isProtected(code).then(function(isProtected){ if(isProtected && up.isConnected) paint(true); }).catch(function(){});
+        }
+        panel.appendChild(text);
         actions.appendChild(up);
         panel.appendChild(actions);
         return;
@@ -8572,14 +8623,28 @@ function renderLookPanel(){
 
     addCard("","",true,"Mặc định (vật phẩm mới nhận)");
     const gifts=catalogLookGifts(info).sort(function(a,b){
-        const ao=owned.has(RS.normalizeText(a.name))?0:1, bo=owned.has(RS.normalizeText(b.name))?0:1;
+        const ao=isLookOwned(owned,a.name,info)?0:1, bo=isLookOwned(owned,b.name,info)?0:1;
         return ao-bo;
     });
+    let ownedCount=0;
     gifts.forEach(function(gift){
         const short=String(gift.name).slice(info.prefix().length).trim() || gift.name;
         const image=gift.image && typeof RS.convertDriveImageUrl==="function" ? RS.convertDriveImageUrl(gift.image,info.size) : (gift.image||"");
-        addCard(gift.name,image,owned.has(RS.normalizeText(gift.name)),short);
+        const isOwned=isLookOwned(owned,gift.name,info);
+        if(isOwned) ownedCount++;
+        addCard(gift.name,image,isOwned,short);
     });
+    /* v4.11.2: túi đồ chưa tải xong / đang dùng số liệu cũ -> nói rõ và cho tải lại */
+    if(state.assetsStale || !ownedCount){
+        const bag=document.createElement("p");
+        bag.className="look-panel-text";
+        bag.id="profileLookBagNote";
+        const total=(state.ownedItems||[]).length;
+        bag.textContent=state.assetsStale
+            ? "Đang cập nhật túi đồ mới nhất, danh sách sẽ tự làm mới trong giây lát…"
+            : (total ? "Túi đồ hiện có "+total+" vật phẩm nhưng chưa có "+info.label.toLowerCase()+" nào. Nếu bạn vừa nhận vật phẩm, hãy bấm TẢI LẠI TÚI ĐỒ." : "Túi đồ đang trống. Nếu bạn vừa nhận vật phẩm, hãy bấm TẢI LẠI TÚI ĐỒ.");
+        panel.appendChild(bag);
+    }
     if(!gifts.length){
         const empty=document.createElement("p");
         empty.className="look-panel-text";
@@ -8598,7 +8663,27 @@ function renderLookPanel(){
     const reset=document.createElement("button");
     reset.type="button"; reset.className="look-reset"; reset.textContent="HOÀN TÁC";
     reset.onclick=function(){ lookState.draft=currentLook(); renderLookPanel(); };
-    actions.append(save,reset);
+    const reload=document.createElement("button");
+    reload.type="button"; reload.className="look-reset"; reload.textContent="TẢI LẠI TÚI ĐỒ";
+    reload.onclick=async function(){
+        if(reload.disabled) return;
+        reload.disabled=true; reload.textContent="ĐANG TẢI…";
+        try{
+            const profile=await refreshCanonicalAssets();
+            if(profile && state.student){
+                renderProfile(state.student,state.ownedItems,state.reward);
+            }
+        }catch(error){ console.warn("[Trang trí] tải lại túi đồ:",error); }
+        /* hồ sơ vẽ lại sẽ đóng các bảng -> mở lại bảng Trang trí với lựa chọn nháp đang có */
+        const p2=el("profileLookPanel"), b2=el("profileLookButton");
+        if(p2 && b2 && state.student && !state.isAdmin){
+            closeProfilePanels();
+            renderLookPanel();
+            p2.classList.add("visible");
+            b2.classList.add("active");
+        }
+    };
+    actions.append(save,reset,reload);
     panel.appendChild(actions);
     const msg=document.createElement("div");
     msg.className="look-msg";
@@ -8613,8 +8698,22 @@ function renderLookPanel(){
         lookState.saving=false;
         if(!r || !r.ok){
             save.disabled=false; save.textContent="LƯU LỰA CHỌN";
-            msg.className="look-msg err";
-            msg.textContent=(r && r.error) || "Chưa lưu được lựa chọn.";
+            /* v4.11.2: bảng có thể đã được vẽ lại (phiên hết hạn) -> ghi vào phần tử đang hiển thị */
+            if(r && r.expired){
+                lookState.draft=null;
+                renderLookPanel();
+                const live=el("profileLookPanel");
+                if(live){
+                    const note=document.createElement("div");
+                    note.className="look-msg err";
+                    note.textContent="Phiên đăng nhập đã hết hạn nên chưa lưu được. Hãy đăng nhập lại rồi chọn lại.";
+                    live.appendChild(note);
+                }
+                return;
+            }
+            const target=el("profileLookMsg") || msg;
+            target.className="look-msg err";
+            target.textContent=(r && r.error) || "Chưa lưu được lựa chọn.";
             return;
         }
         A.setLook(r.look || draft);
