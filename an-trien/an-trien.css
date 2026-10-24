@@ -1,0 +1,38 @@
+/* Thiết kế ấn triện – thudao.com */
+#atx{--red:#b8261c;--ink:#2b2520;--muted:#7b6f63;--line:#e7ddcc;--bg:#faf6ee;max-width:1080px;margin:0 auto;color:var(--ink);font-size:15px;line-height:1.45}
+#atx *{box-sizing:border-box}
+#atx h3{margin:16px 0 6px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+#atx button{font:inherit;font-size:14px;padding:8px 12px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;cursor:pointer;line-height:1.2;margin:0}
+#atx button:hover{border-color:#cdbfa8}
+#atx button.on,#atx button.pri{background:var(--red);border-color:var(--red);color:#fff}
+#atx .tabs{display:flex;width:100%;margin:0 0 14px;border-radius:12px}
+#atx .tabs button{padding:12px;font-weight:600}
+#atx .wrap{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:800px){#atx .wrap{grid-template-columns:1fr}#atx .stage{order:-1}}
+#atx .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+#atx .row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:7px 0}
+#atx .row>label{font-size:13px;color:var(--muted);width:96px;flex:none}
+#atx .row>label.free{width:auto;color:inherit}
+#atx input[type=number],#atx input[type=text],#atx input[type=password],#atx select{font:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);width:78px;margin:0}
+#atx input[type=text],#atx input[type=password],#atx select{flex:1;min-width:0;width:auto}
+#atx input[type=range]{flex:1;min-width:90px;accent-color:var(--red);margin:0}
+#atx input[type=checkbox]{accent-color:var(--red)}
+#atx .seg{display:flex;flex:1;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+#atx .seg button{border:0;border-radius:0;flex:1;padding:8px 6px}
+#atx .seg button+button{border-left:1px solid var(--line)}
+#atx .val{font-size:13px;min-width:44px;text-align:right;color:var(--muted)}
+#atx .btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+#atx .stage{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
+#atx canvas{display:block;max-width:100%}
+#atx canvas.ed{touch-action:none;cursor:crosshair}
+#atx .info{font-size:13px;color:var(--muted);text-align:center}
+#atx .prev{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;align-items:flex-end}
+#atx .prev figure{margin:0;text-align:center;font-size:12px;color:var(--muted)}
+#atx .prev canvas{margin:0 auto 5px}
+#atx .msg{font-size:13px;margin-top:10px;min-height:1em}
+#atx .msg.err{color:var(--red)}
+#atx .msg a{color:var(--red);font-weight:600}
+#atx .hint{font-size:12px;color:var(--muted);margin:4px 0 0}
+#atx .hide{display:none!important}
+#atx details summary{cursor:pointer;font-size:13px;color:var(--muted);margin-top:12px}
+#atx .ver{font-size:11px;color:var(--muted);text-align:right;margin:10px 2px 0}
