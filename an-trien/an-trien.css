@@ -42,3 +42,25 @@
 #atx .calwrap{overflow:hidden;margin:8px 0;background:#fff}
 #atx canvas.real,#atx .prev canvas{max-width:none}
 #atx .stage.wide{align-items:flex-start;overflow-x:auto}
+/* Lớp khoá màn hình để can (gắn vào <body>) */
+html.atx-noscroll,html.atx-noscroll body{overflow:hidden!important;overscroll-behavior:none}
+#atx-lock{--u:1;position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:2147483000;background:#fff;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overflow:hidden;font-family:inherit;color:#2b2520;font-size:calc(15px*var(--u))}
+#atx-lock.hide{display:none!important}
+#atx-lock canvas{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:none}
+#atx-lock button{font:inherit;font-size:1em;padding:.6em .9em;border:1px solid #e7ddcc;background:#fff;color:#2b2520;border-radius:.6em;cursor:pointer;margin:0}
+#atx-lock .lk-bar{position:absolute;left:0;right:0;top:0;padding:calc(10px*var(--u)) calc(12px*var(--u)) 0;padding-top:max(calc(10px*var(--u)),env(safe-area-inset-top));display:flex;flex-wrap:wrap;gap:.5em;justify-content:center}
+#atx-lock .lk-seg{display:flex;border:1px solid #e7ddcc;border-radius:.6em;overflow:hidden}
+#atx-lock .lk-seg button{border:0;border-radius:0}
+#atx-lock .lk-seg button+button{border-left:1px solid #e7ddcc}
+#atx-lock .lk-seg button.on,#atx-lock .lk-go{background:#b8261c;color:#fff;border-color:#b8261c}
+#atx-lock .lk-act{position:absolute;left:0;right:0;bottom:0;padding:0 calc(14px*var(--u)) max(calc(14px*var(--u)),env(safe-area-inset-bottom));text-align:center}
+#atx-lock .lk-act p{font-size:.85em;color:#7b6f63;margin:0 0 .7em;line-height:1.45}
+#atx-lock .lk-act button{margin:0 .25em}
+#atx-lock.locked .lk-bar,#atx-lock.locked .lk-act{display:none}
+#atx-lkopen{display:none!important;position:absolute!important;left:50%;bottom:max(calc(14px*var(--u)),env(safe-area-inset-bottom));transform:translateX(-50%);overflow:hidden;opacity:.55;white-space:nowrap;touch-action:none}
+#atx-lock.locked #atx-lkopen{display:block!important}
+#atx-lkopen i{position:absolute;left:0;top:0;bottom:0;width:0;background:#f3d9d6}
+#atx-lkopen span{position:relative}
+#atx-lock,#atx-lock *{-webkit-tap-highlight-color:transparent}
+#atx-lock button:focus{outline:none}
+#atx-lkopen,#atx-lkopen:focus,#atx-lkopen:active{background:#fff!important;color:#7b6f63!important}
