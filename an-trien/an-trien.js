@@ -3,13 +3,13 @@
    Mặt ấn: lưới ô vuông, nét đều đầu tròn (dữ liệu lưới dùng cho bộ chữ Điền thể). Thân ấn: bản trải 4 mặt. */
 (function(){
 'use strict';
-var VERSION='1.0.0';
+var VERSION='1.1.0';
 function decodeEnt(s){return String(s).replace(/&#(\d+);/g,function(m,n){return String.fromCharCode(+n);}).replace(/&#x([0-9a-f]+);/gi,function(m,n){return String.fromCharCode(parseInt(n,16));}).replace(/&amp;/g,'&');}
 var CFG=window.ATX_CONFIG||{};
 var SCRIPT_URL=decodeEnt(CFG.API_URL||'').trim();
 var root=document.getElementById('atx');
 if(!root){root=document.createElement('div');root.id='atx';(document.currentScript&&document.currentScript.parentNode||document.body).appendChild(root);}
-root.innerHTML="<div class=\"seg tabs\" data-k=\"tab\"><button data-v=\"face\" class=\"on\">① Mặt ấn</button><button data-v=\"body\">② Thân ấn · bản in 4 mặt</button></div>\n\n<!-- ================= MẶT ẤN ================= -->\n<section id=\"atx-face\"><div class=\"wrap\">\n<div class=\"card\">\n  <div class=\"row\"><label>Tên ấn</label><input type=\"text\" id=\"atx-name\" placeholder=\"VD: Thanh Phong\"></div>\n\n  <h3>Mặt ấn</h3>\n  <div class=\"row\"><label>Hình</label><div class=\"seg\" data-k=\"shape\"><button data-v=\"square\" class=\"on\">Vuông</button><button data-v=\"round\">Tròn</button></div></div>\n  <div class=\"row\"><label id=\"atx-wlab\">Ngang (cm)</label><input type=\"number\" id=\"atx-w\" value=\"2.5\" min=\"0.5\" max=\"20\" step=\"0.1\"></div>\n  <div class=\"row\" id=\"atx-hrow\"><label>Cao (cm)</label><input type=\"number\" id=\"atx-h\" value=\"2.5\" min=\"0.5\" max=\"20\" step=\"0.1\"></div>\n  <div class=\"row\"><label>Kiểu khắc</label><div class=\"seg\" data-k=\"mode\"><button data-v=\"am\" class=\"on\">Âm văn</button><button data-v=\"duong\">Dương văn</button></div></div>\n  <div class=\"row\"><label>Viền (mm)</label><input type=\"range\" id=\"atx-fr\" min=\"0\" max=\"5\" step=\"0.1\" value=\"1.2\"><span class=\"val\" id=\"atx-frv\"></span></div>\n  <div class=\"row\"><label>Cách viền (mm)</label><input type=\"range\" id=\"atx-gap\" min=\"0\" max=\"5\" step=\"0.1\" value=\"0.8\"><span class=\"val\" id=\"atx-gapv\"></span></div>\n\n  <h3>Lưới</h3>\n  <div class=\"row\"><label>Hàng × Cột</label><input type=\"number\" id=\"atx-rows\" value=\"12\" min=\"2\" max=\"80\"> × <input type=\"number\" id=\"atx-cols\" value=\"12\" min=\"2\" max=\"80\"></div>\n  <div class=\"row\"><label></label><label class=\"free\"><input type=\"checkbox\" id=\"atx-showgrid\" checked> Hiện lưới</label></div>\n\n  <h3>Nét chữ</h3>\n  <div class=\"row\"><label>Độ dày nét</label><input type=\"range\" id=\"atx-ratio\" min=\"40\" max=\"100\" step=\"1\" value=\"86\"><span class=\"val\" id=\"atx-ratiov\"></span></div>\n  <div class=\"row\"><label>Đầu nét</label><div class=\"seg\" data-k=\"cap\"><button data-v=\"round\" class=\"on\">Tròn</button><button data-v=\"square\">Vuông</button></div></div>\n  <div class=\"row\"><label>Góc gập</label><div class=\"seg\" data-k=\"join\"><button data-v=\"round\" class=\"on\">Tròn</button><button data-v=\"square\">Vuông</button></div></div>\n  <div class=\"row\"><label>Nối chéo</label><label class=\"free\"><input type=\"checkbox\" id=\"atx-diag\"> Nối 2 ô chéo nhau</label></div>\n\n  <h3>Công cụ</h3>\n  <div class=\"row\"><div class=\"seg\" data-k=\"tool\"><button data-v=\"toggle\" class=\"on\">Chấm / bỏ</button><button data-v=\"paint\">Chỉ tô</button><button data-v=\"erase\">Chỉ xoá</button></div></div>\n  <div class=\"row\"><label>Đối xứng</label><select id=\"atx-sym\"><option value=\"none\">Không</option><option value=\"lr\">Trái – phải</option><option value=\"tb\">Trên – dưới</option><option value=\"both\">Cả hai</option></select></div>\n  <div class=\"btns\"><button id=\"atx-undo\">↶ Hoàn tác</button><button id=\"atx-clear\">Xoá hết</button></div>\n  <div class=\"btns\"><span class=\"hint\" style=\"align-self:center;margin:0 4px 0 0\">Dịch hình:</span><button data-sh=\"0,-1\">←</button><button data-sh=\"-1,0\">↑</button><button data-sh=\"1,0\">↓</button><button data-sh=\"0,1\">→</button></div>\n\n  <h3>Chốt &amp; lưu</h3>\n  <div class=\"btns\"><button class=\"pri\" id=\"atx-confirm\" style=\"flex:1\">✔ Chốt ấn · lưu Drive &amp; in</button></div>\n  <div class=\"btns\"><button id=\"atx-print\">In thử</button><button id=\"atx-png\">Tải PNG</button><button id=\"atx-json\">Tải dữ liệu</button><button id=\"atx-openjson\">Mở tệp…</button></div>\n  <input type=\"file\" id=\"atx-jsonfile\" accept=\".json,application/json\" class=\"hide\">\n  <div class=\"row\"><select id=\"atx-saved\"><option value=\"\">— Ấn đã lưu trên Drive —</option></select><button id=\"atx-loadlist\">Tải</button></div>\n  <details><summary>Cài đặt lưu</summary><div class=\"row\"><label>Mã lưu</label><input type=\"password\" id=\"atx-key\" placeholder=\"(nếu đã đặt AT_KEY)\"></div></details>\n  <div class=\"msg\" id=\"atx-msg\"></div>\n</div>\n\n<div class=\"stage\" id=\"atx-stage-face\">\n  <canvas class=\"ed\" id=\"atx-ed\"></canvas>\n  <div class=\"info\" id=\"atx-info\"></div>\n  <div class=\"prev\">\n    <figure><canvas id=\"atx-pv1\"></canvas>Dấu in · kích thước thật</figure>\n    <figure><canvas id=\"atx-pv2\"></canvas>Mặt khắc (lật ngược)</figure>\n  </div>\n</div>\n</div></section>\n\n<!-- ================= THÂN ẤN ================= -->\n<section id=\"atx-body\" class=\"hide\"><div class=\"wrap\">\n<div class=\"card\">\n  <div class=\"row\"><label>Tên</label><input type=\"text\" id=\"atx-bname\" placeholder=\"Mặc định lấy tên ấn\"></div>\n  <h3>Kích thước thân ấn</h3>\n  <div class=\"row\"><label>Ngang (cm)</label><input type=\"number\" id=\"atx-bw\" value=\"2\" min=\"0.5\" max=\"30\" step=\"0.1\"></div>\n  <div class=\"row\"><label>Sâu (cm)</label><input type=\"number\" id=\"atx-bd\" value=\"2\" min=\"0.5\" max=\"30\" step=\"0.1\"></div>\n  <div class=\"row\"><label>Cao (cm)</label><input type=\"number\" id=\"atx-bh\" value=\"5\" min=\"0.5\" max=\"30\" step=\"0.1\"></div>\n  <div class=\"row\"><label></label><label class=\"free\"><input type=\"checkbox\" id=\"atx-btab\" checked> Thêm mép dán 0,6 cm</label></div>\n\n  <h3>Ảnh</h3>\n  <div class=\"row\"><div class=\"seg\" data-k=\"bmode\"><button data-v=\"one\" class=\"on\">1 ảnh quấn 4 mặt</button><button data-v=\"four\">Mỗi mặt 1 ảnh</button></div></div>\n  <div class=\"row hide\" id=\"atx-bfacerow\"><div class=\"seg\" data-k=\"bface\"><button data-v=\"0\" class=\"on\">Trước</button><button data-v=\"1\">Phải</button><button data-v=\"2\">Sau</button><button data-v=\"3\">Trái</button></div></div>\n  <div class=\"btns\"><button class=\"pri\" id=\"atx-bpick\" style=\"flex:1\">Chọn ảnh…</button></div>\n  <input type=\"file\" id=\"atx-bfile\" accept=\"image/*\" class=\"hide\">\n  <div class=\"row\"><label>Cỡ ảnh</label><input type=\"range\" id=\"atx-bscale\" min=\"10\" max=\"400\" step=\"1\" value=\"100\"><span class=\"val\" id=\"atx-bscalev\">100%</span></div>\n  <div class=\"btns\"><button id=\"atx-brot\">⟳ Xoay 90°</button><button id=\"atx-bflip\">⇋ Lật</button><button id=\"atx-bcover\">Phủ kín</button><button id=\"atx-bcontain\">Vừa trong</button><button id=\"atx-bcenter\">Căn giữa</button><button id=\"atx-bdel\">Bỏ ảnh</button></div>\n  <div class=\"btns hide\" id=\"atx-ballrow\"><button id=\"atx-ball\">Dùng ảnh này cho cả 4 mặt</button></div>\n  <p class=\"hint\">Kéo ảnh trên bản vẽ để căn chỉnh. Lăn chuột hoặc chụm 2 ngón để phóng to, thu nhỏ.</p>\n\n  <h3>Lưu &amp; in</h3>\n  <div class=\"btns\"><button class=\"pri\" id=\"atx-bconfirm\" style=\"flex:1\">✔ Lưu Drive &amp; in</button></div>\n  <div class=\"btns\"><button id=\"atx-bprint\">In thử</button><button id=\"atx-bpng\">Tải PNG</button></div>\n  <div class=\"msg\" id=\"atx-bmsg\"></div>\n</div>\n<div class=\"stage\" id=\"atx-stage-body\">\n  <canvas class=\"ed\" id=\"atx-bed\" style=\"cursor:move\"></canvas>\n  <div class=\"info\" id=\"atx-binfo\"></div>\n</div>\n</div></section>\n<p class=\"ver\">Thiết kế ấn triện · phiên bản "+VERSION+"</p>";
+root.innerHTML="<div class=\"seg tabs\" data-k=\"tab\"><button data-v=\"face\" class=\"on\">① Mặt ấn</button><button data-v=\"body\">② Thân ấn · bản in 4 mặt</button></div>\n\n<!-- ================= MẶT ẤN ================= -->\n<section id=\"atx-face\"><div class=\"wrap\">\n<div class=\"card\">\n  <div class=\"row\"><label>Tên ấn</label><input type=\"text\" id=\"atx-name\" placeholder=\"VD: Thanh Phong\"></div>\n\n  <h3>Mặt ấn</h3>\n  <div class=\"row\"><label>Hình</label><div class=\"seg\" data-k=\"shape\"><button data-v=\"square\" class=\"on\">Vuông</button><button data-v=\"round\">Tròn</button></div></div>\n  <div class=\"row\"><label id=\"atx-wlab\">Ngang (cm)</label><input type=\"number\" id=\"atx-w\" value=\"2.5\" min=\"0.5\" max=\"20\" step=\"0.1\"></div>\n  <div class=\"row\" id=\"atx-hrow\"><label>Cao (cm)</label><input type=\"number\" id=\"atx-h\" value=\"2.5\" min=\"0.5\" max=\"20\" step=\"0.1\"></div>\n  <div class=\"row\"><label>Kiểu khắc</label><div class=\"seg\" data-k=\"mode\"><button data-v=\"am\" class=\"on\">Âm văn</button><button data-v=\"duong\">Dương văn</button></div></div>\n  <div class=\"row\"><label>Viền (mm)</label><input type=\"range\" id=\"atx-fr\" min=\"0\" max=\"5\" step=\"0.1\" value=\"1.2\"><span class=\"val\" id=\"atx-frv\"></span></div>\n  <div class=\"row\"><label>Cách viền (mm)</label><input type=\"range\" id=\"atx-gap\" min=\"0\" max=\"5\" step=\"0.1\" value=\"0.8\"><span class=\"val\" id=\"atx-gapv\"></span></div>\n\n  <h3>Lưới</h3>\n  <div class=\"row\"><label>Hàng × Cột</label><input type=\"number\" id=\"atx-rows\" value=\"12\" min=\"2\" max=\"80\"> × <input type=\"number\" id=\"atx-cols\" value=\"12\" min=\"2\" max=\"80\"></div>\n  <div class=\"row\"><label></label><label class=\"free\"><input type=\"checkbox\" id=\"atx-showgrid\" checked> Hiện lưới</label></div>\n\n  <h3>Nét chữ</h3>\n  <div class=\"row\"><label>Độ dày nét</label><input type=\"range\" id=\"atx-ratio\" min=\"40\" max=\"100\" step=\"1\" value=\"86\"><span class=\"val\" id=\"atx-ratiov\"></span></div>\n  <div class=\"row\"><label>Đầu nét</label><div class=\"seg\" data-k=\"cap\"><button data-v=\"round\" class=\"on\">Tròn</button><button data-v=\"square\">Vuông</button></div></div>\n  <div class=\"row\"><label>Góc gập</label><div class=\"seg\" data-k=\"join\"><button data-v=\"round\" class=\"on\">Tròn</button><button data-v=\"square\">Vuông</button></div></div>\n  <div class=\"row\"><label>Nối chéo</label><label class=\"free\"><input type=\"checkbox\" id=\"atx-diag\"> Nối 2 ô chéo nhau</label></div>\n\n  <h3>Công cụ</h3>\n  <div class=\"row\"><div class=\"seg\" data-k=\"tool\"><button data-v=\"toggle\" class=\"on\">Chấm / bỏ</button><button data-v=\"paint\">Chỉ tô</button><button data-v=\"erase\">Chỉ xoá</button><button data-v=\"curve\">Nét cong</button></div></div>\n  <div id=\"atx-curvebar\" class=\"hide\"><p class=\"hint\">Chạm lần lượt các điểm (tâm ô hoặc giao lưới) – nét cong sẽ đi trơn qua các điểm. Chạm 2 lần vào cùng một điểm để tạo góc gãy. Kéo một điểm để chỉnh. Chạm vào nét cong đã xong để sửa lại.</p><div class=\"btns\"><button class=\"pri\" id=\"atx-cdone\">✔ Xong nét</button><button id=\"atx-cclose\">◯ Khép kín</button><button id=\"atx-cback\">⌫ Bỏ điểm cuối</button><button id=\"atx-cdel\">Xoá nét này</button></div></div>\n  <div class=\"row\"><label>Đối xứng</label><select id=\"atx-sym\"><option value=\"none\">Không</option><option value=\"lr\">Trái – phải</option><option value=\"tb\">Trên – dưới</option><option value=\"both\">Cả hai</option></select></div>\n  <div class=\"btns\"><button id=\"atx-undo\">↶ Hoàn tác</button><button id=\"atx-clear\">Xoá hết</button></div>\n  <div class=\"btns\"><span class=\"hint\" style=\"align-self:center;margin:0 4px 0 0\">Dịch hình:</span><button data-sh=\"0,-1\">←</button><button data-sh=\"-1,0\">↑</button><button data-sh=\"1,0\">↓</button><button data-sh=\"0,1\">→</button></div>\n\n  <h3>Chốt &amp; lưu</h3>\n  <div class=\"btns\"><button class=\"pri\" id=\"atx-confirm\" style=\"flex:1\">✔ Chốt ấn · lưu Drive &amp; in</button></div>\n  <div class=\"btns\"><button id=\"atx-print\">In thử</button><button id=\"atx-png\">Tải PNG</button><button id=\"atx-json\">Tải dữ liệu</button><button id=\"atx-openjson\">Mở tệp…</button></div>\n  <input type=\"file\" id=\"atx-jsonfile\" accept=\".json,application/json\" class=\"hide\">\n  <div class=\"row\"><select id=\"atx-saved\"><option value=\"\">— Ấn đã lưu trên Drive —</option></select><button id=\"atx-loadlist\">Tải</button></div>\n  <details><summary>Cài đặt lưu</summary><div class=\"row\"><label>Mã lưu</label><input type=\"password\" id=\"atx-key\" placeholder=\"(nếu đã đặt AT_KEY)\"></div></details>\n  <div class=\"msg\" id=\"atx-msg\"></div>\n</div>\n\n<div class=\"stage\" id=\"atx-stage-face\">\n  <canvas class=\"ed\" id=\"atx-ed\"></canvas>\n  <div class=\"info\" id=\"atx-info\"></div>\n  <div class=\"prev\">\n    <figure><canvas id=\"atx-pv1\"></canvas>Dấu in · kích thước thật</figure>\n    <figure><canvas id=\"atx-pv2\"></canvas>Mặt khắc (lật ngược)</figure>\n  </div>\n</div>\n</div></section>\n\n<!-- ================= THÂN ẤN ================= -->\n<section id=\"atx-body\" class=\"hide\"><div class=\"wrap\">\n<div class=\"card\">\n  <div class=\"row\"><label>Tên</label><input type=\"text\" id=\"atx-bname\" placeholder=\"Mặc định lấy tên ấn\"></div>\n  <h3>Kích thước thân ấn</h3>\n  <div class=\"row\"><label>Ngang (cm)</label><input type=\"number\" id=\"atx-bw\" value=\"2\" min=\"0.5\" max=\"30\" step=\"0.1\"></div>\n  <div class=\"row\"><label>Sâu (cm)</label><input type=\"number\" id=\"atx-bd\" value=\"2\" min=\"0.5\" max=\"30\" step=\"0.1\"></div>\n  <div class=\"row\"><label>Cao (cm)</label><input type=\"number\" id=\"atx-bh\" value=\"5\" min=\"0.5\" max=\"30\" step=\"0.1\"></div>\n  <div class=\"row\"><label></label><label class=\"free\"><input type=\"checkbox\" id=\"atx-btab\" checked> Thêm mép dán 0,6 cm</label></div>\n\n  <h3>Ảnh</h3>\n  <div class=\"row\"><div class=\"seg\" data-k=\"bmode\"><button data-v=\"one\" class=\"on\">1 ảnh quấn 4 mặt</button><button data-v=\"four\">Mỗi mặt 1 ảnh</button></div></div>\n  <div class=\"row hide\" id=\"atx-bfacerow\"><div class=\"seg\" data-k=\"bface\"><button data-v=\"0\" class=\"on\">Trước</button><button data-v=\"1\">Phải</button><button data-v=\"2\">Sau</button><button data-v=\"3\">Trái</button></div></div>\n  <div class=\"btns\"><button class=\"pri\" id=\"atx-bpick\" style=\"flex:1\">Chọn ảnh…</button></div>\n  <input type=\"file\" id=\"atx-bfile\" accept=\"image/*\" class=\"hide\">\n  <div class=\"row\"><label>Cỡ ảnh</label><input type=\"range\" id=\"atx-bscale\" min=\"10\" max=\"400\" step=\"1\" value=\"100\"><span class=\"val\" id=\"atx-bscalev\">100%</span></div>\n  <div class=\"btns\"><button id=\"atx-brot\">⟳ Xoay 90°</button><button id=\"atx-bflip\">⇋ Lật</button><button id=\"atx-bcover\">Phủ kín</button><button id=\"atx-bcontain\">Vừa trong</button><button id=\"atx-bcenter\">Căn giữa</button><button id=\"atx-bdel\">Bỏ ảnh</button></div>\n  <div class=\"btns hide\" id=\"atx-ballrow\"><button id=\"atx-ball\">Dùng ảnh này cho cả 4 mặt</button></div>\n  <p class=\"hint\">Kéo ảnh trên bản vẽ để căn chỉnh. Lăn chuột hoặc chụm 2 ngón để phóng to, thu nhỏ.</p>\n\n  <h3>Lưu &amp; in</h3>\n  <div class=\"btns\"><button class=\"pri\" id=\"atx-bconfirm\" style=\"flex:1\">✔ Lưu Drive &amp; in</button></div>\n  <div class=\"btns\"><button id=\"atx-bprint\">In thử</button><button id=\"atx-bpng\">Tải PNG</button></div>\n  <div class=\"msg\" id=\"atx-bmsg\"></div>\n</div>\n<div class=\"stage\" id=\"atx-stage-body\">\n  <canvas class=\"ed\" id=\"atx-bed\" style=\"cursor:move\"></canvas>\n  <div class=\"info\" id=\"atx-binfo\"></div>\n</div>\n</div></section>\n<p class=\"ver\">Thiết kế ấn triện · phiên bản "+VERSION+"</p>";
 
 var RED='#b8261c', PAPER='#ffffff', DPI=600;
 function $(id){return document.getElementById('atx-'+id);}
@@ -57,9 +57,12 @@ segOn('tab',function(v){$('face').classList.toggle('hide',v!=='face');$('body').
    ===================================================== */
 var S={shape:'square',w:2.5,h:2.5,mode:'am',rows:12,cols:12,ratio:.86,cap:'round',join:'round',diag:false,frameMm:1.2,gapMm:.8};
 var grid=new Uint8Array(S.rows*S.cols),hist=[],tool='toggle',sym='none',showGrid=true,hover=null,drag=null,edG=null,saved=[];
+/* Nét cong: mỗi nét là {p:[[x,y,goc],...],closed}; x,y tính theo đơn vị ô (0..cols, 0..rows), bước 0,5 ô */
+var curves=[],curC=null,cHover=null,cDrag=null;
 
 function sealH(){return S.shape==='round'?S.w:S.h;}
 var at=function(r,c){return(r>=0&&c>=0&&r<S.rows&&c<S.cols)?grid[r*S.cols+c]:0;};
+function strokes(){return count()+curves.length+(curC&&curC.p.length>1?1:0);}
 function count(){var n=0;for(var i=0;i<grid.length;i++)n+=grid[i];return n;}
 
 function geo(ppc){
@@ -117,6 +120,40 @@ function drawStrokes0(ctx,g,ink){
   }
   ctx.fill();
 }
+function curvePath(ctx,g,c){
+  var P=c.p,n=P.length,cs=g.cell;if(n<2)return;
+  function X(x){return g.gx+x*cs;}function Y(y){return g.gy+y*cs;}
+  function Q(i){return c.closed?P[(i+n)%n]:P[clamp(i,0,n-1)];}
+  ctx.moveTo(X(P[0][0]),Y(P[0][1]));
+  var segs=c.closed?n:n-1;
+  for(var i=0;i<segs;i++){
+    var p0=Q(i-1),p1=Q(i),p2=Q(i+1),p3=Q(i+2);
+    /* Catmull-Rom -> Bézier; điểm góc (goc=1) không có tiếp tuyến nên tạo góc gãy */
+    var a=p1[2]?[p1[0],p1[1]]:[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6];
+    var b=p2[2]?[p2[0],p2[1]]:[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];
+    ctx.bezierCurveTo(X(a[0]),Y(a[1]),X(b[0]),Y(b[1]),X(p2[0]),Y(p2[1]));
+  }
+  if(c.closed)ctx.closePath();
+}
+function strokeCurve(ctx,g,c,ink){
+  var lw=g.cell*S.ratio,P=c.p;
+  ctx.strokeStyle=ink;ctx.fillStyle=ink;ctx.lineWidth=lw;
+  ctx.lineCap=S.cap==='round'?'round':'square';ctx.lineJoin=S.join==='round'?'round':'miter';ctx.miterLimit=4;
+  if(P.length===1){var x=g.gx+P[0][0]*g.cell,y=g.gy+P[0][1]*g.cell;ctx.beginPath();if(S.cap==='round')ctx.arc(x,y,lw/2,0,Math.PI*2);else ctx.rect(x-lw/2,y-lw/2,lw,lw);ctx.fill();return;}
+  ctx.beginPath();curvePath(ctx,g,c);ctx.stroke();
+}
+function drawCurves(ctx,g,ink){curves.forEach(function(c){strokeCurve(ctx,g,c,ink);});}
+function drawCurveEdit(ctx,g,am){
+  if(!curC)return;var cs=g.cell,k=Math.max(1,cs*.06);
+  ctx.save();ctx.globalAlpha=.75;strokeCurve(ctx,g,curC,am?PAPER:RED);ctx.restore();
+  var P=curC.p,last=P[P.length-1];
+  if(last&&cHover&&!cDrag&&!curC.closed){ctx.save();ctx.strokeStyle='#1d6fd8';ctx.lineWidth=k*1.5;ctx.setLineDash([cs*.15,cs*.12]);ctx.beginPath();ctx.moveTo(g.gx+last[0]*cs,g.gy+last[1]*cs);ctx.lineTo(g.gx+cHover[0]*cs,g.gy+cHover[1]*cs);ctx.stroke();ctx.restore();}
+  P.forEach(function(p,i){
+    var x=g.gx+p[0]*cs,y=g.gy+p[1]*cs,r=Math.max(4,cs*.18);
+    ctx.beginPath();if(p[2])ctx.rect(x-r,y-r,2*r,2*r);else ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=i===P.length-1?'#1d6fd8':'#fff';ctx.fill();ctx.lineWidth=k*1.5;ctx.strokeStyle='#1d6fd8';ctx.stroke();
+  });
+}
 function drawGrid(ctx,g,am,hv){
   var cs=g.cell,r,c,i;
   ctx.save();if(S.shape==='round'){shapePath(ctx,g,0);ctx.clip();}
@@ -143,8 +180,9 @@ function renderFace(ctx,ppc,o){
   if(o.mirror){ctx.translate(g.W,0);ctx.scale(-1,1);}
   shapePath(ctx,g,0);ctx.fillStyle=am?RED:PAPER;ctx.fill();
   if(!am&&g.fr>0){shapePath(ctx,g,0);ctx.fillStyle=RED;ctx.fill();shapePath(ctx,g,g.fr);ctx.fillStyle=PAPER;ctx.fill();}
-  ctx.save();shapePath(ctx,g,am?g.fr:0);ctx.clip();drawStrokes(ctx,g,am?PAPER:RED);ctx.restore();
+  ctx.save();shapePath(ctx,g,am?g.fr:0);ctx.clip();drawStrokes(ctx,g,am?PAPER:RED);drawCurves(ctx,g,am?PAPER:RED);ctx.restore();
   if(o.grid)drawGrid(ctx,g,am,o.hover);
+  if(o.edit)drawCurveEdit(ctx,g,am);
   if(o.outline&&(!am||g.fr===0)){shapePath(ctx,g,.5);ctx.lineWidth=1;ctx.strokeStyle='rgba(0,0,0,.28)';ctx.stroke();}
   ctx.restore();
   return g;
@@ -159,9 +197,9 @@ function drawFace(){
   var box=$('stage-face'),avail=Math.min((box.clientWidth||400)-28,540);if(avail<160)avail=300;
   var k=dpr(),ppc=avail/Math.max(S.w,sealH())*k,g=geo(ppc);
   ed.width=Math.round(g.W);ed.height=Math.round(g.H);ed.style.width=(g.W/k)+'px';ed.style.height=(g.H/k)+'px';
-  edG=renderFace(edx,ppc,{grid:showGrid,outline:true,hover:hover});
+  edG=renderFace(edx,ppc,{grid:showGrid,outline:true,hover:tool==='curve'?null:hover,edit:true});
   var cellMm=edG.cell/ppc*10;
-  $('info').textContent='Ô lưới '+fmt(cellMm)+' mm · nét dày '+fmt(cellMm*S.ratio)+' mm · đã tô '+count()+' ô';
+  $('info').textContent='Ô lưới '+fmt(cellMm)+' mm · nét dày '+fmt(cellMm*S.ratio)+' mm · đã tô '+count()+' ô'+(curves.length?' · '+curves.length+' nét cong':'');
   drawPreview();
 }
 function drawPreview(){
@@ -181,7 +219,8 @@ function hit(e){
   if(r<0||c<0||r>=S.rows||c>=S.cols||!active(edG,r,c))return null;
   return[r,c];
 }
-function pushHist(){hist.push({rows:S.rows,cols:S.cols,g:grid.slice()});if(hist.length>200)hist.shift();}
+function cloneC(a){return JSON.parse(JSON.stringify(a));}
+function pushHist(){hist.push({rows:S.rows,cols:S.cols,g:grid.slice(),cv:cloneC(curves)});if(hist.length>200)hist.shift();}
 function setCell(r,c,v){
   var P=[[r,c]];
   if(sym==='lr'||sym==='both')P.push([r,S.cols-1-c]);
@@ -189,21 +228,74 @@ function setCell(r,c,v){
   if(sym==='both')P.push([S.rows-1-r,S.cols-1-c]);
   P.forEach(function(p){grid[p[0]*S.cols+p[1]]=v;});
 }
+function evXY(e){var rc=ed.getBoundingClientRect(),k=ed.width/rc.width;return[(e.clientX-rc.left)*k,(e.clientY-rc.top)*k];}
+function cPt(e){/* điểm neo bắt vào bước 0,5 ô */
+  if(!edG)return null;var q=evXY(e),x=(q[0]-edG.gx)/edG.cell,y=(q[1]-edG.gy)/edG.cell;
+  if(x<-.3||y<-.3||x>S.cols+.3||y>S.rows+.3)return null;
+  return[clamp(Math.round(x*2)/2,0,S.cols),clamp(Math.round(y*2)/2,0,S.rows)];
+}
+function hitCurve(e){
+  if(!edG||!curves.length)return -1;var q=evXY(e);
+  edx.save();edx.lineWidth=Math.max(edG.cell*S.ratio,14*dpr());edx.lineCap='round';
+  for(var i=curves.length-1;i>=0;i--){edx.beginPath();if(curves[i].p.length<2){var p=curves[i].p[0];edx.moveTo(edG.gx+p[0]*edG.cell,edG.gy+p[1]*edG.cell);edx.lineTo(edG.gx+p[0]*edG.cell+.01,edG.gy+p[1]*edG.cell);}else curvePath(edx,edG,curves[i]);if(edx.isPointInStroke(q[0],q[1])){edx.restore();return i;}}
+  edx.restore();return -1;
+}
+function symCurves(c){
+  var out=[c],f=function(fx,fy){return{p:c.p.map(function(p){return[fx?S.cols-p[0]:p[0],fy?S.rows-p[1]:p[1],p[2]||0];}),closed:c.closed};};
+  if(sym==='lr'||sym==='both')out.push(f(1,0));
+  if(sym==='tb'||sym==='both')out.push(f(0,1));
+  if(sym==='both')out.push(f(1,1));
+  return out;
+}
+function finishCurve(){
+  if(!curC)return;var c=curC;curC=null;cHover=null;
+  function histOrig(){hist.push({rows:S.rows,cols:S.cols,g:grid.slice(),cv:c.orig});}
+  if(c.p.length>=2||(c.p.length===1&&c.edit)){if(c.edit){histOrig();curves=c.base;}else pushHist();Array.prototype.push.apply(curves,c.edit?[{p:c.p,closed:c.closed}]:symCurves({p:c.p,closed:c.closed}));}
+  else if(c.edit)curves=c.base;
+  drawFace();
+}
+function curveDown(e){
+  var p=cPt(e);if(!p)return;e.preventDefault();try{ed.setPointerCapture(e.pointerId);}catch(_){}
+  if(curC){
+    var P=curC.p,near=-1,tol=.35;
+    for(var i=0;i<P.length;i++)if(Math.abs(P[i][0]-p[0])<=tol&&Math.abs(P[i][1]-p[1])<=tol){near=i;}
+    if(near>=0){cDrag={i:near,moved:false};return;}
+  }else{
+    var ci=hitCurve(e);
+    if(ci>=0){var base=cloneC(curves),c=base.splice(ci,1)[0];curC={p:c.p,closed:c.closed,edit:true,base:base,orig:cloneC(curves)};curves=base.slice();drawFace();return;}
+    curC={p:[],closed:false};
+  }
+  if(!curC.closed)curC.p.push([p[0],p[1],0]);
+  drawFace();
+}
 ed.addEventListener('pointerdown',function(e){
+  if(tool==='curve')return curveDown(e);
+  if(tool!=='paint'){var ci=hitCurve(e),hc=hit(e);if(ci>=0&&(tool==='erase'||!hc||!at(hc[0],hc[1]))){e.preventDefault();pushHist();curves.splice(ci,1);drawFace();return;}}
   var h=hit(e);if(!h)return;e.preventDefault();pushHist();
   var cur=at(h[0],h[1]);drag=tool==='paint'?1:tool==='erase'?0:(cur?0:1);
   setCell(h[0],h[1],drag);try{ed.setPointerCapture(e.pointerId);}catch(_){}
   hover=e.pointerType==='mouse'?h:null;drawFace();
 });
 ed.addEventListener('pointermove',function(e){
+  if(tool==='curve'){
+    var p=cPt(e),ch2=String(p)!==String(cHover);cHover=p;
+    if(cDrag&&p&&curC){var q=curC.p[cDrag.i];if(q[0]!==p[0]||q[1]!==p[1]){q[0]=p[0];q[1]=p[1];cDrag.moved=true;ch2=true;}}
+    if(ch2&&curC)drawFace();return;
+  }
   var h=hit(e),ch=String(h)!==String(hover);
   if(e.pointerType==='mouse')hover=h;
   if(drag!==null&&h&&at(h[0],h[1])!==drag){setCell(h[0],h[1],drag);ch=true;}
   if(ch)drawFace();
 });
-function endDrag(){drag=null;}
+function endDrag(){
+  if(cDrag&&curC){var i=cDrag.i,P=curC.p;
+    if(!cDrag.moved){/* chạm lại điểm cuối = đặt/bỏ góc gãy; chạm điểm đầu khi có ≥3 điểm = khép kín */
+      if(i===P.length-1)P[i][2]=P[i][2]?0:1;else if(i===0&&P.length>=3&&!curC.closed)curC.closed=true;
+    }
+    drawFace();}
+  cDrag=null;drag=null;}
 ed.addEventListener('pointerup',endDrag);ed.addEventListener('pointercancel',endDrag);
-ed.addEventListener('pointerleave',function(){if(hover){hover=null;drawFace();}});
+ed.addEventListener('pointerleave',function(){if(cHover){cHover=null;if(curC)drawFace();}if(hover){hover=null;drawFace();}});
 
 /* --- Điều khiển --- */
 function setGridSize(nr,nc){
@@ -212,6 +304,7 @@ function setGridSize(nr,nc){
   pushHist();
   var ng=new Uint8Array(nr*nc);
   if(count())for(var r=0;r<nr;r++)for(var c=0;c<nc;c++)ng[r*nc+c]=grid[Math.floor((r+.5)*S.rows/nr)*S.cols+Math.floor((c+.5)*S.cols/nc)];
+  finishCurve();var fx=nc/S.cols,fy=nr/S.rows;curves.forEach(function(cv){cv.p.forEach(function(p){p[0]=Math.round(p[0]*fx*2)/2;p[1]=Math.round(p[1]*fy*2)/2;});});
   S.rows=nr;S.cols=nc;grid=ng;drawFace();
 }
 function syncFaceUI(){
@@ -226,7 +319,12 @@ segOn('shape',function(v){S.shape=v;syncFaceUI();drawFace();});
 segOn('mode',function(v){S.mode=v;drawFace();});
 segOn('cap',function(v){S.cap=v;drawFace();});
 segOn('join',function(v){S.join=v;drawFace();});
-segOn('tool',function(v){tool=v;});
+segOn('tool',function(v){if(tool==='curve'&&v!=='curve')finishCurve();tool=v;$('curvebar').classList.toggle('hide',v!=='curve');ed.style.cursor=v==='curve'?'copy':'crosshair';drawFace();});
+$('cdone').addEventListener('click',finishCurve);
+$('cclose').addEventListener('click',function(){if(curC&&curC.p.length>=3){curC.closed=!curC.closed;drawFace();}});
+$('cback').addEventListener('click',function(){if(!curC)return;if(curC.closed)curC.closed=false;else curC.p.pop();drawFace();});
+$('cdel').addEventListener('click',function(){if(!curC)return;if(curC.edit){hist.push({rows:S.rows,cols:S.cols,g:grid.slice(),cv:curC.orig});curves=curC.base;}curC=null;drawFace();});
+document.addEventListener('keydown',function(e){if(tool!=='curve'||!curC||/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))return;if(e.key==='Enter'){e.preventDefault();finishCurve();}else if(e.key==='Escape'){e.preventDefault();$('cdel').click();}else if(e.key==='Backspace'){e.preventDefault();$('cback').click();}});
 $('w').addEventListener('input',function(){S.w=clamp(num('w',S.w),.5,20);drawFace();});
 $('h').addEventListener('input',function(){S.h=clamp(num('h',S.h),.5,20);drawFace();});
 $('fr').addEventListener('input',function(){S.frameMm=num('fr',0);syncFaceUI();drawFace();});
@@ -237,25 +335,27 @@ $('showgrid').addEventListener('change',function(){showGrid=this.checked;drawFac
 $('sym').addEventListener('change',function(){sym=this.value;});
 $('rows').addEventListener('change',function(){setGridSize(num('rows',S.rows),S.cols);syncFaceUI();});
 $('cols').addEventListener('change',function(){setGridSize(S.rows,num('cols',S.cols));syncFaceUI();});
-$('undo').addEventListener('click',function(){var h=hist.pop();if(!h)return;S.rows=h.rows;S.cols=h.cols;grid=h.g;syncFaceUI();drawFace();});
-$('clear').addEventListener('click',function(){if(!count())return;if(!confirm('Xoá hết các ô đã tô?'))return;pushHist();grid=new Uint8Array(S.rows*S.cols);drawFace();});
+$('undo').addEventListener('click',function(){if(curC){curC=null;drawFace();return;}var h=hist.pop();if(!h)return;S.rows=h.rows;S.cols=h.cols;grid=h.g;curves=h.cv||[];syncFaceUI();drawFace();});
+$('clear').addEventListener('click',function(){if(!strokes())return;if(!confirm('Xoá hết các ô đã tô và nét cong?'))return;pushHist();grid=new Uint8Array(S.rows*S.cols);curves=[];curC=null;drawFace();});
 Array.prototype.forEach.call(root.querySelectorAll('[data-sh]'),function(b){b.addEventListener('click',function(){
   var d=b.getAttribute('data-sh').split(',').map(Number),ng=new Uint8Array(S.rows*S.cols);pushHist();
   for(var r=0;r<S.rows;r++)for(var c=0;c<S.cols;c++){var rr=r-d[0],cc=c-d[1];ng[r*S.cols+c]=at(rr,cc);}
+  finishCurve();curves.forEach(function(cv){cv.p.forEach(function(p){p[0]+=d[1];p[1]+=d[0];});});
   grid=ng;drawFace();
 });});
 document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!$('face').classList.contains('hide')&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('undo').click();}});
 
 /* --- Dữ liệu ấn (dùng cho lưu, mở lại, và phân tích cấu trúc chữ) --- */
-function faceData(){return{v:1,shape:S.shape,w:S.w,h:sealH(),mode:S.mode,rows:S.rows,cols:S.cols,ratio:S.ratio,cap:S.cap,join:S.join,diag:S.diag,frameMm:S.frameMm,gapMm:S.gapMm,grid:Array.prototype.join.call(grid,'')};}
+function faceData(){return{v:1,shape:S.shape,w:S.w,h:sealH(),mode:S.mode,rows:S.rows,cols:S.cols,ratio:S.ratio,cap:S.cap,join:S.join,diag:S.diag,frameMm:S.frameMm,gapMm:S.gapMm,grid:Array.prototype.join.call(grid,''),curves:cloneC(curves)};}
 function gridText(){var out=[];for(var r=0;r<S.rows;r++){var s='';for(var c=0;c<S.cols;c++)s+=at(r,c)?'█':'·';out.push(s);}return out.join('\n');}
-function faceMeta(){return{shapeLabel:S.shape==='round'?'Tròn':'Vuông',w:S.w,h:sealH(),modeLabel:S.mode==='am'?'Âm văn':'Dương văn',rows:S.rows,cols:S.cols,count:count(),gridText:gridText()};}
+function faceMeta(){return{shapeLabel:S.shape==='round'?'Tròn':'Vuông',w:S.w,h:sealH(),modeLabel:S.mode==='am'?'Âm văn':'Dương văn',rows:S.rows,cols:S.cols,count:count(),gridText:gridText()+(curves.length?'\n+ '+curves.length+' nét cong':'')};}
 function loadFace(d,name){
   if(!d||!d.grid)throw new Error('dữ liệu không hợp lệ');
   pushHist();
   ['shape','w','mode','rows','cols','ratio','cap','join','diag','frameMm','gapMm'].forEach(function(k){if(d[k]!==undefined)S[k]=d[k];});
   S.h=d.h||S.w;
   grid=new Uint8Array(S.rows*S.cols);for(var i=0;i<grid.length;i++)grid[i]=d.grid.charAt(i)==='1'?1:0;
+  curves=Array.isArray(d.curves)?cloneC(d.curves):[];curC=null;
   if(name)$('name').value=name;
   syncFaceUI();drawFace();
 }
@@ -265,6 +365,7 @@ function faceInfoLine(){
   return (S.shape==='round'?'Tròn Ø '+fmt(S.w)+' cm':'Vuông '+fmt(S.w)+' × '+fmt(S.h)+' cm')+' · '+(S.mode==='am'?'Âm văn':'Dương văn')+' · lưới '+S.rows+' × '+S.cols+' (ô '+fmt(cellMm)+' mm, nét '+fmt(cellMm*S.ratio)+' mm)';
 }
 function printFace(){
+  finishCurve();
   var name=faceTitle()||'(chưa đặt tên)';
   var imp=faceCanvas(DPI).toDataURL('image/png'),mir=faceCanvas(DPI,{mirror:true}).toDataURL('image/png');
   var big=Math.min(16,Math.max(8,S.w*3)),bigH=big*sealH()/S.w;
@@ -279,15 +380,15 @@ function printFace(){
     '<figure style="text-align:left"><img src="'+gm+'" style="width:'+big+'cm;height:'+fmt(bigH).replace(',','.')+'cm;margin:0 0 2mm">Bản lưới phóng to (đã lật ngược) để dựng nét khi khắc</figure>');
 }
 $('print').addEventListener('click',printFace);
-$('png').addEventListener('click',function(){faceCanvas(DPI).toBlob(function(b){download(b,safeName(faceTitle())+'.png');});});
-$('json').addEventListener('click',function(){var d=faceData();d.name=faceTitle();download(new Blob([JSON.stringify(d,null,1)],{type:'application/json'}),safeName(faceTitle())+'.json');});
+$('png').addEventListener('click',function(){finishCurve();faceCanvas(DPI).toBlob(function(b){download(b,safeName(faceTitle())+'.png');});});
+$('json').addEventListener('click',function(){finishCurve();var d=faceData();d.name=faceTitle();download(new Blob([JSON.stringify(d,null,1)],{type:'application/json'}),safeName(faceTitle())+'.json');});
 $('openjson').addEventListener('click',function(){$('jsonfile').click();});
 $('jsonfile').addEventListener('change',function(){var f=this.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){try{var d=JSON.parse(rd.result);loadFace(d,d.name);say($('msg'),'Đã mở “'+esc(d.name||f.name)+'”.');}catch(err){say($('msg'),'Không đọc được tệp: '+esc(err.message),1);}};rd.readAsText(f);this.value='';});
 
 $('confirm').addEventListener('click',function(){
   var name=faceTitle(),m=$('msg');
   if(!name){say(m,'Hãy đặt tên ấn trước khi chốt.',1);$('name').focus();return;}
-  if(!count()){say(m,'Mặt ấn chưa có nét nào.',1);return;}
+  finishCurve();if(!strokes()){say(m,'Mặt ấn chưa có nét nào.',1);return;}
   if(!confirm('Chốt ấn “'+name+'”?\nẢnh sẽ được lưu lên Drive và mở bản in.'))return;
   say(m,'Đang lưu lên Drive…');
   post({action:'save',type:'face',name:name,png:faceCanvas(DPI).toDataURL('image/png'),meta:faceMeta(),data:faceData()})
