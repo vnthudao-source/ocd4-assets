@@ -1,0 +1,18 @@
+<!-- Trang Khoá học Khắc ấn triện Online 52 buổi (Blogspot, chế độ HTML).
+     Muốn cập nhật trang: chỉ đổi giá trị ở dòng V = '...' (mã commit mới).
+     DESIGN_URL: dán link trang Thiết kế ấn triện của lớp để các buổi có nút mở trang đó (để trống thì ẩn nút).
+     Mở thẳng một buổi: thêm #buoi-12 vào cuối link; mở một khái niệm: #kn-xung-dao -->
+<div id="kka">Đang tải khoá học…</div>
+<script>
+window.KKA_CONFIG = {
+  DESIGN_URL: ""
+};
+(function(){
+  var V = 'COMMIT';
+  var B = 'https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@' + V + '/khoa-khac-an/';
+  var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = B + 'khoa-khac-an.css'; document.head.appendChild(l);
+  var d = document.createElement('script'); d.src = B + 'khoa-khac-an-data.js';
+  d.onload = function(){ var s = document.createElement('script'); s.src = B + 'khoa-khac-an.js'; document.body.appendChild(s); };
+  document.body.appendChild(d);
+})();
+</script>
