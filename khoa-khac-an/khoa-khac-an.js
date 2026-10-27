@@ -3,7 +3,7 @@
    Cần tải khoa-khac-an-data.js trước tệp này. */
 (function(){
 'use strict';
-var VERSION='1.0.1';
+var VERSION='1.0.2';
 var D=window.KKA_DATA;
 var root=document.getElementById('kka');
 if(!root){root=document.createElement('div');root.id='kka';(document.currentScript&&document.currentScript.parentNode||document.body).appendChild(root);}
@@ -126,7 +126,7 @@ function filter(){
   var q=norm(search.value.trim()),shownL=0,shownT=0;
   D.phases.forEach(function(p){
     var any=0;
-    D.lessons.forEach(function(l){if(l.n<p.from||l.n>p.to)return;var ok=(phaseOn==='all'||phaseOn===p.id)&&(!q||l.text.indexOf(q)>=0);lessonEls[l.n].classList.toggle('kka-hide',!ok);if(ok){any++;if(q)lessonEls[l.n].open=true;}});
+    D.lessons.forEach(function(l){if(p.from>l.n||l.n>p.to)return;var ok=(phaseOn==='all'||phaseOn===p.id)&&(!q||l.text.indexOf(q)>=0);lessonEls[l.n].classList.toggle('kka-hide',!ok);if(ok){any++;if(q)lessonEls[l.n].open=true;}});
     phaseEls[p.id].classList.toggle('kka-hide',!any);shownL+=any;
   });
   D.terms.forEach(function(t){var ok=!q||t.text.indexOf(q)>=0;termEls[t.id].classList.toggle('kka-hide',!ok);if(ok)shownT++;});
