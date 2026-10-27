@@ -3,12 +3,13 @@
    Cần tải khoa-khac-an-data.js trước tệp này. */
 (function(){
 'use strict';
-var VERSION='1.0.0';
+var VERSION='1.0.1';
 var D=window.KKA_DATA;
 var root=document.getElementById('kka');
 if(!root){root=document.createElement('div');root.id='kka';(document.currentScript&&document.currentScript.parentNode||document.body).appendChild(root);}
 if(!D){root.textContent='Chưa tải được dữ liệu khoá học.';return;}
-var CFG=window.KKA_CONFIG||{},DESIGN=String(CFG.DESIGN_URL||'').trim();
+root.textContent='';
+var CFG=window.KKA_CONFIG||{},DESIGN=String(CFG.DESIGN_URL||'').replace(/&amp;/g,'&').trim();
 var TERM={};D.terms.forEach(function(t){TERM[t.id]=t;t.n=[];});
 D.lessons.forEach(function(l){l.k.forEach(function(k){if(TERM[k]&&TERM[k].n.indexOf(l.n)<0)TERM[k].n.push(l.n);});});
 
