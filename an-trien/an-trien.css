@@ -1,4 +1,4 @@
-/* Thiết kế ấn triện – thudao.com */
+/* Thiết kế ấn triện – thudao.com · v2 */
 #atx{--red:#b8261c;--ink:#2b2520;--muted:#7b6f63;--line:#e7ddcc;--bg:#faf6ee;max-width:1080px;margin:0 auto;color:var(--ink);font-size:15px;line-height:1.45}
 #atx *{box-sizing:border-box}
 #atx h3{margin:16px 0 6px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
@@ -7,14 +7,23 @@
 #atx button.on,#atx button.pri{background:var(--red);border-color:var(--red);color:#fff}
 #atx .tabs{display:flex;width:100%;margin:0 0 14px;border-radius:12px}
 #atx .tabs button{padding:12px;font-weight:600}
-#atx .wrap{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;align-items:start}
+#atx .wrap{display:grid;grid-template-columns:340px minmax(0,1fr);gap:16px;align-items:start}
 @media (max-width:800px){#atx .wrap{grid-template-columns:1fr}#atx .stage{order:-1}}
-#atx .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+@media (min-width:801px){#atx .stage{position:sticky;top:10px}}
+#atx .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+#atx details.sec{border-top:1px solid var(--line);margin:10px -14px 0;padding:0 14px}
+#atx details.sec>summary{list-style:none;cursor:pointer;padding:11px 0 6px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;display:flex;justify-content:space-between;align-items:center}
+#atx details.sec>summary::-webkit-details-marker{display:none}
+#atx details.sec>summary:after{content:'+';font-size:16px;line-height:1;color:var(--muted)}
+#atx details.sec[open]>summary:after{content:'–'}
+#atx details.sec[open]{padding-bottom:6px}
 #atx .row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:7px 0}
 #atx .row>label{font-size:13px;color:var(--muted);width:96px;flex:none}
-#atx .row>label.free{width:auto;color:inherit}
-#atx input[type=number],#atx input[type=text],#atx input[type=password],#atx select{font:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);width:78px;margin:0}
+#atx .row>label.free,#atx label.free{width:auto;color:inherit;font-size:14px}
+#atx input[type=number],#atx input[type=text],#atx input[type=password],#atx select,#atx textarea{font:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);width:78px;margin:0}
 #atx input[type=text],#atx input[type=password],#atx select{flex:1;min-width:0;width:auto}
+#atx textarea{width:100%;resize:vertical;line-height:1.45}
+#atx select:disabled{opacity:.5}
 #atx input[type=range]{flex:1;min-width:90px;accent-color:var(--red);margin:0}
 #atx input[type=checkbox]{accent-color:var(--red)}
 #atx .seg{display:flex;flex:1;border:1px solid var(--line);border-radius:9px;overflow:hidden}
@@ -29,10 +38,18 @@
 #atx .prev{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;align-items:flex-end}
 #atx .prev figure{margin:0;text-align:center;font-size:12px;color:var(--muted)}
 #atx .prev canvas{margin:0 auto 5px}
+#atx .check{width:100%;max-width:560px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+#atx .chk-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px}
+#atx .check ul{list-style:none;margin:8px 0 0;padding:0}
+#atx .check li{display:flex;gap:8px;font-size:13px;line-height:1.45;margin:0 0 6px}
+#atx .check li span{flex:none;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff;margin-top:1px}
+#atx .check li.ok span{background:#3c8a4f}
+#atx .check li.warn span{background:#d08a12}
+#atx .check li.info span{background:#7b6f63}
 #atx .msg{font-size:13px;margin-top:10px;min-height:1em}
 #atx .msg.err{color:var(--red)}
 #atx .msg a{color:var(--red);font-weight:600}
 #atx .hint{font-size:12px;color:var(--muted);margin:4px 0 0}
 #atx .hide{display:none!important}
-#atx details summary{cursor:pointer;font-size:13px;color:var(--muted);margin-top:12px}
+#atx .card details:not(.sec) summary{cursor:pointer;font-size:13px;color:var(--muted);margin-top:12px}
 #atx .ver{font-size:11px;color:var(--muted);text-align:right;margin:10px 2px 0}
