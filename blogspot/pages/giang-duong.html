@@ -1,0 +1,7784 @@
+<div id="lectureHallPage">
+
+<style>
+/* =========================================================
+   GIẢNG ĐƯỜNG OCD
+   LECTURE HALL v1.6.1
+   TRANSITIONAL IDENTITY
+
+   GIỮ NGUYÊN:
+   - Phòng học Hoà Bình
+   - Phòng học Hạnh Phúc
+   - Phòng Thi Tốt Nghiệp
+   - Hoạt động gần đây
+   - Mã ưu tiên Goiungho800k / MaHocVien
+
+   ĐỊNH DANH:
+   1. Mã ưu tiên -> được vào cả hai phòng
+   2. HocVien -> nguồn định danh chính
+   3. Nếu chưa có trong HocVien -> fallback XepHang
+   4. Nếu đã có HocVien thì trạng thái HocVien có quyền cao nhất
+
+   PHÂN PHÒNG:
+   - Hoà Bình: 01 / 02 / 03
+   - Hạnh Phúc: 01 / 02 / 03 / 04
+
+   LỊCH:
+   - Hoà Bình: Thứ Sáu 19:00–21:00
+   - Hạnh Phúc: Thứ Bảy 19:00–21:00
+========================================================= */
+
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+#lectureHallPage{
+    --gd-paper:#ffffff;
+    --gd-ink:#302a26;
+    --gd-muted:#786f66;
+    --gd-line:#e7ded3;
+
+    --gd-brown:#765344;
+    --gd-brown-dark:#51372d;
+
+    --gd-red:#963333;
+
+    --gd-gold:#b58440;
+    --gd-gold-soft:#f6ebd7;
+
+    --gd-green:#247159;
+    --gd-green-soft:#e8f5ef;
+
+    --gd-blue:#315f91;
+    --gd-blue-soft:#edf4fb;
+
+    --gd-purple:#745394;
+    --gd-purple-soft:#f4eff8;
+
+    --gd-shadow:
+        0 12px 34px rgba(68,48,36,.08);
+
+    --gd-shadow-small:
+        0 5px 18px rgba(68,48,36,.07);
+
+    width:100%;
+    max-width:1180px;
+    margin:0 auto;
+    padding:22px 12px 50px;
+
+    box-sizing:border-box;
+
+    font-family:
+        Arial,
+        "Helvetica Neue",
+        sans-serif;
+
+    color:var(--gd-ink);
+}
+
+
+#lectureHallPage *,
+#lectureHallPage *::before,
+#lectureHallPage *::after{
+    box-sizing:border-box;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.gd-header{
+    position:relative;
+    overflow:hidden;
+
+    margin-bottom:24px;
+    padding:36px 24px 32px;
+
+    border:1px solid #eadfce;
+    border-radius:24px;
+
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(184,135,66,.13),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 95% 100%,
+            rgba(159,49,49,.08),
+            transparent 34%
+        ),
+        linear-gradient(
+            145deg,
+            #fffdf8,
+            #f8f2e8
+        );
+
+    box-shadow:var(--gd-shadow);
+
+    text-align:center;
+}
+
+
+.gd-header-seal{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    width:54px;
+    height:54px;
+
+    margin-bottom:14px;
+
+    border-radius:16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #aa3939,
+            #7e2626
+        );
+
+    color:#ffffff;
+
+    font-family:serif;
+    font-size:25px;
+    font-weight:700;
+
+    box-shadow:
+        0 8px 18px
+        rgba(126,38,38,.19);
+
+    transform:rotate(-3deg);
+}
+
+
+.gd-main-title{
+    margin:0;
+
+    color:var(--gd-brown-dark);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:34px;
+    line-height:1.15;
+    font-weight:900;
+    letter-spacing:1.5px;
+}
+
+
+.gd-main-subtitle{
+    max-width:700px;
+
+    margin:11px auto 0;
+
+    color:var(--gd-muted);
+
+    font-size:14px;
+    line-height:1.75;
+}
+
+
+.gd-header-status{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+
+    margin-top:17px;
+    padding:7px 12px;
+
+    border:1px solid #e5ded3;
+    border-radius:999px;
+
+    background:rgba(255,255,255,.78);
+
+    color:var(--gd-muted);
+
+    font-size:11px;
+    font-weight:800;
+}
+
+
+.gd-header-status.live{
+    border-color:#d4e9dc;
+    background:var(--gd-green-soft);
+    color:var(--gd-green);
+}
+
+
+.gd-status-dot{
+    display:inline-block;
+
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+
+    background:#aaa39b;
+}
+
+
+.gd-header-status.live .gd-status-dot{
+    background:#2c986d;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(44,152,109,.12);
+
+    animation:
+        gdPulse 1.6s ease-in-out infinite;
+}
+
+
+@keyframes gdPulse{
+
+    0%,
+    100%{
+        opacity:1;
+    }
+
+    50%{
+        opacity:.45;
+    }
+
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.gd-section{
+    margin-top:22px;
+}
+
+
+.gd-section-heading{
+    margin-bottom:13px;
+}
+
+
+.gd-section-kicker{
+    margin-bottom:5px;
+
+    color:var(--gd-red);
+
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:1.5px;
+}
+
+
+.gd-section-title{
+    margin:0;
+
+    color:var(--gd-brown-dark);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:23px;
+    font-weight:900;
+}
+
+
+.gd-section-desc{
+    margin:5px 0 0;
+
+    color:var(--gd-muted);
+
+    font-size:12px;
+    line-height:1.55;
+}
+
+
+/* =========================================================
+   ROOMS
+========================================================= */
+
+.gd-room-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:16px;
+}
+
+
+.gd-room{
+    position:relative;
+    overflow:hidden;
+
+    border:1px solid var(--gd-line);
+    border-radius:21px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #fcfaf5
+        );
+
+    box-shadow:var(--gd-shadow-small);
+}
+
+
+.gd-room.live{
+    border-color:
+        rgba(36,113,89,.35);
+
+    box-shadow:
+        0 8px 26px
+        rgba(36,113,89,.10);
+}
+
+
+/* =========================================================
+   ROOM BANNER
+========================================================= */
+
+.gd-room-banner{
+    position:relative;
+
+    width:100%;
+
+    aspect-ratio:16 / 8.2;
+
+    overflow:hidden;
+
+    background:#eee8df;
+}
+
+
+.gd-room-banner img{
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+    object-position:center;
+
+    transition:
+        transform .35s ease;
+}
+
+
+.gd-room:hover .gd-room-banner img{
+    transform:scale(1.025);
+}
+
+
+.gd-room-banner::after{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:40%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent,
+            rgba(38,27,22,.16)
+        );
+
+    pointer-events:none;
+}
+
+
+.gd-room-body{
+    padding:17px 19px 19px;
+}
+
+
+/* =========================================================
+   ROOM TOP
+========================================================= */
+
+.gd-room-top{
+    display:flex;
+
+    align-items:flex-start;
+    justify-content:space-between;
+
+    gap:12px;
+}
+
+
+.gd-room-identity{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    min-width:0;
+}
+
+
+.gd-room-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    width:48px;
+    height:48px;
+
+    flex:0 0 auto;
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f8ecda,
+            #efe0c5
+        );
+
+    font-size:23px;
+}
+
+
+.gd-room-label{
+    margin-bottom:3px;
+
+    color:var(--gd-gold);
+
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+
+.gd-room-name{
+    margin:0;
+
+    color:var(--gd-brown-dark);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:20px;
+    line-height:1.25;
+    font-weight:900;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.gd-room-status{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+
+    padding:6px 9px;
+
+    border:1px solid #e3ddd4;
+    border-radius:999px;
+
+    background:#f6f4f0;
+
+    color:#7e766e;
+
+    font-size:9px;
+    font-weight:900;
+
+    white-space:nowrap;
+}
+
+
+.gd-room-status.live{
+    border-color:#d3eadc;
+    background:var(--gd-green-soft);
+    color:var(--gd-green);
+}
+
+
+.gd-room-status-dot{
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:#aaa39b;
+}
+
+
+.gd-room-status.live .gd-room-status-dot{
+    background:#2d966c;
+
+    animation:
+        gdPulse 1.6s ease-in-out infinite;
+}
+
+
+.gd-room-schedule{
+    margin-top:7px;
+
+    color:#948b82;
+
+    font-size:9px;
+    font-weight:700;
+
+    text-align:right;
+}
+
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+.gd-room-note{
+    margin:14px 0 15px;
+
+    padding:10px 12px;
+
+    border-radius:11px;
+
+    background:#f8f5ef;
+
+    color:#776e64;
+
+    font-size:11px;
+    line-height:1.55;
+}
+
+
+/* =========================================================
+   VERIFY
+========================================================= */
+
+.gd-verify-label{
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#5d554d;
+
+    font-size:11px;
+    font-weight:800;
+}
+
+
+.gd-verify-row{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1fr) auto;
+
+    gap:8px;
+}
+
+
+.gd-code-input{
+    width:100%;
+    min-width:0;
+
+    height:44px;
+
+    padding:0 13px;
+
+    border:1px solid #dcd5cc;
+    border-radius:12px;
+
+    outline:none;
+
+    background:#ffffff;
+
+    color:#292524;
+
+    font-size:14px;
+    font-weight:700;
+}
+
+
+.gd-code-input:focus{
+    border-color:#a98059;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(169,128,89,.11);
+}
+
+
+.gd-code-input::placeholder{
+    color:#aaa39b;
+
+    font-weight:500;
+}
+
+
+.gd-verify-button{
+    min-height:44px;
+
+    padding:0 15px;
+
+    border:0;
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #785548,
+            #51382f
+        );
+
+    color:#ffffff;
+
+    font-size:11px;
+    font-weight:900;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 5px 14px
+        rgba(81,56,47,.16);
+}
+
+
+.gd-verify-button:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.gd-room-message{
+    display:none;
+
+    margin-top:10px;
+    padding:10px 12px;
+
+    border-radius:11px;
+
+    font-size:11px;
+    line-height:1.5;
+    font-weight:700;
+}
+
+
+.gd-room-message.show{
+    display:block;
+}
+
+
+.gd-room-message.loading{
+    background:#f6f4ef;
+    color:#776e64;
+}
+
+
+.gd-room-message.success{
+    border:1px solid #cee5d7;
+
+    background:var(--gd-green-soft);
+
+    color:#24694f;
+}
+
+
+.gd-room-message.error{
+    border:1px solid #efd4d1;
+
+    background:#fff0ee;
+
+    color:#9a3630;
+}
+
+
+.gd-room-message.warning{
+    border:1px solid #eadcb5;
+
+    background:#fff8e6;
+
+    color:#87611c;
+}
+
+
+/* =========================================================
+   MEET
+========================================================= */
+
+.gd-meet-access{
+    display:none;
+
+    margin-top:11px;
+}
+
+
+.gd-meet-access.show{
+    display:block;
+}
+
+
+.gd-meet-button{
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    gap:8px;
+
+    width:100%;
+
+    min-height:46px;
+
+    padding:10px 14px;
+
+    border-radius:13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #24765b,
+            #195944
+        );
+
+    color:#ffffff !important;
+
+    text-decoration:none !important;
+
+    font-size:12px;
+    font-weight:900;
+
+    box-shadow:
+        0 6px 18px
+        rgba(36,118,91,.18);
+}
+
+
+.gd-meet-small{
+    margin-top:7px;
+
+    color:#8b837a;
+
+    font-size:9px;
+    line-height:1.5;
+
+    text-align:center;
+}
+
+
+/* =========================================================
+   GRADUATION EXAM
+========================================================= */
+
+.gd-graduation-room{
+    position:relative;
+    overflow:hidden;
+
+    display:grid;
+
+    grid-template-columns:
+        auto minmax(0,1fr) auto;
+
+    align-items:center;
+
+    gap:16px;
+
+    margin-top:16px;
+
+    padding:17px 19px;
+
+    border:1px solid #dfc994;
+    border-radius:18px;
+
+    background:
+        radial-gradient(
+            circle at 5% 20%,
+            rgba(181,132,64,.14),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #fff9eb,
+            #fffdf8
+        );
+
+    box-shadow:
+        var(--gd-shadow-small);
+}
+
+
+.gd-graduation-icon{
+    display:flex;
+
+    width:52px;
+    height:52px;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #efe0bd,
+            #e4c98c
+        );
+
+    font-size:24px;
+
+    flex:0 0 auto;
+}
+
+
+.gd-graduation-label{
+    color:#9b7134;
+
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+
+.gd-graduation-title{
+    margin:2px 0 3px;
+
+    color:var(--gd-brown-dark);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:19px;
+    font-weight:900;
+}
+
+
+.gd-graduation-desc{
+    margin:0;
+
+    color:var(--gd-muted);
+
+    font-size:11px;
+    line-height:1.55;
+}
+
+
+.gd-graduation-button{
+    display:inline-flex;
+
+    min-height:42px;
+
+    padding:9px 16px;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #9c7136,
+            #765125
+        );
+
+    color:#ffffff !important;
+
+    text-decoration:none !important;
+
+    font-size:10px;
+    font-weight:900;
+
+    white-space:nowrap;
+
+    box-shadow:
+        0 5px 14px
+        rgba(118,81,37,.17);
+}
+
+
+.gd-graduation-button:hover{
+    opacity:.92;
+}
+
+
+/* =========================================================
+   PRIVACY
+========================================================= */
+
+.gd-privacy-note{
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    margin-top:13px;
+
+    padding:11px 13px;
+
+    border:1px solid #ebe5dc;
+    border-radius:13px;
+
+    background:
+        rgba(255,255,255,.65);
+
+    color:#81786f;
+
+    font-size:10px;
+    line-height:1.55;
+}
+
+
+/* =========================================================
+   ACTIVITY
+========================================================= */
+
+.gd-activity-card{
+    overflow:hidden;
+
+    border:1px solid var(--gd-line);
+    border-radius:21px;
+
+    background:#ffffff;
+
+    box-shadow:
+        var(--gd-shadow-small);
+}
+
+
+.gd-activity-toolbar{
+    display:flex;
+
+    align-items:center;
+    justify-content:space-between;
+
+    gap:12px;
+
+    padding:13px 15px;
+
+    border-bottom:
+        1px solid #eee7de;
+
+    background:#fcfaf6;
+}
+
+
+.gd-filter-scroll{
+    display:flex;
+
+    gap:6px;
+
+    overflow-x:auto;
+
+    scrollbar-width:none;
+}
+
+
+.gd-filter-scroll::-webkit-scrollbar{
+    display:none;
+}
+
+
+.gd-filter-button{
+    flex:0 0 auto;
+
+    padding:7px 10px;
+
+    border:1px solid #e2dad0;
+    border-radius:999px;
+
+    background:#ffffff;
+
+    color:#71685f;
+
+    font-size:9px;
+    font-weight:900;
+
+    cursor:pointer;
+}
+
+
+.gd-filter-button.active{
+    border-color:#805b4d;
+
+    background:#805b4d;
+
+    color:#ffffff;
+}
+
+
+.gd-refresh-button{
+    flex:0 0 auto;
+
+    padding:7px 10px;
+
+    border:1px solid #e0d8ce;
+    border-radius:10px;
+
+    background:#ffffff;
+
+    color:#625b54;
+
+    font-size:9px;
+    font-weight:800;
+
+    cursor:pointer;
+}
+
+
+.gd-activity-feed{
+    padding:4px 15px 6px;
+}
+
+
+.gd-activity-item{
+    display:grid;
+
+    grid-template-columns:
+        42px minmax(0,1fr) auto;
+
+    gap:11px;
+
+    padding:15px 0;
+
+    border-bottom:
+        1px solid #f0ebe4;
+}
+
+
+.gd-activity-item:last-child{
+    border-bottom:0;
+}
+
+
+.gd-activity-icon{
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    width:40px;
+    height:40px;
+
+    border-radius:13px;
+
+    font-size:18px;
+}
+
+
+.gd-activity-item.submission .gd-activity-icon{
+    background:var(--gd-blue-soft);
+}
+
+
+.gd-activity-item.grade .gd-activity-icon{
+    background:var(--gd-gold-soft);
+}
+
+
+.gd-activity-item.comment .gd-activity-icon{
+    background:var(--gd-purple-soft);
+}
+
+
+.gd-activity-item.gift .gd-activity-icon{
+    background:#fff0f0;
+}
+
+
+.gd-activity-content{
+    align-self:center;
+    min-width:0;
+}
+
+
+.gd-activity-text{
+    color:#4b4540;
+
+    font-size:12px;
+    line-height:1.55;
+}
+
+
+.gd-activity-name{
+    color:var(--gd-brown-dark);
+
+    font-weight:900;
+}
+
+
+.gd-activity-meta{
+    margin-top:4px;
+
+    color:#958d84;
+
+    font-size:9px;
+    font-weight:800;
+}
+
+
+.gd-activity-time{
+    align-self:center;
+
+    padding-left:8px;
+
+    color:#978f86;
+
+    font-size:9px;
+
+    white-space:nowrap;
+
+    text-align:right;
+}
+
+
+.gd-empty{
+    padding:35px 15px;
+
+    color:#8d857d;
+
+    font-size:11px;
+    line-height:1.6;
+
+    text-align:center;
+}
+
+
+.gd-load-more-wrap{
+    display:none;
+
+    padding:0 15px 15px;
+
+    text-align:center;
+}
+
+
+.gd-load-more-wrap.show{
+    display:block;
+}
+
+
+.gd-load-more{
+    padding:9px 16px;
+
+    border:1px solid #ddd5cb;
+    border-radius:11px;
+
+    background:#faf8f4;
+
+    color:#655d55;
+
+    font-size:10px;
+    font-weight:900;
+
+    cursor:pointer;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:760px){
+
+    #lectureHallPage{
+        padding:14px 8px 38px;
+    }
+
+    .gd-header{
+        padding:28px 16px 25px;
+        border-radius:19px;
+    }
+
+    .gd-main-title{
+        font-size:28px;
+    }
+
+    .gd-main-subtitle{
+        font-size:12px;
+    }
+
+    .gd-room-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+
+        gap:8px;
+    }
+
+    .gd-room{
+        border-radius:16px;
+    }
+
+    .gd-room-banner{
+        aspect-ratio:1.35 / 1;
+    }
+
+    .gd-room-body{
+        padding:11px 9px 12px;
+    }
+
+    .gd-room-top{
+        display:block;
+    }
+
+    .gd-room-identity{
+        display:block;
+    }
+
+    .gd-room-icon{
+        width:38px;
+        height:38px;
+
+        margin-bottom:7px;
+
+        border-radius:11px;
+
+        font-size:18px;
+    }
+
+    .gd-room-name{
+        font-size:15px;
+    }
+
+    .gd-room-status{
+        margin-top:8px;
+
+        padding:5px 6px;
+
+        font-size:7px;
+    }
+
+    .gd-room-schedule{
+        text-align:left;
+        font-size:8px;
+    }
+
+    .gd-room-note{
+        margin:10px 0 11px;
+
+        padding:8px;
+
+        font-size:8.5px;
+    }
+
+    .gd-verify-label{
+        font-size:9px;
+    }
+
+    .gd-verify-row{
+        grid-template-columns:1fr;
+    }
+
+    .gd-code-input{
+        height:40px;
+
+        padding:0 9px;
+
+        font-size:11px;
+    }
+
+    .gd-verify-button{
+        min-height:37px;
+
+        font-size:9px;
+    }
+
+    .gd-room-message{
+        padding:8px;
+
+        font-size:8.5px;
+    }
+
+    .gd-meet-button{
+        min-height:40px;
+
+        padding:8px;
+
+        font-size:8.5px;
+    }
+
+    .gd-graduation-room{
+        grid-template-columns:
+            auto minmax(0,1fr);
+
+        gap:10px;
+
+        padding:13px;
+
+        border-radius:15px;
+    }
+
+    .gd-graduation-icon{
+        width:42px;
+        height:42px;
+
+        border-radius:12px;
+
+        font-size:19px;
+    }
+
+    .gd-graduation-title{
+        font-size:15px;
+    }
+
+    .gd-graduation-desc{
+        font-size:9px;
+    }
+
+    .gd-graduation-button{
+        grid-column:1 / -1;
+
+        width:100%;
+
+        min-height:39px;
+
+        font-size:9px;
+    }
+
+    .gd-activity-item{
+        grid-template-columns:
+            36px minmax(0,1fr);
+
+        gap:9px;
+    }
+
+    .gd-activity-icon{
+        width:34px;
+        height:34px;
+
+        font-size:15px;
+    }
+
+    .gd-activity-text{
+        font-size:10px;
+    }
+
+    .gd-activity-time{
+        grid-column:2;
+
+        padding:0;
+
+        text-align:left;
+
+        font-size:8px;
+    }
+
+}
+
+/* =========================================================
+   v1.9.0 – THƯ VIỆN LÂM MÔ (bản lâm lớn + thả tim)
+========================================================= */
+
+.gd-lammo-intro{
+    color:#6f665d;
+    font-size:12px;
+    line-height:1.5;
+    font-weight:700;
+}
+
+.gd-lammo-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:0 0 auto;
+}
+
+#lectureHallPage .gd-lammo-cta{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:38px;
+    padding:8px 16px;
+    border-radius:11px;
+    background:linear-gradient(135deg,#a33a3a,#7b2626) !important;
+    color:#ffffff !important;
+    text-decoration:none !important;
+    font-size:12px;
+    font-weight:900;
+    white-space:nowrap;
+    box-shadow:0 5px 14px rgba(123,38,38,.18);
+}
+
+#lectureHallPage .gd-lammo-cta:hover{
+    opacity:.92;
+}
+
+#lectureHallPage .gd-lammo-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:14px;
+    padding:15px;
+}
+
+#lectureHallPage .gd-lammo-grid > .gd-empty{
+    grid-column:1 / -1;
+}
+
+.gd-lammo-card{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    overflow:hidden;
+    border:1px solid #e6dccd;
+    border-radius:16px;
+    background:#fffdf8;
+    box-shadow:0 4px 14px rgba(68,48,36,.06);
+}
+
+#lectureHallPage .gd-lammo-photo{
+    display:block;
+    width:100%;
+    aspect-ratio:3 / 4;
+    margin:0;
+    padding:8px;
+    border:0;
+    border-radius:0;
+    background:#eee6d9;
+    cursor:zoom-in;
+}
+
+.gd-lammo-photo img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.gd-lammo-photo.is-error{
+    background:#eee6d9 linear-gradient(135deg,transparent 48%,#e0d4c2 49%,#e0d4c2 51%,transparent 52%);
+}
+
+#lectureHallPage .gd-lammo-heart{
+    position:absolute;
+    top:10px;
+    right:10px;
+    z-index:2;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    min-height:34px;
+    padding:6px 11px;
+    border:1px solid #e8cfc5;
+    border-radius:999px;
+    background:rgba(255,253,248,.94);
+    color:#a04538;
+    font:800 13px/1 Arial,sans-serif;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(68,48,36,.12);
+}
+
+#lectureHallPage .gd-lammo-heart span{
+    font-size:16px;
+    line-height:1;
+}
+
+#lectureHallPage .gd-lammo-heart:hover{
+    background:#fbe6dd;
+}
+
+#lectureHallPage .gd-lammo-heart.is-liked{
+    border-color:#e7b5b5;
+    background:#fff0f0;
+    color:#c33235;
+}
+
+#lectureHallPage .gd-lammo-heart:disabled{
+    opacity:.7;
+    cursor:wait;
+}
+
+.gd-lammo-info{
+    padding:11px 12px 13px;
+    min-width:0;
+}
+
+.gd-lammo-name{
+    color:var(--gd-brown-dark);
+    font-size:13px;
+    font-weight:900;
+    line-height:1.35;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.gd-lammo-sub{
+    margin-top:3px;
+    color:#8a8178;
+    font-size:11px;
+    font-weight:700;
+}
+
+.gd-lammo-title{
+    margin-top:7px;
+    color:#7b2626;
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:14px;
+    font-weight:900;
+    line-height:1.35;
+    overflow:hidden;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+}
+
+#lectureHallPage a.gd-lammo-title{
+    color:#7b2626 !important;
+    text-decoration:none !important;
+    cursor:pointer;
+}
+
+#lectureHallPage a.gd-lammo-title:hover{
+    text-decoration:underline !important;
+}
+
+.gd-lammo-time{
+    margin-top:6px;
+    color:#9a9188;
+    font-size:10px;
+    font-weight:700;
+}
+
+.gd-lammo-status{
+    display:none;
+    margin:0 15px 12px;
+    padding:9px 12px;
+    border:1px solid #efd4d1;
+    border-radius:11px;
+    background:#fff0ee;
+    color:#9a3630;
+    font-size:12px;
+    font-weight:700;
+}
+
+.gd-lammo-status.show{
+    display:block;
+}
+
+.gd-lammo-viewer{
+    position:fixed;
+    inset:0;
+    z-index:2147483000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    background:rgba(20,14,10,.86);
+}
+
+.gd-lammo-viewer.show{
+    display:flex;
+}
+
+.gd-lammo-viewer figure{
+    position:relative;
+    max-width:min(960px,100%);
+    max-height:100%;
+    margin:0;
+    text-align:center;
+}
+
+.gd-lammo-viewer img{
+    display:block;
+    max-width:100%;
+    max-height:calc(100vh - 110px);
+    max-height:calc(100dvh - 110px);
+    margin:0 auto;
+    border-radius:10px;
+    background:#faf7ef;
+    object-fit:contain;
+}
+
+.gd-lammo-viewer figcaption{
+    margin-top:10px;
+    color:#f6eee2;
+    font-size:13px;
+    font-weight:700;
+    line-height:1.5;
+}
+
+#lectureHallPage .gd-lammo-close{
+    position:fixed;
+    top:12px;
+    right:12px;
+    width:42px;
+    height:42px;
+    border:0;
+    border-radius:50%;
+    background:rgba(255,255,255,.92);
+    color:#3b2a22;
+    font:900 22px/1 Arial,sans-serif;
+    cursor:pointer;
+}
+
+@media(max-width:1000px){
+
+    #lectureHallPage .gd-lammo-grid{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+}
+
+@media(max-width:760px){
+
+    .gd-lammo-toolbar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .gd-lammo-actions .gd-lammo-cta{
+        flex:1 1 auto;
+    }
+
+    #lectureHallPage .gd-lammo-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px;
+        padding:10px;
+    }
+
+    .gd-lammo-card{
+        border-radius:13px;
+    }
+
+    #lectureHallPage .gd-lammo-photo{
+        padding:5px;
+    }
+
+    #lectureHallPage .gd-lammo-heart{
+        top:7px;
+        right:7px;
+        min-height:32px;
+        padding:5px 9px;
+        font-size:12px;
+    }
+
+    .gd-lammo-info{
+        padding:9px 9px 11px;
+    }
+
+    .gd-lammo-name{
+        font-size:12px;
+    }
+
+    .gd-lammo-sub{
+        font-size:10px;
+    }
+
+    .gd-lammo-title{
+        font-size:13px;
+    }
+
+}
+
+</style>
+
+
+<div id="lectureHallApp">
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="gd-header">
+
+    <div class="gd-header-seal">
+        學
+    </div>
+
+    <h1 class="gd-main-title">
+        GIẢNG ĐƯỜNG
+    </h1>
+
+    <p class="gd-main-subtitle">
+        Không gian học tập trực tuyến dành cho học viên.
+        Hệ thống tự nhận diện học viên qua Minh Hồng và mở đúng phòng học của bạn.
+    </p>
+
+    <div
+        id="gdHeaderStatus"
+        class="gd-header-status"
+    >
+        <span class="gd-status-dot"></span>
+
+        <span id="gdHeaderStatusText">
+            Đang kiểm tra lịch học...
+        </span>
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     ROOMS
+========================================================= -->
+
+<section class="gd-section">
+
+    <div class="gd-section-heading">
+
+        <div class="gd-section-kicker">
+            PHÒNG HỌC TRỰC TUYẾN
+        </div>
+
+        <h2 class="gd-section-title">
+            Phòng học
+        </h2>
+
+        <p class="gd-section-desc">
+            Phòng Hoà Bình học tối Thứ Sáu.
+            Phòng Hạnh Phúc học tối Thứ Bảy.
+        </p>
+
+    </div>
+
+
+    <div class="gd-room-grid">
+
+
+        <!-- =================================================
+             HÒA BÌNH
+        ================================================== -->
+
+        <article
+            id="gdRoomHOABINH"
+            class="gd-room"
+        >
+
+            <div class="gd-room-banner">
+
+                <img
+                    id="gdBannerHOABINH"
+                    src="https://drive.google.com/thumbnail?id=1PP0BBYcma0kFkio87aR4ld6dnuRWyP6o&sz=w1600"
+                    alt="Phòng học Hoà Bình"
+                    loading="lazy"
+                    decoding="async"
+                />
+
+            </div>
+
+
+            <div class="gd-room-body">
+
+                <div class="gd-room-top">
+
+                    <div class="gd-room-identity">
+
+                        <div
+                            class="gd-room-icon"
+                            id="gdRoomIconHOABINH"
+                        ></div>
+
+                        <div>
+
+                            <div class="gd-room-label">
+                                PHÒNG HỌC
+                            </div>
+
+                            <h3 class="gd-room-name">
+                                Phòng học Hoà Bình
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div
+                            id="gdStatusHOABINH"
+                            class="gd-room-status"
+                        >
+                            <span class="gd-room-status-dot"></span>
+
+                            <span id="gdStatusTextHOABINH">
+                                ĐANG KIỂM TRA
+                            </span>
+                        </div>
+
+
+                        <div class="gd-room-schedule">
+                            Thứ Sáu • 19:00–21:00
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="gd-room-note">
+                    Không gian học thư pháp dành cho học viên
+                    các khóa được phân vào Phòng học Hoà Bình.
+                </div>
+
+
+                <label
+                    class="gd-verify-label"
+                    for="gdCodeHOABINH"
+                >
+                    Kiểm tra Mã học viên
+                </label>
+
+
+                <div class="gd-verify-row">
+
+                    <input
+                        id="gdCodeHOABINH"
+                        class="gd-code-input"
+                        type="text"
+                        inputmode="text"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="characters"
+                        spellcheck="false"
+                        placeholder="Nhập Mã học viên..."
+                    />
+
+
+                    <button
+                        id="gdVerifyHOABINH"
+                        class="gd-verify-button"
+                        type="button"
+                    >
+                        KIỂM TRA
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="gdMessageHOABINH"
+                    class="gd-room-message"
+                    aria-live="polite"
+                ></div>
+
+
+                <div
+                    id="gdMeetAccessHOABINH"
+                    class="gd-meet-access"
+                ></div>
+
+            </div>
+
+        </article>
+
+
+
+        <!-- =================================================
+             HẠNH PHÚC
+        ================================================== -->
+
+        <article
+            id="gdRoomHANHPHUC"
+            class="gd-room"
+        >
+
+            <div class="gd-room-banner">
+
+                <img
+                    id="gdBannerHANHPHUC"
+                    src="https://drive.google.com/thumbnail?id=19GZP-3tKYLVE2l6uVeihhpnfVKAKaRE4&sz=w1600"
+                    alt="Phòng học Hạnh Phúc"
+                    loading="lazy"
+                    decoding="async"
+                />
+
+            </div>
+
+
+            <div class="gd-room-body">
+
+                <div class="gd-room-top">
+
+                    <div class="gd-room-identity">
+
+                        <div
+                            class="gd-room-icon"
+                            id="gdRoomIconHANHPHUC"
+                        ></div>
+
+                        <div>
+
+                            <div class="gd-room-label">
+                                PHÒNG HỌC
+                            </div>
+
+                            <h3 class="gd-room-name">
+                                Phòng học Hạnh Phúc
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div
+                            id="gdStatusHANHPHUC"
+                            class="gd-room-status"
+                        >
+                            <span class="gd-room-status-dot"></span>
+
+                            <span id="gdStatusTextHANHPHUC">
+                                ĐANG KIỂM TRA
+                            </span>
+                        </div>
+
+
+                        <div class="gd-room-schedule">
+                            Thứ Bảy • 19:00–21:00
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="gd-room-note">
+                    Không gian học thư pháp dành cho học viên
+                    được phân vào Phòng học Hạnh Phúc.
+                </div>
+
+
+                <label
+                    class="gd-verify-label"
+                    for="gdCodeHANHPHUC"
+                >
+                    Kiểm tra Mã học viên
+                </label>
+
+
+                <div class="gd-verify-row">
+
+                    <input
+                        id="gdCodeHANHPHUC"
+                        class="gd-code-input"
+                        type="text"
+                        inputmode="text"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="characters"
+                        spellcheck="false"
+                        placeholder="Nhập Mã học viên..."
+                    />
+
+
+                    <button
+                        id="gdVerifyHANHPHUC"
+                        class="gd-verify-button"
+                        type="button"
+                    >
+                        KIỂM TRA
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="gdMessageHANHPHUC"
+                    class="gd-room-message"
+                    aria-live="polite"
+                ></div>
+
+
+                <div
+                    id="gdMeetAccessHANHPHUC"
+                    class="gd-meet-access"
+                ></div>
+
+            </div>
+
+        </article>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PHÒNG THI TỐT NGHIỆP
+    ====================================================== -->
+
+    <div class="gd-graduation-room">
+
+        <div
+            class="gd-graduation-icon"
+            id="gdGraduationIcon"
+        ></div>
+
+
+        <div>
+
+            <div class="gd-graduation-label">
+                KỲ THI TỐT NGHIỆP
+            </div>
+
+            <h3 class="gd-graduation-title">
+                Phòng Thi Tốt Nghiệp
+            </h3>
+
+            <p class="gd-graduation-desc">
+                Khu vực dành cho học viên đủ điều kiện tham gia
+                kỳ thi tốt nghiệp OCD.
+            </p>
+
+        </div>
+
+
+        <a
+            class="gd-graduation-button"
+            href="https://www.thudao.com/p/ocd-phong-thi-tot-nghiep-graduation.html"
+        >
+            VÀO PHÒNG THI
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         PHÒNG LUYỆN CÔNG
+    ====================================================== -->
+
+    <div class="gd-graduation-room gd-practice-room">
+
+        <div
+            class="gd-graduation-icon"
+            id="gdPracticeIcon"
+        ></div>
+
+
+        <div>
+
+            <div class="gd-graduation-label">
+                LUYỆN TẬP NHÓM
+            </div>
+
+            <h3 class="gd-graduation-title">
+                Phòng Luyện Công
+            </h3>
+
+            <p class="gd-graduation-desc">
+                Cùng đồng môn vào phòng, làm bộ đề riêng
+                và nhận thưởng theo thành tích chung.
+            </p>
+
+        </div>
+
+
+        <a
+            class="gd-graduation-button gd-practice-button"
+            href="https://www.thudao.com/p/luyen-cong.html"
+        >
+            VÀO PHÒNG LUYỆN CÔNG
+        </a>
+
+    </div>
+
+
+
+    <div class="gd-privacy-note">
+
+        <span id="gdPrivacyIcon"></span>
+
+        <span>
+            Mã học viên chỉ dùng để xác minh quyền vào lớp.
+            Giảng đường không công khai mã học viên,
+            điểm số hoặc nội dung nhận xét.
+        </span>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     ACTIVITY
+========================================================= -->
+
+<section class="gd-section gd-lammo-section">
+
+    <div class="gd-section-heading">
+
+        <div class="gd-section-kicker">
+            NHỊP SỐNG LỚP HỌC
+        </div>
+
+        <h2 class="gd-section-title">
+            Đóng góp Thư viện lâm mô
+        </h2>
+
+        <p class="gd-section-desc">
+            Những bản lâm học viên vừa góp vào Thư viện lâm mô, kèm lượt thả tim của đồng môn.
+        </p>
+
+    </div>
+
+    <div class="gd-activity-card">
+
+        <div class="gd-activity-toolbar gd-lammo-toolbar">
+
+            <div class="gd-lammo-intro">
+                Góp bản lâm của bạn để đồng môn cùng học và thả tim.
+            </div>
+
+            <div class="gd-lammo-actions">
+
+                <a
+                    id="gdLamMoCta"
+                    class="gd-lammo-cta"
+                    href="https://www.thudao.com/p/thu-vien-lam-mo.html"
+                >
+                    ✍ Đóng góp ngay
+                </a>
+
+                <button
+                    id="gdRefreshActivity"
+                    class="gd-refresh-button"
+                    type="button"
+                >
+                    ↻ Mới
+                </button>
+
+            </div>
+
+        </div>
+
+        <div
+            id="gdActivityFeed"
+            class="gd-activity-feed gd-lammo-grid"
+        >
+            <div class="gd-empty">
+                Đang tải bản lâm mới đóng góp...
+            </div>
+        </div>
+
+        <div
+            id="gdLamMoStatus"
+            class="gd-lammo-status"
+            aria-live="polite"
+        ></div>
+
+        <div
+            id="gdLoadMoreWrap"
+            class="gd-load-more-wrap"
+        >
+            <button
+                id="gdLoadMore"
+                class="gd-load-more"
+                type="button"
+            >
+                XEM THÊM BẢN LÂM
+            </button>
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+
+
+<script>
+(function(){
+
+"use strict";
+
+
+/* =========================================================
+   GIẢNG ĐƯỜNG OCD
+   LECTURE HALL v1.7.0
+   + TRANSITIONAL IDENTITY
+   + MINH HỒNG CONTEXT
+
+   GIỮ NGUYÊN:
+   - Phòng học Hoà Bình
+   - Phòng học Hạnh Phúc
+   - Phòng Thi Tốt Nghiệp
+   - Hoạt động gần đây
+   - Mã ưu tiên Goiungho800k / MaHocVien
+
+   ĐỊNH DANH:
+   1. Mã ưu tiên -> được vào cả hai phòng
+   2. HocVien -> nguồn định danh chính
+   3. Chưa có HocVien -> fallback XepHang
+   4. HocVien lỗi -> FAIL CLOSED
+   5. HocVien đã có mã -> trạng thái HocVien quyết định
+
+   PHÂN PHÒNG:
+   - Hoà Bình: 01 / 02 / 03
+   - Hạnh Phúc: 01 / 02 / 03 / 04
+
+   LỊCH:
+   - Hoà Bình: Thứ Sáu 19:00–21:00
+   - Hạnh Phúc: Thứ Bảy 19:00–21:00
+
+   MINH HỒNG:
+   - page = GiangDuong
+   - Không fetch thêm dữ liệu
+   - Xác minh thành công -> confirmStudent
+   - Đồng bộ đúng/sai phòng
+   - Đồng bộ giờ học
+   - Đồng bộ Meet
+========================================================= */
+
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const CONFIG={
+
+    hoaBinhMeetUrl:
+        "https://meet.google.com/qoj-ozun-eyc",
+
+    hanhPhucMeetUrl:
+        "https://meet.google.com/qoj-ozun-eyc",
+
+
+    graduationExamUrl:
+        "https://www.thudao.com/p/ocd-phong-thi-tot-nghiep-graduation.html",
+
+
+    practiceRoomUrl:
+        "https://www.thudao.com/p/luyen-cong.html",
+
+
+    banners:{
+
+        HOABINH:
+            "https://drive.google.com/thumbnail?id=" +
+            "1PP0BBYcma0kFkio87aR4ld6dnuRWyP6o" +
+            "&sz=w1600",
+
+        HANHPHUC:
+            "https://drive.google.com/thumbnail?id=" +
+            "19GZP-3tKYLVE2l6uVeihhpnfVKAKaRE4" +
+            "&sz=w1600"
+
+    },
+
+
+    /* =====================================================
+       HOCVIEN
+    ===================================================== */
+
+    studentDirectoryCsv:
+
+        "https://docs.google.com/spreadsheets/d/e/" +
+
+        "2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/" +
+
+        "pub?gid=1603096683&single=true&output=csv",
+
+
+    /* =====================================================
+       XEPHANG FALLBACK
+    ===================================================== */
+
+    legacyDirectoryCsv:
+
+        "https://docs.google.com/spreadsheets/d/e/" +
+
+        "2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/" +
+
+        "pub?gid=1326884435&single=true&output=csv",
+
+
+    /* =====================================================
+       MÃ ƯU TIÊN
+    ===================================================== */
+
+    prioritySpreadsheetId:
+        "1hLNi_OP6ScSz8OUH-Qj7qc5LTTPAHevZQg9MvFBvVro",
+
+    prioritySheetName:
+        "MaHocVien",
+
+
+    /* =====================================================
+       ACTIVITY
+    ===================================================== */
+
+    submissionCsv:
+
+        "https://docs.google.com/spreadsheets/d/e/" +
+
+        "2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/" +
+
+        "pub?output=csv",
+
+
+    rewardSpreadsheetId:
+        "1-IkcpEkKQtIavl5DIf6Sbwx3p0aAfnSS4HjT6dn1u_E",
+
+    teacherGiftSheetName:
+        "QuaTangGVCN",
+
+
+    /* =====================================================
+       PHÒNG
+    ===================================================== */
+
+    rooms:{
+
+        HOABINH:{
+
+            allowedSuffixes:[
+                "01",
+                "02",
+                "03"
+            ],
+
+            displayName:
+                "Phòng học Hoà Bình"
+        },
+
+        HANHPHUC:{
+
+            allowedSuffixes:[
+                "01",
+                "02",
+                "03",
+                "04"
+            ],
+
+            displayName:
+                "Phòng học Hạnh Phúc"
+        }
+
+    },
+
+
+    /* =====================================================
+       LỊCH
+    ===================================================== */
+
+    schedules:{
+
+        HOABINH:{
+
+            dayOfWeek:5,
+
+            startHour:19,
+            startMinute:0,
+
+            endHour:21,
+            endMinute:0
+        },
+
+        HANHPHUC:{
+
+            dayOfWeek:6,
+
+            startHour:19,
+            startMinute:0,
+
+            endHour:21,
+            endMinute:0
+        }
+
+    },
+
+
+    timeZone:
+        "Asia/Ho_Chi_Minh",
+
+
+    liveMeetStatus:{
+
+        enabled:false,
+
+        endpoint:"",
+
+        refreshInterval:
+            60000
+    },
+
+
+    activityPageSize:
+        8,
+
+    maxActivities:
+        80,
+
+    activityRefreshInterval:
+        120000,
+
+    requestTimeout:
+        12000
+
+};
+
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+const ICON={
+
+    roomHoaBinh:
+        String.fromCodePoint(
+            0x1F54A,
+            0xFE0F
+        ),
+
+    roomHanhPhuc:
+        String.fromCodePoint(
+            0x1F338
+        ),
+
+    graduation:
+        String.fromCodePoint(
+            0x1F393
+        ),
+
+    practice:
+        String.fromCodePoint(
+            0x1F94B
+        ),
+
+    lock:
+        String.fromCodePoint(
+            0x1F510
+        ),
+
+    submission:
+        String.fromCodePoint(
+            0x1F4DD
+        ),
+
+    grade:
+        String.fromCodePoint(
+            0x270D,
+            0xFE0F
+        ),
+
+    comment:
+        String.fromCodePoint(
+            0x1F4AC
+        ),
+
+    gift:
+        String.fromCodePoint(
+            0x1F381
+        ),
+
+    video:
+        String.fromCodePoint(
+            0x1F3A5
+        ),
+
+    check:
+        String.fromCodePoint(
+            0x2713
+        ),
+
+    book:
+        String.fromCodePoint(
+            0x1F4DA
+        )
+
+};
+
+
+
+const CHAR={
+
+    dash:
+        String.fromCodePoint(
+            0x2013
+        ),
+
+    bullet:
+        String.fromCodePoint(
+            0x2022
+        )
+
+};
+
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const state={
+
+    directory:null,
+    directoryPromise:null,
+
+    legacyDirectory:null,
+    legacyDirectoryPromise:null,
+
+    priorityCodes:null,
+    priorityPromise:null,
+
+    activities:[],
+
+    activityFilter:"all",
+
+    visibleActivityCount:
+        CONFIG.activityPageSize,
+
+    loadingActivity:false,
+
+    activityTimer:null,
+
+    statusTimer:null
+
+};
+
+
+
+/* =========================================================
+   MINH HỒNG STATE
+========================================================= */
+
+const minhHongState={
+
+    studentCode:"",
+    studentName:"",
+    group:"",
+    course:"",
+    studentStatus:"",
+
+    identitySource:"",
+
+    priorityStudent:false,
+
+    selectedRoom:"",
+    assignedRoom:"",
+
+    verified:false,
+
+    correctRoom:false,
+    wrongRoom:false,
+
+    accessGranted:false,
+
+    roomLive:false,
+    meetReady:false,
+
+    lastReason:""
+
+};
+
+
+
+/* =========================================================
+   BASIC
+========================================================= */
+
+function el(id){
+
+    return document.getElementById(
+        id
+    );
+}
+
+
+
+function clean(value){
+
+    return String(
+        value === undefined ||
+        value === null
+        ?
+        ""
+        :
+        value
+    )
+    .trim();
+}
+
+
+
+function normalizeText(value){
+
+    return clean(value)
+
+    .toLowerCase()
+
+    .normalize("NFD")
+
+    .replace(
+        /[\u0300-\u036f]/g,
+        ""
+    )
+
+    .replace(
+        /đ/g,
+        "d"
+    )
+
+    .replace(
+        /\s+/g,
+        " "
+    );
+}
+
+
+
+function normalizeCode(value){
+
+    return clean(value)
+
+    .toUpperCase()
+
+    .replace(
+        /\s+/g,
+        ""
+    );
+}
+
+
+
+function normalizeStatus(value){
+
+    return normalizeCode(
+        value
+    );
+}
+
+
+
+/* =========================================================
+   INITIAL UI
+========================================================= */
+
+function initUI(){
+
+    if(el("gdRoomIconHOABINH")){
+
+        el("gdRoomIconHOABINH").textContent=
+            ICON.roomHoaBinh;
+    }
+
+
+    if(el("gdRoomIconHANHPHUC")){
+
+        el("gdRoomIconHANHPHUC").textContent=
+            ICON.roomHanhPhuc;
+    }
+
+
+    if(el("gdGraduationIcon")){
+
+        el("gdGraduationIcon").textContent=
+            ICON.graduation;
+    }
+
+
+    if(el("gdPracticeIcon")){
+
+        el("gdPracticeIcon").textContent=
+            ICON.practice;
+    }
+
+
+    if(el("gdPrivacyIcon")){
+
+        el("gdPrivacyIcon").textContent=
+            ICON.lock;
+    }
+
+
+    if(el("gdFilterSubmissionIcon")){
+
+        el("gdFilterSubmissionIcon").textContent=
+            ICON.submission;
+    }
+
+
+    if(el("gdFilterGradeIcon")){
+
+        el("gdFilterGradeIcon").textContent=
+            ICON.grade;
+    }
+
+
+    if(el("gdFilterCommentIcon")){
+
+        el("gdFilterCommentIcon").textContent=
+            ICON.comment;
+    }
+
+
+    if(el("gdFilterGiftIcon")){
+
+        el("gdFilterGiftIcon").textContent=
+            ICON.gift;
+    }
+
+
+    if(el("gdBannerHOABINH")){
+
+        el("gdBannerHOABINH").src=
+            CONFIG.banners.HOABINH;
+    }
+
+
+    if(el("gdBannerHANHPHUC")){
+
+        el("gdBannerHANHPHUC").src=
+            CONFIG.banners.HANHPHUC;
+    }
+
+
+    const graduationButton=
+        document.querySelector(
+            "#lectureHallPage .gd-graduation-button"
+        );
+
+
+    if(graduationButton){
+
+        graduationButton.href=
+            CONFIG.graduationExamUrl;
+    }
+
+
+    const practiceButton=
+        document.querySelector(
+            "#lectureHallPage .gd-practice-button"
+        );
+
+
+    if(practiceButton){
+
+        practiceButton.href=
+            CONFIG.practiceRoomUrl;
+    }
+
+}
+
+
+
+/* =========================================================
+   CSV
+========================================================= */
+
+function parseCSV(text){
+
+    text=
+        String(text || "")
+        .replace(
+            /^\uFEFF/,
+            ""
+        );
+
+
+    const rows=[];
+
+    let row=[];
+    let value="";
+    let quoted=false;
+
+
+    for(
+        let i=0;
+        i<text.length;
+        i++
+    ){
+
+        const char=
+            text[i];
+
+
+        if(char === '"'){
+
+            if(
+                quoted &&
+                text[i+1] === '"'
+            ){
+
+                value += '"';
+                i++;
+
+            }else{
+
+                quoted=
+                    !quoted;
+            }
+
+            continue;
+        }
+
+
+        if(
+            char === "," &&
+            !quoted
+        ){
+
+            row.push(value);
+
+            value="";
+
+            continue;
+        }
+
+
+        if(
+            (
+                char === "\n" ||
+                char === "\r"
+            )
+            &&
+            !quoted
+        ){
+
+            if(
+                char === "\r" &&
+                text[i+1] === "\n"
+            ){
+
+                i++;
+            }
+
+
+            row.push(value);
+
+
+            if(
+                row.some(
+                    function(cell){
+
+                        return(
+                            clean(cell) !== ""
+                        );
+                    }
+                )
+            ){
+
+                rows.push(row);
+            }
+
+
+            row=[];
+            value="";
+
+            continue;
+        }
+
+
+        value += char;
+    }
+
+
+    row.push(value);
+
+
+    if(
+        row.some(
+            function(cell){
+
+                return(
+                    clean(cell) !== ""
+                );
+            }
+        )
+    ){
+
+        rows.push(row);
+    }
+
+
+    return rows;
+}
+
+
+
+/* =========================================================
+   COLUMN
+========================================================= */
+
+function findColumn(
+    headers,
+    aliases
+){
+
+    const normalized=
+        (headers || [])
+        .map(
+            normalizeText
+        );
+
+
+    for(
+        const alias
+        of aliases
+    ){
+
+        const wanted=
+            normalizeText(alias);
+
+
+        const exact=
+            normalized.indexOf(
+                wanted
+            );
+
+
+        if(exact >= 0){
+
+            return exact;
+        }
+    }
+
+
+    for(
+        const alias
+        of aliases
+    ){
+
+        const wanted=
+            normalizeText(alias);
+
+
+        const found=
+            normalized.findIndex(
+                function(header){
+
+                    return(
+                        header &&
+                        header.includes(
+                            wanted
+                        )
+                    );
+                }
+            );
+
+
+        if(found >= 0){
+
+            return found;
+        }
+    }
+
+
+    return -1;
+}
+
+
+
+/* =========================================================
+   FETCH
+========================================================= */
+
+async function fetchText(url){
+
+    const controller=
+        typeof AbortController !==
+        "undefined"
+        ?
+        new AbortController()
+        :
+        null;
+
+
+    const timer=
+        controller
+        ?
+        setTimeout(
+            function(){
+
+                controller.abort();
+
+            },
+            CONFIG.requestTimeout
+        )
+        :
+        null;
+
+
+    try{
+
+        const response=
+            await fetch(
+                url,
+                {
+                    cache:"no-store",
+
+                    signal:
+                        controller
+                        ?
+                        controller.signal
+                        :
+                        undefined
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
+        }
+
+
+        return await response.text();
+
+
+    }finally{
+
+        if(timer){
+
+            clearTimeout(timer);
+        }
+    }
+}
+
+
+
+/* =========================================================
+   HOCVIEN
+========================================================= */
+
+function detectDirectoryColumns(headers){
+
+    return{
+
+        code:
+            findColumn(
+                headers,
+                [
+                    "Mã học viên",
+                    "Ma hoc vien",
+                    "Mã HV",
+                    "Ma HV",
+                    "Số báo danh",
+                    "So bao danh",
+                    "SBD"
+                ]
+            ),
+
+        name:
+            findColumn(
+                headers,
+                [
+                    "Họ và tên",
+                    "Ho va ten",
+                    "Họ tên",
+                    "Ho ten",
+                    "Tên học viên",
+                    "Ten hoc vien"
+                ]
+            ),
+
+        group:
+            findColumn(
+                headers,
+                [
+                    "Tổ",
+                    "To"
+                ]
+            ),
+
+        course:
+            findColumn(
+                headers,
+                [
+                    "Khoá",
+                    "Khóa",
+                    "Khoa"
+                ]
+            ),
+
+        status:
+            findColumn(
+                headers,
+                [
+                    "Trạng thái",
+                    "Trang thai",
+                    "Status"
+                ]
+            )
+
+    };
+}
+
+
+
+function mapDirectoryRows(rows){
+
+    const result=
+        new Map();
+
+
+    if(
+        !rows ||
+        rows.length < 2
+    ){
+
+        return result;
+    }
+
+
+    const columns=
+        detectDirectoryColumns(
+            rows[0]
+        );
+
+
+    if(columns.code < 0){
+
+        throw new Error(
+            "Không tìm thấy cột Mã học viên trong HocVien."
+        );
+    }
+
+
+    for(
+        let i=1;
+        i<rows.length;
+        i++
+    ){
+
+        const row=
+            rows[i];
+
+
+        const code=
+            normalizeCode(
+                row[columns.code]
+            );
+
+
+        if(!code){
+
+            continue;
+        }
+
+
+        result.set(
+            code,
+            {
+
+                code:code,
+
+                name:
+                    columns.name >= 0
+                    ?
+                    clean(
+                        row[columns.name]
+                    )
+                    :
+                    "",
+
+                group:
+                    columns.group >= 0
+                    ?
+                    clean(
+                        row[columns.group]
+                    )
+                    :
+                    "",
+
+                course:
+                    columns.course >= 0
+                    ?
+                    clean(
+                        row[columns.course]
+                    )
+                    :
+                    "",
+
+                status:
+                    columns.status >= 0
+                    ?
+                    normalizeStatus(
+                        row[columns.status]
+                    )
+                    :
+                    "",
+
+                legacy:false
+
+            }
+        );
+    }
+
+
+    return result;
+}
+
+
+
+async function loadDirectory(){
+
+    if(state.directory){
+
+        return state.directory;
+    }
+
+
+    if(state.directoryPromise){
+
+        return state.directoryPromise;
+    }
+
+
+    state.directoryPromise=
+        (async function(){
+
+            const text=
+                await fetchText(
+                    CONFIG.studentDirectoryCsv
+                );
+
+
+            const directory=
+                mapDirectoryRows(
+                    parseCSV(text)
+                );
+
+
+            if(!directory.size){
+
+                throw new Error(
+                    "Danh sách HocVien trống."
+                );
+            }
+
+
+            state.directory=
+                directory;
+
+
+            return directory;
+
+        })();
+
+
+    try{
+
+        return await state.directoryPromise;
+
+    }finally{
+
+        state.directoryPromise=
+            null;
+    }
+}
+
+
+
+/* =========================================================
+   XEPHANG LEGACY
+========================================================= */
+
+function detectLegacyDirectoryColumns(headers){
+
+    return{
+
+        code:
+            findColumn(
+                headers,
+                [
+                    "Mã học viên",
+                    "Ma hoc vien",
+                    "Mã HV",
+                    "Ma HV",
+                    "Số báo danh",
+                    "So bao danh",
+                    "SBD"
+                ]
+            ),
+
+        name:
+            findColumn(
+                headers,
+                [
+                    "Họ và tên",
+                    "Ho va ten",
+                    "Họ tên",
+                    "Ho ten",
+                    "Tên học viên",
+                    "Ten hoc vien"
+                ]
+            )
+
+    };
+}
+
+
+
+function mapLegacyDirectoryRows(rows){
+
+    const result=
+        new Map();
+
+
+    if(
+        !rows ||
+        rows.length < 2
+    ){
+
+        return result;
+    }
+
+
+    const columns=
+        detectLegacyDirectoryColumns(
+            rows[0]
+        );
+
+
+    if(columns.code < 0){
+
+        throw new Error(
+            "Không tìm thấy cột Mã học viên trong XepHang."
+        );
+    }
+
+
+    for(
+        let i=1;
+        i<rows.length;
+        i++
+    ){
+
+        const row=
+            rows[i];
+
+
+        const code=
+            normalizeCode(
+                row[columns.code]
+            );
+
+
+        if(!code){
+
+            continue;
+        }
+
+
+        result.set(
+            code,
+            {
+
+                code:code,
+
+                name:
+                    columns.name >= 0
+                    ?
+                    clean(
+                        row[columns.name]
+                    )
+                    :
+                    "",
+
+                group:"",
+                course:"",
+                status:"",
+
+                legacy:true
+
+            }
+        );
+    }
+
+
+    return result;
+}
+
+
+
+async function loadLegacyDirectory(){
+
+    if(state.legacyDirectory){
+
+        return state.legacyDirectory;
+    }
+
+
+    if(state.legacyDirectoryPromise){
+
+        return state.legacyDirectoryPromise;
+    }
+
+
+    state.legacyDirectoryPromise=
+        (async function(){
+
+            const text=
+                await fetchText(
+                    CONFIG.legacyDirectoryCsv
+                );
+
+
+            const directory=
+                mapLegacyDirectoryRows(
+                    parseCSV(text)
+                );
+
+
+            state.legacyDirectory=
+                directory;
+
+
+            return directory;
+
+        })();
+
+
+    try{
+
+        return await state.legacyDirectoryPromise;
+
+    }finally{
+
+        state.legacyDirectoryPromise=
+            null;
+    }
+}
+
+
+
+/* =========================================================
+   STATUS HOCVIEN
+========================================================= */
+
+function getStudentStatusMessage(student){
+
+    if(!student){
+
+        return{
+            allowed:false,
+            type:"error",
+            text:
+                "Không tìm thấy Mã học viên này trong hệ thống."
+        };
+    }
+
+
+    const status=
+        normalizeStatus(
+            student.status
+        );
+
+
+    /*
+       ACTIVE hoặc ô trạng thái trống
+       được chấp nhận trong giai đoạn chuyển tiếp.
+    */
+
+    if(
+        status === "ACTIVE" ||
+        status === ""
+    ){
+
+        return{
+            allowed:true,
+            type:"success",
+            text:""
+        };
+    }
+
+
+    if(status === "PENDING"){
+
+        return{
+            allowed:false,
+            type:"warning",
+            text:
+                "Mã học viên này chưa được kích hoạt."
+        };
+    }
+
+
+    if(status === "PAUSED"){
+
+        return{
+            allowed:false,
+            type:"warning",
+            text:
+                "Mã học viên này hiện đang tạm dừng."
+        };
+    }
+
+
+    if(status === "GRADUATED"){
+
+        return{
+            allowed:false,
+            type:"warning",
+            text:
+                "Mã học viên này đã chuyển sang trạng thái tốt nghiệp."
+        };
+    }
+
+
+    return{
+        allowed:false,
+        type:"warning",
+        text:
+            "Mã học viên hiện không ở trạng thái hoạt động."
+    };
+}
+
+
+
+/* =========================================================
+   PRIORITY
+========================================================= */
+
+function priorityCsvUrl(){
+
+    return(
+
+        "https://docs.google.com/spreadsheets/d/"
+
+        +
+
+        CONFIG.prioritySpreadsheetId
+
+        +
+
+        "/gviz/tq?tqx=out:csv&sheet="
+
+        +
+
+        encodeURIComponent(
+            CONFIG.prioritySheetName
+        )
+
+        +
+
+        "&cb="
+
+        +
+
+        Date.now()
+
+    );
+}
+
+
+
+function mapPriorityCodes(rows){
+
+    const result=
+        new Set();
+
+
+    const ignoredHeaders=
+        new Set([
+            "MAHOCVIEN",
+            "MAHV",
+            "SBD",
+            "SOBAODANH",
+            "STT",
+            "HOTEN",
+            "HOVATEN"
+        ]);
+
+
+    (rows || [])
+    .forEach(
+        function(row){
+
+            (row || [])
+            .forEach(
+                function(cell){
+
+                    const value=
+                        normalizeCode(cell);
+
+
+                    if(!value){
+
+                        return;
+                    }
+
+
+                    const headerKey=
+                        normalizeText(value)
+
+                        .replace(
+                            /[^a-z0-9]/g,
+                            ""
+                        )
+
+                        .toUpperCase();
+
+
+                    if(
+                        ignoredHeaders.has(
+                            headerKey
+                        )
+                    ){
+
+                        return;
+                    }
+
+
+                    result.add(value);
+
+                }
+            );
+
+        }
+    );
+
+
+    return result;
+}
+
+
+
+async function loadPriorityCodes(){
+
+    if(state.priorityCodes){
+
+        return state.priorityCodes;
+    }
+
+
+    if(state.priorityPromise){
+
+        return state.priorityPromise;
+    }
+
+
+    state.priorityPromise=
+        (async function(){
+
+            const text=
+                await fetchText(
+                    priorityCsvUrl()
+                );
+
+
+            const codes=
+                mapPriorityCodes(
+                    parseCSV(text)
+                );
+
+
+            state.priorityCodes=
+                codes;
+
+
+            return codes;
+
+        })();
+
+
+    try{
+
+        return await state.priorityPromise;
+
+    }finally{
+
+        state.priorityPromise=
+            null;
+    }
+}
+
+
+
+async function isPriorityStudent(code){
+
+    code=
+        normalizeCode(code);
+
+
+    if(!code){
+
+        return false;
+    }
+
+
+    try{
+
+        const codes=
+            await loadPriorityCodes();
+
+
+        return codes.has(code);
+
+
+    }catch(error){
+
+        console.warn(
+            "[Giang Duong Priority]",
+            error
+        );
+
+
+        return false;
+    }
+}
+
+
+
+/* =========================================================
+   PHÂN PHÒNG
+========================================================= */
+
+function roomForCode(code, preferredRoom){
+
+    code=
+        normalizeCode(code);
+
+
+    if(
+        preferredRoom ===
+        "HANHPHUC" &&
+        CONFIG.rooms.HANHPHUC
+        .allowedSuffixes
+        .some(
+            function(suffix){
+                return code.endsWith(
+                    suffix
+                );
+            }
+        )
+    ){
+        return "HANHPHUC";
+    }
+    const hoaBinh=
+        CONFIG.rooms
+        .HOABINH
+        .allowedSuffixes
+        .some(
+            function(suffix){
+
+                return code.endsWith(
+                    suffix
+                );
+            }
+        );
+
+
+    if(hoaBinh){
+
+        return "HOABINH";
+    }
+
+
+    const hanhPhuc=
+        CONFIG.rooms
+        .HANHPHUC
+        .allowedSuffixes
+        .some(
+            function(suffix){
+
+                return code.endsWith(
+                    suffix
+                );
+            }
+        );
+
+
+    if(hanhPhuc){
+
+        return "HANHPHUC";
+    }
+
+
+    return "";
+}
+
+
+
+/* =========================================================
+   VIETNAM TIME
+========================================================= */
+
+function getVietnamTime(){
+
+    const parts=
+        new Intl.DateTimeFormat(
+            "en-US",
+            {
+                timeZone:
+                    CONFIG.timeZone,
+
+                weekday:
+                    "short",
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit",
+
+                hourCycle:
+                    "h23"
+            }
+        )
+        .formatToParts(
+            new Date()
+        );
+
+
+    const data={};
+
+
+    parts.forEach(
+        function(part){
+
+            data[part.type]=
+                part.value;
+        }
+    );
+
+
+    const dayMap={
+
+        Sun:0,
+        Mon:1,
+        Tue:2,
+        Wed:3,
+        Thu:4,
+        Fri:5,
+        Sat:6
+
+    };
+
+
+    return{
+
+        day:
+            dayMap[data.weekday],
+
+        hour:
+            Number(data.hour),
+
+        minute:
+            Number(data.minute)
+
+    };
+}
+
+
+
+/* =========================================================
+   SCHEDULE
+========================================================= */
+
+function isRoomScheduledLive(room){
+
+    const schedule=
+        CONFIG.schedules[room];
+
+
+    const now=
+        getVietnamTime();
+
+
+    if(
+        now.day !==
+        schedule.dayOfWeek
+    ){
+
+        return false;
+    }
+
+
+    const current=
+        now.hour * 60 +
+        now.minute;
+
+
+    const start=
+        schedule.startHour * 60 +
+        schedule.startMinute;
+
+
+    const end=
+        schedule.endHour * 60 +
+        schedule.endMinute;
+
+
+    return(
+        current >= start &&
+        current < end
+    );
+}
+
+
+
+/* =========================================================
+   REAL MEET STATUS
+========================================================= */
+
+async function loadRealMeetStatus(){
+
+    if(
+        !CONFIG.liveMeetStatus.enabled ||
+        !CONFIG.liveMeetStatus.endpoint
+    ){
+
+        return null;
+    }
+
+
+    try{
+
+        const text=
+            await fetchText(
+                CONFIG.liveMeetStatus.endpoint
+            );
+
+
+        const data=
+            JSON.parse(text);
+
+
+        return{
+
+            HOABINH:
+                Boolean(data.HOABINH),
+
+            HANHPHUC:
+                Boolean(data.HANHPHUC)
+
+        };
+
+
+    }catch(error){
+
+        return null;
+    }
+}
+
+
+
+/* =========================================================
+   ROOM STATUS
+========================================================= */
+
+function setRoomStatus(
+    room,
+    active
+){
+
+    const roomElement=
+        el(
+            "gdRoom" +
+            room
+        );
+
+
+    const badge=
+        el(
+            "gdStatus" +
+            room
+        );
+
+
+    const text=
+        el(
+            "gdStatusText" +
+            room
+        );
+
+
+    if(roomElement){
+
+        roomElement.classList.toggle(
+            "live",
+            active
+        );
+    }
+
+
+    if(badge){
+
+        badge.classList.toggle(
+            "live",
+            active
+        );
+    }
+
+
+    if(text){
+
+        text.textContent=
+            active
+            ?
+            "ĐANG HOẠT ĐỘNG"
+            :
+            "CHƯA HOẠT ĐỘNG";
+    }
+}
+
+
+
+/* =========================================================
+   MINH HỒNG
+========================================================= */
+
+function getMinhHongContextAPI(){
+
+    const api=
+        window.OCDMinhHongContext;
+
+
+    if(
+        api &&
+        typeof api.set === "function"
+    ){
+
+        return api;
+    }
+
+
+    return null;
+}
+
+
+
+function getMinhHongSessionAPI(){
+
+    const api=
+        window.OCDStudentSession;
+
+
+    if(
+        api &&
+        typeof api.confirmStudent === "function"
+    ){
+
+        return api;
+    }
+
+
+    return null;
+}
+
+
+
+function confirmMinhHongStudent(code){
+
+    code=
+        normalizeCode(code);
+
+
+    if(!code){
+
+        return;
+    }
+
+
+    const api=
+        getMinhHongSessionAPI();
+
+
+    if(!api){
+
+        return;
+    }
+
+
+    try{
+
+        api.confirmStudent(
+            code,
+            "GiangDuong"
+        );
+
+
+    }catch(error){
+
+        console.warn(
+            "[Giang Duong Minh Hong Session]",
+            error
+        );
+    }
+}
+
+
+
+function resetMinhHongState(){
+
+    minhHongState.studentCode="";
+    minhHongState.studentName="";
+    minhHongState.group="";
+    minhHongState.course="";
+    minhHongState.studentStatus="";
+
+    minhHongState.identitySource="";
+
+    minhHongState.priorityStudent=false;
+
+    minhHongState.selectedRoom="";
+    minhHongState.assignedRoom="";
+
+    minhHongState.verified=false;
+
+    minhHongState.correctRoom=false;
+    minhHongState.wrongRoom=false;
+
+    minhHongState.accessGranted=false;
+
+    minhHongState.roomLive=false;
+    minhHongState.meetReady=false;
+
+    minhHongState.lastReason="";
+}
+
+
+
+function setMinhHongStudent(
+    student,
+    source
+){
+
+    student=
+        student || {};
+
+
+    minhHongState.studentName=
+        clean(
+            student.name
+        );
+
+
+    minhHongState.group=
+        clean(
+            student.group
+        );
+
+
+    minhHongState.course=
+        clean(
+            student.course
+        );
+
+
+    minhHongState.studentStatus=
+        clean(
+            student.status
+        );
+
+
+    minhHongState.identitySource=
+        clean(source);
+}
+
+
+
+function getRoomLiveState(room){
+
+    if(!room){
+
+        return false;
+    }
+
+
+    const badge=
+        el(
+            "gdStatus" +
+            room
+        );
+
+
+    return Boolean(
+        badge &&
+        badge.classList.contains(
+            "live"
+        )
+    );
+}
+
+
+
+function buildMinhHongContext(){
+
+    const selectedRoom=
+        minhHongState.selectedRoom;
+
+
+    const assignedRoom=
+        minhHongState.assignedRoom;
+
+
+    const selectedRoomName=
+        selectedRoom &&
+        CONFIG.rooms[selectedRoom]
+        ?
+        CONFIG.rooms[selectedRoom]
+        .displayName
+        :
+        "";
+
+
+    const assignedRoomName=
+        assignedRoom &&
+        CONFIG.rooms[assignedRoom]
+        ?
+        CONFIG.rooms[assignedRoom]
+        .displayName
+        :
+        "";
+
+
+    return{
+
+        page:
+            "GiangDuong",
+
+        studentCode:
+            minhHongState.studentCode,
+
+        data:{
+
+            studentName:
+                minhHongState.studentName,
+
+            group:
+                minhHongState.group,
+
+            course:
+                minhHongState.course,
+
+            studentStatus:
+                minhHongState.studentStatus,
+
+            identitySource:
+                minhHongState.identitySource,
+
+            priorityStudent:
+                minhHongState.priorityStudent,
+
+            selectedRoom:
+                selectedRoom,
+
+            selectedRoomName:
+                selectedRoomName,
+
+            assignedRoom:
+                assignedRoom,
+
+            assignedRoomName:
+                assignedRoomName,
+
+            roomLive:
+                minhHongState.roomLive,
+
+            meetReady:
+                minhHongState.meetReady,
+
+            accessGranted:
+                minhHongState.accessGranted,
+
+            lastReason:
+                minhHongState.lastReason
+
+        },
+
+
+        conditions:{
+
+            student_verified:
+                minhHongState.verified,
+
+            priority_student:
+                minhHongState.priorityStudent,
+
+            room_hoabinh:
+                assignedRoom ===
+                "HOABINH",
+
+            room_hanhphuc:
+                assignedRoom ===
+                "HANHPHUC",
+
+            selected_hoabinh:
+                selectedRoom ===
+                "HOABINH",
+
+            selected_hanhphuc:
+                selectedRoom ===
+                "HANHPHUC",
+
+            correct_room:
+                minhHongState.correctRoom,
+
+            wrong_room:
+                minhHongState.wrongRoom,
+
+            room_live:
+                minhHongState.roomLive,
+
+            room_closed:
+                minhHongState.verified &&
+                minhHongState.correctRoom &&
+                !minhHongState.roomLive,
+
+            meet_ready:
+                minhHongState.meetReady,
+
+            meet_missing:
+                minhHongState.verified &&
+                minhHongState.correctRoom &&
+                !minhHongState.meetReady,
+
+            access_granted:
+                minhHongState.accessGranted,
+
+            access_denied:
+                minhHongState.verified &&
+                !minhHongState.accessGranted,
+
+            legacy_student:
+                minhHongState.identitySource ===
+                "XepHang",
+
+            registry_student:
+                minhHongState.identitySource ===
+                "HocVien"
+
+        }
+
+    };
+}
+
+
+
+function syncMinhHongContext(){
+
+    if(
+        !minhHongState.studentCode ||
+        !minhHongState.verified
+    ){
+
+        return false;
+    }
+
+
+    const api=
+        getMinhHongContextAPI();
+
+
+    if(!api){
+
+        return false;
+    }
+
+
+    try{
+
+        api.set(
+            buildMinhHongContext(),
+            "GiangDuong"
+        );
+
+
+        return true;
+
+
+    }catch(error){
+
+        console.warn(
+            "[Giang Duong Minh Hong Context]",
+            error
+        );
+
+
+        return false;
+    }
+}
+
+
+
+function syncMinhHongContextLater(
+    attempt
+){
+
+    attempt=
+        Number(attempt || 0);
+
+
+    if(
+        syncMinhHongContext()
+    ){
+
+        return;
+    }
+
+
+    if(attempt >= 12){
+
+        return;
+    }
+
+
+    setTimeout(
+        function(){
+
+            syncMinhHongContextLater(
+                attempt + 1
+            );
+
+        },
+        250
+    );
+}
+
+
+
+function refreshMinhHongRoomState(){
+
+    if(
+        !minhHongState.verified ||
+        !minhHongState.selectedRoom
+    ){
+
+        return;
+    }
+
+
+    minhHongState.roomLive=
+        getRoomLiveState(
+            minhHongState.selectedRoom
+        );
+
+
+    const config=
+        getRoomConfig(
+            minhHongState.selectedRoom
+        );
+
+
+    minhHongState.meetReady=
+        Boolean(
+            config &&
+            clean(
+                config.meetUrl
+            )
+        );
+
+
+    if(
+        minhHongState.correctRoom
+    ){
+
+        minhHongState.lastReason=
+            minhHongState.roomLive
+            ?
+            "room_live"
+            :
+            "room_closed";
+    }
+
+
+    syncMinhHongContext();
+}
+
+
+
+/* =========================================================
+   UPDATE ROOM STATUS
+========================================================= */
+
+async function updateRoomStatuses(){
+
+    const realStatus=
+        await loadRealMeetStatus();
+
+
+    const hoaBinhActive=
+
+        isRoomScheduledLive(
+            "HOABINH"
+        )
+
+        ||
+
+        Boolean(
+            realStatus &&
+            realStatus.HOABINH
+        );
+
+
+    const hanhPhucActive=
+
+        isRoomScheduledLive(
+            "HANHPHUC"
+        )
+
+        ||
+
+        Boolean(
+            realStatus &&
+            realStatus.HANHPHUC
+        );
+
+
+    setRoomStatus(
+        "HOABINH",
+        hoaBinhActive
+    );
+
+
+    setRoomStatus(
+        "HANHPHUC",
+        hanhPhucActive
+    );
+
+
+    const header=
+        el("gdHeaderStatus");
+
+
+    const headerText=
+        el("gdHeaderStatusText");
+
+
+    const anyActive=
+        hoaBinhActive ||
+        hanhPhucActive;
+
+
+    if(header){
+
+        header.classList.toggle(
+            "live",
+            anyActive
+        );
+    }
+
+
+    if(headerText){
+
+        if(
+            hoaBinhActive &&
+            hanhPhucActive
+        ){
+
+            headerText.textContent=
+                "Cả hai phòng học đang hoạt động";
+
+        }else if(hoaBinhActive){
+
+            headerText.textContent=
+                "Phòng học Hoà Bình đang hoạt động";
+
+        }else if(hanhPhucActive){
+
+            headerText.textContent=
+                "Phòng học Hạnh Phúc đang hoạt động";
+
+        }else{
+
+            headerText.textContent=
+
+                "Hoà Bình: Thứ Sáu 19:00"
+
+                +
+
+                CHAR.dash
+
+                +
+
+                "21:00"
+
+                +
+
+                " "
+
+                +
+
+                CHAR.bullet
+
+                +
+
+                " Hạnh Phúc: Thứ Bảy 19:00"
+
+                +
+
+                CHAR.dash
+
+                +
+
+                "21:00";
+        }
+    }
+
+
+    refreshMinhHongRoomState();
+}
+
+
+
+/* =========================================================
+   ROOM CONFIG
+========================================================= */
+
+function getRoomConfig(room){
+
+    return{
+
+        room:room,
+
+        displayName:
+            CONFIG.rooms[
+                room
+            ].displayName,
+
+        meetUrl:
+            room === "HOABINH"
+            ?
+            CONFIG.hoaBinhMeetUrl
+            :
+            CONFIG.hanhPhucMeetUrl,
+
+        input:
+            el(
+                "gdCode" +
+                room
+            ),
+
+        button:
+            el(
+                "gdVerify" +
+                room
+            ),
+
+        message:
+            el(
+                "gdMessage" +
+                room
+            ),
+
+        access:
+            el(
+                "gdMeetAccess" +
+                room
+            )
+
+    };
+}
+
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function setRoomMessage(
+    config,
+    type,
+    text
+){
+
+    if(!config.message){
+
+        return;
+    }
+
+
+    config.message.className=
+        "gd-room-message show " +
+        type;
+
+
+    config.message.textContent=
+        text;
+}
+
+
+
+function clearRoom(config){
+
+    if(config.access){
+
+        config.access.classList.remove(
+            "show"
+        );
+
+
+        config.access.replaceChildren();
+    }
+
+
+    if(config.message){
+
+        config.message.className=
+            "gd-room-message";
+
+
+        config.message.textContent=
+            "";
+    }
+}
+
+
+
+/* =========================================================
+   MEET ACCESS
+========================================================= */
+
+function showMeetAccess(
+    config,
+    student
+){
+
+    if(!config.access){
+
+        return;
+    }
+
+
+    config.access.replaceChildren();
+
+
+    if(
+        !clean(
+            config.meetUrl
+        )
+    ){
+
+        setRoomMessage(
+            config,
+            "warning",
+            "Mã học viên hợp lệ. Giáo viên chưa cài link Google Meet cho phòng này."
+        );
+
+
+        return;
+    }
+
+
+    const link=
+        document.createElement(
+            "a"
+        );
+
+
+    link.className=
+        "gd-meet-button";
+
+
+    link.href=
+        config.meetUrl;
+
+
+    link.target=
+        "_blank";
+
+
+    link.rel=
+        "noopener noreferrer";
+
+
+    link.textContent=
+
+        ICON.video
+
+        +
+
+        " VÀO "
+
+        +
+
+        config.displayName.toUpperCase();
+
+
+
+    const note=
+        document.createElement(
+            "div"
+        );
+
+
+    note.className=
+        "gd-meet-small";
+
+
+    if(
+        student &&
+        clean(student.name)
+    ){
+
+        note.textContent=
+            student.name +
+            " - Mã học viên đã được xác minh.";
+
+    }else{
+
+        note.textContent=
+            "Mã học viên đã được xác minh.";
+    }
+
+
+    config.access.appendChild(link);
+
+    config.access.appendChild(note);
+
+    config.access.classList.add(
+        "show"
+    );
+}
+
+
+
+/* =========================================================
+   VERIFY
+========================================================= */
+
+async function verifyStudent(room){
+
+    const config=
+        getRoomConfig(room);
+
+
+    if(
+        !config.input ||
+        !config.button
+    ){
+
+        return;
+    }
+
+
+    const code=
+        normalizeCode(
+            config.input.value
+        );
+
+
+    config.input.value=
+        code;
+
+
+    clearRoom(config);
+
+
+    resetMinhHongState();
+
+
+    minhHongState.studentCode=
+        code;
+
+
+    minhHongState.selectedRoom=
+        room;
+
+
+    minhHongState.roomLive=
+        getRoomLiveState(room);
+
+
+    minhHongState.meetReady=
+        Boolean(
+            clean(
+                config.meetUrl
+            )
+        );
+
+
+    if(!code){
+
+        setRoomMessage(
+            config,
+            "error",
+            "Vui lòng nhập Mã học viên."
+        );
+
+
+        config.input.focus();
+
+        return;
+    }
+
+
+    config.button.disabled=
+        true;
+
+
+    setRoomMessage(
+        config,
+        "loading",
+        "Đang xác minh Mã học viên..."
+    );
+
+
+    try{
+
+        /* =================================================
+           0. CENTRAL STUDENT STATUS GATE
+        ================================================= */
+
+        try{
+
+            const rewardSystem =
+                window.StudentRewardSystem;
+
+            if(
+                !rewardSystem ||
+                typeof rewardSystem.assertStudentActive !== "function"
+            ){
+
+                throw new Error(
+                    "Hệ thống trạng thái học viên chưa sẵn sàng."
+                );
+            }
+
+            await rewardSystem.assertStudentActive(
+                code,
+                {
+                    forceRefresh:true
+                }
+            );
+
+        }catch(accessError){
+
+            console.warn(
+                "[Giang Duong Student Status Gate]",
+                accessError
+            );
+
+            setRoomMessage(
+                config,
+                "warning",
+                clean(
+                    accessError &&
+                    accessError.message
+                )
+                ||
+                "Tài khoản học viên đang tạm dừng hoặc chưa được kích hoạt."
+            );
+
+            return;
+        }
+
+
+        /* =================================================
+           1. PRIORITY
+        ================================================= */
+
+        const priority=
+            await isPriorityStudent(
+                code
+            );
+
+
+        if(priority){
+
+            minhHongState.priorityStudent=
+                true;
+
+
+            minhHongState.verified=
+                true;
+
+
+            minhHongState.correctRoom=
+                true;
+
+
+            minhHongState.wrongRoom=
+                false;
+
+
+            minhHongState.assignedRoom=
+                room;
+
+
+            minhHongState.accessGranted=
+                true;
+
+
+            minhHongState.identitySource=
+                "Priority";
+
+
+            minhHongState.lastReason=
+                minhHongState.roomLive
+                ?
+                "room_live"
+                :
+                "room_closed";
+
+
+            confirmMinhHongStudent(
+                code
+            );
+
+
+            setRoomMessage(
+                config,
+                "success",
+                ICON.check +
+                " Xác minh thành công. Bạn có thể vào phòng học."
+            );
+
+
+            showMeetAccess(
+                config,
+                null
+            );
+
+
+            syncMinhHongContextLater(0);
+
+
+            return;
+        }
+
+
+
+        /* =================================================
+           2. HOCVIEN
+        ================================================= */
+
+        let registryStudent=null;
+
+
+        try{
+
+            const directory=
+                await loadDirectory();
+
+
+            registryStudent=
+                directory.get(code)
+                ||
+                null;
+
+
+        }catch(registryError){
+
+            console.error(
+                "[Giang Duong HocVien]",
+                registryError
+            );
+
+
+            setRoomMessage(
+                config,
+                "error",
+                "Chưa thể kết nối danh sách học viên. Vui lòng thử lại."
+            );
+
+
+            return;
+        }
+
+
+
+        let student=null;
+
+
+
+        if(registryStudent){
+
+            const accessStatus=
+                getStudentStatusMessage(
+                    registryStudent
+                );
+
+
+            if(
+                !accessStatus.allowed
+            ){
+
+                setRoomMessage(
+                    config,
+                    accessStatus.type,
+                    accessStatus.text
+                );
+
+
+                return;
+            }
+
+
+            student=
+                registryStudent;
+
+
+            setMinhHongStudent(
+                student,
+                "HocVien"
+            );
+
+
+        }else{
+
+            /* =============================================
+               CHỈ FALLBACK KHI HOCVIEN ĐÃ TẢI THÀNH CÔNG
+               VÀ KHÔNG CÓ MÃ
+            ============================================= */
+
+            let legacyDirectory;
+
+
+            try{
+
+                legacyDirectory=
+                    await loadLegacyDirectory();
+
+
+            }catch(legacyError){
+
+                console.error(
+                    "[Giang Duong XepHang]",
+                    legacyError
+                );
+
+
+                setRoomMessage(
+                    config,
+                    "error",
+                    "Chưa thể kiểm tra dữ liệu học viên cũ. Vui lòng thử lại."
+                );
+
+
+                return;
+            }
+
+
+            const legacyStudent=
+                legacyDirectory.get(code);
+
+
+            if(!legacyStudent){
+
+                setRoomMessage(
+                    config,
+                    "error",
+                    "Không tìm thấy Mã học viên này trong hệ thống."
+                );
+
+
+                return;
+            }
+
+
+            student=
+                legacyStudent;
+
+
+            setMinhHongStudent(
+                student,
+                "XepHang"
+            );
+        }
+
+
+
+        /* =================================================
+           ĐỊNH DANH THÀNH CÔNG
+        ================================================= */
+
+        minhHongState.verified=
+            true;
+
+
+        confirmMinhHongStudent(
+            code
+        );
+
+
+
+        /* =================================================
+           PHÂN PHÒNG
+        ================================================= */
+
+        const correctRoom=
+            roomForCode(code, room);
+
+
+        minhHongState.assignedRoom=
+            correctRoom;
+
+
+        if(!correctRoom){
+
+            minhHongState.correctRoom=
+                false;
+
+
+            minhHongState.wrongRoom=
+                false;
+
+
+            minhHongState.accessGranted=
+                false;
+
+
+            minhHongState.lastReason=
+                "room_not_assigned";
+
+
+            setRoomMessage(
+                config,
+                "error",
+                "Mã học viên hợp lệ nhưng chưa được phân quyền vào hai phòng học hiện tại."
+            );
+
+
+            syncMinhHongContextLater(0);
+
+
+            return;
+        }
+
+
+        if(
+            correctRoom !== room
+        ){
+
+            minhHongState.correctRoom=
+                false;
+
+
+            minhHongState.wrongRoom=
+                true;
+
+
+            minhHongState.accessGranted=
+                false;
+
+
+            minhHongState.lastReason=
+                "wrong_room";
+
+
+            setRoomMessage(
+                config,
+                "warning",
+
+                "Mã học viên này thuộc " +
+
+                CONFIG.rooms[
+                    correctRoom
+                ].displayName +
+
+                ". Vui lòng chọn đúng phòng học."
+            );
+
+
+            syncMinhHongContextLater(0);
+
+
+            return;
+        }
+
+
+
+        /* =================================================
+           ĐÚNG PHÒNG
+        ================================================= */
+
+        minhHongState.correctRoom=
+            true;
+
+
+        minhHongState.wrongRoom=
+            false;
+
+
+        minhHongState.accessGranted=
+            true;
+
+
+        minhHongState.roomLive=
+            getRoomLiveState(
+                room
+            );
+
+
+        minhHongState.meetReady=
+            Boolean(
+                clean(
+                    config.meetUrl
+                )
+            );
+
+
+        minhHongState.lastReason=
+            minhHongState.roomLive
+            ?
+            "room_live"
+            :
+            "room_closed";
+
+
+        const studentName=
+            clean(
+                student &&
+                student.name
+            );
+
+
+        setRoomMessage(
+            config,
+            "success",
+
+            ICON.check +
+
+            " Xác minh thành công" +
+
+            (
+                studentName
+                ?
+                ": " +
+                studentName +
+                "."
+                :
+                "."
+            )
+
+            +
+
+            " Bạn có thể vào phòng học."
+        );
+
+
+        showMeetAccess(
+            config,
+            student
+        );
+
+
+        syncMinhHongContextLater(0);
+
+
+    }catch(error){
+
+        console.error(
+            "[Giang Duong v1.7.0 Verify]",
+            error
+        );
+
+
+        setRoomMessage(
+            config,
+            "error",
+            "Chưa thể kết nối dữ liệu học viên. Vui lòng thử lại."
+        );
+
+
+    }finally{
+
+        config.button.disabled=
+            false;
+    }
+}
+
+
+
+/* =========================================================
+   STUDENT NAME FOR ACTIVITY
+========================================================= */
+
+function getStudentName(
+    code,
+    fallback
+){
+
+    fallback=
+        clean(fallback);
+
+
+    if(fallback){
+
+        return fallback;
+    }
+
+
+    code=
+        normalizeCode(code);
+
+
+    if(
+        state.directory &&
+        state.directory.has(code)
+    ){
+
+        const student=
+            state.directory.get(code);
+
+
+        if(
+            student &&
+            student.name
+        ){
+
+            return student.name;
+        }
+    }
+
+
+    if(
+        state.legacyDirectory &&
+        state.legacyDirectory.has(code)
+    ){
+
+        const student=
+            state.legacyDirectory.get(code);
+
+
+        if(
+            student &&
+            student.name
+        ){
+
+            return student.name;
+        }
+    }
+
+
+    return "Một học viên";
+}
+
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function parseDate(value){
+
+    value=
+        clean(value);
+
+
+    if(!value){
+
+        return null;
+    }
+
+
+    let match=
+        value.match(
+            /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})[\s,T]+(\d{1,2}):(\d{2})(?::(\d{2}))?/
+        );
+
+
+    if(match){
+
+        const date=
+            new Date(
+
+                Number(match[3]),
+
+                Number(match[2])-1,
+
+                Number(match[1]),
+
+                Number(match[4]),
+
+                Number(match[5]),
+
+                Number(match[6] || 0)
+
+            );
+
+
+        if(
+            !Number.isNaN(
+                date.getTime()
+            )
+        ){
+
+            return date;
+        }
+    }
+
+
+    const nativeDate=
+        new Date(value);
+
+
+    return Number.isNaN(
+        nativeDate.getTime()
+    )
+    ?
+    null
+    :
+    nativeDate;
+}
+
+
+
+function relativeTime(date){
+
+    if(!date){
+
+        return "Gần đây";
+    }
+
+
+    const diff=
+        Date.now() -
+        date.getTime();
+
+
+    const minute=
+        60000;
+
+    const hour=
+        minute * 60;
+
+    const day=
+        hour * 24;
+
+
+    if(diff < minute){
+
+        return "Vừa xong";
+    }
+
+
+    if(diff < hour){
+
+        return(
+            Math.floor(
+                diff / minute
+            )
+            +
+            " phút trước"
+        );
+    }
+
+
+    if(diff < day){
+
+        return(
+            Math.floor(
+                diff / hour
+            )
+            +
+            " giờ trước"
+        );
+    }
+
+
+    if(
+        diff <
+        day * 7
+    ){
+
+        return(
+            Math.floor(
+                diff / day
+            )
+            +
+            " ngày trước"
+        );
+    }
+
+
+    return date.toLocaleDateString(
+        "vi-VN"
+    );
+}
+
+
+
+/* =========================================================
+   SUBMISSION COLUMNS
+========================================================= */
+
+function detectSubmissionColumns(headers){
+
+    return{
+
+        time:
+            findColumn(
+                headers,
+                [
+                    "Dấu thời gian",
+                    "Timestamp",
+                    "Thời gian nộp",
+                    "Thời gian"
+                ]
+            ),
+
+        code:
+            findColumn(
+                headers,
+                [
+                    "Mã học viên",
+                    "Mã HV",
+                    "Số báo danh",
+                    "SBD"
+                ]
+            ),
+
+        name:
+            findColumn(
+                headers,
+                [
+                    "Họ và tên",
+                    "Họ tên",
+                    "Tên học viên"
+                ]
+            ),
+
+        score:
+            findColumn(
+                headers,
+                [
+                    "Điểm số",
+                    "Điểm"
+                ]
+            ),
+
+        comment:
+            findColumn(
+                headers,
+                [
+                    "Nhận xét",
+                    "Bình luận"
+                ]
+            )
+
+    };
+}
+
+
+
+/* =========================================================
+   SUBMISSION ACTIVITIES
+========================================================= */
+
+function mapSubmissionActivities(rows){
+
+    const result=[];
+
+
+    if(
+        rows.length < 2
+    ){
+
+        return result;
+    }
+
+
+    const columns=
+        detectSubmissionColumns(
+            rows[0]
+        );
+
+
+    for(
+        let i=1;
+        i<rows.length;
+        i++
+    ){
+
+        const row=
+            rows[i];
+
+
+        const code=
+            columns.code >= 0
+            ?
+            clean(
+                row[columns.code]
+            )
+            :
+            "";
+
+
+        const rawName=
+            columns.name >= 0
+            ?
+            clean(
+                row[columns.name]
+            )
+            :
+            "";
+
+
+        if(
+            !code &&
+            !rawName
+        ){
+
+            continue;
+        }
+
+
+        const name=
+            getStudentName(
+                code,
+                rawName
+            );
+
+
+        const date=
+            columns.time >= 0
+            ?
+            parseDate(
+                row[columns.time]
+            )
+            :
+            null;
+
+
+        result.push({
+
+            type:"submission",
+
+            name:name,
+
+            date:date,
+
+            reliable:true
+
+        });
+
+
+        if(
+            columns.score >= 0 &&
+            clean(
+                row[columns.score]
+            )
+        ){
+
+            result.push({
+
+                type:"grade",
+
+                name:name,
+
+                date:date,
+
+                reliable:false
+
+            });
+        }
+
+
+        if(
+            columns.comment >= 0 &&
+            clean(
+                row[columns.comment]
+            )
+        ){
+
+            result.push({
+
+                type:"comment",
+
+                name:name,
+
+                date:date,
+
+                reliable:false
+
+            });
+        }
+
+    }
+
+
+    return result;
+}
+
+
+
+/* =========================================================
+   GIFT
+========================================================= */
+
+function giftCsvUrl(){
+
+    return(
+
+        "https://docs.google.com/spreadsheets/d/"
+
+        +
+
+        CONFIG.rewardSpreadsheetId
+
+        +
+
+        "/gviz/tq?tqx=out:csv&sheet="
+
+        +
+
+        encodeURIComponent(
+            CONFIG.teacherGiftSheetName
+        )
+
+    );
+}
+
+
+
+function mapGiftActivities(rows){
+
+    const result=[];
+
+
+    if(
+        rows.length < 2
+    ){
+
+        return result;
+    }
+
+
+    const headers=
+        rows[0];
+
+
+    const timeColumn=
+        findColumn(
+            headers,
+            [
+                "Dấu thời gian",
+                "Timestamp",
+                "Thời gian",
+                "Ngày tặng"
+            ]
+        );
+
+
+    const codeColumn=
+        findColumn(
+            headers,
+            [
+                "Mã học viên",
+                "Mã HV",
+                "Số báo danh",
+                "SBD"
+            ]
+        );
+
+
+    const nameColumn=
+        findColumn(
+            headers,
+            [
+                "Họ và tên",
+                "Họ tên",
+                "Tên học viên"
+            ]
+        );
+
+
+    for(
+        let i=1;
+        i<rows.length;
+        i++
+    ){
+
+        const row=
+            rows[i];
+
+
+        const code=
+            codeColumn >= 0
+            ?
+            clean(
+                row[codeColumn]
+            )
+            :
+            "";
+
+
+        const rawName=
+            nameColumn >= 0
+            ?
+            clean(
+                row[nameColumn]
+            )
+            :
+            "";
+
+
+        if(
+            !code &&
+            !rawName
+        ){
+
+            continue;
+        }
+
+
+        result.push({
+
+            type:"gift",
+
+            name:
+                getStudentName(
+                    code,
+                    rawName
+                ),
+
+            date:
+                timeColumn >= 0
+                ?
+                parseDate(
+                    row[timeColumn]
+                )
+                :
+                null,
+
+            reliable:
+                timeColumn >= 0
+
+        });
+
+    }
+
+
+    return result;
+}
+
+
+
+/* =========================================================
+   ACTIVITY INFO
+========================================================= */
+
+function activityInfo(type){
+
+    switch(type){
+
+        case "submission":
+
+            return{
+
+                icon:
+                    ICON.submission,
+
+                label:
+                    "Nộp bài",
+
+                action:
+                    "vừa tải lên một bài tập mới."
+
+            };
+
+
+        case "grade":
+
+            return{
+
+                icon:
+                    ICON.grade,
+
+                label:
+                    "Chấm bài",
+
+                action:
+                    "vừa được giáo viên hoàn thành chấm bài."
+
+            };
+
+
+        case "comment":
+
+            return{
+
+                icon:
+                    ICON.comment,
+
+                label:
+                    "Bình luận",
+
+                action:
+                    "vừa được giáo viên bình luận bài."
+
+            };
+
+
+        case "gift":
+
+            return{
+
+                icon:
+                    ICON.gift,
+
+                label:
+                    "Tặng quà",
+
+                action:
+                    "vừa nhận được một phần quà."
+
+            };
+
+    }
+
+
+    return{
+
+        icon:
+            ICON.book,
+
+        label:
+            "Hoạt động",
+
+        action:
+            "vừa có hoạt động mới."
+
+    };
+}
+
+
+
+/* =========================================================
+   ACTIVITY NODE
+========================================================= */
+
+function buildActivityNode(activity){
+
+    const card=
+        document.createElement("article");
+
+    card.className=
+        "gd-lammo-card";
+
+    const photo=
+        document.createElement("button");
+
+    photo.type=
+        "button";
+
+    photo.className=
+        "gd-lammo-photo";
+
+    photo.setAttribute(
+        "aria-label",
+        "Xem lớn bản lâm của " + activity.name
+    );
+
+    if(activity.photo){
+
+        const img=
+            document.createElement("img");
+
+        img.loading=
+            "lazy";
+
+        img.decoding=
+            "async";
+
+        img.alt=
+            "Bản lâm của " + activity.name;
+
+        img.src=
+            lamMoImageUrl(activity.photo,600);
+
+        img.addEventListener(
+            "error",
+            function(){
+                if(!img.dataset.retry){
+                    img.dataset.retry="1";
+                    img.src=
+                        lamMoImageUrl(activity.photo,600,true);
+                }else{
+                    img.remove();
+                    photo.classList.add("is-error");
+                }
+            }
+        );
+
+        photo.appendChild(img);
+
+    }else{
+
+        photo.classList.add("is-error");
+    }
+
+    photo.addEventListener(
+        "click",
+        function(){
+            openLamMoViewer(activity);
+        }
+    );
+
+    const heart=
+        document.createElement("button");
+
+    heart.type=
+        "button";
+
+    heart.className=
+        "gd-lammo-heart";
+
+    paintLamMoHeart(
+        heart,
+        activity.liked,
+        activity.hearts
+    );
+
+    heart.addEventListener(
+        "click",
+        function(){
+            toggleLamMoHeart(
+                activity,
+                heart
+            );
+        }
+    );
+
+    const info=
+        document.createElement("div");
+
+    info.className=
+        "gd-lammo-info";
+
+    const name=
+        document.createElement("div");
+
+    name.className=
+        "gd-lammo-name";
+
+    name.textContent=
+        activity.name;
+
+    name.title=
+        activity.name;
+
+    const sub=
+        document.createElement("div");
+
+    sub.className=
+        "gd-lammo-sub";
+
+    sub.textContent=
+        [
+            activity.group ? "Tổ " + activity.group : "",
+            activity.course ? "Khóa " + activity.course : ""
+        ]
+        .filter(Boolean)
+        .join(" " + String.fromCharCode(183) + " ")
+        ||
+        "Học viên";
+
+    /* v1.9.1: bấm tên bản lâm -> mở đúng bản mẫu trên trang Thư viện lâm mô */
+    const title=
+        document.createElement(activity.lessonId ? "a" : "div");
+
+    title.className=
+        "gd-lammo-title";
+
+    if(activity.lessonId){
+
+        title.href=
+            LAMMO.page + "?lm=" + encodeURIComponent(activity.lessonId);
+
+        title.title=
+            "Xem bản mẫu trên Thư viện lâm mô";
+    }
+
+    title.textContent=
+        String.fromCharCode(8220) + (activity.title || "Lâm mô") + String.fromCharCode(8221);
+
+    const time=
+        document.createElement("div");
+
+    time.className=
+        "gd-lammo-time";
+
+    time.textContent=
+        "Góp " +
+        (
+            activity.reliable
+            ?
+            relativeTime(activity.date)
+            :
+            "gần đây"
+        );
+
+    info.appendChild(name);
+    info.appendChild(sub);
+    info.appendChild(title);
+    info.appendChild(time);
+
+    card.appendChild(photo);
+    card.appendChild(heart);
+    card.appendChild(info);
+
+    return card;
+}
+
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function filteredActivities(){
+
+    if(
+        state.activityFilter ===
+        "all"
+    ){
+
+        return state.activities;
+    }
+
+
+    return state.activities.filter(
+        function(item){
+
+            return(
+                item.type ===
+                state.activityFilter
+            );
+        }
+    );
+}
+
+
+
+/* =========================================================
+   RENDER ACTIVITIES
+========================================================= */
+
+function renderActivities(){
+
+    const feed=
+        el("gdActivityFeed");
+
+
+    const wrap=
+        el("gdLoadMoreWrap");
+
+
+    if(
+        !feed ||
+        !wrap
+    ){
+
+        return;
+    }
+
+
+    const activities=
+        filteredActivities();
+
+
+    feed.replaceChildren();
+
+
+    if(!activities.length){
+
+        const empty=
+            document.createElement(
+                "div"
+            );
+
+
+        empty.className=
+            "gd-empty";
+
+
+        empty.textContent=
+            "Chưa có hoạt động để hiển thị.";
+
+
+        feed.appendChild(empty);
+
+
+        wrap.classList.remove(
+            "show"
+        );
+
+
+        return;
+    }
+
+
+    const limit=
+        Math.min(
+            state.visibleActivityCount,
+            activities.length
+        );
+
+
+    const fragment=
+        document.createDocumentFragment();
+
+
+    for(
+        let i=0;
+        i<limit;
+        i++
+    ){
+
+        fragment.appendChild(
+            buildActivityNode(
+                activities[i]
+            )
+        );
+    }
+
+
+    feed.appendChild(fragment);
+
+
+    wrap.classList.toggle(
+        "show",
+        limit <
+        activities.length
+    );
+}
+
+
+
+/* =========================================================
+   LOAD ACTIVITY
+========================================================= */
+
+/* v1.9.0: NHỊP SỐNG LỚP HỌC = bản lâm học viên vừa đóng góp vào Thư viện lâm mô (ảnh lớn + thả tim).
+   Đọc thẳng Sheet "Tạo bài lâm mô": BanLamHocVien (chỉ TrangThai "Hiển thị")
+   + TimBanLam (đếm tim giống trang Thư viện lâm mô). Không tải HocVien / bài nộp nữa -> trang nhẹ hơn. */
+const LAMMO={
+
+    sheet:
+        "1MmqY19BSi8L6xdsF5cg1qZssrERSrqBH6nEGZjqOMLI",
+
+    banGid:
+        176543211,
+
+    timGid:
+        176543212,
+
+    page:
+        "https://www.thudao.com/p/thu-vien-lam-mo.html",
+
+    /* Apps Script của trang Thư viện lâm mô: thả tim + heartState (số tim hai trang luôn giống nhau) */
+    api:
+        "https://script.google.com/macros/s/AKfycbz4pa-q_ALScuiY8tbhi5bdJ0MPtl-IBu6gjZuDeFXuailbvPYhlk1TmE_Hq4DjJxHFIg/exec",
+
+    firstPage:
+        8
+};
+
+const lamMoHeartPending=
+    new Set();
+
+
+function lamMoImageUrl(id,size,fallback){
+
+    return(
+        fallback
+        ?
+        "https://lh3.googleusercontent.com/d/" + encodeURIComponent(id) + "=w" + size
+        :
+        "https://drive.google.com/thumbnail?id=" + encodeURIComponent(id) + "&sz=w" + size
+    );
+}
+
+
+/* Sheet có thể mất số 0 đầu (050303 -> 50303) */
+function lamMoWho(code){
+
+    return normalizeCode(code).replace(/^0+(?=\d)/,"");
+}
+
+
+function lamMoCsvUrl(gid){
+
+    return(
+        "https://docs.google.com/spreadsheets/d/" +
+        LAMMO.sheet +
+        "/export?format=csv&gid=" +
+        gid +
+        "&_=" +
+        Math.floor(Date.now() / 60000)
+    );
+}
+
+
+function lamMoObjects(text){
+
+    if(/^\s*</.test(String(text || ""))){
+
+        throw new Error(
+            "Không đọc được dữ liệu Thư viện lâm mô."
+        );
+    }
+
+    const rows=
+        parseCSV(text);
+
+    const head=
+        (rows[0] || []).map(
+            function(h){
+                return clean(h).toLowerCase().replace(/\s+/g,"");
+            }
+        );
+
+    return rows.slice(1).map(
+        function(r){
+            const o={};
+            head.forEach(
+                function(k,i){
+                    if(k){
+                        o[k]=clean(r[i]);
+                    }
+                }
+            );
+            return o;
+        }
+    );
+}
+
+
+/* Mỗi MaTim lấy trạng thái mới nhất, đếm DangThaTim = TRUE theo MaKhoe */
+function lamMoHeartCounts(tim){
+
+    const last={};
+
+    tim.forEach(
+        function(r){
+            const who=
+                lamMoWho(r.mahocvien);
+            const id=
+                r.matim ||
+                (r.makhoe + "|" + who);
+            last[id]={
+                key:r.makhoe,
+                who:who,
+                on:/^(true|1|x|yes|co|có)$/i.test(clean(r.dangthatim))
+            };
+        }
+    );
+
+    const count={},
+        mine={};
+
+    Object.keys(last).forEach(
+        function(id){
+            const x=last[id];
+            if(x.on && x.key){
+                count[x.key]=(count[x.key] || 0) + 1;
+                mine[x.key + "|" + x.who]=true;
+            }
+        }
+    );
+
+    return{
+        count:count,
+        mine:mine
+    };
+}
+
+
+function lamMoDriveId(value){
+
+    value=clean(value);
+
+    const m=
+        value.match(/[-\w]{25,}/);
+
+    return m ? m[0] : "";
+}
+
+
+function mapLamMoActivities(ban,tim){
+
+    const hearts=
+        lamMoHeartCounts(tim);
+
+    const viewer=
+        lamMoWho(sessionStudentCode());
+
+    state.lamMoViewer=
+        viewer;
+
+    return ban
+    .filter(
+        function(r){
+            return(
+                r.makhoe &&
+                /hien\s*thi|hiển\s*thị/i.test(r.trangthai || "")
+            );
+        }
+    )
+    .map(
+        function(r){
+            const date=
+                parseDate(r.ngaykhoe);
+            const photo=
+                lamMoDriveId(r.fileanh) ||
+                lamMoDriveId(r.linkbainop);
+            return{
+                type:"lammo",
+                id:r.makhoe,
+                lessonId:r.mabailammo || "",
+                studentCode:r.mahocvien || "",
+                name:r.hoten || "Học viên",
+                group:r.to || "",
+                course:r.khoa || "",
+                title:r.noidungmau || "",
+                hearts:hearts.count[r.makhoe] || 0,
+                liked:Boolean(
+                    viewer &&
+                    hearts.mine[r.makhoe + "|" + viewer]
+                ),
+                photo:photo,
+                link:
+                    photo
+                    ?
+                    "https://drive.google.com/file/d/" + photo + "/view"
+                    :
+                    LAMMO.page,
+                date:date,
+                reliable:Boolean(date)
+            };
+        }
+    );
+}
+
+
+async function loadActivities(){
+
+    /* đang thả tim -> chờ xong mới làm mới, tránh vẽ lại giữa chừng */
+    if(
+        state.loadingActivity ||
+        lamMoHeartPending.size
+    ){
+
+        return;
+    }
+
+    state.loadingActivity=
+        true;
+
+    try{
+
+        const results=
+            await Promise.allSettled([
+                fetchText(lamMoCsvUrl(LAMMO.banGid)),
+                fetchText(lamMoCsvUrl(LAMMO.timGid))
+            ]);
+
+        if(results[0].status !== "fulfilled"){
+
+            throw results[0].reason;
+        }
+
+        const ban=
+            lamMoObjects(results[0].value);
+
+        let tim=[];
+
+        if(results[1].status === "fulfilled"){
+
+            try{
+                tim=lamMoObjects(results[1].value);
+            }catch(timError){
+                console.warn(
+                    "[Giang Duong Lam Mo Hearts]",
+                    timError
+                );
+            }
+        }
+
+        const activities=
+            mapLamMoActivities(ban,tim);
+
+        activities.sort(
+            function(a,b){
+                return(
+                    (b.date ? b.date.getTime() : 0) -
+                    (a.date ? a.date.getTime() : 0)
+                );
+            }
+        );
+
+        state.activityFilter=
+            "all";
+
+        state.activities=
+            activities.slice(
+                0,
+                CONFIG.maxActivities
+            );
+
+        state.visibleActivityCount=
+            Math.max(
+                LAMMO.firstPage,
+                state.lamMoShown || 0
+            );
+
+        state.lamMoShown=
+            state.visibleActivityCount;
+
+        renderActivities();
+
+        const feed=
+            el("gdActivityFeed");
+
+        if(
+            feed &&
+            !state.activities.length
+        ){
+
+            const empty=
+                feed.querySelector(".gd-empty");
+
+            if(empty){
+
+                empty.textContent=
+                    "Chưa có bản lâm nào. Hãy là người đầu tiên đóng góp cho Thư viện lâm mô!";
+            }
+        }
+
+    }catch(error){
+
+        console.error(
+            "[Giang Duong Lam Mo]",
+            error
+        );
+
+        const feed=
+            el("gdActivityFeed");
+
+        if(feed){
+
+            feed.replaceChildren();
+
+            const empty=
+                document.createElement("div");
+
+            empty.className=
+                "gd-empty";
+
+            empty.textContent=
+                "Chưa thể tải bản lâm mới đóng góp. Bấm nút Mới để thử lại.";
+
+            feed.appendChild(empty);
+        }
+
+    }finally{
+
+        state.loadingActivity=
+            false;
+    }
+}
+
+
+
+/* =========================================================
+   v1.9.0 - THẢ TIM + XEM ẢNH LỚN
+========================================================= */
+
+function paintLamMoHeart(button,liked,count){
+
+    button.classList.toggle(
+        "is-liked",
+        Boolean(liked)
+    );
+
+    button.setAttribute(
+        "aria-pressed",
+        String(Boolean(liked))
+    );
+
+    button.setAttribute(
+        "aria-label",
+        liked ? "Bỏ tim" : "Thả tim"
+    );
+
+    button.replaceChildren();
+
+    const icon=
+        document.createElement("span");
+
+    icon.textContent=
+        String.fromCharCode(liked ? 9829 : 9825);
+
+    button.appendChild(icon);
+
+    button.appendChild(
+        document.createTextNode(
+            String(Math.max(0,Number(count) || 0))
+        )
+    );
+}
+
+
+function lamMoStatus(text){
+
+    const box=
+        el("gdLamMoStatus");
+
+    if(!box){
+        return;
+    }
+
+    box.textContent=
+        text || "";
+
+    box.classList.toggle(
+        "show",
+        Boolean(text)
+    );
+}
+
+
+function readLamMoHeartState(post,code){
+
+    return new Promise(
+        function(resolve,reject){
+
+            const cb=
+                "LMVideo_GDHeart_" + Math.random().toString(36).slice(2);
+
+            const script=
+                document.createElement("script");
+
+            let timer=null;
+
+            const cleanup=
+                function(){
+                    clearTimeout(timer);
+                    script.remove();
+                    try{
+                        delete window[cb];
+                    }catch(error){
+                        window[cb]=undefined;
+                    }
+                };
+
+            window[cb]=
+                function(result){
+                    cleanup();
+                    if(result && result.ok){
+                        resolve(result);
+                    }else{
+                        reject(new Error((result && result.message) || "Không đọc được trạng thái tim."));
+                    }
+                };
+
+            script.onerror=
+                function(){
+                    cleanup();
+                    reject(new Error("Mất kết nối Thư viện lâm mô."));
+                };
+
+            timer=
+                setTimeout(
+                    function(){
+                        cleanup();
+                        reject(new Error("Thư viện lâm mô phản hồi chậm."));
+                    },
+                    8000
+                );
+
+            script.src=
+                LAMMO.api +
+                "?action=heartState" +
+                "&lessonId=" + encodeURIComponent(post.lessonId) +
+                "&code=" + encodeURIComponent(code) +
+                "&postId=" + encodeURIComponent(post.id) +
+                "&callback=" + cb;
+
+            document.head.appendChild(script);
+        }
+    );
+}
+
+
+async function toggleLamMoHeart(post,button){
+
+    if(
+        !post ||
+        !post.id ||
+        lamMoHeartPending.has(post.id)
+    ){
+        return;
+    }
+
+    const code=
+        sessionStudentCode();
+
+    if(!code){
+
+        alert("Hãy đăng nhập (biểu tượng Minh Hồng) để thả tim cho bản lâm.");
+        return;
+    }
+
+    if(!post.lessonId){
+
+        alert("Bản lâm này chưa gắn bài mẫu nên chưa thả tim được.");
+        return;
+    }
+
+    if(lamMoWho(post.studentCode) === lamMoWho(code)){
+
+        alert("Không thể thả tim bản lâm của chính mình.");
+        return;
+    }
+
+    const active=
+        !post.liked;
+
+    const oldCount=
+        Number(post.hearts) || 0;
+
+    lamMoHeartPending.add(post.id);
+
+    lamMoStatus("");
+
+    button.disabled=
+        true;
+
+    paintLamMoHeart(
+        button,
+        active,
+        oldCount + (active ? 1 : -1)
+    );
+
+    const frame=
+        document.createElement("iframe");
+
+    const form=
+        document.createElement("form");
+
+    frame.name=
+        "gdHeart_" + Math.random().toString(36).slice(2);
+
+    frame.hidden=
+        true;
+
+    frame.title=
+        "Đồng bộ tim";
+
+    form.hidden=
+        true;
+
+    form.method=
+        "POST";
+
+    form.action=
+        LAMMO.api;
+
+    form.target=
+        frame.name;
+
+    const fields={
+        action:"heart",
+        studentCode:code,
+        lessonId:post.lessonId,
+        postId:post.id,
+        active:String(active)
+    };
+
+    Object.keys(fields).forEach(
+        function(key){
+            const input=
+                document.createElement("input");
+            input.type="hidden";
+            input.name=key;
+            input.value=fields[key];
+            form.appendChild(input);
+        }
+    );
+
+    document.body.appendChild(frame);
+    document.body.appendChild(form);
+
+    try{
+
+        form.submit();
+
+        let confirmed=null,
+            lastError="";
+
+        for(let attempt=0;attempt<8;attempt++){
+
+            await new Promise(
+                function(resolve){
+                    setTimeout(resolve,1500);
+                }
+            );
+
+            try{
+                const result=
+                    await readLamMoHeartState(post,code);
+                if(result.active === active){
+                    confirmed=result;
+                    break;
+                }
+            }catch(error){
+                lastError=error.message;
+            }
+        }
+
+        if(!confirmed){
+
+            throw new Error(
+                lastError ||
+                "Chưa xác nhận được tim. Hãy bấm Mới để kiểm tra lại."
+            );
+        }
+
+        post.liked=
+            Boolean(confirmed.active);
+
+        post.hearts=
+            Number(confirmed.hearts);
+
+        if(!Number.isFinite(post.hearts)){
+
+            post.hearts=
+                Math.max(0,oldCount + (active ? 1 : -1));
+        }
+
+    }catch(error){
+
+        lamMoStatus(error.message);
+
+    }finally{
+
+        paintLamMoHeart(
+            button,
+            post.liked,
+            post.hearts
+        );
+
+        lamMoHeartPending.delete(post.id);
+
+        button.disabled=
+            false;
+
+        form.remove();
+        frame.remove();
+    }
+}
+
+
+function closeLamMoViewer(){
+
+    const box=
+        el("gdLamMoViewer");
+
+    if(!box){
+        return;
+    }
+
+    box.classList.remove("show");
+
+    const img=
+        box.querySelector("img");
+
+    if(img){
+        img.removeAttribute("src");
+    }
+
+    document.documentElement.style.overflow=
+        state.lamMoOverflow || "";
+}
+
+
+function openLamMoViewer(post){
+
+    if(!post || !post.photo){
+        return;
+    }
+
+    let box=
+        el("gdLamMoViewer");
+
+    if(!box){
+
+        box=
+            document.createElement("div");
+
+        box.id=
+            "gdLamMoViewer";
+
+        box.className=
+            "gd-lammo-viewer";
+
+        box.setAttribute("role","dialog");
+        box.setAttribute("aria-modal","true");
+
+        const close=
+            document.createElement("button");
+
+        close.type=
+            "button";
+
+        close.className=
+            "gd-lammo-close";
+
+        close.setAttribute("aria-label","Đóng");
+
+        close.textContent=
+            String.fromCharCode(215);
+
+        close.addEventListener("click",closeLamMoViewer);
+
+        const figure=
+            document.createElement("figure");
+
+        const img=
+            document.createElement("img");
+
+        img.alt=
+            "Bản lâm";
+
+        img.addEventListener(
+            "error",
+            function(){
+                if(img.dataset.photo && !img.dataset.retry){
+                    img.dataset.retry="1";
+                    img.src=lamMoImageUrl(img.dataset.photo,1600,true);
+                }
+            }
+        );
+
+        const caption=
+            document.createElement("figcaption");
+
+        figure.appendChild(img);
+        figure.appendChild(caption);
+
+        box.appendChild(close);
+        box.appendChild(figure);
+
+        box.addEventListener(
+            "click",
+            function(event){
+                if(event.target === box){
+                    closeLamMoViewer();
+                }
+            }
+        );
+
+        document.addEventListener(
+            "keydown",
+            function(event){
+                if(event.key === "Escape"){
+                    closeLamMoViewer();
+                }
+            }
+        );
+
+        /* đặt trong #lectureHallPage để nhận CSS của trang */
+        (el("lectureHallPage") || document.body).appendChild(box);
+    }
+
+    const img=
+        box.querySelector("img");
+
+    img.dataset.photo=
+        post.photo;
+
+    img.dataset.retry=
+        "";
+
+    img.src=
+        lamMoImageUrl(post.photo,1600);
+
+    img.alt=
+        "Bản lâm của " + post.name;
+
+    box.querySelector("figcaption").textContent=
+        post.name +
+        " " + String.fromCharCode(183) + " " + String.fromCharCode(8220) + (post.title || "Lâm mô") + String.fromCharCode(8221) +
+        " " + String.fromCharCode(183) + " " + String.fromCharCode(9829) + " " + (Number(post.hearts) || 0);
+
+    state.lamMoOverflow=
+        document.documentElement.style.overflow;
+
+    document.documentElement.style.overflow=
+        "hidden";
+
+    box.classList.add("show");
+}
+
+
+
+/* =========================================================
+   v1.8.0 - TỰ NHẬN DIỆN HỌC VIÊN (Minh Hồng / tài khoản)
+   Có mã -> tự kiểm tra như bấm KIỂM TRA ở mọi phòng học viên
+   được phân vào (mã ưu tiên: cả hai phòng). Đủ điều kiện -> mở phòng.
+========================================================= */
+
+const autoState={
+    code:"",
+    running:false
+};
+
+
+function isMemberCode(code){
+
+    return(
+        /^TV\d{6}$/.test(code) &&
+        !/^TV(?!00)\d{2,3}0[1-4]01$/.test(code)
+    );
+}
+
+
+function sessionStudentCode(){
+
+    try{
+
+        const session=
+            window.OCDStudentSession;
+
+        const current=
+            session &&
+            typeof session.getState === "function"
+            ?
+            session.getState()
+            :
+            null;
+
+        if(
+            current &&
+            current.mode === "student" &&
+            current.code
+        ){
+
+            const code=
+                normalizeCode(current.code);
+
+            if(
+                code &&
+                code !== "ADMIN" &&
+                !isMemberCode(code)
+            ){
+                return code;
+            }
+        }
+
+    }catch(error){}
+
+    try{
+
+        const A=
+            window.OCDAuth;
+
+        const me=
+            A &&
+            typeof A.token === "function" &&
+            A.token() &&
+            typeof A.me === "function"
+            ?
+            A.me()
+            :
+            null;
+
+        if(me){
+
+            const code=
+                normalizeCode(
+                    me.linked ||
+                    (me.type !== "TV" ? me.code : "") ||
+                    ""
+                );
+
+            if(
+                code &&
+                !isMemberCode(code)
+            ){
+                return code;
+            }
+        }
+
+    }catch(error){}
+
+    return "";
+}
+
+
+async function autoVerifySession(){
+
+    const code=
+        sessionStudentCode();
+
+    if(
+        !code ||
+        autoState.running ||
+        code === autoState.code
+    ){
+        return;
+    }
+
+    if(window.StudentRewardSystemReady){
+
+        try{
+            await window.StudentRewardSystemReady;
+        }catch(error){}
+    }
+
+    const rewardSystem=
+        window.StudentRewardSystem;
+
+    if(
+        !rewardSystem ||
+        typeof rewardSystem.assertStudentActive !== "function"
+    ){
+        /* hệ thống trạng thái chưa sẵn sàng -> lần thử sau */
+        return;
+    }
+
+    autoState.running=
+        true;
+
+    autoState.code=
+        code;
+
+    /* biết mã học viên -> vẽ lại trái tim đã thả của chính học viên */
+    if(state.lamMoViewer !== lamMoWho(code)){
+        loadActivities();
+    }
+
+    try{
+
+        let priority=
+            false;
+
+        try{
+            priority=
+                await isPriorityStudent(code);
+        }catch(error){}
+
+        let rooms=
+            ["HOABINH","HANHPHUC"].filter(
+                function(room){
+                    return(
+                        priority ||
+                        roomForCode(code,room) === room
+                    );
+                }
+            );
+
+        if(!rooms.length){
+
+            rooms=["HOABINH"];
+        }
+
+        /* phòng đang học hôm nay kiểm tra sau cùng -> Minh Hồng theo phòng đó */
+        rooms.sort(
+            function(a,b){
+                return(
+                    (getRoomLiveState(a) ? 1 : 0) -
+                    (getRoomLiveState(b) ? 1 : 0)
+                );
+            }
+        );
+
+        ["HOABINH","HANHPHUC"].forEach(
+            function(room){
+                const config=
+                    getRoomConfig(room);
+                if(
+                    config.input &&
+                    !clean(config.input.value)
+                ){
+                    config.input.value=code;
+                }
+            }
+        );
+
+        for(const room of rooms){
+
+            const config=
+                getRoomConfig(room);
+
+            if(config.input){
+
+                config.input.value=
+                    code;
+            }
+
+            await verifyStudent(room);
+        }
+
+    }catch(error){
+
+        console.warn(
+            "[Giang Duong Auto Verify]",
+            error
+        );
+
+        autoState.code="";
+
+    }finally{
+
+        autoState.running=
+            false;
+    }
+}
+
+
+
+/* =========================================================
+   BIND ROOM
+========================================================= */
+
+function bindRoom(room){
+
+    const config=
+        getRoomConfig(room);
+
+
+    if(config.button){
+
+        config.button.addEventListener(
+            "click",
+            function(){
+
+                verifyStudent(room);
+            }
+        );
+    }
+
+
+    if(config.input){
+
+        config.input.addEventListener(
+            "keydown",
+            function(event){
+
+                if(
+                    event.key ===
+                    "Enter"
+                ){
+
+                    event.preventDefault();
+
+                    verifyStudent(room);
+                }
+
+            }
+        );
+
+
+        config.input.addEventListener(
+            "input",
+            function(){
+
+                const normalized=
+                    normalizeCode(
+                        config.input.value
+                    );
+
+
+                if(
+                    config.input.value !==
+                    normalized
+                ){
+
+                    config.input.value=
+                        normalized;
+                }
+
+
+                clearRoom(config);
+
+
+                /*
+                   Không clear OCDStudentSession ở đây.
+                   Session dùng chung toàn website.
+
+                   Chỉ bỏ context tạm của lần kiểm tra
+                   Giảng đường hiện tại.
+                */
+
+                resetMinhHongState();
+
+            }
+        );
+    }
+}
+
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function bindFilters(){
+
+    const wrapper=
+        el("gdActivityFilters");
+
+
+    if(!wrapper){
+
+        return;
+    }
+
+
+    wrapper.addEventListener(
+        "click",
+        function(event){
+
+            const button=
+                event.target.closest(
+                    ".gd-filter-button"
+                );
+
+
+            if(!button){
+
+                return;
+            }
+
+
+            state.activityFilter=
+                button.getAttribute(
+                    "data-filter"
+                )
+                ||
+                "all";
+
+
+            state.visibleActivityCount=
+                CONFIG.activityPageSize;
+
+
+            wrapper
+            .querySelectorAll(
+                ".gd-filter-button"
+            )
+            .forEach(
+                function(item){
+
+                    item.classList.toggle(
+                        "active",
+                        item === button
+                    );
+
+                }
+            );
+
+
+            renderActivities();
+
+        }
+    );
+}
+
+
+
+/* =========================================================
+   PUBLIC API
+========================================================= */
+
+window.OCDGiangDuong={
+
+    version:
+        "1.9.0",
+
+    verifyStudent:
+        verifyStudent,
+
+    getMinhHongContext:
+        function(){
+
+            return buildMinhHongContext();
+        },
+
+    syncMinhHongContext:
+        function(){
+
+            return syncMinhHongContext();
+        },
+
+    getState:
+        function(){
+
+            return{
+
+                directoryLoaded:
+                    Boolean(
+                        state.directory
+                    ),
+
+                legacyLoaded:
+                    Boolean(
+                        state.legacyDirectory
+                    ),
+
+                priorityLoaded:
+                    Boolean(
+                        state.priorityCodes
+                    ),
+
+                minhHong:
+                    buildMinhHongContext()
+
+            };
+        }
+
+};
+
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function start(){
+
+    initUI();
+
+
+    bindRoom(
+        "HOABINH"
+    );
+
+
+    bindRoom(
+        "HANHPHUC"
+    );
+
+
+    bindFilters();
+
+
+
+    const loadMore=
+        el("gdLoadMore");
+
+
+    if(loadMore){
+
+        loadMore.addEventListener(
+            "click",
+            function(){
+
+                state.visibleActivityCount +=
+                    CONFIG.activityPageSize;
+
+                state.lamMoShown=
+                    state.visibleActivityCount;
+
+
+                renderActivities();
+
+            }
+        );
+    }
+
+
+
+    const refresh=
+        el("gdRefreshActivity");
+
+
+    if(refresh){
+
+        refresh.addEventListener(
+            "click",
+            loadActivities
+        );
+    }
+
+
+
+    /* =====================================================
+       PRELOAD HOCVIEN
+    ===================================================== */
+
+    setTimeout(
+        function(){
+
+            loadDirectory()
+            .catch(
+                function(error){
+
+                    console.warn(
+                        "[Giang Duong v1.7.0 HocVien Preload]",
+                        error
+                    );
+
+                }
+            );
+
+        },
+        100
+    );
+
+
+
+    /* =====================================================
+       PRELOAD XEPHANG
+    ===================================================== */
+
+    setTimeout(
+        function(){
+
+            loadLegacyDirectory()
+            .catch(
+                function(error){
+
+                    console.warn(
+                        "[Giang Duong v1.7.0 XepHang Preload]",
+                        error
+                    );
+
+                }
+            );
+
+        },
+        140
+    );
+
+
+
+    /* =====================================================
+       PRELOAD PRIORITY
+    ===================================================== */
+
+    setTimeout(
+        function(){
+
+            loadPriorityCodes()
+            .catch(
+                function(error){
+
+                    console.warn(
+                        "[Giang Duong Priority Preload]",
+                        error
+                    );
+
+                }
+            );
+
+        },
+        180
+    );
+
+
+
+    /* =====================================================
+       ROOM STATUS
+    ===================================================== */
+
+    updateRoomStatuses();
+
+
+    state.statusTimer=
+        setInterval(
+            updateRoomStatuses,
+            CONFIG.liveMeetStatus
+            .refreshInterval
+        );
+
+
+
+    /* =====================================================
+       ACTIVITY
+    ===================================================== */
+
+    setTimeout(
+        loadActivities,
+        300
+    );
+
+
+    state.activityTimer=
+        setInterval(
+            function(){
+
+                if(
+                    !document.hidden
+                ){
+
+                    loadActivities();
+                }
+
+            },
+            CONFIG.activityRefreshInterval
+        );
+
+
+    console.log(
+        "[Giang Duong OCD] Lecture Hall v1.9.0 + Minh Hong auto + Lam mo gallery"
+    );
+
+
+    /* =====================================================
+       v1.8.0 - TỰ NHẬN DIỆN HỌC VIÊN
+    ===================================================== */
+
+    [
+        "ocdStudentSessionChanged",
+        "ocd:student-session-changed",
+        "ocdStudentVerified",
+        "ocdAuthChanged"
+    ].forEach(
+        function(name){
+            window.addEventListener(
+                name,
+                function(){
+                    if(!sessionStudentCode()){
+                        autoState.code="";
+                        return;
+                    }
+                    autoVerifySession();
+                }
+            );
+        }
+    );
+
+    [400,1200,2500,5000,9000].forEach(
+        function(ms){
+            setTimeout(
+                autoVerifySession,
+                ms
+            );
+        }
+    );
+}
+
+
+
+/* =========================================================
+   READY
+========================================================= */
+
+if(
+    document.readyState ===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        start,
+        {
+            once:true
+        }
+    );
+
+}else{
+
+    start();
+}
+
+
+})();
+</script>
+
+</div>
