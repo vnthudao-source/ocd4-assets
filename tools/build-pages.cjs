@@ -64,8 +64,12 @@ function build(slug) {
     return '';
   });
   const cssMin = css.length ? esbuild.transformSync(css.join('\n'), { loader: 'css', minify: true, charset: 'utf8' }).code.trim() : '';
+  /* Mỗi script chạy như script toàn cục dùng CHUNG một phạm vi. Không rút gọn tên biến (minifyIdentifiers: false):
+     nếu rút gọn, hàm phụ của esbuild (__name, __defProp) bị đổi thành tên ngắn khác nhau ở từng script và ghi đè nhau
+     (lỗi "Property description must be an object" ở Chợ phiên). Giữ tên đầy đủ thì các hàm phụ giống hệt nhau, ghi đè vô hại. */
   const scripts = now.concat(deferred).map(code => esbuild.transformSync(code, {
-    loader: 'js', minify: true, keepNames: true, charset: 'utf8', legalComments: 'none'
+    loader: 'js', minifyWhitespace: true, minifySyntax: true, minifyIdentifiers: false,
+    keepNames: true, charset: 'utf8', legalComments: 'none'
   }).code.trim());
   const id = 'tdp-' + slug;
   const out = '/* Thư Đạo · ' + slug + ' · nguồn: blogspot/pages/' + slug + '.html */\n'
