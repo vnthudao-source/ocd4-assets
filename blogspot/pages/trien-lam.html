@@ -3,7 +3,7 @@
 <style>
 /* =========================================================
    OCD - PHÒNG TRIỂN LÃM
-   EXHIBITION GALLERY v1.5.0 (thêm thả tim + thưởng Hồng Ngọc)
+   EXHIBITION GALLERY v1.6.0 (thả tim + thẻ học viên dùng chung ocd-shared)
 
    CƠ CHẾ TRIỂN LÃM:
    ---------------------------------------------------------
@@ -1656,61 +1656,32 @@
    Bài đạt đủ mốc tim: tác giả nhận Hồng Ngọc.
 ========================================================= */
 
-#ocdExhibitionPage .ex-heart{
-    position:absolute;
-    top:8px;
-    right:8px;
-    z-index:3;
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-    min-height:32px;
-    padding:5px 10px;
-    border:1px solid #e5ccc1;
-    border-radius:16px;
-    background:rgba(255,253,248,.94);
-    color:#a04538;
-    font:600 13px Arial,Helvetica,sans-serif;
-    line-height:1;
-    cursor:pointer;
-    box-shadow:0 3px 10px rgba(68,45,30,.12);
-    -webkit-tap-highlight-color:transparent;
-}
-
-#ocdExhibitionPage .ex-heart span{
-    font-size:16px;
-    line-height:1;
-}
-
-#ocdExhibitionPage .ex-heart:hover{
-    background:#f9e2d7;
-}
-
-#ocdExhibitionPage .ex-heart.is-liked{
-    color:#c33235;
-    background:#fff0f0;
-    border-color:#efb7b7;
-}
-
-#ocdExhibitionPage .ex-heart.is-goal{
-    border-color:#d9b25a;
-    box-shadow:0 0 0 2px rgba(217,178,90,.35),0 3px 10px rgba(68,45,30,.12);
-}
-
-#ocdExhibitionPage .ex-heart.is-own{
-    cursor:default;
-    opacity:.85;
-}
-
-#ocdExhibitionPage .ex-heart:disabled{
-    opacity:.65;
-    cursor:wait;
-}
-
 #ocdExhibitionPage .ex-heart-lightbox{
-    position:static;
     margin:12px 0 4px;
-    box-shadow:none;
+}
+
+#ocdExhibitionPage .ex-lightbox-identity{
+    margin:0 0 8px;
+}
+
+#ocdExhibitionPage .ex-hidden-name{
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+}
+
+#ocdExhibitionPage .ex-student-header .ocdid{
+    flex:1 1 auto;
+}
+
+#ocdExhibitionPage .ex-student-header .ocdid-name{
+    color:var(--ex-ink);
+}
+
+#ocdExhibitionPage .ex-student-header .ocdid-meta{
+    color:var(--ex-muted);
 }
 
 #ocdExhibitionPage .ex-heart-note{
@@ -1721,29 +1692,7 @@
     line-height:1.5;
 }
 
-#ocdExhibitionPage .ex-heart-toast{
-    position:fixed;
-    left:50%;
-    bottom:22px;
-    z-index:100000;
-    max-width:min(92vw,460px);
-    padding:11px 16px;
-    border-radius:14px;
-    background:#4d3225;
-    color:#fffdf8;
-    font-size:14px;
-    line-height:1.45;
-    text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.25);
-    transform:translateX(-50%);
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .25s ease;
-}
 
-#ocdExhibitionPage .ex-heart-toast.visible{
-    opacity:1;
-}
 
 </style>
 
@@ -1975,14 +1924,6 @@
 ========================================================= -->
 
 <div
-    id="exHeartToast"
-    class="ex-heart-toast"
-    role="status"
-    aria-live="polite"
-></div>
-
-
-<div
     id="exLightbox"
     class="ex-lightbox"
     aria-hidden="true"
@@ -2015,6 +1956,8 @@
 
 
         <div class="ex-lightbox-info">
+
+            <div id="exLightboxIdentity" class="ex-lightbox-identity"></div>
 
             <h2
                 id="exLightboxName"
@@ -2068,7 +2011,7 @@
 
             <button
                 id="exLightboxHeart"
-                class="ex-heart ex-heart-lightbox"
+                class="ocdh ocdh-inline ex-heart-lightbox"
                 type="button"
                 hidden
             ></button>
@@ -2091,6 +2034,8 @@
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@90146eb74aab47df115e79112dd9c25bc57f9784/ocd-shared/ocd-identity.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@90146eb74aab47df115e79112dd9c25bc57f9784/ocd-shared/ocd-work-heart.js"></script>
 <script>
 (function(){
 
@@ -2115,7 +2060,7 @@ window.OCDExhibitionV140Loaded=true;
 const CONFIG={
 
     version:
-        "1.5.0",
+        "1.6.0",
 
     exhibitionKeyword:
         "ngon",
@@ -4627,16 +4572,14 @@ function renderBeastList(
 
 async function hydrateStudentAssets(
     item,
-    avatarWrap,
-    avatarCore,
+    identity,
+    unused,
     beastsWrap
 ){
 
     if(!item.code){
-
         return;
     }
-
 
     const account=
         await getAccount(
@@ -4644,37 +4587,28 @@ async function hydrateStudentAssets(
             false
         );
 
-
     if(
-        !avatarWrap
+        !identity
         ||
-        !avatarWrap.isConnected
+        !identity.isConnected
     ){
-
         return;
     }
-
 
     if(!account){
-
         return;
     }
 
-
-    renderAvatar(
-        account,
-        item,
-        avatarCore,
-        avatarWrap
+    paintIdentity(
+        identity,
+        account
     );
-
 
     if(
         beastsWrap
         &&
         beastsWrap.isConnected
     ){
-
         renderBeastList(
             account,
             beastsWrap
@@ -4755,6 +4689,11 @@ async function hydrateLightboxBeasts(
         return;
     }
 
+
+    paintIdentity(
+        document.querySelector("#exLightboxIdentity .ocdid"),
+        account
+    );
 
     renderBeastList(
         account,
@@ -5825,130 +5764,26 @@ function createCard(
         "ex-card-body";
 
 
-    /* STUDENT HEADER */
+    /* STUDENT HEADER: thẻ học viên dùng chung (nền hồ sơ phủ cả thân thẻ) */
 
     const studentHeader=
         document.createElement(
             "div"
         );
 
-
     studentHeader.className=
         "ex-student-header";
 
-
-    /* AVATAR */
-
-    const avatarWrap=
-        document.createElement(
-            "div"
+    const identity=
+        createIdentity(
+            item,
+            "md",
+            body
         );
 
-
-    avatarWrap.className=
-        "ex-avatar";
-
-
-    const avatarCore=
-        document.createElement(
-            "div"
-        );
-
-
-    avatarCore.className=
-        "ex-avatar-core";
-
-
-    const avatarFallback=
-        document.createElement(
-            "span"
-        );
-
-
-    avatarFallback.className=
-        "ex-avatar-fallback";
-
-
-    avatarFallback.textContent=
-        avatarLetter(
-            item.name
-        );
-
-
-    avatarCore
-        .appendChild(
-            avatarFallback
-        );
-
-
-    avatarWrap
-        .appendChild(
-            avatarCore
-        );
-
-
-    /* STUDENT INFO */
-
-    const studentInfo=
-        document.createElement(
-            "div"
-        );
-
-
-    studentInfo.className=
-        "ex-student-info";
-
-
-    const author=
-        document.createElement(
-            "div"
-        );
-
-
-    author.className=
-        "ex-author";
-
-
-    author.textContent=
-        item.name
-        ||
-        "Học viên";
-
-
-    studentInfo
-        .appendChild(
-            author
-        );
-
-
-    if(item.assignment){
-
-        const assignment=
-            document.createElement(
-                "div"
-            );
-
-
-        assignment.className=
-            "ex-assignment";
-
-
-        assignment.textContent=
-            item.assignment;
-
-
-        studentInfo
-            .appendChild(
-                assignment
-            );
-    }
-
-
-    studentHeader.append(
-        avatarWrap,
-        studentInfo
+    studentHeader.appendChild(
+        identity
     );
-
 
     body.appendChild(
         studentHeader
@@ -6110,8 +5945,8 @@ function createCard(
 
     hydrateStudentAssets(
         item,
-        avatarWrap,
-        avatarCore,
+        identity,
+        null,
         beastsWrap
     )
     .catch(
@@ -6706,13 +6541,33 @@ function openLightbox(item){
         "Tác phẩm";
 
 
-    /* NAME */
+    /* NAME + THẺ HỌC VIÊN */
 
     el("exLightboxName")
         .textContent=
         item.name
         ||
         "Học viên";
+
+    const identityBox=
+        el("exLightboxIdentity");
+
+    identityBox.innerHTML="";
+
+    identityBox.appendChild(
+        createIdentity(
+            item,
+            "lg",
+            true
+        )
+    );
+
+    el("exLightboxName")
+        .classList
+        .toggle(
+            "ex-hidden-name",
+            Boolean(window.OCDIdentity)
+        );
 
 
     /* ASSIGNMENT */
@@ -7467,779 +7322,77 @@ window.OCDExhibition={
 
 
 /* =========================================================
-   v1.5.0 – THẢ TIM
-   Dùng chung Apps Script + tab TimBanLam với Thư viện lâm mô:
-   cùng học viên (Minh Hồng), mỗi người một tim mỗi bài,
-   không tự thả tim bài mình. Bài đạt mốc tim -> tác giả nhận Hồng Ngọc
-   (Apps Script ghi QuaTangGVCN, mỗi bài một lần).
+   v1.6.0 – THẢ TIM + THẺ HỌC VIÊN DÙNG CHUNG (ocd-shared)
+   Nút tim: OCDWorkHeart (chung số tim với trang Nộp bài, Apps Script Exhibition.gs).
+   Thẻ học viên: OCDIdentity (avatar, khung, nền hồ sơ, thuốc đa nhiệm giống mọi trang).
 ========================================================= */
-
-const HEART={
-
-    api:
-        "https://script.google.com/macros/s/AKfycbz4pa-q_ALScuiY8tbhi5bdJ0MPtl-IBu6gjZuDeFXuailbvPYhlk1TmE_Hq4DjJxHFIg/exec",
-
-    goal:
-        15,
-
-    prize:
-        1,
-
-    counts:{},
-
-    liked:new Set(),
-
-    viewer:"",
-
-    loaded:false,
-
-    loading:null,
-
-    pending:new Set(),
-
-    items:new Map(),
-
-    celebrated:new Set(),
-
-    toastTimer:null
-};
-
-
-function heartWho(code){
-
-    return String(code||"")
-        .replace(/[​-‍﻿]/g,"")
-        .replace(/\s+/g,"")
-        .toUpperCase()
-        .replace(/^0+(?=\d)/,"");
-}
-
-
-function heartSessionCode(session){
-
-    if(
-        session
-        &&
-        String(session.mode||"").trim().toLowerCase() === "student"
-        &&
-        session.verified === true
-        &&
-        session.code
-    ){
-        return heartWho(session.code);
-    }
-
-    return "";
-}
-
-
-/* Mã học viên đã xác minh qua Minh Hồng (giống Thư viện lâm mô) */
-function heartViewer(){
-
-    try{
-
-        if(
-            window.OCDStudentSession
-            &&
-            typeof window.OCDStudentSession.getState === "function"
-        ){
-
-            const code=
-                heartSessionCode(
-                    window.OCDStudentSession.getState()
-                );
-
-            if(code){
-                return code;
-            }
-        }
-
-    }catch(error){}
-
-    try{
-
-        const raw=
-            localStorage.getItem(
-                "ocd_student_session_v1"
-            );
-
-        return heartSessionCode(
-            raw
-            ?
-            JSON.parse(raw)
-            :
-            null
-        );
-
-    }catch(error){}
-
-    return "";
-}
-
-
-function heartJsonp(params,timeout){
-
-    return new Promise(
-        function(resolve,reject){
-
-            const cb=
-                "LMVideo_EX_" +
-                Math.random().toString(36).slice(2);
-
-            const script=
-                document.createElement("script");
-
-            let timer=null;
-
-            function cleanup(){
-                clearTimeout(timer);
-                script.remove();
-                try{ delete window[cb]; }catch(error){ window[cb]=undefined; }
-            }
-
-            window[cb]=
-                function(result){
-                    cleanup();
-                    if(result && result.ok){
-                        resolve(result);
-                    }else{
-                        reject(
-                            new Error(
-                                result && result.message
-                                ?
-                                result.message
-                                :
-                                "Apps Script báo lỗi."
-                            )
-                        );
-                    }
-                };
-
-            script.onerror=
-                function(){
-                    cleanup();
-                    reject(new Error("Mất kết nối Apps Script."));
-                };
-
-            timer=
-                setTimeout(
-                    function(){
-                        cleanup();
-                        reject(new Error("Apps Script phản hồi chậm."));
-                    },
-                    timeout || 20000
-                );
-
-            const url=
-                new URL(HEART.api);
-
-            Object.keys(params).forEach(
-                function(key){
-                    url.searchParams.set(key,params[key]);
-                }
-            );
-
-            url.searchParams.set("callback",cb);
-
-            script.src=
-                url.href;
-
-            document.head.appendChild(script);
-        }
-    );
-}
-
-
-function heartCount(id){
-
-    return Math.max(
-        0,
-        Number(HEART.counts[id]) || 0
-    );
-}
-
-
-function isOwnWork(item){
-
-    return !!(
-        HEART.viewer
-        &&
-        item
-        &&
-        heartWho(item.code) === HEART.viewer
-    );
-}
-
-
-function paintHeart(button,item){
-
-    if(!button || !item){
-        return;
-    }
-
-    const count=
-        heartCount(item.id);
-
-    const liked=
-        HEART.liked.has(item.id);
-
-    const own=
-        isOwnWork(item);
-
-    button.classList.toggle("is-liked",liked);
-    button.classList.toggle("is-goal",count >= HEART.goal);
-    button.classList.toggle("is-own",own);
-
-    button.disabled=
-        HEART.pending.has(item.id);
-
-    button.setAttribute(
-        "aria-pressed",
-        String(liked)
-    );
-
-    button.setAttribute(
-        "aria-label",
-        own
-        ?
-        "Tác phẩm của bạn: " + count + " tim"
-        :
-        (liked ? "Bỏ tim" : "Thả tim") + " (" + count + " tim)"
-    );
-
-    button.title=
-        own
-        ?
-        "Tác phẩm của bạn"
-        :
-        (
-            count >= HEART.goal
-            ?
-            "Đã đạt " + HEART.goal + " tim"
-            :
-            "Còn " + (HEART.goal - count) + " tim để tác giả nhận " + HEART.prize + " Hồng Ngọc"
-        );
-
-    button.innerHTML="";
-
-    const icon=
-        document.createElement("span");
-
-    icon.textContent=
-        liked
-        ?
-        "♥"
-        :
-        "♡";
-
-    button.append(
-        icon,
-        document.createTextNode(
-            " " + (HEART.loaded ? count : "…")
-        )
-    );
-}
-
-
-function heartItemFor(button){
-
-    const id=
-        button.getAttribute("data-ex-heart");
-
-    if(
-        state.activeLightbox
-        &&
-        state.activeLightbox.id === id
-    ){
-        return state.activeLightbox;
-    }
-
-    return HEART.items.get(id) || null;
-}
-
-
-function repaintHearts(){
-
-    document
-        .querySelectorAll(
-            "#ocdExhibitionPage [data-ex-heart]"
-        )
-        .forEach(
-            function(button){
-
-                const item=
-                    heartItemFor(button);
-
-                if(item){
-                    paintHeart(button,item);
-                }
-            }
-        );
-}
-
 
 function createHeartButton(item){
 
-    const button=
-        document.createElement("button");
+    if(window.OCDWorkHeart){
+        return window.OCDWorkHeart.button(item);
+    }
 
-    button.type=
-        "button";
-
-    button.className=
-        "ex-heart";
-
-    HEART.items.set(
-        item.id,
-        item
-    );
-
-    button.setAttribute(
-        "data-ex-heart",
-        item.id
-    );
-
-    button.addEventListener(
-        "click",
-        function(event){
-            event.preventDefault();
-            event.stopPropagation();
-            toggleHeart(item);
-        }
-    );
-
-    paintHeart(button,item);
-
-    return button;
+    return document.createComment("tim");
 }
 
 
 function syncLightboxHeart(item){
 
-    const button=
-        el("exLightboxHeart");
-
-    if(!button){
-        return;
+    if(window.OCDWorkHeart){
+        window.OCDWorkHeart.bind(el("exLightboxHeart"),item);
     }
-
-    if(!item || !item.id){
-        button.hidden=true;
-        button.removeAttribute("data-ex-heart");
-        return;
-    }
-
-    button.hidden=false;
-
-    button.setAttribute(
-        "data-ex-heart",
-        item.id
-    );
-
-    paintHeart(button,item);
 }
 
 
-function showHeartToast(text){
+function initHearts(){
 
-    const box=
-        el("exHeartToast");
-
-    if(!box){
+    if(!window.OCDWorkHeart){
         return;
     }
 
-    box.textContent=
-        text;
+    window.OCDWorkHeart.onRules(
+        function(rules){
 
-    box.classList.add("visible");
+            const goal=el("exHeartGoal");
+            const prize=el("exHeartPrize");
 
-    clearTimeout(HEART.toastTimer);
-
-    HEART.toastTimer=
-        setTimeout(
-            function(){
-                box.classList.remove("visible");
-            },
-            4200
-        );
-}
-
-
-function loadHearts(force){
-
-    const viewer=
-        heartViewer();
-
-    if(
-        !force
-        &&
-        HEART.loading
-        &&
-        HEART.viewer === viewer
-    ){
-        return HEART.loading;
-    }
-
-    HEART.viewer=
-        viewer;
-
-    HEART.loading=
-        heartJsonp(
-            {
-                action:"exhibitHearts",
-                code:viewer
-            },
-            25000
-        )
-        .then(
-            function(result){
-
-                if(HEART.viewer !== viewer){
-                    return;
-                }
-
-                HEART.counts=
-                    result.counts || {};
-
-                HEART.liked=
-                    new Set(
-                        Array.isArray(result.liked)
-                        ?
-                        result.liked
-                        :
-                        []
-                    );
-
-                if(Number(result.rewardHearts) > 0){
-                    HEART.goal=Number(result.rewardHearts);
-                }
-
-                if(Number(result.rewardAmount) > 0){
-                    HEART.prize=Number(result.rewardAmount);
-                }
-
-                HEART.loaded=
-                    true;
-
-                const goal=el("exHeartGoal");
-                const prize=el("exHeartPrize");
-
-                if(goal){ goal.textContent=String(HEART.goal); }
-                if(prize){ prize.textContent=String(HEART.prize); }
-
-                repaintHearts();
-            }
-        )
-        .catch(
-            function(error){
-
-                console.warn(
-                    "[OCD Exhibition Hearts]",
-                    error
-                );
-
-                HEART.loaded=
-                    true;
-
-                repaintHearts();
-            }
-        );
-
-    return HEART.loading;
-}
-
-
-function sendHeartForm(fields){
-
-    const frame=
-        document.createElement("iframe");
-
-    const form=
-        document.createElement("form");
-
-    frame.name=
-        "exHeart_" +
-        Math.random().toString(36).slice(2);
-
-    frame.hidden=true;
-
-    frame.title="Đồng bộ tim";
-
-    form.hidden=true;
-
-    form.method="POST";
-
-    form.action=HEART.api;
-
-    form.target=frame.name;
-
-    Object.keys(fields).forEach(
-        function(key){
-
-            const input=
-                document.createElement("input");
-
-            input.type="hidden";
-            input.name=key;
-            input.value=fields[key];
-
-            form.appendChild(input);
+            if(goal){ goal.textContent=String(rules.goal); }
+            if(prize){ prize.textContent=String(rules.prize); }
         }
     );
 
-    document.body.appendChild(frame);
-    document.body.appendChild(form);
-
-    form.submit();
-
-    return function(){
-        form.remove();
-        frame.remove();
-    };
+    window.OCDWorkHeart.load();
 }
 
 
-async function toggleHeart(item){
+function createIdentity(item,size,background){
 
-    if(
-        !item
-        ||
-        !item.id
-        ||
-        HEART.pending.has(item.id)
-    ){
-        return;
+    if(window.OCDIdentity){
+
+        return window.OCDIdentity.create({
+            name:item.name || "Học viên",
+            meta:size === "lg" ? "" : item.assignment,
+            size:size,
+            background:background
+        });
     }
 
-    const viewer=
-        heartViewer();
+    const fallback=document.createElement("div");
 
-    if(!viewer){
+    fallback.className="ex-author";
 
-        showHeartToast(
-            "Hãy xác minh mã học viên ở biểu tượng Minh Hồng để thả tim."
-        );
+    fallback.textContent=item.name || "Học viên";
 
-        return;
-    }
-
-    if(viewer !== HEART.viewer || !HEART.loaded){
-
-        await loadHearts(true);
-    }
-
-    if(isOwnWork(item)){
-
-        repaintHearts();
-
-        showHeartToast(
-            "Không thể thả tim tác phẩm của chính mình."
-        );
-
-        return;
-    }
-
-    const oldLiked=
-        HEART.liked.has(item.id);
-
-    const oldCount=
-        heartCount(item.id);
-
-    const active=
-        !oldLiked;
-
-    /* Hiện ngay, rồi xác nhận với Apps Script */
-    HEART.pending.add(item.id);
-
-    if(active){
-        HEART.liked.add(item.id);
-    }else{
-        HEART.liked.delete(item.id);
-    }
-
-    HEART.counts[item.id]=
-        Math.max(0,oldCount + (active ? 1 : -1));
-
-    repaintHearts();
-
-    let cleanup=null;
-
-    try{
-
-        cleanup=
-            sendHeartForm(
-                {
-                    action:"exhibitHeart",
-                    studentCode:viewer,
-                    postId:item.id,
-                    active:String(active)
-                }
-            );
-
-        let confirmed=null;
-        let lastError="";
-
-        for(let attempt=0; attempt<8; attempt++){
-
-            await new Promise(
-                function(resolve){
-                    setTimeout(resolve,1500);
-                }
-            );
-
-            try{
-
-                const result=
-                    await heartJsonp(
-                        {
-                            action:"exhibitHeartState",
-                            code:viewer,
-                            postId:item.id
-                        },
-                        12000
-                    );
-
-                if(result.active === active){
-                    confirmed=result;
-                    break;
-                }
-
-            }catch(error){
-
-                lastError=
-                    error.message;
-
-                if(/không thể|không hợp lệ|không còn/i.test(lastError)){
-                    break;
-                }
-            }
-        }
-
-        if(!confirmed){
-
-            throw new Error(
-                lastError ||
-                "Chưa xác nhận được tim, hãy tải lại trang để kiểm tra."
-            );
-        }
-
-        if(confirmed.active){
-            HEART.liked.add(item.id);
-        }else{
-            HEART.liked.delete(item.id);
-        }
-
-        HEART.counts[item.id]=
-            Math.max(0,Number(confirmed.hearts) || 0);
-
-        /* Chỉ báo "được thưởng" khi Apps Script vừa ghi thưởng (mỗi bài một lần) */
-        const rewardTime=
-            Date.parse(confirmed.rewardedAt || "");
-
-        if(
-            confirmed.active
-            &&
-            oldCount < HEART.goal
-            &&
-            HEART.counts[item.id] >= HEART.goal
-            &&
-            rewardTime
-            &&
-            Math.abs(Date.now() - rewardTime) < 120000
-            &&
-            !HEART.celebrated.has(item.id)
-        ){
-
-            HEART.celebrated.add(item.id);
-
-            showHeartToast(
-                "Tác phẩm của " +
-                (item.name || "học viên") +
-                " đã đạt " + HEART.goal +
-                " tim! Tác giả được thưởng " +
-                HEART.prize + " Hồng Ngọc."
-            );
-
-        }else{
-
-            showHeartToast(
-                confirmed.active
-                ?
-                "Đã thả tim."
-                :
-                "Đã bỏ tim."
-            );
-        }
-
-    }catch(error){
-
-        if(oldLiked){
-            HEART.liked.add(item.id);
-        }else{
-            HEART.liked.delete(item.id);
-        }
-
-        HEART.counts[item.id]=
-            oldCount;
-
-        showHeartToast(
-            error.message ||
-            "Chưa thả được tim."
-        );
-
-    }finally{
-
-        HEART.pending.delete(item.id);
-
-        if(cleanup){
-            cleanup();
-        }
-
-        repaintHearts();
-    }
+    return fallback;
 }
 
 
-/* Nút tim trong khung xem ảnh + đổi học viên ở Minh Hồng (tab khác hoặc quay lại trang) -> tải lại tim */
-function watchHeartViewer(){
+function paintIdentity(card,account){
 
-    const lightboxHeart=
-        el("exLightboxHeart");
-
-    if(lightboxHeart){
-
-        lightboxHeart.addEventListener(
-            "click",
-            function(event){
-                event.preventDefault();
-                event.stopPropagation();
-                toggleHeart(
-                    heartItemFor(lightboxHeart)
-                );
-            }
-        );
+    if(card && window.OCDIdentity && account){
+        window.OCDIdentity.paint(card,account.profile || account);
     }
-
-    function check(){
-
-        if(heartViewer() !== HEART.viewer){
-            loadHearts(true);
-        }
-    }
-
-    window.addEventListener("storage",check);
-
-    window.addEventListener("focus",check);
-
-    document.addEventListener(
-        "visibilitychange",
-        function(){
-            if(!document.hidden){
-                check();
-            }
-        }
-    );
 }
 
 
@@ -8268,9 +7421,7 @@ function start(){
 
     bindEvents();
 
-    watchHeartViewer();
-
-    loadHearts();
+    initHearts();
 
 
     loadData()

@@ -1507,6 +1507,14 @@
     min-width:0;
 }
 
+#lectureHallPage .gd-lammo-info .ocdid{
+    margin:0 0 4px;
+}
+
+#lectureHallPage .gd-lammo-info .ocdid-name{
+    color:inherit;
+}
+
 .gd-lammo-name{
     color:var(--gd-brown-dark);
     font-size:13px;
@@ -2197,6 +2205,7 @@
 
 
 
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@90146eb74aab47df115e79112dd9c25bc57f9784/ocd-shared/ocd-identity.js"></script>
 <script>
 (function(){
 
@@ -6209,8 +6218,24 @@ function buildActivityNode(activity){
             "gần đây"
         );
 
-    info.appendChild(name);
-    info.appendChild(sub);
+    /* v1.10.0: thẻ học viên dùng chung (avatar, khung, nền hồ sơ, thuốc đa nhiệm) – ocd-shared/ocd-identity.js */
+    if(window.OCDIdentity){
+
+        info.appendChild(
+            window.OCDIdentity.create({
+                code:activity.studentCode,
+                name:activity.name,
+                meta:sub.textContent,
+                size:"sm",
+                background:info
+            })
+        );
+
+    }else{
+
+        info.appendChild(name);
+        info.appendChild(sub);
+    }
     info.appendChild(title);
     info.appendChild(time);
 
