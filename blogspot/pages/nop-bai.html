@@ -1,0 +1,1065 @@
+<div id="ocd4-student-work-page">
+<!-- v1.7: nộp bài không qua Google Form (cần Auth.gs v1.6.2) -->
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@716b86d34e1be45da1b00c73505b65735c792507/nop-bai/nop-bai.min.js" defer></script>
+<!-- =========================================================
+     OCD - TÁC PHẨM HỌC VIÊN
+     STUDENT PUBLIC WORK v1.6.2
+     CORE CANONICAL ASSETS + KÍNH VIỄN VỌNG
+     KÍNH NHÌN XUYÊN THẤU:
+     - Cho phép xem Điểm + Nhận xét GVCN của bài công khai.
+     KÍNH VIỄN VỌNG:
+     - Không có: giữ giới hạn cũ
+       + Mobile: 10 bài
+       + Desktop: 25 bài
+     - Có:
+       + Mở phạm vi tối đa 50 bài gần nhất
+       + Mobile: 10 bài / trang
+       + Desktop: 25 bài / trang
+     KIẾN TRÚC:
+     - Core JS chỉ tải 1 lần từ gadget/widget dùng chung.
+     - Trang này KHÔNG nhúng lại student-reward-core.js.
+     - Linh thạch / vật phẩm / avatar / khung / nền / quyền vật phẩm
+       chỉ lấy từ StudentRewardSystem.getStudentRewardProfile().
+     - Bài nộp + XoaBai + Class Pulse vẫn do trang này quản lý.
+========================================================= -->
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@v4.9.3.0/student-reward-core.css"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@v4.9.3.0/profile-market.css"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@v4.9.3.0/student-work.css"
+/>
+<style>
+/* =========================================================
+   ROOT
+========================================================= */
+#ocd4-student-work-page{
+    max-width:1240px;
+    margin:0 auto;
+    padding:1px 0 50px;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#172033;
+}
+#ocd4-student-work-page *,
+#ocd4-student-work-page *::before,
+#ocd4-student-work-page *::after{
+    box-sizing:border-box;
+}
+/* =========================================================
+   PROFILE
+========================================================= */
+#swpProfileApp{
+    max-width:1100px;
+    margin:30px auto 38px;
+    padding:25px;
+    background:#fff;
+    border-radius:20px;
+    box-shadow:0 8px 30px rgba(0,0,0,.12);
+}
+.swp-title{
+    margin:0 0 7px;
+    text-align:center;
+    color:#92400e;
+    font-size:28px;
+    font-weight:900;
+}
+.swp-desc{
+    margin:0 0 22px;
+    text-align:center;
+    color:#666;
+    font-size:14px;
+    line-height:1.6;
+}
+/* =========================================================
+   SEARCH
+========================================================= */
+.swp-search{
+    padding:18px;
+    background:#fffdf7;
+    border:1px solid #fbbf24;
+    border-radius:15px;
+}
+.swp-search-title{
+    color:#7c2d12;
+    font-size:21px;
+    font-weight:900;
+    margin-bottom:5px;
+}
+.swp-search-note{
+    color:#78716c;
+    font-size:13px;
+    margin-bottom:14px;
+}
+.swp-search-row{
+    display:flex;
+    gap:10px;
+}
+.swp-input{
+    width:100%;
+    min-width:0;
+    padding:14px 16px;
+    background:#fff;
+    border:1px solid #d1d5db;
+    border-radius:11px;
+    outline:none;
+    font-size:16px;
+    text-transform:uppercase;
+}
+.swp-input:focus{
+    border-color:#d97706;
+    box-shadow:0 0 0 3px rgba(217,119,6,.13);
+}
+.swp-search-btn{
+    flex:0 0 155px;
+    padding:14px 18px;
+    border:0;
+    border-radius:11px;
+    background:#d97706;
+    color:#fff;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:900;
+}
+.swp-search-btn:disabled{
+    background:#9ca3af;
+    cursor:wait;
+}
+/* =========================================================
+   MESSAGE
+========================================================= */
+.swp-message{
+    display:none;
+    margin-top:13px;
+    padding:12px;
+    border-radius:10px;
+    text-align:center;
+    font-size:13px;
+    line-height:1.5;
+}
+.swp-message.loading{
+    display:block;
+    background:#eff6ff;
+    color:#1d4ed8;
+}
+.swp-message.success{
+    display:block;
+    background:#dcfce7;
+    color:#166534;
+}
+.swp-message.error{
+    display:block;
+    background:#fee2e2;
+    color:#991b1b;
+}
+/* =========================================================
+   PROFILE VISIBILITY
+========================================================= */
+#swpProfile{
+    display:none;
+}
+#swpProfile.visible{
+    display:block;
+}
+.swp-ui-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+    line-height:1;
+}
+.student-profile-badge .swp-ui-icon,
+.student-profile-action .swp-ui-icon{
+    margin-right:3px;
+}
+/* =========================================================
+   KÍNH NHÌN XUYÊN THẤU
+========================================================= */
+.swp-glass{
+    display:none;
+    margin-top:11px;
+    padding:9px 12px;
+    border-radius:10px;
+    font-size:11px;
+    line-height:1.55;
+    font-weight:900;
+}
+.swp-glass.visible{
+    display:block;
+}
+.swp-glass.active{
+    background:#fef3c7;
+    border:1px solid #f59e0b;
+    color:#92400e;
+}
+.swp-glass.locked{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    color:#64748b;
+}
+.student-profile-module.has-profile-background .swp-glass{
+    color:#fff;
+}
+.student-profile-module.has-profile-background .swp-glass.active{
+    background:rgba(217,119,6,.84);
+    border-color:rgba(255,255,255,.4);
+}
+.student-profile-module.has-profile-background .swp-glass.locked{
+    background:rgba(15,23,42,.45);
+    border-color:rgba(255,255,255,.25);
+}
+/* =========================================================
+   SUBMIT
+========================================================= */
+.swp-submit{
+    display:none;
+    margin-top:16px;
+    text-align:center;
+}
+.swp-submit.visible{
+    display:block;
+}
+.swp-submit a{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:45px;
+    padding:0 25px;
+    border-radius:11px;
+    background:#172033;
+    color:#fff!important;
+    text-decoration:none!important;
+    font-size:14px;
+    font-weight:900;
+    box-shadow:0 7px 20px rgba(23,32,51,.15);
+}
+#ocd4-student-work-page .swp-submit a.is-hidden{
+    display:none;
+}
+
+#ocd4-student-work-page .swp-submit-limit{
+    display:none;
+    max-width:520px;
+    margin:0 auto;
+    padding:14px 18px;
+    border:1px solid #f59e0b;
+    border-radius:12px;
+    background:#fff7ed;
+    color:#9a3412;
+    font-size:13px;
+    line-height:1.55;
+    font-weight:900;
+    text-align:center;
+    box-shadow:0 7px 20px rgba(245,158,11,.12);
+}
+
+#ocd4-student-work-page .swp-submit-limit.visible{
+    display:block;
+}
+
+/* =========================================================
+   OWN WORK
+========================================================= */
+.swp-own-toggle-wrap{
+    display:none;
+    margin-top:12px;
+    text-align:center;
+}
+.swp-own-toggle-wrap.visible{
+    display:block;
+}
+.swp-own-toggle{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:42px;
+    padding:0 18px;
+    border:1px solid #fbbf24;
+    border-radius:11px;
+    background:#fff;
+    color:#78350f;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:900;
+}
+.swp-own-panel{
+    display:none;
+    margin-top:12px;
+    padding:15px;
+    background:#fff;
+    border:1px solid #f3d38a;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+.swp-own-panel.visible{
+    display:block;
+}
+.swp-own-title{
+    margin-bottom:11px;
+    color:#78350f;
+    font-size:16px;
+    font-weight:900;
+}
+.swp-own-count{
+    color:#78716c;
+    font-size:11px;
+}
+.swp-own-list{
+    display:grid;
+    gap:12px;
+}
+.swp-own-card{
+    display:grid;
+    grid-template-columns:110px minmax(0,1fr);
+    gap:12px;
+    padding:10px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    background:#f9fafb;
+}
+.swp-own-image{
+    width:110px;
+    height:110px;
+    overflow:hidden;
+    border-radius:10px;
+    background:#e5e7eb;
+}
+.swp-own-image img,
+.swp-own-image a{
+    display:block;
+    width:100%;
+    height:100%;
+}
+.swp-own-image img{
+    object-fit:cover;
+}
+.swp-own-fallback{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:29px;
+    color:#64748b;
+}
+.swp-own-time{
+    color:#64748b;
+    font-size:10px;
+    margin-bottom:6px;
+}
+.swp-own-label{
+    margin-top:6px;
+    color:#64748b;
+    font-size:9px;
+    font-weight:900;
+    text-transform:uppercase;
+}
+.swp-own-score{
+    margin-top:3px;
+    color:#1d4ed8;
+    font-size:20px;
+    font-weight:900;
+}
+.swp-own-comment{
+    margin-top:4px;
+    padding:8px 10px;
+    border-radius:9px;
+    background:#fff;
+    color:#334155;
+    font-size:12px;
+    line-height:1.5;
+    white-space:pre-wrap;
+}
+/* =========================================================
+   PUBLIC
+========================================================= */
+.swp-public{
+    max-width:1240px;
+    margin:0 auto;
+    padding:0 14px 50px;
+}
+.swp-public-head{
+    margin-bottom:15px;
+    text-align:center;
+}
+.swp-public-head h2{
+    margin:0;
+    color:#172033;
+    font-size:30px;
+    font-weight:900;
+}
+.swp-public-head p{
+    margin:7px 0 0;
+    color:#718096;
+    font-size:12px;
+}
+.swp-public-status{
+    display:none;
+    max-width:960px;
+    margin:0 auto 17px;
+    padding:10px 14px;
+    border-radius:11px;
+    background:#f1f5f9;
+    color:#64748b;
+    text-align:center;
+    font-size:10px;
+    line-height:1.55;
+    font-weight:800;
+}
+.swp-public-status.visible{
+    display:block;
+}
+.swp-public-status.glass{
+    background:#fef3c7;
+    color:#92400e;
+}
+/* =========================================================
+   KÍNH VIỄN VỌNG
+========================================================= */
+.swp-telescope{
+    display:none;
+    max-width:960px;
+    margin:0 auto 14px;
+    padding:11px 14px;
+    border:1px solid #d8b56d;
+    border-radius:12px;
+    background:linear-gradient(135deg,#fff9e9,#fffdf7);
+    color:#78350f;
+    text-align:center;
+    font-size:11px;
+    font-weight:900;
+    line-height:1.55;
+}
+.swp-telescope.visible{
+    display:block;
+}
+/* =========================================================
+   PUBLIC PAGINATION
+========================================================= */
+.swp-public-pages{
+    display:none;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin:14px auto;
+}
+.swp-public-pages.visible{
+    display:flex;
+}
+.swp-public-page{
+    min-width:36px;
+    height:36px;
+    padding:0 10px;
+    border:1px solid #e2e8f0;
+    border-radius:9px;
+    background:#fff;
+    color:#475569;
+    cursor:pointer;
+    font-size:11px;
+    font-weight:900;
+}
+.swp-public-page:hover{
+    border-color:#d97706;
+    color:#92400e;
+}
+.swp-public-page.active{
+    border-color:#d97706;
+    background:#d97706;
+    color:#fff;
+}
+/* =========================================================
+   PUBLIC CARD USER
+========================================================= */
+.swp-card-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:9px;
+}
+.swp-mini-avatar{
+    position:relative;
+    width:52px;
+    height:52px;
+    flex:0 0 52px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.swp-mini-core{
+    position:relative;
+    z-index:1;
+    width:42px;
+    height:42px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid #fff;
+    border-radius:50%;
+    background:#f1f5f9;
+    box-shadow:0 3px 9px rgba(15,23,42,.14);
+    font-size:21px;
+}
+.swp-mini-core img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+.swp-mini-frame{
+    position:absolute;
+    z-index:2;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    pointer-events:none;
+}
+.swp-card-name{
+    color:#172033;
+    font-size:18px;
+    font-weight:900;
+}
+/* =========================================================
+   GIFTS
+========================================================= */
+.swp-gifts{
+    margin:9px 0 11px;
+}
+.swp-gifts-label{
+    margin-bottom:5px;
+    color:#64748b;
+    font-size:8px;
+    font-weight:900;
+    text-transform:uppercase;
+}
+.swp-gift-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+}
+.swp-gift{
+    position:relative;
+    width:36px;
+    height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #e2e8f0;
+    border-radius:9px;
+    background:#f8fafc;
+}
+.swp-gift img{
+    width:30px;
+    height:30px;
+    object-fit:contain;
+}
+.swp-gift-count{
+    position:absolute;
+    right:-4px;
+    bottom:-4px;
+    min-width:17px;
+    height:17px;
+    padding:0 3px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    background:#172033;
+    color:#fff;
+    font-size:7px;
+    font-weight:900;
+}
+/* =========================================================
+   GLASS RESULT
+========================================================= */
+.swp-result{
+    margin-bottom:12px;
+    padding:10px 11px;
+    border:1px solid #ddd6fe;
+    border-radius:11px;
+    background:linear-gradient(135deg,#f5f3ff,#eff6ff);
+}
+.swp-result-head{
+    margin-bottom:8px;
+    color:#6d28d9;
+    font-size:9px;
+    font-weight:900;
+}
+/* =========================================================
+   LOAD STATES
+========================================================= */
+.swp-loading,
+.swp-error,
+.swp-empty{
+    display:none;
+    max-width:900px;
+    margin:15px auto;
+    padding:18px;
+    border-radius:12px;
+    text-align:center;
+    font-size:12px;
+}
+.swp-loading.visible{
+    display:block;
+    background:#f8fafc;
+    color:#64748b;
+}
+.swp-error.visible{
+    display:block;
+    background:#fef2f2;
+    color:#b91c1c;
+}
+.swp-empty.visible{
+    display:block;
+    background:#f8fafc;
+    color:#64748b;
+}
+/* =========================================================
+   MOBILE
+========================================================= */
+@media(max-width:600px){
+    #swpProfileApp{
+        margin:15px 8px 28px;
+        padding:15px;
+    }
+    .swp-search-row{
+        flex-direction:column;
+    }
+    .swp-search-btn{
+        flex:auto;
+        width:100%;
+    }
+    .student-profile-inner{
+        padding:17px 13px;
+    }
+    .student-profile-main{
+        align-items:flex-start;
+        gap:10px;
+    }
+    .student-profile-avatar{
+        width:83px;
+        height:83px;
+        flex:0 0 83px;
+    }
+    .student-profile-avatar-core{
+        width:66px;
+        height:66px;
+        font-size:31px;
+    }
+    .student-profile-name{
+        font-size:20px;
+    }
+    .student-profile-actions{
+        gap:5px;
+    }
+    .student-profile-action{
+        padding:9px 4px;
+        font-size:9px;
+    }
+    .learning-info-grid,
+    .profile-gem-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    .swp-own-card{
+        grid-template-columns:82px minmax(0,1fr);
+        gap:8px;
+    }
+    .swp-own-image{
+        width:82px;
+        height:82px;
+    }
+    .swp-public{
+        padding-left:8px;
+        padding-right:8px;
+    }
+    .swp-public-head h2{
+        font-size:25px;
+    }
+    .swp-telescope{
+        margin-left:4px;
+        margin-right:4px;
+        padding:9px 10px;
+        font-size:10px;
+    }
+    .swp-public-pages{
+        margin:11px auto;
+    }
+    .swp-public-page{
+        min-width:34px;
+        height:34px;
+        padding:0 8px;
+    }
+}
+</style>
+<!-- =========================================================
+     PROFILE APP
+========================================================= -->
+<div id="swpProfileApp">
+    <h2 class="swp-title">
+        Hồ sơ học viên
+    </h2>
+    <p class="swp-desc">
+        Hồ sơ tự mở khi bạn đã nhận diện qua biểu tượng Minh Hồng.
+    </p>
+    <div class="swp-search">
+        <div class="swp-search-title">
+            Chưa nhận diện học viên
+        </div>
+        <div class="swp-search-note">
+            Bấm biểu tượng Minh Hồng ở góc màn hình và nhập Mã học viên để mở hồ sơ, nộp bài và xem các bài đã nộp.
+        </div>
+        <div class="swp-search-row" style="display:none">
+            <input
+                id="swpCode"
+                class="swp-input"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Nhập Mã học viên..."
+            />
+            <button
+                id="swpSearch"
+                class="swp-search-btn"
+                type="button"
+            >
+                TRA CỨU
+            </button>
+        </div>
+        <div
+            id="swpMessage"
+            class="swp-message"
+        ></div>
+    </div>
+    <!-- =====================================================
+         PROFILE
+    ====================================================== -->
+    <div
+        id="swpProfile"
+        class="student-profile-module"
+    >
+        <div class="student-profile-overlay"></div>
+        <div class="student-profile-inner">
+            <div class="student-profile-main">
+                <div
+                    id="swpAvatar"
+                    class="student-profile-avatar"
+                ></div>
+                <div class="student-profile-content">
+                    <div class="student-profile-label">
+                        HỒ SƠ HỌC VIÊN
+                    </div>
+                    <div
+                        id="swpNameWrap"
+                        class="student-profile-name-wrap"
+                    >
+                        <div
+                            id="swpName"
+                            class="student-profile-name"
+                        ></div>
+                    </div>
+                    <div class="student-profile-badges">
+                        <div class="student-profile-badge">
+                            <span
+                                id="swpGroupIcon"
+                                class="swp-ui-icon"
+                            ></span>
+                            <span id="swpGroup">—</span>
+                        </div>
+                        <div class="student-profile-badge">
+                            <span
+                                id="swpCourseIcon"
+                                class="swp-ui-icon"
+                            ></span>
+                            <span id="swpCourse">—</span>
+                        </div>
+                        <div class="student-profile-badge">
+                            <span
+                                id="swpSubmissionIcon"
+                                class="swp-ui-icon"
+                            ></span>
+                            <span id="swpSubmissionBadge">
+                                0 bài
+                            </span>
+                        </div>
+                    </div>
+                    <div
+                        id="swpGlass"
+                        class="swp-glass"
+                    ></div>
+                </div>
+            </div>
+            <!-- =================================================
+                 ACTIONS
+            ================================================== -->
+            <div class="student-profile-actions">
+                <button
+                    id="swpLearningBtn"
+                    class="student-profile-action"
+                    type="button"
+                >
+                    <span
+                        id="swpLearningIcon"
+                        class="swp-ui-icon"
+                    ></span>
+                    <span>Học tập</span>
+                </button>
+                <button
+                    id="swpGemBtn"
+                    class="student-profile-action"
+                    type="button"
+                >
+                    <span
+                        id="swpGemIcon"
+                        class="swp-ui-icon"
+                    ></span>
+                    <span>Linh thạch</span>
+                    <span
+                        id="swpGemTotal"
+                        class="student-profile-action-number"
+                    >
+                        0
+                    </span>
+                </button>
+                <button
+                    id="swpItemBtn"
+                    class="student-profile-action"
+                    type="button"
+                >
+                    <span
+                        id="swpItemIcon"
+                        class="swp-ui-icon"
+                    ></span>
+                    <span>Vật phẩm</span>
+                    <span
+                        id="swpItemTotal"
+                        class="student-profile-action-number"
+                    >
+                        0
+                    </span>
+                </button>
+            </div>
+            <!-- =================================================
+                 LEARNING PANEL
+            ================================================== -->
+            <div
+                id="swpLearningPanel"
+                class="rx-expand-panel"
+            >
+                <div class="rx-panel-title">
+                    Thông tin học tập
+                </div>
+                <div class="learning-info-grid">
+                    <div class="learning-info-item">
+                        <div class="learning-info-label">Tổ</div>
+                        <div
+                            id="swpLearningGroup"
+                            class="learning-info-value"
+                        >
+                            —
+                        </div>
+                    </div>
+                    <div class="learning-info-item">
+                        <div class="learning-info-label">Khóa</div>
+                        <div
+                            id="swpLearningCourse"
+                            class="learning-info-value"
+                        >
+                            —
+                        </div>
+                    </div>
+                    <div class="learning-info-item">
+                        <div class="learning-info-label">
+                            Điểm trung bình
+                        </div>
+                        <div
+                            id="swpAverage"
+                            class="learning-info-value learning-average"
+                        >
+                            0
+                        </div>
+                    </div>
+                    <div class="learning-info-item">
+                        <div class="learning-info-label">
+                            Tổng bài hợp lệ
+                        </div>
+                        <div
+                            id="swpSubmissionTotal"
+                            class="learning-info-value learning-ranking"
+                        >
+                            0
+                        </div>
+                    </div>
+                </div>
+                <div
+                    id="swpLearningStatus"
+                    class="learning-status safe"
+                >
+                    <div
+                        id="swpLearningStatusTitle"
+                        class="learning-status-title"
+                    ></div>
+                    <div
+                        id="swpLearningStatusDetail"
+                    ></div>
+                </div>
+            </div>
+            <!-- =================================================
+                 GEM PANEL
+            ================================================== -->
+            <div
+                id="swpGemPanel"
+                class="rx-expand-panel"
+            >
+                <div class="rx-panel-title">
+                    Linh thạch đang sở hữu
+                </div>
+                <div
+                    id="swpGemGrid"
+                    class="profile-gem-grid"
+                ></div>
+            </div>
+            <!-- =================================================
+                 ITEM PANEL
+            ================================================== -->
+            <div
+                id="swpItemPanel"
+                class="rx-expand-panel"
+            >
+                <div class="rx-panel-title">
+                    Vật phẩm đang sở hữu
+                </div>
+                <div
+                    id="swpItemGrid"
+                    class="profile-item-grid"
+                ></div>
+            </div>
+            <!-- =================================================
+                 SUBMIT
+            ================================================== -->
+            <div
+                id="swpSubmit"
+                class="swp-submit"
+            >
+                <a
+                    id="swpSubmitLink"
+                    href="https://docs.google.com/forms/d/e/1FAIpQLScfsWRNbv1h3XdJq1K_llPnkmmWOll480qRB5e8aWgvJj5eUw/viewform"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <span
+                        id="swpSubmitIcon"
+                        class="swp-ui-icon"
+                    ></span>
+                    <span>Nộp bài tập</span>
+                </a>
+                <div
+                    id="swpSubmitLimit"
+                    class="swp-submit-limit"
+                    role="status"
+                    aria-live="polite"
+                >
+                    Bạn đã vượt quá số lượng bài đăng trong ngày hôm nay
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- =====================================================
+         OWN WORK TOGGLE
+    ====================================================== -->
+    <div
+        id="swpOwnToggleWrap"
+        class="swp-own-toggle-wrap"
+    >
+        <button
+            id="swpOwnToggle"
+            class="swp-own-toggle"
+            type="button"
+        >
+            <span
+                id="swpOwnToggleIcon"
+                class="swp-ui-icon"
+            ></span>
+            <span id="swpOwnToggleText">
+                Danh sách bài đã nộp
+            </span>
+        </button>
+    </div>
+    <div
+        id="swpOwnPanel"
+        class="swp-own-panel"
+    >
+        <div class="swp-own-title">
+            Danh sách bài đã nộp
+            <span
+                id="swpOwnCount"
+                class="swp-own-count"
+            ></span>
+        </div>
+        <div
+            id="swpOwnList"
+            class="swp-own-list"
+        ></div>
+    </div>
+</div>
+<!-- =========================================================
+     PUBLIC WORKS
+========================================================= -->
+<div class="swp-public">
+    <div class="swp-public-head">
+        <h2>
+            Tác phẩm mới nhất
+        </h2>
+        <p>
+            Những bài tập mới được học viên gửi lên hệ thống.
+        </p>
+    </div>
+    <div
+        id="swpPublicStatus"
+        class="swp-public-status"
+    ></div>
+    <!-- KÍNH VIỄN VỌNG -->
+    <div
+        id="swpTelescope"
+        class="swp-telescope"
+    ></div>
+    <!-- PHÂN TRANG TRÊN -->
+    <div
+        id="swpPublicPagesTop"
+        class="swp-public-pages"
+    ></div>
+    <div
+        id="swpLoading"
+        class="swp-loading visible"
+    >
+        Đang tải tác phẩm mới nhất...
+    </div>
+    <div
+        id="swpError"
+        class="swp-error"
+    ></div>
+    <div
+        id="swpEmpty"
+        class="swp-empty"
+    >
+        Chưa có tác phẩm nào.
+    </div>
+    <div
+        id="swpGrid"
+        class="tp18-grid"
+    ></div>
+    <!-- PHÂN TRANG DƯỚI -->
+    <div
+        id="swpPublicPagesBottom"
+        class="swp-public-pages"
+    ></div>
+</div>
+<!-- v1.7.0: mã trang nằm ở GitHub (nop-bai/student-work-page.js) -->
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@716b86d34e1be45da1b00c73505b65735c792507/nop-bai/student-work-page.min.js"></script>
+</div>
+
