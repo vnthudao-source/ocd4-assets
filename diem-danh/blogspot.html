@@ -1,0 +1,7 @@
+<!-- ĐIỂM DANH LỚP · trang Blogspot (dán ở chế độ HTML, thay toàn bộ nội dung trang).
+     CSS và JS nằm trên GitHub (vnthudao-source/ocd4-assets, thư mục diem-danh), tải qua jsdelivr.
+     API_URL: dán URL /exec của Apps Script "Điểm danh lớp" vào giữa hai dấu ngoặc kép.
+     Cập nhật trang: CHỈ đổi số phiên bản trong V='...' (mã commit Claude gửi). Không xuống dòng bên trong thẻ script.
+     Nên để trang ở chế độ không hiện trong menu; dữ liệu đã được khoá bằng mật khẩu đặt trong Apps Script. -->
+<div id="ddl">Đang tải trang điểm danh…</div>
+<script>window.DDL_CONFIG={API_URL:"DAN_URL_WEB_APP_VAO_DAY"};(function(){var V='7d43e953cdc98f357acedf3309cbd7493ab330b4';var B='https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@'+V+'/diem-danh/';var r=document.getElementById('ddl');var l=document.createElement('link');l.rel='stylesheet';l.href=B+'diem-danh.css';document.head.appendChild(l);var s=document.createElement('script');s.src=B+'diem-danh.js';s.onerror=function(){if(r){r.textContent='Không tải được mã trang từ GitHub (phiên bản '+V+'). Hãy tải lại trang hoặc kiểm tra số phiên bản.';}};document.body.appendChild(s);})();</script>
