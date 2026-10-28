@@ -1,0 +1,8982 @@
+
+<div id="ocdGraduationExamPage">
+
+<script>
+/* =========================================================
+   OCD - CẤU HÌNH KỲ THI
+========================================================= */
+
+window.OCD_GRADUATION_EXAM_SETTINGS = {
+
+    /*
+       false = THI CHÍNH THỨC
+       true  = THI THỬ
+    */
+    trialMode: true
+
+};
+</script>
+
+
+<style>
+/* =========================================================
+   OCD - PHÒNG THI TỐT NGHIỆP
+   v2.5.0 - 20 THEORY + 5 PRACTICAL
+
+   FONT VIỆT HÓA / DỄ ĐỌC
+   ---------------------------------------------------------
+   - Dùng system font
+   - Không tải Google Font
+   - Tối ưu iPhone / Android / Windows / macOS
+   - Form control dùng cùng font
+   - Không thay đổi logic / kích thước / bố cục
+========================================================= */
+
+#ocdGraduationExamPage{
+    --paper:#fffdf8;
+    --paper2:#f8f2e8;
+    --ink:#302923;
+    --muted:#786f66;
+    --line:#e4d8c8;
+
+    --brown:#765344;
+    --brown-dark:#51372d;
+
+    --gold:#aa7a35;
+    --red:#963b3b;
+    --green:#397153;
+
+    max-width:1100px;
+    margin:24px auto 60px;
+    padding:0 12px;
+
+    /*
+       FONT CHUNG MỚI
+       Ưu tiên font hệ thống dễ đọc tiếng Việt.
+    */
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+
+    color:var(--ink);
+    line-height:1.6;
+
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+}
+
+#ocdGraduationExamPage *{
+    box-sizing:border-box;
+}
+
+/*
+   QUAN TRỌNG:
+   Button/input trên iPhone và một số trình duyệt
+   có thể tự sử dụng font riêng.
+   Cho toàn bộ form control kế thừa font của trang.
+*/
+#ocdGraduationExamPage button,
+#ocdGraduationExamPage input,
+#ocdGraduationExamPage textarea,
+#ocdGraduationExamPage select{
+    font-family:inherit;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.exam-hero{
+    padding:34px 24px;
+    border:1px solid #ddc691;
+    border-radius:22px;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(181,135,69,.16),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #fff7e7,
+            #fffdf8
+        );
+
+    text-align:center;
+
+    box-shadow:
+        0 12px 34px
+        rgba(63,45,31,.08);
+}
+
+.exam-hero-badge{
+    display:inline-block;
+
+    padding:6px 13px;
+    margin-bottom:10px;
+
+    border:1px solid #ddc48a;
+    border-radius:999px;
+
+    background:#fff8e6;
+
+    color:#815d28;
+
+    font-size:12px;
+    font-weight:800;
+}
+
+.exam-hero h1{
+    margin:0;
+
+    font-family:inherit;
+    font-size:34px;
+
+    color:var(--brown-dark);
+}
+
+.exam-hero p{
+    max-width:760px;
+    margin:10px auto 0;
+
+    color:var(--muted);
+}
+
+.exam-test{
+    max-width:680px;
+    margin:15px auto 0;
+
+    padding:9px 13px;
+
+    border-radius:10px;
+
+    background:#fff0d1;
+
+    color:#80571b;
+
+    font-size:13px;
+    font-weight:800;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.exam-card{
+    margin-top:18px;
+    padding:22px;
+
+    border:1px solid var(--line);
+    border-radius:18px;
+
+    background:#fff;
+
+    box-shadow:
+        0 8px 25px
+        rgba(63,45,31,.055);
+}
+
+.exam-card-title{
+    margin:0 0 14px;
+
+    font-family:inherit;
+    font-size:21px;
+
+    color:var(--brown-dark);
+}
+
+
+/* =========================================================
+   INPUT / BUTTON
+========================================================= */
+
+.exam-lookup-row{
+    display:flex;
+    gap:10px;
+}
+
+.exam-input{
+    width:100%;
+    min-height:48px;
+
+    padding:10px 14px;
+
+    border:1px solid #d9cbb8;
+    border-radius:11px;
+
+    background:#fff;
+
+    font-size:15px;
+
+    outline:none;
+}
+
+.exam-input:focus{
+    border-color:#ae8450;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(174,132,80,.12);
+}
+
+.exam-btn{
+    min-height:44px;
+
+    padding:9px 17px;
+
+    border:0;
+    border-radius:11px;
+
+    background:var(--brown);
+
+    color:#fff;
+
+    font-size:13px;
+    font-weight:800;
+
+    cursor:pointer !important;
+    pointer-events:auto !important;
+}
+
+.exam-btn.secondary{
+    border:1px solid #d7c8b6;
+
+    background:#fff;
+
+    color:var(--brown-dark);
+}
+
+.exam-btn.green{
+    background:var(--green);
+}
+
+.exam-btn.gold{
+    background:var(--gold);
+}
+
+.exam-btn.red{
+    background:var(--red);
+}
+
+.exam-btn:disabled{
+    opacity:.45;
+
+    cursor:not-allowed !important;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.exam-message{
+    display:none;
+
+    margin-top:12px;
+    padding:11px 13px;
+
+    border-radius:10px;
+
+    font-size:13px;
+    font-weight:700;
+}
+
+.exam-message.show{
+    display:block;
+}
+
+.exam-message.loading{
+    background:#f4eee5;
+
+    color:#745c44;
+}
+
+.exam-message.success{
+    background:#eaf5ee;
+
+    color:#316446;
+}
+
+.exam-message.error{
+    background:#fae8e8;
+
+    color:#8b3838;
+}
+
+
+/* =========================================================
+   STUDENT
+========================================================= */
+
+.exam-student-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    gap:10px;
+}
+
+.exam-info{
+    padding:12px;
+
+    border:1px solid var(--line);
+    border-radius:12px;
+
+    background:var(--paper);
+}
+
+.exam-info-label{
+    color:var(--muted);
+
+    font-size:11px;
+    font-weight:800;
+
+    text-transform:uppercase;
+}
+
+.exam-info-value{
+    margin-top:4px;
+
+    font-size:16px;
+    font-weight:900;
+
+    overflow-wrap:anywhere;
+}
+
+.exam-eligibility{
+    margin-top:14px;
+    padding:14px;
+
+    border-radius:12px;
+
+    font-size:14px;
+}
+
+.exam-eligibility.pass{
+    background:#e9f4ed;
+
+    color:#316446;
+}
+
+.exam-eligibility.fail{
+    background:#fae9e9;
+
+    color:#8b3939;
+}
+
+.exam-eligibility.locked{
+    border:1px solid #e0c77c;
+
+    background:#fff4d7;
+
+    color:#75541d;
+}
+
+
+/* =========================================================
+   SESSION HEADER
+========================================================= */
+
+.exam-session-header{
+    position:sticky;
+
+    top:5px;
+
+    z-index:100;
+
+    display:grid;
+
+    grid-template-columns:
+        minmax(130px,.7fr)
+        minmax(260px,2fr)
+        auto;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-top:18px;
+
+    padding:10px 12px;
+
+    border:1px solid #d9cab7;
+    border-radius:14px;
+
+    background:
+        rgba(255,253,248,.98);
+
+    box-shadow:
+        0 8px 26px
+        rgba(54,42,31,.13);
+
+    backdrop-filter:
+        blur(7px);
+
+    -webkit-backdrop-filter:
+        blur(7px);
+}
+
+.exam-session-student{
+    min-width:0;
+}
+
+.exam-mini-name{
+    font-weight:900;
+
+    color:var(--brown-dark);
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.exam-mini-code{
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+
+/* =========================================================
+   PINNED QUESTION
+========================================================= */
+
+.exam-pinned-question{
+    min-width:0;
+
+    padding:8px 12px;
+
+    border-left:3px solid var(--gold);
+    border-radius:8px;
+
+    background:#fff8e8;
+}
+
+.exam-pinned-label{
+    color:#936a2e;
+
+    font-size:10px;
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:.04em;
+}
+
+.exam-pinned-text{
+    margin-top:2px;
+
+    color:var(--brown-dark);
+
+    font-size:13px;
+    font-weight:800;
+
+    line-height:1.4;
+
+    overflow-wrap:anywhere;
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+.exam-timer{
+    min-width:108px;
+
+    padding:8px 11px;
+
+    border-radius:10px;
+
+    background:#403129;
+
+    color:#fff;
+
+    font-size:19px;
+    font-weight:900;
+
+    text-align:center;
+}
+
+.exam-timer.warning{
+    background:var(--red);
+}
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+.exam-tabs{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:7px;
+
+    margin-top:14px;
+}
+
+.exam-tab{
+    min-height:43px;
+
+    border:1px solid #d9cab7;
+    border-radius:10px;
+
+    background:#fff;
+
+    color:var(--brown-dark);
+
+    font-size:12px;
+    font-weight:900;
+
+    cursor:pointer !important;
+}
+
+.exam-tab.active{
+    border-color:var(--brown);
+
+    background:var(--brown);
+
+    color:#fff;
+}
+
+
+/* =========================================================
+   QUESTION
+========================================================= */
+
+.exam-question-head{
+    display:flex;
+
+    align-items:flex-start;
+    justify-content:space-between;
+
+    gap:10px;
+}
+
+.exam-question-number{
+    color:#9c7137;
+
+    font-size:12px;
+    font-weight:900;
+}
+
+.exam-question-title{
+    margin:5px 0 0;
+
+    font-family:inherit;
+    font-size:22px;
+
+    color:var(--brown-dark);
+}
+
+.exam-progress{
+    flex:0 0 auto;
+
+    padding:5px 9px;
+
+    border-radius:999px;
+
+    background:#f1e9dd;
+
+    color:#6f513c;
+
+    font-size:12px;
+    font-weight:900;
+}
+
+
+/* =========================================================
+   QUESTION GRID
+========================================================= */
+
+.exam-qgrid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:7px;
+
+    margin-top:16px;
+}
+
+.exam-qnav{
+    min-height:38px;
+
+    border:1px solid #ddd1c2;
+    border-radius:8px;
+
+    background:#fff;
+
+    color:#674d3b;
+
+    font-weight:900;
+
+    cursor:pointer !important;
+}
+
+.exam-qnav.done{
+    background:#e8f3eb;
+
+    border-color:#afcfba;
+
+    color:#356647;
+}
+
+.exam-qnav.current{
+    background:var(--brown);
+
+    border-color:var(--brown);
+
+    color:#fff;
+}
+
+
+/* =========================================================
+   PRACTICAL NAV
+========================================================= */
+
+.practical-nav-box{
+    margin-bottom:18px;
+    padding:13px;
+
+    border:1px solid #e3d7c7;
+    border-radius:12px;
+
+    background:#fffaf2;
+}
+
+.practical-nav-head{
+    display:flex;
+
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+}
+
+.practical-nav-title{
+    color:var(--brown-dark);
+
+    font-size:13px;
+    font-weight:900;
+}
+
+.practical-nav-count{
+    color:var(--muted);
+
+    font-size:12px;
+    font-weight:700;
+}
+
+.practical-nav-box .exam-qgrid{
+    margin-top:10px;
+}
+
+
+/* =========================================================
+   THEORY
+========================================================= */
+
+.theory-options{
+    display:grid;
+
+    gap:10px;
+
+    margin-top:18px;
+}
+
+.theory-option{
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    width:100%;
+
+    padding:13px;
+
+    border:1px solid var(--line);
+    border-radius:11px;
+
+    background:#fff;
+
+    text-align:left;
+
+    cursor:pointer !important;
+}
+
+.theory-option.selected{
+    border-color:#997143;
+
+    background:#fbf1dc;
+}
+
+.theory-letter{
+    display:flex;
+
+    flex:0 0 30px;
+
+    width:30px;
+    height:30px;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#f0e8dd;
+
+    color:#6c5039;
+
+    font-weight:900;
+}
+
+.theory-option.selected .theory-letter{
+    background:var(--brown);
+
+    color:#fff;
+}
+
+.exam-bottom-nav{
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-top:18px;
+}
+
+
+/* =========================================================
+   PRACTICAL
+========================================================= */
+
+.practical-help{
+    margin-top:12px;
+    padding:11px 13px;
+
+    border-radius:10px;
+
+    background:#f6f0e7;
+
+    color:#706054;
+
+    font-size:13px;
+}
+
+.practical-selected{
+    display:none;
+
+    margin-top:13px;
+    padding:13px;
+
+    border:1px solid #bad5c3;
+    border-radius:11px;
+
+    background:#edf7f0;
+}
+
+.practical-selected.show{
+    display:block;
+}
+
+.practical-selected-title{
+    color:#326147;
+
+    font-weight:900;
+}
+
+.practical-selected-text{
+    margin-top:4px;
+
+    color:#53695b;
+
+    font-size:13px;
+}
+
+.practical-search{
+    margin-top:13px;
+}
+
+.practical-list-info{
+    margin-top:8px;
+
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+.practical-list{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:12px;
+
+    margin-top:13px;
+}
+
+.practical-card{
+    overflow:hidden;
+
+    border:1px solid var(--line);
+    border-radius:13px;
+
+    background:#fff;
+}
+
+.practical-card.selected{
+    border:2px solid #4d8660;
+}
+
+.practical-card.locked{
+    opacity:.58;
+}
+
+.practical-image-wrap{
+    position:relative;
+
+    aspect-ratio:4/3;
+
+    overflow:hidden;
+
+    background:#f2ede6;
+}
+
+.practical-image{
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+.practical-no-image{
+    display:flex;
+
+    width:100%;
+    height:100%;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    color:#86796e;
+
+    text-align:center;
+
+    font-size:13px;
+}
+
+.practical-badge{
+    position:absolute;
+
+    top:8px;
+    right:8px;
+
+    max-width:80%;
+
+    padding:5px 8px;
+
+    border-radius:999px;
+
+    background:
+        rgba(49,39,32,.88);
+
+    color:#fff;
+
+    font-size:10px;
+    font-weight:900;
+}
+
+.practical-body{
+    padding:12px;
+}
+
+.practical-note{
+    font-size:15px;
+    font-weight:900;
+
+    color:var(--brown-dark);
+}
+
+.practical-meta{
+    margin-top:5px;
+
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+.practical-score{
+    display:inline-block;
+
+    margin-top:7px;
+    padding:4px 7px;
+
+    border-radius:7px;
+
+    background:#f4ecdf;
+
+    color:#765826;
+
+    font-size:12px;
+    font-weight:900;
+}
+
+.practical-body .exam-btn{
+    width:100%;
+
+    margin-top:10px;
+}
+
+
+/* =========================================================
+   REVIEW
+========================================================= */
+
+.review-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:10px;
+
+    margin-top:14px;
+}
+
+.review-box{
+    padding:14px;
+
+    border:1px solid var(--line);
+    border-radius:12px;
+
+    background:var(--paper);
+
+    text-align:center;
+}
+
+.review-number{
+    font-size:25px;
+    font-weight:900;
+
+    color:var(--brown-dark);
+}
+
+.review-label{
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+.review-missing{
+    margin-top:14px;
+    padding:12px;
+
+    border-radius:10px;
+
+    background:#f6efe5;
+
+    color:#725b48;
+
+    font-size:13px;
+}
+
+.review-confirm{
+    display:flex;
+
+    gap:9px;
+
+    margin-top:15px;
+    padding:12px;
+
+    border:1px solid var(--line);
+    border-radius:10px;
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+.result-head{
+    text-align:center;
+}
+
+.result-icon{
+    display:flex;
+
+    width:66px;
+    height:66px;
+
+    margin:0 auto 11px;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#e9f4ed;
+
+    color:#397153;
+
+    font-size:30px;
+    font-weight:900;
+}
+
+.result-title{
+    margin:0;
+
+    font-family:inherit;
+
+    color:var(--brown-dark);
+}
+
+.result-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    gap:10px;
+
+    margin-top:17px;
+}
+
+.result-box{
+    padding:13px;
+
+    border:1px solid var(--line);
+    border-radius:11px;
+
+    background:var(--paper);
+
+    text-align:center;
+}
+
+.result-value{
+    font-size:22px;
+    font-weight:900;
+
+    color:var(--brown-dark);
+}
+
+.result-label{
+    color:var(--muted);
+
+    font-size:11px;
+}
+
+.remote-status{
+    margin-top:14px;
+    padding:12px;
+
+    border-radius:10px;
+
+    font-size:13px;
+}
+
+.remote-status.sent{
+    background:#e9f4ed;
+
+    color:#316446;
+}
+
+.remote-status.pending{
+    background:#fff1d5;
+
+    color:#7d581c;
+}
+
+
+/* =========================================================
+   UTIL
+========================================================= */
+
+.exam-hidden{
+    display:none !important;
+}
+
+.exam-center{
+    text-align:center;
+}
+
+.exam-muted{
+    color:var(--muted);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:760px){
+
+    #ocdGraduationExamPage{
+        margin-top:10px;
+
+        padding-left:8px;
+        padding-right:8px;
+    }
+
+    .exam-hero{
+        padding:25px 15px;
+
+        border-radius:16px;
+    }
+
+    .exam-hero h1{
+        font-size:26px;
+    }
+
+    .exam-card{
+        padding:15px;
+
+        border-radius:14px;
+    }
+
+    .exam-lookup-row{
+        display:grid;
+
+        grid-template-columns:1fr;
+    }
+
+    .exam-student-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+    .exam-session-header{
+        grid-template-columns:1fr auto;
+
+        gap:8px;
+
+        padding:9px;
+    }
+
+    .exam-session-student{
+        grid-column:1;
+        grid-row:1;
+    }
+
+    .exam-timer{
+        grid-column:2;
+        grid-row:1;
+
+        min-width:92px;
+
+        font-size:17px;
+    }
+
+    .exam-pinned-question{
+        grid-column:1 / -1;
+        grid-row:2;
+
+        border-left:0;
+        border-top:3px solid var(--gold);
+
+        padding:7px 9px;
+    }
+
+    .exam-pinned-text{
+        font-size:12px;
+    }
+
+    .exam-tabs{
+        grid-template-columns:1fr;
+    }
+
+    .practical-list{
+        grid-template-columns:1fr;
+    }
+
+    .review-grid{
+        grid-template-columns:1fr;
+    }
+
+    .result-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+}
+</style>
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="exam-hero">
+
+    <div class="exam-hero-badge">
+        PHÒNG THI TỐT NGHIỆP OCD
+    </div>
+
+    <h1>
+        Kỳ thi tốt nghiệp
+    </h1>
+
+    <p>
+        Hệ thống thi lý thuyết và lựa chọn các bài thực hành
+        tốt nhất từ lịch sử bài tập của học viên.
+    </p>
+
+    <div class="exam-test">
+        20 câu lý thuyết + 5 câu thực hành
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     LOOKUP
+========================================================= -->
+
+<section
+    class="exam-card"
+    id="examLookupPanel"
+>
+
+    <h2 class="exam-card-title">
+        Tra cứu thí sinh
+    </h2>
+
+    <div class="exam-lookup-row">
+
+        <input
+            class="exam-input"
+            id="examStudentCode"
+            type="text"
+            placeholder="Nhập mã học viên để xét tư cách thi"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            onkeydown="
+                if(event.key==='Enter'){
+                    event.preventDefault();
+                    return window.OCDGraduationExam.lookup();
+                }
+            "
+        >
+
+        <button
+            class="exam-btn"
+            id="examLookupButton"
+            type="button"
+            onclick="return window.OCDGraduationExam.lookup();"
+        >
+            TRA CỨU
+        </button>
+
+    </div>
+
+    <div
+        class="exam-message"
+        id="examLookupMessage"
+    ></div>
+
+</section>
+
+
+<!-- =========================================================
+     CANDIDATE
+========================================================= -->
+
+<section
+    class="exam-card exam-hidden"
+    id="examCandidatePanel"
+>
+
+    <h2 class="exam-card-title">
+        Hồ sơ dự thi
+    </h2>
+
+    <div
+        class="exam-student-grid"
+        id="examStudentInfo"
+    ></div>
+
+    <div
+        class="exam-eligibility"
+        id="examEligibility"
+    ></div>
+
+    <div
+        class="exam-center"
+        style="margin-top:15px;"
+    >
+
+        <button
+            class="exam-btn gold"
+            id="examStartButton"
+            type="button"
+            onclick="return window.OCDGraduationExam.start();"
+        >
+            BẮT ĐẦU BÀI THI
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     SESSION
+========================================================= -->
+
+<section
+    class="exam-hidden"
+    id="examSessionPanel"
+>
+
+    <div class="exam-session-header">
+
+        <div class="exam-session-student">
+
+            <div
+                class="exam-mini-name"
+                id="examMiniName"
+            ></div>
+
+            <div
+                class="exam-mini-code"
+                id="examMiniCode"
+            ></div>
+
+        </div>
+
+        <div
+            class="exam-pinned-question"
+            id="examPinnedQuestion"
+        >
+
+            <div class="exam-pinned-label">
+                ĐỀ BÀI HIỆN TẠI
+            </div>
+
+            <div
+                class="exam-pinned-text"
+                id="examPinnedQuestionText"
+            >
+                -
+            </div>
+
+        </div>
+
+        <div
+            class="exam-timer"
+            id="examTimer"
+        >
+            60:00
+        </div>
+
+    </div>
+
+
+    <div class="exam-tabs">
+
+        <button
+            class="exam-tab"
+            id="examTabTheory"
+            type="button"
+            onclick="return window.OCDGraduationExam.openTheory();"
+        >
+            I. LÝ THUYẾT
+        </button>
+
+        <button
+            class="exam-tab"
+            id="examTabPractical"
+            type="button"
+            onclick="return window.OCDGraduationExam.openPractical();"
+        >
+            II. THỰC HÀNH
+        </button>
+
+        <button
+            class="exam-tab"
+            id="examTabReview"
+            type="button"
+            onclick="return window.OCDGraduationExam.openReview();"
+        >
+            III. RÀ SOÁT & NỘP
+        </button>
+
+    </div>
+
+
+    <section
+        class="exam-card"
+        id="examTheoryPanel"
+    >
+        <div id="examTheoryContent"></div>
+    </section>
+
+
+    <section
+        class="exam-card exam-hidden"
+        id="examPracticalPanel"
+    >
+        <div id="examPracticalContent"></div>
+    </section>
+
+
+    <section
+        class="exam-card exam-hidden"
+        id="examReviewPanel"
+    >
+        <div id="examReviewContent"></div>
+    </section>
+
+</section>
+
+
+<!-- =========================================================
+     RESULT
+========================================================= -->
+
+<section
+    class="exam-card exam-hidden"
+    id="examResultPanel"
+>
+
+    <div id="examResultContent"></div>
+
+</section>
+
+
+<!-- =========================================================
+     GOOGLE FORM IFRAME
+========================================================= -->
+
+<iframe
+    id="graduationFormFrame"
+    name="graduationFormFrame"
+    style="
+        display:none;
+        width:0;
+        height:0;
+        border:0;
+    "
+></iframe>
+
+
+<script>
+/* =========================================================
+   OCD GRADUATION EXAM
+   v2.5.0 - 20 THEORY + 5 PRACTICAL
+
+   ---------------------------------------------------------
+   - Ngân hàng 35 câu
+   - Mỗi học viên nhận 20 câu lý thuyết
+   - Xáo câu hỏi
+   - Xáo A/B/C/D
+   - Lưu cố định đề trong phiên thi
+
+   THI CHÍNH THỨC:
+   - Điểm TB > 5
+   - Trên 100 bài nộp hợp lệ
+   - Chỉ được thi 1 lần
+   - Gửi kết quả vào Google Form
+
+   THI THỬ:
+   - Chỉ cần mã học viên hợp lệ
+   - Không xét điểm trung bình
+   - Không xét số lượng bài nộp
+   - Không xét đã thi chính thức hay chưa
+   - Không gửi Google Form chính thức
+   - Dùng storage riêng
+   - Có thể xóa phiên và thi thử lại
+
+   CẤU TRÚC:
+   - Câu 1 -> 20: lý thuyết
+   - Câu 21 -> 25: thực hành
+========================================================= */
+
+window.OCDGraduationExam =
+window.OCDGraduationExam || {};
+
+(function(APP){
+
+"use strict";
+
+
+/* =========================================================
+   GLOBAL SETTINGS
+========================================================= */
+
+var GLOBAL_SETTINGS =
+    window.OCD_GRADUATION_EXAM_SETTINGS ||
+    {};
+
+var IS_TRIAL_MODE =
+    GLOBAL_SETTINGS.trialMode === true;
+
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+var CONFIG={
+
+    version:
+        "OCD_GRADUATION_EXAM_V2.5.0_20_5",
+
+    durationMs:
+        60*60*1000,
+
+    theoryCount:
+        20,
+
+    practicalCount:
+        5,
+
+    minAverageExclusive:
+        5,
+
+    minSubmissionExclusive:
+        100,
+
+    trialMode:
+        IS_TRIAL_MODE,
+
+    adminCode:
+        "ADMIN",
+
+    adminName:
+        "ADMIN - Tài khoản kiểm thử",
+
+    rankingCsv:
+        "https://docs.google.com/spreadsheets/d/e/" +
+        "2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/" +
+        "pub?gid=1326884435&single=true&output=csv",
+
+    submissionCsvFallback:
+        "https://docs.google.com/spreadsheets/d/e/" +
+        "2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/" +
+        "pub?output=csv",
+
+    deleteLogCsv:
+        "https://docs.google.com/spreadsheets/d/" +
+        "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs" +
+        "/export?format=csv&gid=521976322",
+
+    examSpreadsheetId:
+        "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
+
+    examSheetName:
+        "BaiThiTotNghiep",
+
+    timeout:
+        15000,
+
+    /*
+       QUAN TRỌNG:
+       Dùng prefix MỚI cho bản 20 + 5.
+
+       Không đọc nhầm phiên 10 + 5 trước đây.
+    */
+    storagePrefix:
+        IS_TRIAL_MODE
+            ?
+            "OCD_GRADUATION_TRIAL_V25_20_5_"
+            :
+            "OCD_GRADUATION_EXAM_V25_20_5_",
+
+    lastCodeKey:
+        "OCD_GRADUATION_EXAM_LAST_CODE",
+
+    theoryBankVersion:
+        "OCD_THEORY_BANK_35_V1",
+
+    formAction:
+        "https://docs.google.com/forms/d/e/" +
+        "1FAIpQLScPDIg8vXnOHGtVfveA5BXzMF4FADzfczOEbqjFFXsaXmu_2A/" +
+        "formResponse",
+
+    formEntries:{
+
+        examId:
+            "entry.1552817107",
+
+        studentCode:
+            "entry.251847050",
+
+        studentName:
+            "entry.2049970658",
+
+        group:
+            "entry.564668192",
+
+        course:
+            "entry.85031901",
+
+        startedAt:
+            "entry.1741399782",
+
+        submittedAt:
+            "entry.1096896711",
+
+        submitReason:
+            "entry.184362703",
+
+        theoryAnswered:
+            "entry.900915271",
+
+        theoryCorrect:
+            "entry.714306500",
+
+        theoryWrong:
+            "entry.1019596883",
+
+        theoryScore:
+            "entry.22680200",
+
+        practicalAnswered:
+            "entry.326288762",
+
+        practicalData:
+            "entry.947426273",
+
+        systemVersion:
+            "entry.832497103"
+    }
+
+};
+
+
+/* =========================================================
+   THEORY BANK - 35 CÂU
+========================================================= */
+
+var THEORY_BANK=[
+
+    {
+        bankId:1,
+        text:"“Văn phòng tứ bảo” bao gồm những món đồ nào?",
+        options:[
+            "Bút, Nghiên, Giấy, Mực",
+            "Bút, Giấy, Mực, Ấn",
+            "Bút, Nghiên, Triện, Mực",
+            "Nghiên, Giấy, Mực, Ấn"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:2,
+        text:"“Lộ phong” có nghĩa là gì?",
+        options:[
+            "Kỹ thuật giấu đầu mao bút vào trong nét viết",
+            "Kỹ thuật đưa tâm bút chạy giữa nét",
+            "Tên của nét bút để lộ ra phần đầu tự nhiên của mao bút trên mặt giấy",
+            "Kỹ thuật xoay đầu bút khi thu bút"
+        ],
+        correct:2
+    },
+
+    {
+        bankId:3,
+        text:"“Bát diện bút” là gì?",
+        options:[
+            "Tám phương pháp cầm bút",
+            "Tám mặt sử dụng của mao bút",
+            "Tám kỹ thuật vận động cổ tay",
+            "Tám loại nét cơ bản của thư pháp"
+        ],
+        correct:1
+    },
+
+    {
+        bankId:4,
+        text:"Vì sao đa số người viết sử dụng mặt bút số 9 để khởi bút?",
+        options:[
+            "Vì mặt bút số 9 có khả năng giữ mực tốt nhất",
+            "Vì mặt bút số 9 tạo được nét thanh nhất",
+            "Vì mặt bút số 9 giúp tâm bút luôn nằm giữa nét",
+            "Vì đa số người viết dùng tay phải, vị trí phát lực thuận lợi ở mặt bút số 9"
+        ],
+        correct:3
+    },
+
+    {
+        bankId:5,
+        text:"Chữ viết tay phải đảm bảo có những yếu tố gì mới được xem là thư pháp?",
+        options:[
+            "Kỹ thuật dụng bút, khả năng thức thế và kỹ năng khoả thúc",
+            "Bố cục, màu sắc và giấy viết",
+            "Dụng mực, đóng ấn và trang trí",
+            "Nét chữ đẹp, đều và rõ ràng"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:6,
+        text:"“Điều phong” là gì?",
+        options:[
+            "Kỹ năng điều chỉnh lượng mực trên giấy",
+            "Kỹ năng xử lý ngòi bút theo đúng ý mình",
+            "Kỹ thuật thay đổi tư thế đứng khi viết",
+            "Kỹ thuật điều chỉnh tốc độ viết sao cho đồng đều"
+        ],
+        correct:1
+    },
+
+    {
+        bankId:7,
+        text:"“Trung phong” là gì?",
+        options:[
+            "Kỹ thuật giữ bút luôn ở vị trí trung vị",
+            "Kỹ thuật viết từ chính giữa tờ giấy ra ngoài",
+            "Kỹ thuật sử dụng phần giữa của mao bút",
+            "Kỹ thuật hành bút sao cho tâm bút nằm giữa nét"
+        ],
+        correct:3
+    },
+
+    {
+        bankId:8,
+        text:"Bút lông có đặc tính gì khác so với bút cứng?",
+        options:[
+            "Khó điều khiển, đa dạng về hình thái",
+            "Dễ điều khiển và nét viết ổn định hơn",
+            "Chỉ có thể tạo ra nét đậm",
+            "Có hình thái nét ít thay đổi hơn"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:9,
+        text:"“Ngũ chỉ chấp bút” nghĩa là gì?",
+        options:[
+            "Năm vị trí khác nhau để cầm bút",
+            "Năm cách vận động cổ tay khi viết",
+            "Năm ngón tay cùng được sử dụng để cầm bút",
+            "Năm kỹ thuật cơ bản để điều khiển mao bút"
+        ],
+        correct:2
+    },
+
+    {
+        bankId:10,
+        text:"“Cửu dụng” bao gồm những kỹ thuật nào?",
+        options:[
+            "Ngang, dọc, cong, vòng, móc, phác, chấm, lượn, chuyển",
+            "Đôn phong, toả phong, ngự phong, nục phong, yết bút, án bút, đốn bút, tồn phong, dược phong",
+            "Khởi bút, hành bút, thu bút, chuyển bút, chiết bút, đề bút, án bút, trú bút, hồi bút",
+            "Lộ phong, tàng phong, trung phong, trắc phong, thuận phong, nghịch phong, hồi phong, chuyển phong, xuất phong"
+        ],
+        correct:1
+    },
+
+    {
+        bankId:11,
+        text:"“Bát pháp” trong thư pháp Việt bao gồm những nét nào?",
+        options:[
+            "Ngang, Dọc, Cong, Vòng, Móc, Phác, Chấm, Lượn",
+            "Ngang, Sổ, Phẩy, Mác, Móc, Hất, Chấm, Gập",
+            "Ngang, Dọc, Tròn, Vuông, Móc, Hất, Chấm, Xoay",
+            "Ngang, Dọc, Cong, Gãy, Hất, Phẩy, Chấm, Xổ"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:12,
+        text:"“Thư pháp” khác gì so với “viết chữ đẹp”?",
+        options:[
+            "Thư pháp yêu cầu chữ phải đẹp, đều và đúng mẫu hơn viết chữ đẹp",
+            "Thư pháp chủ yếu là kỹ thuật trang trí chữ bằng mực và màu sắc",
+            "Thư pháp là phương pháp viết chữ thật nhanh nhưng vẫn đảm bảo đúng cấu trúc",
+            "Thư pháp là nghệ thuật mô tả nội tâm bằng việc sử dụng đường nét; thư pháp không nhất thiết chữ viết phải đẹp"
+        ],
+        correct:3
+    },
+
+    {
+        bankId:13,
+        text:"“Thức thế” có những thế dáng chính nào?",
+        options:[
+            "Trung thế, thượng thế, hạ thế",
+            "Cung bộ thế, Mã bộ thế, Hư bộ thế",
+            "Tiến bộ thế, thoái bộ thế, trung bộ thế",
+            "Chính thế, nghiêng thế, chuyển thế"
+        ],
+        correct:1
+    },
+
+    {
+        bankId:14,
+        text:"“Bút đạo” là gì?",
+        options:[
+            "Là phương pháp lựa chọn đường đi của bút trước khi viết",
+            "Là dấu vết của mực sau khi đã hoàn toàn lan toả trên giấy",
+            "Là nét bút phản ánh trên giấy khi chưa có sự lan toả của mặc đạo",
+            "Là kỹ thuật điều khiển tốc độ của mao bút"
+        ],
+        correct:2
+    },
+
+    {
+        bankId:15,
+        text:"Thư pháp quan trọng nhất phải thể hiện được điều gì?",
+        options:[
+            "Thần thái, sự tự nhiên và yếu tố Chân – Thiện – Mỹ",
+            "Nét chữ phải giống hoàn toàn với chữ mẫu",
+            "Bố cục phải cân xứng tuyệt đối",
+            "Kỹ thuật sử dụng mực phải phức tạp"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:16,
+        text:"“Bi” là gì?",
+        options:[
+            "Các nội dung được viết trực tiếp trên giấy",
+            "Các nội dung được viết trên lụa rồi đóng thành sách",
+            "Các bản chữ mẫu được sao chép bằng mực",
+            "Các nội dung được khắc, dập, thác bản trên đá"
+        ],
+        correct:3
+    },
+
+    {
+        bankId:17,
+        text:"“Thiếp” là gì?",
+        options:[
+            "Các nội dung được khắc trực tiếp lên đá",
+            "Các nội dung được viết trực tiếp trên giấy",
+            "Các bản chữ được khắc trên gỗ rồi in lại",
+            "Các nội dung được viết trên bia rồi thác bản"
+        ],
+        correct:1
+    },
+
+    {
+        bankId:18,
+        text:"Ba yếu tố giúp xác định thao tác “Viết” chứ không phải “Vẽ” là gì?",
+        options:[
+            "Không sửa lại nét; không tô đồ; viết theo nguyên tắc thuận bút và một lần chấm mực phải tạo tác xong một chữ",
+            "Viết thật nhanh; không dừng bút; không thay đổi lượng mực",
+            "Không sử dụng màu; không dùng thước; không phác thảo trước",
+            "Chỉ sử dụng trung phong; không xoay bút; không đổi tư thế"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:19,
+        text:"“Lâm mô” là gì?",
+        options:[
+            "Kỹ thuật sáng tác một tác phẩm dựa trên nội dung có sẵn",
+            "Phương pháp nghiên cứu bố cục của một tác phẩm cổ",
+            "Kỹ thuật để sao chép lại chữ viết của người khác",
+            "Kỹ thuật viết lại một chữ nhiều lần để tạo thành tác phẩm"
+        ],
+        correct:2
+    },
+
+    {
+        bankId:20,
+        text:"“Ngũ thể” trong thư pháp Việt bao gồm những thể nào?",
+        options:[
+            "Chân thể, Hành thể, Thảo thể, Triện thể, Lệ thể",
+            "Mộc thể, Phong thể, Thuỷ thể, Điền thể, Biến thể",
+            "Kim thể, Mộc thể, Thuỷ thể, Hoả thể, Thổ thể",
+            "Chính thể, Hành thể, Biến thể, Cổ thể, Tân thể"
+        ],
+        correct:1
+    },
+
+    {
+        bankId:21,
+        text:"Tên gọi đúng của thư pháp trong tiếng Anh theo nội dung bài học là gì?",
+        options:[
+            "Calligraphic",
+            "Handwriting",
+            "Typography",
+            "Shufa"
+        ],
+        correct:3
+    },
+
+    {
+        bankId:22,
+        text:"“Pháp độ” là gì?",
+        options:[
+            "Khả năng phô diễn kỹ thuật viết",
+            "Mức độ đậm nhạt của mực trong tác phẩm",
+            "Khả năng sắp xếp bố cục chữ trên giấy",
+            "Quy định về kích thước của từng nét chữ"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:23,
+        text:"“Mặc pháp” bao gồm những sắc độ nào?",
+        options:[
+            "Đậm, vừa, nhạt, khô, ướt",
+            "Tiêu, nồng, trọng, đạm, thanh",
+            "Thanh, trọng, khô, nhuận, đậm",
+            "Tiêu, trung, đạm, khô, nhuận"
+        ],
+        correct:1
+    },
+
+    {
+        bankId:24,
+        text:"“Vận uyển” là gì?",
+        options:[
+            "Cách sử dụng ngón tay để xoay thân bút",
+            "Cách di chuyển toàn bộ cánh tay khi viết chữ lớn",
+            "Cách sử dụng cổ tay cuộn lắc để tạo tác chữ",
+            "Cách thay đổi vị trí cầm bút trong quá trình viết"
+        ],
+        correct:2
+    },
+
+    {
+        bankId:25,
+        text:"Vì sao nên vận uyển thay vì dùng ngón tay để tạo tác chữ viết?",
+        options:[
+            "Vì cổ tay linh hoạt hơn, chi tiết hơn, tự nhiên hơn và hữu dụng hơn",
+            "Vì sử dụng cổ tay giúp bút chứa được nhiều mực hơn",
+            "Vì ngón tay không được phép chuyển động khi viết thư pháp",
+            "Vì sử dụng cổ tay giúp mọi nét chữ có độ dày giống nhau"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:26,
+        text:"Vị trí cầm bút bao gồm những vị trí nào?",
+        options:[
+            "Tiền vị, trung vị, hậu vị",
+            "Chính vị, trung vị, biên vị",
+            "Thấp vị, ngang vị, cao vị",
+            "Hạ vị, trung vị, thượng vị"
+        ],
+        correct:3
+    },
+
+    {
+        bankId:27,
+        text:"Cấu tạo của bút lông bao gồm những bộ phận chính nào?",
+        options:[
+            "Tâm bút và phụ hào",
+            "Mao bút và quản bút",
+            "Chủ phong và quản bút",
+            "Mao bút, tâm bút và phụ hào"
+        ],
+        correct:1
+    },
+
+    {
+        bankId:28,
+        text:"Cấu tạo của mao bút bao gồm những thành phần nào?",
+        options:[
+            "Mao bút và quản bút",
+            "Đầu bút, thân bút và đuôi bút",
+            "Tâm bút (chủ phong) và phụ hào (phó hào)",
+            "Chủ phong, quản bút và bút căn"
+        ],
+        correct:2
+    },
+
+    {
+        bankId:29,
+        text:"“Danh chương” là gì?",
+        options:[
+            "Ấn chứa đựng thông tin về tên thật, tên hiệu của tác giả",
+            "Ấn ghi thời gian hoàn thành tác phẩm",
+            "Ấn thể hiện chủ đề và tư tưởng của tác phẩm",
+            "Ấn ghi địa điểm nơi tác phẩm được sáng tác"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:30,
+        text:"“Nhàn chương” là gì?",
+        options:[
+            "Ấn chỉ được sử dụng để trang trí khoảng trống trong tác phẩm",
+            "Ấn chứa tên thật và tên hiệu của tác giả",
+            "Ấn dùng để xác định quyền sở hữu tác phẩm",
+            "Ấn chứa thông tin về thời gian, địa điểm, chủ đề dẫn dắt cho tác phẩm"
+        ],
+        correct:3
+    },
+
+    {
+        bankId:31,
+        text:"Một tác phẩm thư pháp chỉ được xem là hoàn chỉnh khi có những yếu tố nào?",
+        options:[
+            "Có chữ viết đẹp, giấy tốt và mực tốt",
+            "Đầy đủ nội dung, ấn chương; ít nhất phải có danh chương",
+            "Có đủ danh chương và nhàn chương, không cần xét nội dung",
+            "Có đầy đủ nội dung, lạc khoản và tối thiểu ba loại ấn"
+        ],
+        correct:1
+    },
+
+    {
+        bankId:32,
+        text:"“Lực độ” được hiểu là gì?",
+        options:[
+            "Lực của ngón tay tác động vào quản bút",
+            "Khả năng tạo nét đậm bằng cách ép mạnh mao bút",
+            "Khả năng “sát chỉ” của mao bút trên bề mặt giấy viết",
+            "Khả năng giữ bút thẳng đứng trong suốt quá trình hành bút"
+        ],
+        correct:2
+    },
+
+    {
+        bankId:33,
+        text:"“Chuyển – Chiết” là gì?",
+        options:[
+            "Chuyển là nét viết thay đổi hướng đi từ từ tạo nên góc tròn; Chiết là nét viết thay đổi hướng đột ngột tạo nên góc gãy",
+            "Chuyển là kỹ thuật xoay quản bút; Chiết là kỹ thuật dừng bút",
+            "Chuyển là đưa bút từ dưới lên trên; Chiết là đưa bút từ trên xuống dưới",
+            "Chuyển là kỹ thuật đổi mặt bút; Chiết là kỹ thuật đổi vị trí cầm bút"
+        ],
+        correct:0
+    },
+
+    {
+        bankId:34,
+        text:"“Viên bút” là gì?",
+        options:[
+            "Nét viết được tạo ra khi sử dụng toàn bộ bụng bút",
+            "Nét viết có phần giữa tròn nhưng hai đầu nhọn",
+            "Kỹ thuật xoay tròn quản bút trong khi hành bút",
+            "Tên của nét được tạo ra khi khởi thu, hình thái của nét tạo ra dạng hình tròn"
+        ],
+        correct:3
+    },
+
+    {
+        bankId:35,
+        text:"Tầm quan trọng của việc “lâm mô” là gì?",
+        options:[
+            "Giúp người học tạo ra tác phẩm giống hoàn toàn bản gốc để sử dụng",
+            "Sao chép, cảm nhận",
+            "Giúp người học không cần nghiên cứu kỹ thuật dụng bút",
+            "Chủ yếu giúp tăng tốc độ viết chữ"
+        ],
+        correct:1
+    }
+
+];
+
+
+/* =========================================================
+   PRACTICAL QUESTIONS
+   21 -> 25
+========================================================= */
+
+var PRACTICAL_QUESTIONS=[
+
+    {
+        id:21,
+        text:"Nộp bài cơ bản công nét lộ phong."
+    },
+
+    {
+        id:22,
+        text:"Nộp bài Thận Độc."
+    },
+
+    {
+        id:23,
+        text:"Nộp bài Vạn Sự Như Ý."
+    },
+
+    {
+        id:24,
+        text:"Nộp bài viết theo chiều dọc."
+    },
+
+    {
+        id:25,
+        text:"Nộp một bài viết dài."
+    }
+
+];
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+var STATE={
+
+    student:null,
+
+    eligible:false,
+
+    previousExam:null,
+
+    validSubmissions:[],
+
+    removedCount:0,
+
+    deleteRows:null,
+
+    session:null,
+
+    theoryIndex:0,
+
+    practicalIndex:0,
+
+    practicalSearch:"",
+
+    practicalRenderMap:{},
+
+    timerHandle:null,
+
+    remoteSubmitting:false,
+
+    startChecking:false
+
+};
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+function el(id){
+
+    return document.getElementById(id);
+}
+
+
+/* =========================================================
+   FIX HTML ENTITY
+========================================================= */
+
+function decodeHtmlEntities(value){
+
+    var str=
+        String(
+            value===undefined ||
+            value===null
+                ?
+                ""
+                :
+                value
+        );
+
+    if(str.indexOf("&")===-1){
+
+        return str;
+    }
+
+    try{
+
+        var textarea=
+            document.createElement("textarea");
+
+        textarea.innerHTML=
+            str;
+
+        return textarea.value;
+
+    }catch(error){
+
+        return str
+        .replace(/&#8220;/g,"“")
+        .replace(/&#8221;/g,"”")
+        .replace(/&#8216;/g,"‘")
+        .replace(/&#8217;/g,"’")
+        .replace(/&quot;/g,'"')
+        .replace(/&amp;/g,"&");
+    }
+}
+
+
+/* =========================================================
+   NORMALIZE
+========================================================= */
+
+function normalizeText(value){
+
+    return decodeHtmlEntities(value)
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/đ/g,"d")
+    .replace(/\s+/g," ");
+}
+
+function normalizeCode(value){
+
+    return String(
+        value===undefined ||
+        value===null
+            ? ""
+            : value
+    )
+    .trim()
+    .toUpperCase();
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHtml(value){
+
+    return decodeHtmlEntities(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
+
+
+/* =========================================================
+   RANDOM
+========================================================= */
+
+function hashString(str){
+
+    str=
+        String(str || "");
+
+    var h=
+        2166136261;
+
+    for(
+        var i=0;
+        i<str.length;
+        i++
+    ){
+
+        h^=
+            str.charCodeAt(i);
+
+        h=
+            Math.imul(
+                h,
+                16777619
+            );
+    }
+
+    return h>>>0;
+}
+
+
+function createSeededRandom(seed){
+
+    var value=
+        seed>>>0;
+
+    return function(){
+
+        value+=
+            0x6D2B79F5;
+
+        var t=
+            value;
+
+        t=
+            Math.imul(
+                t^(t>>>15),
+                t|1
+            );
+
+        t^=
+            t+
+            Math.imul(
+                t^(t>>>7),
+                t|61
+            );
+
+        return (
+            (
+                t^(t>>>14)
+            )>>>0
+        ) /
+        4294967296;
+    };
+}
+
+
+function shuffleWithRandom(
+    array,
+    random
+){
+
+    var list=
+        array.slice();
+
+    for(
+        var i=list.length-1;
+        i>0;
+        i--
+    ){
+
+        var j=
+            Math.floor(
+                random() *
+                (i+1)
+            );
+
+        var temp=
+            list[i];
+
+        list[i]=
+            list[j];
+
+        list[j]=
+            temp;
+    }
+
+    return list;
+}
+
+
+/* =========================================================
+   BUILD THEORY PAPER
+   RÚT 20/35 CÂU
+========================================================= */
+
+function buildTheoryPaper(
+    studentCode,
+    startedAt,
+    isAdmin
+){
+
+    var seedSource=
+        CONFIG.theoryBankVersion +
+        "|" +
+        normalizeCode(
+            studentCode
+        );
+
+    /*
+       ADMIN hoặc THI THỬ:
+       thêm thời gian vào seed.
+
+       Reset phiên sẽ nhận bộ câu hỏi khác.
+    */
+
+    if(
+        isAdmin ||
+        CONFIG.trialMode
+    ){
+
+        seedSource+=
+            "|" +
+            String(
+                startedAt
+            );
+    }
+
+    var random=
+        createSeededRandom(
+            hashString(
+                seedSource
+            )
+        );
+
+    var selected=
+        shuffleWithRandom(
+            THEORY_BANK,
+            random
+        )
+        .slice(
+            0,
+            CONFIG.theoryCount
+        );
+
+    return selected.map(
+        function(source,index){
+
+            var optionObjects=
+                source.options.map(
+                    function(text,optionIndex){
+
+                        return {
+
+                            text:
+                                text,
+
+                            isCorrect:
+                                optionIndex===
+                                source.correct
+                        };
+                    }
+                );
+
+            optionObjects=
+                shuffleWithRandom(
+                    optionObjects,
+                    random
+                );
+
+            var newCorrect=
+                optionObjects.findIndex(
+                    function(item){
+
+                        return !!item.isCorrect;
+                    }
+                );
+
+            return {
+
+                id:
+                    index+1,
+
+                bankId:
+                    source.bankId,
+
+                text:
+                    source.text,
+
+                options:
+                    optionObjects.map(
+                        function(item){
+
+                            return item.text;
+                        }
+                    ),
+
+                correct:
+                    newCorrect
+            };
+        }
+    );
+}
+
+
+function theoryQuestions(){
+
+    if(
+        !STATE.session ||
+        !Array.isArray(
+            STATE.session.theoryQuestions
+        )
+    ){
+
+        return [];
+    }
+
+    return STATE.session.theoryQuestions;
+}
+
+
+/* =========================================================
+   CSV
+========================================================= */
+
+function parseCSV(text){
+
+    var rows=[];
+    var row=[];
+    var field="";
+    var quoted=false;
+
+    text=
+        String(text || "")
+        .replace(/^\uFEFF/,"");
+
+    for(
+        var i=0;
+        i<text.length;
+        i++
+    ){
+
+        var c=
+            text[i];
+
+        if(c==='"'){
+
+            if(
+                quoted &&
+                text[i+1]==='"'
+            ){
+
+                field+='"';
+
+                i++;
+
+            }else{
+
+                quoted=
+                    !quoted;
+            }
+
+        }else if(
+            c==="," &&
+            !quoted
+        ){
+
+            row.push(field);
+
+            field="";
+
+        }else if(
+            (
+                c==="\n" ||
+                c==="\r"
+            ) &&
+            !quoted
+        ){
+
+            if(
+                c==="\r" &&
+                text[i+1]==="\n"
+            ){
+
+                i++;
+            }
+
+            row.push(field);
+
+            if(
+                row.some(
+                    function(v){
+
+                        return (
+                            String(v)
+                            .trim()!==""
+                        );
+                    }
+                )
+            ){
+
+                rows.push(row);
+            }
+
+            row=[];
+
+            field="";
+
+        }else{
+
+            field+=c;
+        }
+    }
+
+    row.push(field);
+
+    if(
+        row.some(
+            function(v){
+
+                return (
+                    String(v)
+                    .trim()!==""
+                );
+            }
+        )
+    ){
+
+        rows.push(row);
+    }
+
+    return rows;
+}
+
+
+/* =========================================================
+   FETCH
+========================================================= */
+
+function sleep(ms){
+
+    return new Promise(
+        function(resolve){
+
+            setTimeout(
+                resolve,
+                ms
+            );
+        }
+    );
+}
+
+
+function fetchWithTimeout(url){
+
+    var controller=
+        typeof AbortController!=="undefined"
+            ?
+            new AbortController()
+            :
+            null;
+
+    var timeoutHandle=
+        controller
+            ?
+            setTimeout(
+                function(){
+
+                    controller.abort();
+
+                },
+                CONFIG.timeout
+            )
+            :
+            null;
+
+    return fetch(
+        url,
+        {
+            cache:"no-store",
+
+            signal:
+                controller
+                    ?
+                    controller.signal
+                    :
+                    undefined
+        }
+    )
+    .then(
+        function(response){
+
+            if(!response.ok){
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+            }
+
+            return response.text();
+        }
+    )
+    .finally(
+        function(){
+
+            if(timeoutHandle){
+
+                clearTimeout(
+                    timeoutHandle
+                );
+            }
+        }
+    );
+}
+
+
+async function fetchTextRetry(url){
+
+    var lastError=null;
+
+    for(
+        var i=0;
+        i<2;
+        i++
+    ){
+
+        try{
+
+            return await fetchWithTimeout(
+                url
+            );
+
+        }catch(error){
+
+            lastError=
+                error;
+
+            if(i===0){
+
+                await sleep(
+                    400
+                );
+            }
+        }
+    }
+
+    throw lastError;
+}
+
+
+/* =========================================================
+   COLUMN
+========================================================= */
+
+function findColumn(
+    headers,
+    aliases
+){
+
+    var normalized=
+        headers.map(
+            normalizeText
+        );
+
+    for(
+        var i=0;
+        i<aliases.length;
+        i++
+    ){
+
+        var wanted=
+            normalizeText(
+                aliases[i]
+            );
+
+        var exact=
+            normalized.indexOf(
+                wanted
+            );
+
+        if(exact!==-1){
+
+            return exact;
+        }
+    }
+
+    for(
+        var a=0;
+        a<aliases.length;
+        a++
+    ){
+
+        var partial=
+            normalizeText(
+                aliases[a]
+            );
+
+        for(
+            var h=0;
+            h<normalized.length;
+            h++
+        ){
+
+            if(
+                partial &&
+                normalized[h]
+                .indexOf(
+                    partial
+                )!==-1
+            ){
+
+                return h;
+            }
+        }
+    }
+
+    return -1;
+}
+
+
+function valueAt(
+    row,
+    index
+){
+
+    if(
+        index<0 ||
+        !row ||
+        index>=row.length
+    ){
+
+        return "";
+    }
+
+    return decodeHtmlEntities(
+        String(
+            row[index] || ""
+        )
+    )
+    .trim();
+}
+
+
+/* =========================================================
+   SCORE
+========================================================= */
+
+function parseScore(value){
+
+    var str=
+        String(value || "")
+        .trim()
+        .replace(",",".")
+        .replace(
+            /[^\d.\-]/g,
+            ""
+        );
+
+    if(!str){
+
+        return null;
+    }
+
+    var number=
+        Number(str);
+
+    return Number.isFinite(number)
+        ?
+        number
+        :
+        null;
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function parseDateLoose(value){
+
+    if(!value){
+
+        return null;
+    }
+
+    var raw=
+        String(value)
+        .trim();
+
+    var direct=
+        new Date(raw);
+
+    if(
+        !isNaN(
+            direct.getTime()
+        )
+    ){
+
+        return direct;
+    }
+
+    var match=
+        raw.match(
+            /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/
+        );
+
+    if(match){
+
+        var date=
+            new Date(
+                Number(match[3]),
+                Number(match[2])-1,
+                Number(match[1]),
+                Number(match[4] || 0),
+                Number(match[5] || 0),
+                Number(match[6] || 0)
+            );
+
+        if(
+            !isNaN(
+                date.getTime()
+            )
+        ){
+
+            return date;
+        }
+    }
+
+    return null;
+}
+
+
+function compactTimestamp(value){
+
+    var d=
+        parseDateLoose(
+            value
+        );
+
+    if(!d){
+
+        return normalizeText(value)
+        .replace(
+            /[^0-9]/g,
+            ""
+        )
+        .slice(
+            0,
+            14
+        );
+    }
+
+    function pad(n){
+
+        return String(n)
+        .padStart(
+            2,
+            "0"
+        );
+    }
+
+    return (
+        d.getFullYear() +
+        pad(
+            d.getMonth()+1
+        ) +
+        pad(
+            d.getDate()
+        ) +
+        pad(
+            d.getHours()
+        ) +
+        pad(
+            d.getMinutes()
+        ) +
+        pad(
+            d.getSeconds()
+        )
+    );
+}
+
+
+function formatDateTime(value){
+
+    var d=
+        new Date(
+            value
+        );
+
+    if(
+        isNaN(
+            d.getTime()
+        )
+    ){
+
+        return String(
+            value || ""
+        );
+    }
+
+    function pad(n){
+
+        return String(n)
+        .padStart(
+            2,
+            "0"
+        );
+    }
+
+    return (
+        pad(
+            d.getDate()
+        ) +
+        "/" +
+        pad(
+            d.getMonth()+1
+        ) +
+        "/" +
+        d.getFullYear() +
+        " " +
+        pad(
+            d.getHours()
+        ) +
+        ":" +
+        pad(
+            d.getMinutes()
+        ) +
+        ":" +
+        pad(
+            d.getSeconds()
+        )
+    );
+}
+
+
+/* =========================================================
+   DRIVE
+========================================================= */
+
+function driveIdFromUrl(value){
+
+    var str=
+        String(value || "")
+        .trim();
+
+    if(!str){
+
+        return "";
+    }
+
+    var patterns=[
+
+        /\/file\/d\/([a-zA-Z0-9_-]+)/,
+
+        /[?&]id=([a-zA-Z0-9_-]+)/,
+
+        /\/d\/([a-zA-Z0-9_-]+)/
+    ];
+
+    for(
+        var i=0;
+        i<patterns.length;
+        i++
+    ){
+
+        var match=
+            str.match(
+                patterns[i]
+            );
+
+        if(match){
+
+            return match[1];
+        }
+    }
+
+    if(
+        /^[a-zA-Z0-9_-]{20,}$/
+        .test(str)
+    ){
+
+        return str;
+    }
+
+    return "";
+}
+
+
+function imageUrl(value){
+
+    var RS=
+        window.StudentRewardSystem;
+
+    if(
+        RS &&
+        typeof RS.convertDriveImageUrl===
+        "function"
+    ){
+
+        try{
+
+            return RS.convertDriveImageUrl(
+                value,
+                700
+            );
+
+        }catch(error){}
+    }
+
+    var id=
+        driveIdFromUrl(
+            value
+        );
+
+    if(id){
+
+        return (
+            "https://drive.google.com/thumbnail?id=" +
+            encodeURIComponent(id) +
+            "&sz=w700"
+        );
+    }
+
+    return String(
+        value || ""
+    );
+}
+
+
+/* =========================================================
+   SUBMISSION ID
+========================================================= */
+
+function buildSubmissionId(
+    timestamp,
+    studentCode,
+    file
+){
+
+    return [
+
+        compactTimestamp(
+            timestamp
+        ),
+
+        normalizeCode(
+            studentCode
+        ),
+
+        driveIdFromUrl(
+            file
+        ) ||
+        normalizeText(
+            file
+        )
+
+    ].join("|");
+}
+
+
+/* =========================================================
+   SUBMISSION URL
+========================================================= */
+
+function submissionCsvUrl(){
+
+    var RS=
+        window.StudentRewardSystem;
+
+    if(
+        RS &&
+        RS.CONFIG &&
+        RS.CONFIG.studentCsv
+    ){
+
+        return RS.CONFIG.studentCsv;
+    }
+
+    return CONFIG.submissionCsvFallback;
+}
+
+
+/* =========================================================
+   EXAM HISTORY
+========================================================= */
+
+function examHistoryCsvUrl(){
+
+    return (
+        "https://docs.google.com/spreadsheets/d/" +
+        CONFIG.examSpreadsheetId +
+        "/gviz/tq?tqx=out:csv&sheet=" +
+        encodeURIComponent(
+            CONFIG.examSheetName
+        ) +
+        "&cb=" +
+        Date.now()
+    );
+}
+
+
+async function findPreviousExam(code){
+
+    if(CONFIG.trialMode){
+
+        return null;
+    }
+
+    if(
+        normalizeCode(code)===
+        CONFIG.adminCode
+    ){
+
+        return null;
+    }
+
+    var text=
+        await fetchTextRetry(
+            examHistoryCsvUrl()
+        );
+
+    var rows=
+        parseCSV(
+            text
+        );
+
+    if(!rows.length){
+
+        return null;
+    }
+
+    var headers=
+        rows[0];
+
+    var examIdCol=
+        findColumn(
+            headers,
+            [
+                "Exam ID",
+                "examid",
+                "exam id"
+            ]
+        );
+
+    var codeCol=
+        findColumn(
+            headers,
+            [
+                "Mã học viên",
+                "ma hoc vien",
+                "mã hv",
+                "ma hv"
+            ]
+        );
+
+    var nameCol=
+        findColumn(
+            headers,
+            [
+                "Họ và tên",
+                "ho va ten"
+            ]
+        );
+
+    var startedCol=
+        findColumn(
+            headers,
+            [
+                "Thời gian bắt đầu",
+                "thoi gian bat dau"
+            ]
+        );
+
+    var submittedCol=
+        findColumn(
+            headers,
+            [
+                "Thời gian nộp",
+                "thoi gian nop"
+            ]
+        );
+
+    var timestampCol=
+        findColumn(
+            headers,
+            [
+                "Dấu thời gian",
+                "dau thoi gian"
+            ]
+        );
+
+    if(codeCol<0){
+
+        throw new Error(
+            "Không xác định được cột Mã học viên trong BaiThiTotNghiep."
+        );
+    }
+
+    for(
+        var i=rows.length-1;
+        i>=1;
+        i--
+    ){
+
+        var row=
+            rows[i];
+
+        if(
+            normalizeCode(
+                valueAt(
+                    row,
+                    codeCol
+                )
+            )===
+            normalizeCode(
+                code
+            )
+        ){
+
+            return {
+
+                examId:
+                    valueAt(
+                        row,
+                        examIdCol
+                    ),
+
+                studentCode:
+                    normalizeCode(
+                        code
+                    ),
+
+                studentName:
+                    valueAt(
+                        row,
+                        nameCol
+                    ),
+
+                startedAt:
+                    valueAt(
+                        row,
+                        startedCol
+                    ),
+
+                submittedAt:
+                    valueAt(
+                        row,
+                        submittedCol
+                    ),
+
+                responseTimestamp:
+                    valueAt(
+                        row,
+                        timestampCol
+                    ),
+
+                rowNumber:
+                    i+1
+            };
+        }
+    }
+
+    return null;
+}
+
+
+/* =========================================================
+   IDENTITY
+========================================================= */
+
+async function loadStudentIdentity(code){
+
+    var text=
+        await fetchTextRetry(
+            CONFIG.rankingCsv
+        );
+
+    var rows=
+        parseCSV(
+            text
+        );
+
+    if(rows.length<2){
+
+        throw new Error(
+            "Không đọc được danh sách học viên."
+        );
+    }
+
+    var headers=
+        rows[0];
+
+    var codeCol=
+        findColumn(
+            headers,
+            [
+                "mã học viên",
+                "ma hoc vien",
+                "mã hv",
+                "ma hv"
+            ]
+        );
+
+    var nameCol=
+        findColumn(
+            headers,
+            [
+                "họ và tên",
+                "ho va ten",
+                "họ tên",
+                "ho ten",
+                "tên học viên",
+                "ten hoc vien"
+            ]
+        );
+
+    var groupCol=
+        findColumn(
+            headers,
+            [
+                "tổ",
+                "to",
+                "nhóm",
+                "nhom"
+            ]
+        );
+
+    var courseCol=
+        findColumn(
+            headers,
+            [
+                "khóa",
+                "khoa",
+                "lớp",
+                "lop"
+            ]
+        );
+
+    for(
+        var i=1;
+        i<rows.length;
+        i++
+    ){
+
+        if(
+            normalizeCode(
+                valueAt(
+                    rows[i],
+                    codeCol
+                )
+            )===
+            code
+        ){
+
+            return {
+
+                code:
+                    code,
+
+                name:
+                    valueAt(
+                        rows[i],
+                        nameCol
+                    ) ||
+                    code,
+
+                group:
+                    valueAt(
+                        rows[i],
+                        groupCol
+                    ),
+
+                course:
+                    valueAt(
+                        rows[i],
+                        courseCol
+                    )
+            };
+        }
+    }
+
+    return null;
+}
+
+
+/* =========================================================
+   SUBMISSION COLUMNS
+========================================================= */
+
+function detectSubmissionColumns(headers){
+
+    return {
+
+        code:
+            findColumn(
+                headers,
+                [
+                    "mã học viên",
+                    "ma hoc vien"
+                ]
+            ),
+
+        timestamp:
+            findColumn(
+                headers,
+                [
+                    "dấu thời gian",
+                    "dau thoi gian",
+                    "thời gian",
+                    "thoi gian",
+                    "timestamp"
+                ]
+            ),
+
+        file:
+            findColumn(
+                headers,
+                [
+                    "tải bài tập lên",
+                    "tai bai tap len",
+                    "file",
+                    "hình ảnh",
+                    "hinh anh"
+                ]
+            ),
+
+        score:
+            findColumn(
+                headers,
+                [
+                    "điểm",
+                    "diem",
+                    "điểm số",
+                    "diem so",
+                    "điểm giáo viên",
+                    "diem giao vien"
+                ]
+            ),
+
+        note:
+            findColumn(
+                headers,
+                [
+                    "mô tả bài tập",
+                    "mo ta bai tap",
+                    "mô tả",
+                    "mo ta",
+                    "ghi chú",
+                    "ghi chu",
+                    "tên bài tập",
+                    "ten bai tap"
+                ]
+            ),
+
+        submissionId:
+            findColumn(
+                headers,
+                [
+                    "mã bài nộp",
+                    "ma bai nop",
+                    "submission id",
+                    "submissionid"
+                ]
+            )
+
+    };
+}
+
+
+/* =========================================================
+   LOAD STUDENT SUBMISSIONS
+========================================================= */
+
+async function loadStudentSubmissions(code){
+
+    var text=
+        await fetchTextRetry(
+            submissionCsvUrl()
+        );
+
+    var rows=
+        parseCSV(
+            text
+        );
+
+    if(rows.length<2){
+
+        return [];
+    }
+
+    var headers=
+        rows[0];
+
+    var cols=
+        detectSubmissionColumns(
+            headers
+        );
+
+    if(cols.code<0){
+
+        throw new Error(
+            "Không tìm thấy mã học viên trong lịch sử bài nộp."
+        );
+    }
+
+    var list=[];
+
+    for(
+        var i=1;
+        i<rows.length;
+        i++
+    ){
+
+        var row=
+            rows[i];
+
+        if(
+            normalizeCode(
+                valueAt(
+                    row,
+                    cols.code
+                )
+            )!==
+            code
+        ){
+
+            continue;
+        }
+
+        var timestamp=
+            valueAt(
+                row,
+                cols.timestamp
+            );
+
+        var file=
+            valueAt(
+                row,
+                cols.file
+            );
+
+        var explicitId=
+            valueAt(
+                row,
+                cols.submissionId
+            );
+
+        var parsedDate=
+            parseDateLoose(
+                timestamp
+            );
+
+        list.push({
+
+            submissionId:
+                explicitId ||
+                buildSubmissionId(
+                    timestamp,
+                    code,
+                    file
+                ),
+
+            studentCode:
+                code,
+
+            timestamp:
+                timestamp,
+
+            timestampSort:
+                parsedDate
+                    ?
+                    parsedDate.getTime()
+                    :
+                    i,
+
+            file:
+                file,
+
+            note:
+                valueAt(
+                    row,
+                    cols.note
+                ) ||
+                "Bài tập không có mô tả",
+
+            score:
+                parseScore(
+                    valueAt(
+                        row,
+                        cols.score
+                    )
+                )
+
+        });
+    }
+
+    list.sort(
+        function(a,b){
+
+            return (
+                a.timestampSort -
+                b.timestampSort
+            );
+        }
+    );
+
+    return list;
+}
+
+
+/* =========================================================
+   DELETE LOG
+========================================================= */
+
+async function getDeleteRows(){
+
+    if(STATE.deleteRows){
+
+        return STATE.deleteRows;
+    }
+
+    try{
+
+        var text=
+            await fetchTextRetry(
+                CONFIG.deleteLogCsv
+            );
+
+        STATE.deleteRows=
+            parseCSV(
+                text
+            );
+
+        return STATE.deleteRows;
+
+    }catch(error){
+
+        return [];
+    }
+}
+
+
+function detectDeleteColumns(headers){
+
+    return {
+
+        submissionId:
+            findColumn(
+                headers,
+                [
+                    "mã bài nộp",
+                    "ma bai nop",
+                    "submission id",
+                    "submissionid",
+                    "mã bài",
+                    "ma bai"
+                ]
+            ),
+
+        action:
+            findColumn(
+                headers,
+                [
+                    "hành động",
+                    "hanh dong",
+                    "thao tác",
+                    "thao tac",
+                    "trạng thái",
+                    "trang thai"
+                ]
+            ),
+
+        code:
+            findColumn(
+                headers,
+                [
+                    "mã học viên",
+                    "ma hoc vien"
+                ]
+            ),
+
+        timestamp:
+            findColumn(
+                headers,
+                [
+                    "dấu thời gian",
+                    "dau thoi gian",
+                    "thời gian",
+                    "thoi gian"
+                ]
+            ),
+
+        file:
+            findColumn(
+                headers,
+                [
+                    "file",
+                    "bài nộp",
+                    "bai nop",
+                    "link"
+                ]
+            )
+
+    };
+}
+
+
+async function applyDeleteLog(
+    code,
+    submissions
+){
+
+    var rows=
+        await getDeleteRows();
+
+    if(
+        !rows ||
+        rows.length<2
+    ){
+
+        return {
+
+            valid:
+                submissions.slice(),
+
+            removed:
+                0
+        };
+    }
+
+    var cols=
+        detectDeleteColumns(
+            rows[0]
+        );
+
+    var stateMap={};
+
+    for(
+        var i=1;
+        i<rows.length;
+        i++
+    ){
+
+        var row=
+            rows[i];
+
+        var rowCode=
+            normalizeCode(
+                valueAt(
+                    row,
+                    cols.code
+                )
+            );
+
+        if(
+            rowCode &&
+            rowCode!==code
+        ){
+
+            continue;
+        }
+
+        var id=
+            valueAt(
+                row,
+                cols.submissionId
+            );
+
+        if(!id){
+
+            id=
+                buildSubmissionId(
+                    valueAt(
+                        row,
+                        cols.timestamp
+                    ),
+                    code,
+                    valueAt(
+                        row,
+                        cols.file
+                    )
+                );
+        }
+
+        if(!id){
+
+            continue;
+        }
+
+        var action=
+            normalizeText(
+                valueAt(
+                    row,
+                    cols.action
+                )
+            );
+
+        if(
+            action.indexOf(
+                "khoi phuc"
+            )!==-1 ||
+            action.indexOf(
+                "restore"
+            )!==-1
+        ){
+
+            stateMap[id]=
+                false;
+
+        }else if(
+            action.indexOf(
+                "xoa"
+            )!==-1 ||
+            action.indexOf(
+                "delete"
+            )!==-1
+        ){
+
+            stateMap[id]=
+                true;
+        }
+    }
+
+    var valid=[];
+    var removed=0;
+
+    submissions.forEach(
+        function(item){
+
+            if(
+                stateMap[
+                    item.submissionId
+                ]
+            ){
+
+                removed++;
+
+            }else{
+
+                valid.push(
+                    item
+                );
+            }
+        }
+    );
+
+    return {
+
+        valid:
+            valid,
+
+        removed:
+            removed
+    };
+}
+
+
+/* =========================================================
+   METRICS
+========================================================= */
+
+function calculateMetrics(submissions){
+
+    var totalScore=0;
+    var gradedCount=0;
+
+    submissions.forEach(
+        function(item){
+
+            if(
+                typeof item.score===
+                "number" &&
+                Number.isFinite(
+                    item.score
+                )
+            ){
+
+                totalScore+=
+                    item.score;
+
+                gradedCount++;
+            }
+        }
+    );
+
+    return {
+
+        submissionCount:
+            submissions.length,
+
+        gradedCount:
+            gradedCount,
+
+        averageScore:
+            gradedCount
+                ?
+                Math.round(
+                    (
+                        totalScore /
+                        gradedCount
+                    ) *
+                    100
+                ) / 100
+                :
+                0
+    };
+}
+
+
+/* =========================================================
+   ADMIN SUBMISSIONS
+========================================================= */
+
+function createAdminSubmissions(){
+
+    var names=[
+
+        "Cơ bản công nét lộ phong",
+        "Thận Độc",
+        "Vạn Sự Như Ý",
+        "Bài viết theo chiều dọc",
+        "Bài viết dài",
+        "Bài luyện tập"
+
+    ];
+
+    var list=[];
+
+    for(
+        var i=1;
+        i<=110;
+        i++
+    ){
+
+        list.push({
+
+            submissionId:
+                "ADMIN-SUB-" +
+                i,
+
+            studentCode:
+                "ADMIN",
+
+            timestamp:
+                String(
+                    ((i-1)%28)+1
+                )
+                .padStart(
+                    2,
+                    "0"
+                ) +
+                "/01/2026 19:00:00",
+
+            timestampSort:
+                new Date(
+                    2026,
+                    0,
+                    ((i-1)%28)+1,
+                    19,
+                    i%60
+                ).getTime(),
+
+            file:"",
+
+            note:
+                names[
+                    (i-1) %
+                    names.length
+                ] +
+                " - bài test " +
+                i,
+
+            score:
+                5 +
+                (i%6)
+        });
+    }
+
+    return list;
+}
+
+
+/* =========================================================
+   LOOKUP MESSAGE
+========================================================= */
+
+function setLookupMessage(
+    text,
+    type
+){
+
+    var box=
+        el(
+            "examLookupMessage"
+        );
+
+    box.className=
+        "exam-message show " +
+        (
+            type ||
+            "loading"
+        );
+
+    box.textContent=
+        text;
+}
+
+
+/* =========================================================
+   LOOKUP
+   GIỮ NGUYÊN CƠ CHẾ BẢN ĐANG HOẠT ĐỘNG
+========================================================= */
+
+APP.lookup=
+async function(){
+
+    var button=
+        el(
+            "examLookupButton"
+        );
+
+    var input=
+        el(
+            "examStudentCode"
+        );
+
+    var code=
+        normalizeCode(
+            input.value
+        );
+
+    if(!code){
+
+        setLookupMessage(
+            "Vui lòng nhập mã học viên.",
+            "error"
+        );
+
+        return false;
+    }
+
+    button.disabled=
+        true;
+
+    button.textContent=
+        "ĐANG TRA CỨU...";
+
+    STATE.previousExam=
+        null;
+
+    setLookupMessage(
+
+        CONFIG.trialMode
+            ?
+            "Đang tải hồ sơ cho phiên thi thử..."
+            :
+            "Đang kiểm tra hồ sơ, lịch sử bài nộp và trạng thái dự thi...",
+
+        "loading"
+    );
+
+    try{
+
+        /* =================================================
+           ADMIN
+        ================================================= */
+
+        if(
+            code===
+            CONFIG.adminCode
+        ){
+
+            var adminSubmissions=
+                createAdminSubmissions();
+
+            STATE.student={
+
+                code:
+                    "ADMIN",
+
+                name:
+                    CONFIG.adminName,
+
+                group:
+                    "ADMIN",
+
+                course:
+                    "TEST",
+
+                submissionCount:
+                    adminSubmissions.length,
+
+                gradedCount:
+                    adminSubmissions.length,
+
+                averageScore:
+                    10,
+
+                isAdmin:
+                    true
+            };
+
+            STATE.validSubmissions=
+                adminSubmissions;
+
+            STATE.removedCount=
+                0;
+
+            STATE.previousExam=
+                null;
+
+            STATE.eligible=
+                true;
+
+            renderCandidate();
+
+            resumeIfNeeded();
+
+            setLookupMessage(
+                CONFIG.trialMode
+                    ?
+                    "Tài khoản kiểm thử - chế độ thi thử đã sẵn sàng."
+                    :
+                    "Tài khoản kiểm thử đã sẵn sàng.",
+                "success"
+            );
+
+            return false;
+        }
+
+
+        /* =================================================
+           HỌC VIÊN
+        ================================================= */
+
+        var results;
+
+        if(CONFIG.trialMode){
+
+            results=
+                await Promise.all([
+
+                    loadStudentIdentity(
+                        code
+                    ),
+
+                    loadStudentSubmissions(
+                        code
+                    )
+
+                ]);
+
+        }else{
+
+            results=
+                await Promise.all([
+
+                    loadStudentIdentity(
+                        code
+                    ),
+
+                    loadStudentSubmissions(
+                        code
+                    ),
+
+                    findPreviousExam(
+                        code
+                    )
+
+                ]);
+        }
+
+        var identity=
+            results[0];
+
+        var allSubmissions=
+            results[1];
+
+        var previousExam=
+            CONFIG.trialMode
+                ?
+                null
+                :
+                results[2];
+
+        if(!identity){
+
+            throw new Error(
+                "Không tìm thấy mã học viên."
+            );
+        }
+
+        var deleteResult=
+            await applyDeleteLog(
+                code,
+                allSubmissions
+            );
+
+        var metrics=
+            calculateMetrics(
+                deleteResult.valid
+            );
+
+        STATE.student={
+
+            code:
+                identity.code,
+
+            name:
+                identity.name,
+
+            group:
+                identity.group,
+
+            course:
+                identity.course,
+
+            submissionCount:
+                metrics.submissionCount,
+
+            gradedCount:
+                metrics.gradedCount,
+
+            averageScore:
+                metrics.averageScore,
+
+            isAdmin:
+                false
+        };
+
+        STATE.validSubmissions=
+            deleteResult.valid;
+
+        STATE.removedCount=
+            deleteResult.removed;
+
+        STATE.previousExam=
+            previousExam;
+
+
+        if(CONFIG.trialMode){
+
+            STATE.eligible=
+                true;
+
+        }else{
+
+            STATE.eligible=
+                (
+                    metrics.averageScore >
+                    CONFIG.minAverageExclusive
+                ) &&
+                (
+                    metrics.submissionCount >
+                    CONFIG.minSubmissionExclusive
+                ) &&
+                !previousExam;
+        }
+
+        renderCandidate();
+
+        resumeIfNeeded();
+
+
+        if(CONFIG.trialMode){
+
+            setLookupMessage(
+                "Đã xác nhận mã học viên. Chế độ THI THỬ không áp dụng điều kiện điểm trung bình và số bài nộp.",
+                "success"
+            );
+
+        }else if(previousExam){
+
+            setLookupMessage(
+                "Học viên đã có bài thi trong hệ thống. Không thể tạo thêm phiên thi mới.",
+                "error"
+            );
+
+        }else{
+
+            setLookupMessage(
+                "Đã tải dữ liệu học viên và xác nhận chưa có bài thi trước đó.",
+                "success"
+            );
+        }
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        STATE.eligible=
+            false;
+
+        setLookupMessage(
+            error &&
+            error.message
+                ?
+                error.message
+                :
+                "Không thể xác minh dữ liệu dự thi.",
+            "error"
+        );
+
+    }finally{
+
+        button.disabled=
+            false;
+
+        button.textContent=
+            "TRA CỨU";
+    }
+
+    return false;
+};
+
+
+/* =========================================================
+   CANDIDATE
+========================================================= */
+
+function infoBox(
+    label,
+    value
+){
+
+    return (
+
+        '<div class="exam-info">' +
+
+            '<div class="exam-info-label">' +
+
+                escapeHtml(
+                    label
+                ) +
+
+            '</div>' +
+
+            '<div class="exam-info-value">' +
+
+                escapeHtml(
+                    value
+                ) +
+
+            '</div>' +
+
+        '</div>'
+    );
+}
+
+
+function renderCandidate(){
+
+    var s=
+        STATE.student;
+
+    if(!s){
+
+        return;
+    }
+
+    el(
+        "examCandidatePanel"
+    )
+    .classList
+    .remove(
+        "exam-hidden"
+    );
+
+    el(
+        "examStudentInfo"
+    )
+    .innerHTML=
+
+        infoBox(
+            "Học viên",
+            s.name
+        ) +
+
+        infoBox(
+            "Mã học viên",
+            s.code
+        ) +
+
+        infoBox(
+            "Tổ",
+            s.group ||
+            "-"
+        ) +
+
+        infoBox(
+            "Khóa",
+            s.course ||
+            "-"
+        ) +
+
+        infoBox(
+            "Bài nộp hợp lệ",
+            s.submissionCount
+        ) +
+
+        infoBox(
+            "Bài đã chấm",
+            s.gradedCount
+        ) +
+
+        infoBox(
+            "Điểm trung bình",
+            s.averageScore
+        ) +
+
+        infoBox(
+            "Bài đã loại",
+            STATE.removedCount
+        );
+
+    var status=
+        el(
+            "examEligibility"
+        );
+
+    var start=
+        el(
+            "examStartButton"
+        );
+
+
+    if(CONFIG.trialMode){
+
+        status.className=
+            "exam-eligibility pass";
+
+        status.innerHTML=
+            "<strong>CHẾ ĐỘ THI THỬ</strong><br>" +
+            "Học viên được phép tham gia ngay. " +
+            "Không áp dụng điều kiện điểm trung bình, số lượng bài nộp hoặc giới hạn một lần thi.<br>" +
+            "<strong>Kết quả thi thử không được ghi vào kỳ thi chính thức.</strong>";
+
+        start.disabled=
+            false;
+
+        start.textContent=
+            "BẮT ĐẦU THI THỬ";
+
+        return;
+    }
+
+
+    if(
+        STATE.previousExam &&
+        !s.isAdmin
+    ){
+
+        status.className=
+            "exam-eligibility locked";
+
+        var examText=
+            "<strong>ĐÃ HOÀN THÀNH MỘT LẦN DỰ THI</strong><br>" +
+            "Hệ thống đã tìm thấy bài thi của mã học viên này trong hệ thống.";
+
+        if(
+            STATE.previousExam.examId
+        ){
+
+            examText+=
+                "<br>Exam ID: <strong>" +
+                escapeHtml(
+                    STATE.previousExam.examId
+                ) +
+                "</strong>";
+        }
+
+        if(
+            STATE.previousExam.submittedAt
+        ){
+
+            examText+=
+                "<br>Thời gian nộp: " +
+                escapeHtml(
+                    STATE.previousExam.submittedAt
+                );
+        }
+
+        examText+=
+            "<br><br>Học viên không thể tự tạo phiên thi thứ hai.";
+
+        status.innerHTML=
+            examText;
+
+        start.disabled=
+            true;
+
+        start.textContent=
+            "ĐÃ KHÓA LẦN DỰ THI";
+
+        return;
+    }
+
+    start.textContent=
+        "BẮT ĐẦU BÀI THI";
+
+    if(
+        STATE.eligible ||
+        s.isAdmin
+    ){
+
+        status.className=
+            "exam-eligibility pass";
+
+        if(s.isAdmin){
+
+            status.innerHTML=
+                "<strong>CHẾ ĐỘ KIỂM THỬ</strong><br>" +
+                "Tài khoản kiểm thử không bị giới hạn số lần thi.";
+
+        }else{
+
+            status.innerHTML=
+                "<strong>ĐỦ ĐIỀU KIỆN DỰ THI</strong><br>" +
+                "Điểm trung bình lớn hơn 5, có trên 100 bài nộp hợp lệ và chưa có bài thi tốt nghiệp trước đó.";
+        }
+
+        start.disabled=
+            false;
+
+        return;
+    }
+
+    status.className=
+        "exam-eligibility fail";
+
+    status.innerHTML=
+        "<strong>CHƯA ĐỦ ĐIỀU KIỆN DỰ THI</strong><br>" +
+        "Hiện có " +
+        escapeHtml(
+            s.submissionCount
+        ) +
+        " bài hợp lệ - Điểm trung bình " +
+        escapeHtml(
+            s.averageScore
+        ) +
+        ".";
+
+    start.disabled=
+        true;
+}
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+function storageKey(){
+
+    if(!STATE.student){
+
+        return "";
+    }
+
+    return (
+        CONFIG.storagePrefix +
+        normalizeCode(
+            STATE.student.code
+        )
+    );
+}
+
+
+function saveSession(){
+
+    if(
+        !STATE.session ||
+        !storageKey()
+    ){
+
+        return;
+    }
+
+    try{
+
+        localStorage.setItem(
+            storageKey(),
+            JSON.stringify(
+                STATE.session
+            )
+        );
+
+    }catch(error){
+
+        console.warn(
+            "Không lưu được phiên thi.",
+            error
+        );
+    }
+}
+
+
+function loadSession(){
+
+    if(!storageKey()){
+
+        return null;
+    }
+
+    try{
+
+        var raw=
+            localStorage.getItem(
+                storageKey()
+            );
+
+        return raw
+            ?
+            JSON.parse(
+                raw
+            )
+            :
+            null;
+
+    }catch(error){
+
+        return null;
+    }
+}
+
+
+function sessionStatus(session){
+
+    if(!session){
+
+        return "";
+    }
+
+    return (
+        session.status==="submitted" ||
+        session.submitted===true
+    )
+        ?
+        "submitted"
+        :
+        "active";
+}
+
+
+/* =========================================================
+   EXAM ID
+========================================================= */
+
+function buildExamId(
+    code,
+    startedAt
+){
+
+    var d=
+        new Date(
+            startedAt
+        );
+
+    function pad(n){
+
+        return String(n)
+        .padStart(
+            2,
+            "0"
+        );
+    }
+
+    return [
+
+        CONFIG.trialMode
+            ?
+            "OCD-TRIAL"
+            :
+            "OCD-EXAM",
+
+        normalizeCode(
+            code
+        ),
+
+        d.getFullYear() +
+        pad(
+            d.getMonth()+1
+        ) +
+        pad(
+            d.getDate()
+        ) +
+        pad(
+            d.getHours()
+        ) +
+        pad(
+            d.getMinutes()
+        ) +
+        pad(
+            d.getSeconds()
+        )
+
+    ].join("-");
+}
+
+
+/* =========================================================
+   ENSURE THEORY PAPER
+========================================================= */
+
+function ensureTheoryPaper(){
+
+    if(!STATE.session){
+
+        return;
+    }
+
+    /*
+       Chỉ chấp nhận đề đủ 20 câu.
+       Nếu phiên nào sai số lượng sẽ tạo lại đề.
+    */
+
+    if(
+        Array.isArray(
+            STATE.session.theoryQuestions
+        ) &&
+        STATE.session.theoryQuestions.length===
+        CONFIG.theoryCount
+    ){
+
+        return;
+    }
+
+    var studentCode=
+        STATE.session.student &&
+        STATE.session.student.code
+            ?
+            STATE.session.student.code
+            :
+            (
+                STATE.student
+                    ?
+                    STATE.student.code
+                    :
+                    ""
+            );
+
+    var isAdmin=
+        normalizeCode(
+            studentCode
+        )===
+        CONFIG.adminCode;
+
+    STATE.session.theoryQuestions=
+        buildTheoryPaper(
+            studentCode,
+            STATE.session.startedAt ||
+            Date.now(),
+            isAdmin
+        );
+
+    if(
+        !STATE.session.answers
+    ){
+
+        STATE.session.answers={};
+    }
+
+    STATE.session.answers.theory=
+        {};
+
+    STATE.session.lastTheoryIndex=
+        0;
+
+    STATE.theoryIndex=
+        0;
+
+    saveSession();
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+APP.start=
+async function(){
+
+    if(
+        !STATE.student ||
+        STATE.startChecking
+    ){
+
+        return false;
+    }
+
+    var startButton=
+        el(
+            "examStartButton"
+        );
+
+    var old=
+        loadSession();
+
+    if(
+        old &&
+        sessionStatus(
+            old
+        )===
+        "active"
+    ){
+
+        STATE.session=
+            old;
+
+        ensureTheoryPaper();
+
+        openExamScreen();
+
+        return false;
+    }
+
+    if(
+        old &&
+        sessionStatus(
+            old
+        )===
+        "submitted"
+    ){
+
+        STATE.session=
+            old;
+
+        openResultScreen();
+
+        return false;
+    }
+
+
+    if(
+        !CONFIG.trialMode &&
+        !STATE.student.isAdmin
+    ){
+
+        if(!STATE.eligible){
+
+            return false;
+        }
+
+        STATE.startChecking=
+            true;
+
+        if(startButton){
+
+            startButton.disabled=
+                true;
+
+            startButton.textContent=
+                "ĐANG XÁC MINH LẦN CUỐI...";
+        }
+
+        try{
+
+            var existingExam=
+                await findPreviousExam(
+                    STATE.student.code
+                );
+
+            if(existingExam){
+
+                STATE.previousExam=
+                    existingExam;
+
+                STATE.eligible=
+                    false;
+
+                renderCandidate();
+
+                setLookupMessage(
+                    "Không thể bắt đầu: hệ thống vừa phát hiện học viên đã có bài thi tốt nghiệp.",
+                    "error"
+                );
+
+                return false;
+            }
+
+        }catch(error){
+
+            console.error(
+                error
+            );
+
+            setLookupMessage(
+                "Không thể xác minh trạng thái dự thi. Hệ thống tạm thời chưa cho bắt đầu để tránh tạo bài thi trùng.",
+                "error"
+            );
+
+            return false;
+
+        }finally{
+
+            STATE.startChecking=
+                false;
+
+            if(
+                startButton &&
+                !STATE.previousExam
+            ){
+
+                startButton.disabled=
+                    false;
+
+                startButton.textContent=
+                    "BẮT ĐẦU BÀI THI";
+            }
+        }
+    }
+
+
+    var now=
+        Date.now();
+
+    var generatedTheory=
+        buildTheoryPaper(
+            STATE.student.code,
+            now,
+            !!STATE.student.isAdmin
+        );
+
+    STATE.session={
+
+        version:
+            CONFIG.version,
+
+        isTrial:
+            CONFIG.trialMode,
+
+        theoryBankVersion:
+            CONFIG.theoryBankVersion,
+
+        examId:
+            buildExamId(
+                STATE.student.code,
+                now
+            ),
+
+        student:{
+
+            code:
+                STATE.student.code,
+
+            name:
+                STATE.student.name,
+
+            group:
+                STATE.student.group,
+
+            course:
+                STATE.student.course
+        },
+
+        theoryQuestions:
+            generatedTheory,
+
+        startedAt:
+            now,
+
+        endAt:
+            now +
+            CONFIG.durationMs,
+
+        status:
+            "active",
+
+        submitted:
+            false,
+
+        answers:{
+
+            theory:{},
+
+            practical:{}
+        },
+
+        lastSection:
+            "theory",
+
+        lastTheoryIndex:
+            0,
+
+        lastPracticalIndex:
+            0,
+
+        result:
+            null,
+
+        remoteSave:{
+
+            status:
+                CONFIG.trialMode
+                    ?
+                    "trial_not_sent"
+                    :
+                    "not_sent",
+
+            attempts:
+                0,
+
+            lastAttemptAt:
+                null,
+
+            sentAt:
+                null
+        }
+    };
+
+    saveSession();
+
+    openExamScreen();
+
+    return false;
+};
+
+
+/* =========================================================
+   RESUME
+========================================================= */
+
+function resumeIfNeeded(){
+
+    var old=
+        loadSession();
+
+    if(!old){
+
+        return;
+    }
+
+    STATE.session=
+        old;
+
+    if(
+        sessionStatus(
+            old
+        )===
+        "submitted"
+    ){
+
+        openResultScreen();
+
+        return;
+    }
+
+    ensureTheoryPaper();
+}
+
+
+/* =========================================================
+   EXAM SCREEN
+========================================================= */
+
+function openExamScreen(){
+
+    if(!STATE.session){
+
+        return;
+    }
+
+    ensureTheoryPaper();
+
+    var currentTheory=
+        theoryQuestions();
+
+    el(
+        "examLookupPanel"
+    )
+    .classList
+    .add(
+        "exam-hidden"
+    );
+
+    el(
+        "examCandidatePanel"
+    )
+    .classList
+    .add(
+        "exam-hidden"
+    );
+
+    el(
+        "examResultPanel"
+    )
+    .classList
+    .add(
+        "exam-hidden"
+    );
+
+    el(
+        "examSessionPanel"
+    )
+    .classList
+    .remove(
+        "exam-hidden"
+    );
+
+    el(
+        "examMiniName"
+    )
+    .textContent=
+        STATE.student.name;
+
+    el(
+        "examMiniCode"
+    )
+    .textContent=
+        STATE.student.code +
+        (
+            CONFIG.trialMode
+                ?
+                " - THI THỬ"
+                :
+                ""
+        );
+
+    STATE.theoryIndex=
+        Math.max(
+            0,
+            Math.min(
+                Number(
+                    STATE.session
+                    .lastTheoryIndex ||
+                    0
+                ),
+                currentTheory.length-1
+            )
+        );
+
+    STATE.practicalIndex=
+        Math.max(
+            0,
+            Math.min(
+                Number(
+                    STATE.session
+                    .lastPracticalIndex ||
+                    0
+                ),
+                PRACTICAL_QUESTIONS.length-1
+            )
+        );
+
+    startTimer();
+
+    var section=
+        STATE.session
+        .lastSection ||
+        "theory";
+
+    if(
+        section===
+        "practical"
+    ){
+
+        APP.openPractical();
+
+    }else if(
+        section===
+        "review"
+    ){
+
+        APP.openReview();
+
+    }else{
+
+        APP.openTheory();
+    }
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function stopTimer(){
+
+    if(
+        STATE.timerHandle
+    ){
+
+        clearInterval(
+            STATE.timerHandle
+        );
+
+        STATE.timerHandle=
+            null;
+    }
+}
+
+
+function startTimer(){
+
+    stopTimer();
+
+    updateTimer();
+
+    STATE.timerHandle=
+        setInterval(
+            updateTimer,
+            1000
+        );
+}
+
+
+function updateTimer(){
+
+    if(
+        !STATE.session ||
+        sessionStatus(
+            STATE.session
+        )===
+        "submitted"
+    ){
+
+        stopTimer();
+
+        return;
+    }
+
+    var remain=
+        Number(
+            STATE.session.endAt
+        ) -
+        Date.now();
+
+    if(remain<=0){
+
+        el(
+            "examTimer"
+        )
+        .textContent=
+            "00:00";
+
+        stopTimer();
+
+        finalizeExam(
+            true
+        );
+
+        return;
+    }
+
+    var seconds=
+        Math.floor(
+            remain/1000
+        );
+
+    var minutes=
+        Math.floor(
+            seconds/60
+        );
+
+    seconds=
+        seconds%60;
+
+    el(
+        "examTimer"
+    )
+    .textContent=
+        String(
+            minutes
+        )
+        .padStart(
+            2,
+            "0"
+        ) +
+        ":" +
+        String(
+            seconds
+        )
+        .padStart(
+            2,
+            "0"
+        );
+
+    el(
+        "examTimer"
+    )
+    .classList
+    .toggle(
+        "warning",
+        remain<=
+        5*60*1000
+    );
+}
+
+
+/* =========================================================
+   PIN QUESTION
+========================================================= */
+
+function updatePinnedQuestion(){
+
+    var box=
+        el(
+            "examPinnedQuestionText"
+        );
+
+    if(!box){
+
+        return;
+    }
+
+    if(!STATE.session){
+
+        box.textContent=
+            "-";
+
+        return;
+    }
+
+    var section=
+        STATE.session.lastSection ||
+        "theory";
+
+    if(
+        section===
+        "theory"
+    ){
+
+        var questions=
+            theoryQuestions();
+
+        var theory=
+            questions[
+                STATE.theoryIndex
+            ];
+
+        if(theory){
+
+            box.textContent=
+                "Câu " +
+                theory.id +
+                ": " +
+                decodeHtmlEntities(
+                    theory.text
+                );
+
+        }else{
+
+            box.textContent=
+                "Phần lý thuyết";
+        }
+
+        return;
+    }
+
+    if(
+        section===
+        "practical"
+    ){
+
+        var practical=
+            PRACTICAL_QUESTIONS[
+                STATE.practicalIndex
+            ];
+
+        if(practical){
+
+            box.textContent=
+                "Câu " +
+                practical.id +
+                ": " +
+                decodeHtmlEntities(
+                    practical.text
+                );
+
+        }else{
+
+            box.textContent=
+                "Phần thực hành";
+        }
+
+        return;
+    }
+
+    box.textContent=
+        "Rà soát toàn bộ bài thi và xác nhận nộp bài.";
+}
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+function activateTab(name){
+
+    var names=[
+        "Theory",
+        "Practical",
+        "Review"
+    ];
+
+    names.forEach(
+        function(item){
+
+            var lower=
+                item.toLowerCase();
+
+            el(
+                "examTab" +
+                item
+            )
+            .classList
+            .toggle(
+                "active",
+                lower===name
+            );
+
+            el(
+                "exam" +
+                item +
+                "Panel"
+            )
+            .classList
+            .toggle(
+                "exam-hidden",
+                lower!==name
+            );
+        }
+    );
+
+    if(STATE.session){
+
+        STATE.session.lastSection=
+            name;
+
+        saveSession();
+    }
+
+    updatePinnedQuestion();
+}
+
+
+APP.openTheory=
+function(){
+
+    activateTab(
+        "theory"
+    );
+
+    renderTheory();
+
+    return false;
+};
+
+
+APP.openPractical=
+function(){
+
+    activateTab(
+        "practical"
+    );
+
+    renderPractical();
+
+    return false;
+};
+
+
+APP.openReview=
+function(){
+
+    activateTab(
+        "review"
+    );
+
+    renderReview();
+
+    return false;
+};
+
+
+/* =========================================================
+   THEORY
+========================================================= */
+
+function theoryAnswers(){
+
+    if(!STATE.session.answers){
+
+        STATE.session.answers={};
+    }
+
+    if(
+        !STATE.session
+        .answers
+        .theory
+    ){
+
+        STATE.session
+        .answers
+        .theory={};
+    }
+
+    return STATE.session
+        .answers
+        .theory;
+}
+
+
+function theoryCount(){
+
+    var answers=
+        theoryAnswers();
+
+    return Object.keys(
+        answers
+    )
+    .filter(
+        function(key){
+
+            return (
+                answers[key] !==
+                undefined &&
+                answers[key] !==
+                null
+            );
+        }
+    )
+    .length;
+}
+
+
+function renderTheory(){
+
+    var questions=
+        theoryQuestions();
+
+    var q=
+        questions[
+            STATE.theoryIndex
+        ];
+
+    if(!q){
+
+        return;
+    }
+
+    var answers=
+        theoryAnswers();
+
+    var selected=
+        answers[
+            String(
+                q.id
+            )
+        ];
+
+    var isLastTheory=
+        STATE.theoryIndex===
+        questions.length-1;
+
+    var html=
+
+        '<div class="exam-question-head">' +
+
+            '<div>' +
+
+                '<div class="exam-question-number">' +
+
+                    'CÂU ' +
+                    q.id +
+
+                '</div>' +
+
+                '<h2 class="exam-question-title">' +
+
+                    escapeHtml(
+                        q.text
+                    ) +
+
+                '</h2>' +
+
+            '</div>' +
+
+            '<div class="exam-progress">' +
+
+                theoryCount() +
+                '/' +
+                CONFIG.theoryCount +
+
+            '</div>' +
+
+        '</div>' +
+
+        '<div class="theory-options">';
+
+
+    q.options.forEach(
+        function(option,index){
+
+            html+=
+
+                '<button ' +
+
+                    'type="button" ' +
+
+                    'class="theory-option ' +
+
+                    (
+                        Number(
+                            selected
+                        )===
+                        index
+                            ?
+                            "selected"
+                            :
+                            ""
+                    ) +
+
+                    '" ' +
+
+                    'onclick="return window.OCDGraduationExam.answerTheory(' +
+                        q.id +
+                        ',' +
+                        index +
+                    ');">' +
+
+                    '<span class="theory-letter">' +
+
+                        String.fromCharCode(
+                            65+index
+                        ) +
+
+                    '</span>' +
+
+                    '<span>' +
+
+                        escapeHtml(
+                            option
+                        ) +
+
+                    '</span>' +
+
+                '</button>';
+        }
+    );
+
+    html+=
+        '</div>';
+
+
+    html+=
+        '<div class="exam-qgrid">';
+
+    questions.forEach(
+        function(item,index){
+
+            var done=
+                answers[
+                    String(
+                        item.id
+                    )
+                ] !==
+                undefined;
+
+            html+=
+
+                '<button ' +
+
+                    'class="exam-qnav ' +
+
+                    (
+                        done
+                            ?
+                            "done "
+                            :
+                            ""
+                    ) +
+
+                    (
+                        index===
+                        STATE.theoryIndex
+                            ?
+                            "current"
+                            :
+                            ""
+                    ) +
+
+                    '" ' +
+
+                    'type="button" ' +
+
+                    'onclick="return window.OCDGraduationExam.goTheory(' +
+                        index +
+                    ');">' +
+
+                    item.id +
+
+                '</button>';
+        }
+    );
+
+    html+=
+        '</div>';
+
+
+    html+=
+
+        '<div class="exam-bottom-nav">' +
+
+            '<button ' +
+                'class="exam-btn secondary" ' +
+                'type="button" ' +
+
+                (
+                    STATE.theoryIndex===0
+                        ?
+                        "disabled "
+                        :
+                        ""
+                ) +
+
+                'onclick="return window.OCDGraduationExam.previousTheory();">' +
+
+                'CÂU TRƯỚC' +
+
+            '</button>' +
+
+            '<button ' +
+                'class="exam-btn ' +
+                (
+                    isLastTheory
+                        ?
+                        'gold'
+                        :
+                        ''
+                ) +
+                '" ' +
+
+                'type="button" ' +
+
+                'onclick="return window.OCDGraduationExam.nextTheory();">' +
+
+                (
+                    isLastTheory
+                        ?
+                        'SANG PHẦN THỰC HÀNH'
+                        :
+                        'CÂU TIẾP'
+                ) +
+
+            '</button>' +
+
+        '</div>';
+
+
+    el(
+        "examTheoryContent"
+    )
+    .innerHTML=
+        html;
+
+    updatePinnedQuestion();
+}
+
+
+APP.answerTheory=
+function(
+    questionId,
+    answerIndex
+){
+
+    if(
+        sessionStatus(
+            STATE.session
+        )===
+        "submitted"
+    ){
+
+        return false;
+    }
+
+    theoryAnswers()[
+        String(
+            questionId
+        )
+    ]=
+        Number(
+            answerIndex
+        );
+
+    saveSession();
+
+    renderTheory();
+
+    return false;
+};
+
+
+APP.goTheory=
+function(index){
+
+    var questions=
+        theoryQuestions();
+
+    index=
+        Number(
+            index
+        );
+
+    if(
+        index<0 ||
+        index>=questions.length
+    ){
+
+        return false;
+    }
+
+    STATE.theoryIndex=
+        index;
+
+    STATE.session
+    .lastTheoryIndex=
+        STATE.theoryIndex;
+
+    saveSession();
+
+    renderTheory();
+
+    return false;
+};
+
+
+APP.previousTheory=
+function(){
+
+    if(
+        STATE.theoryIndex>0
+    ){
+
+        STATE.theoryIndex--;
+
+        STATE.session
+        .lastTheoryIndex=
+            STATE.theoryIndex;
+
+        saveSession();
+
+        renderTheory();
+    }
+
+    return false;
+};
+
+
+APP.nextTheory=
+function(){
+
+    var questions=
+        theoryQuestions();
+
+    if(
+        STATE.theoryIndex<
+        questions.length-1
+    ){
+
+        STATE.theoryIndex++;
+
+        STATE.session
+        .lastTheoryIndex=
+            STATE.theoryIndex;
+
+        saveSession();
+
+        renderTheory();
+
+        return false;
+    }
+
+    STATE.practicalIndex=
+        Math.max(
+            0,
+            Math.min(
+                Number(
+                    STATE.session
+                    .lastPracticalIndex ||
+                    0
+                ),
+                PRACTICAL_QUESTIONS.length-1
+            )
+        );
+
+    APP.openPractical();
+
+    return false;
+};
+
+
+/* =========================================================
+   PRACTICAL ANSWERS
+========================================================= */
+
+function practicalAnswers(){
+
+    if(!STATE.session.answers){
+
+        STATE.session.answers={};
+    }
+
+    if(
+        !STATE.session
+        .answers
+        .practical
+    ){
+
+        STATE.session
+        .answers
+        .practical={};
+    }
+
+    return STATE.session
+        .answers
+        .practical;
+}
+
+
+function practicalCount(){
+
+    var answers=
+        practicalAnswers();
+
+    return Object.keys(
+        answers
+    )
+    .filter(
+        function(key){
+
+            return !!answers[key];
+        }
+    )
+    .length;
+}
+
+
+/* =========================================================
+   USED SUBMISSIONS
+========================================================= */
+
+function usedSubmissionMap(){
+
+    var map={};
+
+    var answers=
+        practicalAnswers();
+
+    Object.keys(
+        answers
+    )
+    .forEach(
+        function(questionId){
+
+            var answer=
+                answers[
+                    questionId
+                ];
+
+            if(
+                answer &&
+                answer.submissionId
+            ){
+
+                map[
+                    answer.submissionId
+                ]=
+                    Number(
+                        questionId
+                    );
+            }
+        }
+    );
+
+    return map;
+}
+
+
+function practicalSortRank(
+    item,
+    currentQuestionId,
+    used
+){
+
+    var usedQuestion=
+        used[
+            item.submissionId
+        ];
+
+    if(!usedQuestion){
+
+        return 0;
+    }
+
+    if(
+        Number(
+            usedQuestion
+        )===
+        Number(
+            currentQuestionId
+        )
+    ){
+
+        return 1;
+    }
+
+    return 2;
+}
+
+
+/* =========================================================
+   RENDER PRACTICAL
+========================================================= */
+
+function renderPractical(){
+
+    var q=
+        PRACTICAL_QUESTIONS[
+            STATE.practicalIndex
+        ];
+
+    if(!q){
+
+        return;
+    }
+
+    var answers=
+        practicalAnswers();
+
+    var answer=
+        answers[
+            String(
+                q.id
+            )
+        ];
+
+    var html="";
+
+
+    html+=
+
+        '<div class="practical-nav-box">' +
+
+            '<div class="practical-nav-head">' +
+
+                '<div class="practical-nav-title">' +
+
+                    'CHỌN CÂU THỰC HÀNH' +
+
+                '</div>' +
+
+                '<div class="practical-nav-count">' +
+
+                    'Đã chọn ' +
+                    practicalCount() +
+                    '/' +
+                    CONFIG.practicalCount +
+                    ' bài' +
+
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="exam-qgrid">';
+
+
+    PRACTICAL_QUESTIONS
+    .forEach(
+        function(item,index){
+
+            var done=
+                !!answers[
+                    String(
+                        item.id
+                    )
+                ];
+
+            html+=
+
+                '<button ' +
+
+                    'class="exam-qnav ' +
+
+                    (
+                        done
+                            ?
+                            "done "
+                            :
+                            ""
+                    ) +
+
+                    (
+                        index===
+                        STATE.practicalIndex
+                            ?
+                            "current"
+                            :
+                            ""
+                    ) +
+
+                    '" ' +
+
+                    'type="button" ' +
+
+                    'onclick="return window.OCDGraduationExam.goPractical(' +
+                        index +
+                    ');">' +
+
+                    item.id +
+
+                '</button>';
+        }
+    );
+
+
+    html+=
+
+            '</div>' +
+
+        '</div>';
+
+
+    html+=
+
+        '<div class="exam-question-head">' +
+
+            '<div>' +
+
+                '<div class="exam-question-number">' +
+
+                    'CÂU ' +
+                    q.id +
+
+                '</div>' +
+
+                '<h2 class="exam-question-title">' +
+
+                    escapeHtml(
+                        q.text
+                    ) +
+
+                '</h2>' +
+
+            '</div>' +
+
+            '<div class="exam-progress">' +
+
+                practicalCount() +
+                '/' +
+                CONFIG.practicalCount +
+
+            '</div>' +
+
+        '</div>';
+
+
+    html+=
+
+        '<div class="practical-help">' +
+
+            'Chọn một bài trong lịch sử bài tập đã nộp. ' +
+
+            'Sau khi chọn, hệ thống sẽ tự ghi nhận và chuyển sang câu thực hành tiếp theo. ' +
+
+            'Một bài chỉ được sử dụng cho một câu. ' +
+
+            'Điểm cũ chỉ dùng để tham khảo.' +
+
+        '</div>';
+
+
+    if(answer){
+
+        html+=
+
+            '<div class="practical-selected show">' +
+
+                '<div class="practical-selected-title">' +
+
+                    'BÀI ĐÃ CHỌN CHO CÂU ' +
+                    escapeHtml(
+                        q.id
+                    ) +
+
+                '</div>' +
+
+                '<div class="practical-selected-text">' +
+
+                    escapeHtml(
+                        answer.note ||
+                        "Bài đã chọn"
+                    ) +
+
+                    (
+                        answer.originalScore!==null &&
+                        answer.originalScore!==undefined
+                            ?
+                            ' - Điểm cũ: ' +
+                            escapeHtml(
+                                answer.originalScore
+                            )
+                            :
+                            ' - Chưa có điểm'
+                    ) +
+
+                '</div>' +
+
+                '<button ' +
+                    'class="exam-btn secondary" ' +
+                    'style="margin-top:9px;" ' +
+                    'type="button" ' +
+                    'onclick="return window.OCDGraduationExam.removeCurrentPractical();">' +
+
+                    'BỎ BÀI ĐANG CHỌN' +
+
+                '</button>' +
+
+            '</div>';
+    }
+
+
+    html+=
+
+        '<div class="practical-search">' +
+
+            '<input ' +
+                'class="exam-input" ' +
+                'id="examPracticalSearch" ' +
+                'type="search" ' +
+                'placeholder="Tìm theo mô tả bài tập..." ' +
+                'value="' +
+                    escapeHtml(
+                        STATE.practicalSearch
+                    ) +
+                '" ' +
+                'oninput="window.OCDGraduationExam.filterPractical(this.value);">' +
+
+        '</div>';
+
+
+    html+=
+        '<div id="examSubmissionList"></div>';
+
+
+    html+=
+
+        '<div class="exam-bottom-nav">' +
+
+            '<button ' +
+                'class="exam-btn secondary" ' +
+                'type="button" ' +
+
+                (
+                    STATE.practicalIndex===0
+                        ?
+                        "disabled "
+                        :
+                        ""
+                ) +
+
+                'onclick="return window.OCDGraduationExam.previousPractical();">' +
+
+                'CÂU TRƯỚC' +
+
+            '</button>' +
+
+            '<button ' +
+                'class="exam-btn" ' +
+                'type="button" ' +
+
+                (
+                    STATE.practicalIndex>=
+                    PRACTICAL_QUESTIONS.length-1
+                        ?
+                        "disabled "
+                        :
+                        ""
+                ) +
+
+                'onclick="return window.OCDGraduationExam.nextPractical();">' +
+
+                'CÂU TIẾP' +
+
+            '</button>' +
+
+        '</div>';
+
+
+    el(
+        "examPracticalContent"
+    )
+    .innerHTML=
+        html;
+
+    renderSubmissionList();
+
+    updatePinnedQuestion();
+}
+
+
+APP.goPractical=
+function(index){
+
+    index=
+        Number(
+            index
+        );
+
+    if(
+        index<0 ||
+        index>=
+        PRACTICAL_QUESTIONS.length
+    ){
+
+        return false;
+    }
+
+    STATE.practicalIndex=
+        index;
+
+    STATE.session
+    .lastPracticalIndex=
+        index;
+
+    STATE.practicalSearch=
+        "";
+
+    saveSession();
+
+    renderPractical();
+
+    return false;
+};
+
+
+/* =========================================================
+   SUBMISSION LIST
+========================================================= */
+
+function renderSubmissionList(){
+
+    var container=
+        el(
+            "examSubmissionList"
+        );
+
+    if(!container){
+
+        return;
+    }
+
+    var q=
+        PRACTICAL_QUESTIONS[
+            STATE.practicalIndex
+        ];
+
+    if(!q){
+
+        return;
+    }
+
+    var used=
+        usedSubmissionMap();
+
+    var search=
+        normalizeText(
+            STATE.practicalSearch
+        );
+
+    var list=
+        STATE.validSubmissions
+        .filter(
+            function(item){
+
+                if(!search){
+
+                    return true;
+                }
+
+                var source=
+                    normalizeText(
+
+                        (
+                            item.note ||
+                            ""
+                        ) +
+
+                        " " +
+
+                        (
+                            item.timestamp ||
+                            ""
+                        ) +
+
+                        " " +
+
+                        (
+                            item.score===null ||
+                            item.score===undefined
+                                ?
+                                ""
+                                :
+                                item.score
+                        )
+
+                    );
+
+                return (
+                    source.indexOf(
+                        search
+                    )!==-1
+                );
+            }
+        )
+        .slice();
+
+
+    list.sort(
+        function(a,b){
+
+            var rankA=
+                practicalSortRank(
+                    a,
+                    q.id,
+                    used
+                );
+
+            var rankB=
+                practicalSortRank(
+                    b,
+                    q.id,
+                    used
+                );
+
+            if(
+                rankA!==rankB
+            ){
+
+                return rankA-rankB;
+            }
+
+            return (
+                a.timestampSort -
+                b.timestampSort
+            );
+        }
+    );
+
+
+    STATE.practicalRenderMap={};
+
+    var unusedCount=0;
+
+    list.forEach(
+        function(item,index){
+
+            var renderKey=
+                String(
+                    index
+                );
+
+            STATE.practicalRenderMap[
+                renderKey
+            ]=
+                item;
+
+            if(
+                !used[
+                    item.submissionId
+                ]
+            ){
+
+                unusedCount++;
+            }
+        }
+    );
+
+
+    var html=
+
+        '<div class="practical-list-info">' +
+
+            'Tìm thấy ' +
+            list.length +
+            ' bài - Còn ' +
+            unusedCount +
+            ' bài chưa sử dụng. ' +
+
+            'Bài chưa dùng được ưu tiên ở đầu danh sách.' +
+
+        '</div>';
+
+
+    if(!list.length){
+
+        html+=
+
+            '<div class="exam-message show error">' +
+
+                (
+                    CONFIG.trialMode
+                        ?
+                        'Không tìm thấy bài đã nộp. Chế độ thi thử vẫn cho phép vào phòng thi, nhưng phần thực hành cần có bài trong lịch sử để lựa chọn.'
+                        :
+                        'Không tìm thấy bài phù hợp.'
+                ) +
+
+            '</div>';
+
+        container.innerHTML=
+            html;
+
+        return;
+    }
+
+
+    html+=
+        '<div class="practical-list">';
+
+
+    list.forEach(
+        function(item,index){
+
+            var renderKey=
+                String(
+                    index
+                );
+
+            var usedQuestion=
+                used[
+                    item.submissionId
+                ];
+
+            var isCurrent=
+                Number(
+                    usedQuestion
+                )===
+                Number(
+                    q.id
+                );
+
+            var isLocked=
+                !!usedQuestion &&
+                !isCurrent;
+
+            var img=
+                imageUrl(
+                    item.file
+                );
+
+
+            html+=
+
+                '<article class="practical-card ' +
+
+                    (
+                        isCurrent
+                            ?
+                            "selected "
+                            :
+                            ""
+                    ) +
+
+                    (
+                        isLocked
+                            ?
+                            "locked"
+                            :
+                            ""
+                    ) +
+
+                '">';
+
+
+            html+=
+                '<div class="practical-image-wrap">';
+
+
+            if(img){
+
+                html+=
+
+                    '<img ' +
+                        'class="practical-image" ' +
+                        'loading="lazy" ' +
+                        'src="' +
+                            escapeHtml(
+                                img
+                            ) +
+                        '" ' +
+                        'alt="Bài thực hành">';
+
+            }else{
+
+                html+=
+
+                    '<div class="practical-no-image">' +
+
+                        'Không có ảnh xem trước' +
+
+                    '</div>';
+            }
+
+
+            if(isCurrent){
+
+                html+=
+
+                    '<div class="practical-badge">' +
+
+                        'ĐANG CHỌN' +
+
+                    '</div>';
+
+            }else if(isLocked){
+
+                html+=
+
+                    '<div class="practical-badge">' +
+
+                        'ĐÃ DÙNG Ở CÂU ' +
+                        escapeHtml(
+                            usedQuestion
+                        ) +
+
+                    '</div>';
+            }
+
+
+            html+=
+                '</div>';
+
+
+            html+=
+
+                '<div class="practical-body">' +
+
+                    '<div class="practical-note">' +
+
+                        escapeHtml(
+                            item.note ||
+                            "Bài tập"
+                        ) +
+
+                    '</div>' +
+
+                    '<div class="practical-meta">' +
+
+                        'Ngày nộp: ' +
+                        escapeHtml(
+                            item.timestamp ||
+                            "-"
+                        ) +
+
+                    '</div>';
+
+
+            if(
+                item.score!==null &&
+                item.score!==undefined
+            ){
+
+                html+=
+
+                    '<div class="practical-score">' +
+
+                        'Điểm cũ: ' +
+                        escapeHtml(
+                            item.score
+                        ) +
+
+                    '</div>';
+
+            }else{
+
+                html+=
+
+                    '<div class="practical-score">' +
+
+                        'Chưa có điểm cũ' +
+
+                    '</div>';
+            }
+
+
+            if(isCurrent){
+
+                html+=
+
+                    '<button ' +
+                        'class="exam-btn secondary" ' +
+                        'type="button" ' +
+                        'onclick="return window.OCDGraduationExam.removePractical(' +
+                            q.id +
+                        ');">' +
+
+                        'BỎ CHỌN - GIẢI PHÓNG BÀI' +
+
+                    '</button>';
+
+            }else if(isLocked){
+
+                html+=
+
+                    '<button ' +
+                        'class="exam-btn secondary" ' +
+                        'type="button" ' +
+                        'disabled>' +
+
+                        'ĐÃ DÙNG Ở CÂU ' +
+                        escapeHtml(
+                            usedQuestion
+                        ) +
+
+                    '</button>';
+
+            }else{
+
+                html+=
+
+                    '<button ' +
+                        'class="exam-btn green" ' +
+                        'type="button" ' +
+
+                        'onclick="return window.OCDGraduationExam.selectPracticalByKey(' +
+
+                            q.id +
+                            ',' +
+                            renderKey +
+
+                        ');">' +
+
+                        'CHỌN BÀI NÀY' +
+
+                    '</button>';
+            }
+
+
+            html+=
+
+                '</div>' +
+
+                '</article>';
+        }
+    );
+
+
+    html+=
+        '</div>';
+
+    container.innerHTML=
+        html;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+APP.filterPractical=
+function(value){
+
+    STATE.practicalSearch=
+        String(
+            value || ""
+        );
+
+    renderSubmissionList();
+};
+
+
+/* =========================================================
+   SELECT PRACTICAL
+========================================================= */
+
+APP.selectPracticalByKey=
+function(
+    questionId,
+    renderKey
+){
+
+    if(
+        !STATE.session ||
+        sessionStatus(
+            STATE.session
+        )===
+        "submitted"
+    ){
+
+        return false;
+    }
+
+    var item=
+        STATE.practicalRenderMap[
+            String(
+                renderKey
+            )
+        ];
+
+    if(!item){
+
+        alert(
+            "Không tìm thấy dữ liệu bài được chọn. Vui lòng thử lại."
+        );
+
+        return false;
+    }
+
+    var used=
+        usedSubmissionMap();
+
+    var usedQuestion=
+        used[
+            item.submissionId
+        ];
+
+    if(
+        usedQuestion &&
+        Number(
+            usedQuestion
+        )!==
+        Number(
+            questionId
+        )
+    ){
+
+        alert(
+            "Bài này đã được sử dụng ở câu " +
+            usedQuestion +
+            "."
+        );
+
+        return false;
+    }
+
+
+    var question=
+        PRACTICAL_QUESTIONS
+        .find(
+            function(q){
+
+                return (
+                    Number(
+                        q.id
+                    )===
+                    Number(
+                        questionId
+                    )
+                );
+            }
+        );
+
+
+    practicalAnswers()[
+        String(
+            questionId
+        )
+    ]={
+
+        questionId:
+            Number(
+                questionId
+            ),
+
+        prompt:
+            question
+                ?
+                question.text
+                :
+                "",
+
+        submissionId:
+            item.submissionId,
+
+        file:
+            item.file,
+
+        note:
+            item.note,
+
+        submittedAt:
+            item.timestamp,
+
+        originalScore:
+            item.score
+    };
+
+
+    STATE.practicalSearch=
+        "";
+
+    saveSession();
+
+
+    var currentIndex=
+        PRACTICAL_QUESTIONS
+        .findIndex(
+            function(q){
+
+                return (
+                    Number(
+                        q.id
+                    )===
+                    Number(
+                        questionId
+                    )
+                );
+            }
+        );
+
+
+    if(
+        currentIndex>=0 &&
+        currentIndex<
+        PRACTICAL_QUESTIONS.length-1
+    ){
+
+        STATE.practicalIndex=
+            currentIndex+1;
+
+        STATE.session
+        .lastPracticalIndex=
+            STATE.practicalIndex;
+
+        saveSession();
+
+        renderPractical();
+
+        var practicalPanel=
+            el(
+                "examPracticalPanel"
+            );
+
+        if(practicalPanel){
+
+            practicalPanel.scrollIntoView({
+                behavior:"smooth",
+                block:"start"
+            });
+        }
+
+        return false;
+    }
+
+
+    APP.openReview();
+
+    var reviewPanel=
+        el(
+            "examReviewPanel"
+        );
+
+    if(reviewPanel){
+
+        reviewPanel.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+    }
+
+    return false;
+};
+
+
+/* =========================================================
+   REMOVE PRACTICAL
+========================================================= */
+
+APP.removePractical=
+function(questionId){
+
+    delete practicalAnswers()[
+        String(
+            questionId
+        )
+    ];
+
+    saveSession();
+
+    renderPractical();
+
+    return false;
+};
+
+
+APP.removeCurrentPractical=
+function(){
+
+    var q=
+        PRACTICAL_QUESTIONS[
+            STATE.practicalIndex
+        ];
+
+    if(!q){
+
+        return false;
+    }
+
+    return APP.removePractical(
+        q.id
+    );
+};
+
+
+/* =========================================================
+   PRACTICAL NAV
+========================================================= */
+
+APP.previousPractical=
+function(){
+
+    if(
+        STATE.practicalIndex>0
+    ){
+
+        STATE.practicalIndex--;
+
+        STATE.session
+        .lastPracticalIndex=
+            STATE.practicalIndex;
+
+        STATE.practicalSearch=
+            "";
+
+        saveSession();
+
+        renderPractical();
+    }
+
+    return false;
+};
+
+
+APP.nextPractical=
+function(){
+
+    if(
+        STATE.practicalIndex<
+        PRACTICAL_QUESTIONS.length-1
+    ){
+
+        STATE.practicalIndex++;
+
+        STATE.session
+        .lastPracticalIndex=
+            STATE.practicalIndex;
+
+        STATE.practicalSearch=
+            "";
+
+        saveSession();
+
+        renderPractical();
+
+        return false;
+    }
+
+    APP.openReview();
+
+    return false;
+};
+
+
+/* =========================================================
+   MISSING
+========================================================= */
+
+function missingTheory(){
+
+    var answers=
+        theoryAnswers();
+
+    return theoryQuestions()
+    .filter(
+        function(q){
+
+            return (
+                answers[
+                    String(
+                        q.id
+                    )
+                ]===
+                undefined
+            );
+        }
+    )
+    .map(
+        function(q){
+
+            return q.id;
+        }
+    );
+}
+
+
+function missingPractical(){
+
+    var answers=
+        practicalAnswers();
+
+    return PRACTICAL_QUESTIONS
+    .filter(
+        function(q){
+
+            return !answers[
+                String(
+                    q.id
+                )
+            ];
+        }
+    )
+    .map(
+        function(q){
+
+            return q.id;
+        }
+    );
+}
+
+
+/* =========================================================
+   REVIEW
+========================================================= */
+
+function renderReview(){
+
+    var theoryDone=
+        theoryCount();
+
+    var practicalDone=
+        practicalCount();
+
+    var total=
+        theoryDone +
+        practicalDone;
+
+    var totalQuestions=
+        CONFIG.theoryCount +
+        CONFIG.practicalCount;
+
+    var missingTheoryList=
+        missingTheory();
+
+    var missingPracticalList=
+        missingPractical();
+
+
+    var html=
+
+        '<h2 class="exam-card-title">' +
+
+            (
+                CONFIG.trialMode
+                    ?
+                    'Rà soát bài thi thử'
+                    :
+                    'Rà soát bài thi'
+            ) +
+
+        '</h2>' +
+
+        '<div class="review-grid">' +
+
+            '<div class="review-box">' +
+
+                '<div class="review-number">' +
+
+                    theoryDone +
+                    '/' +
+                    CONFIG.theoryCount +
+
+                '</div>' +
+
+                '<div class="review-label">' +
+
+                    'Lý thuyết' +
+
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="review-box">' +
+
+                '<div class="review-number">' +
+
+                    practicalDone +
+                    '/' +
+                    CONFIG.practicalCount +
+
+                '</div>' +
+
+                '<div class="review-label">' +
+
+                    'Thực hành' +
+
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="review-box">' +
+
+                '<div class="review-number">' +
+
+                    total +
+                    '/' +
+                    totalQuestions +
+
+                '</div>' +
+
+                '<div class="review-label">' +
+
+                    'Tổng' +
+
+                '</div>' +
+
+            '</div>' +
+
+        '</div>';
+
+
+    if(
+        missingTheoryList.length ||
+        missingPracticalList.length
+    ){
+
+        html+=
+            '<div class="review-missing">';
+
+        if(missingTheoryList.length){
+
+            html+=
+
+                '<strong>Lý thuyết chưa hoàn thành:</strong> ' +
+
+                missingTheoryList
+                .map(
+                    function(n){
+
+                        return "Câu " + n;
+                    }
+                )
+                .join(", ");
+        }
+
+        if(
+            missingTheoryList.length &&
+            missingPracticalList.length
+        ){
+
+            html+=
+                '<br>';
+        }
+
+        if(missingPracticalList.length){
+
+            html+=
+
+                '<strong>Thực hành chưa hoàn thành:</strong> ' +
+
+                missingPracticalList
+                .map(
+                    function(n){
+
+                        return "Câu " + n;
+                    }
+                )
+                .join(", ");
+        }
+
+        html+=
+            '</div>';
+
+    }else{
+
+        html+=
+
+            '<div class="review-missing">' +
+
+                '<strong>Đã hoàn thành đủ ' +
+
+                totalQuestions +
+                '/' +
+                totalQuestions +
+
+                ' câu.</strong> ' +
+
+                'Bạn có thể kiểm tra lại trước khi nộp.' +
+
+            '</div>';
+    }
+
+
+    if(CONFIG.trialMode){
+
+        html+=
+
+            '<div class="exam-message show success" style="margin-top:14px;">' +
+
+                '<strong>Đây là phiên thi thử.</strong> ' +
+                'Kết quả chỉ được lưu trên thiết bị và không ghi vào bảng kết quả thi tốt nghiệp chính thức.' +
+
+            '</div>';
+    }
+
+
+    html+=
+
+        '<label class="review-confirm">' +
+
+            '<input ' +
+                'id="examSubmitConfirm" ' +
+                'type="checkbox" ' +
+                'onchange="window.OCDGraduationExam.updateSubmitButton();">' +
+
+            '<span>' +
+
+                (
+                    CONFIG.trialMode
+                        ?
+                        'Tôi xác nhận đã kiểm tra bài thi thử và muốn xem kết quả.'
+                        :
+                        'Tôi xác nhận đã kiểm tra bài và hiểu rằng sau khi nộp, bài thi sẽ bị khóa.'
+                ) +
+
+            '</span>' +
+
+        '</label>' +
+
+        '<div class="exam-center" style="margin-top:15px;">' +
+
+            '<button ' +
+                'class="exam-btn red" ' +
+                'id="examFinalSubmitButton" ' +
+                'type="button" ' +
+                'disabled ' +
+                'onclick="return window.OCDGraduationExam.submitExam();">' +
+
+                (
+                    CONFIG.trialMode
+                        ?
+                        'NỘP BÀI THI THỬ'
+                        :
+                        'NỘP BÀI THI'
+                ) +
+
+            '</button>' +
+
+        '</div>';
+
+
+    el(
+        "examReviewContent"
+    )
+    .innerHTML=
+        html;
+
+    APP.updateSubmitButton();
+
+    updatePinnedQuestion();
+}
+
+
+APP.updateSubmitButton=
+function(){
+
+    var button=
+        el(
+            "examFinalSubmitButton"
+        );
+
+    var confirmBox=
+        el(
+            "examSubmitConfirm"
+        );
+
+    if(!button){
+
+        return;
+    }
+
+    button.disabled=
+        !(
+            theoryCount()===
+            CONFIG.theoryCount &&
+
+            practicalCount()===
+            CONFIG.practicalCount &&
+
+            confirmBox &&
+            confirmBox.checked
+        );
+};
+
+
+/* =========================================================
+   GRADE THEORY
+========================================================= */
+
+function gradeTheory(){
+
+    var answers=
+        theoryAnswers();
+
+    var questions=
+        theoryQuestions();
+
+    var answered=0;
+    var correct=0;
+
+    questions.forEach(
+        function(q){
+
+            var answer=
+                answers[
+                    String(
+                        q.id
+                    )
+                ];
+
+            if(
+                answer===undefined ||
+                answer===null
+            ){
+
+                return;
+            }
+
+            answered++;
+
+            if(
+                Number(
+                    answer
+                )===
+                Number(
+                    q.correct
+                )
+            ){
+
+                correct++;
+            }
+        }
+    );
+
+    var wrong=
+        answered-
+        correct;
+
+    return {
+
+        answered:
+            answered,
+
+        correct:
+            correct,
+
+        wrong:
+            wrong,
+
+        unanswered:
+            CONFIG.theoryCount -
+            answered,
+
+        /*
+           20 câu vẫn quy về thang điểm 10.
+           Mỗi câu đúng = 0.5 điểm.
+        */
+        score:
+            Math.round(
+                (
+                    correct /
+                    CONFIG.theoryCount *
+                    10
+                ) *
+                100
+            ) / 100
+    };
+}
+
+
+/* =========================================================
+   THEORY DATA
+========================================================= */
+
+function buildTheoryData(){
+
+    var answers=
+        theoryAnswers();
+
+    return theoryQuestions()
+    .map(
+        function(q){
+
+            var answer=
+                answers[
+                    String(
+                        q.id
+                    )
+                ];
+
+            return {
+
+                q:
+                    q.id,
+
+                bankId:
+                    q.bankId,
+
+                question:
+                    q.text,
+
+                options:
+                    q.options.slice(),
+
+                answer:
+                    answer===undefined
+                        ?
+                        null
+                        :
+                        Number(answer),
+
+                correct:
+                    q.correct,
+
+                isCorrect:
+                    answer!==undefined &&
+                    Number(answer)===
+                    Number(q.correct)
+            };
+        }
+    );
+}
+
+
+/* =========================================================
+   PRACTICAL DATA
+========================================================= */
+
+function buildPracticalData(){
+
+    var answers=
+        practicalAnswers();
+
+    return PRACTICAL_QUESTIONS
+    .map(
+        function(q){
+
+            var answer=
+                answers[
+                    String(
+                        q.id
+                    )
+                ];
+
+            if(!answer){
+
+                return {
+
+                    q:q.id,
+
+                    prompt:q.text,
+
+                    submissionId:"",
+
+                    note:"",
+
+                    file:"",
+
+                    submittedAt:"",
+
+                    originalScore:null
+                };
+            }
+
+            return {
+
+                q:
+                    q.id,
+
+                prompt:
+                    q.text,
+
+                submissionId:
+                    answer.submissionId ||
+                    "",
+
+                note:
+                    answer.note ||
+                    "",
+
+                file:
+                    answer.file ||
+                    "",
+
+                submittedAt:
+                    answer.submittedAt ||
+                    "",
+
+                originalScore:
+                    answer.originalScore===
+                    undefined
+                        ?
+                        null
+                        :
+                        answer.originalScore
+            };
+        }
+    );
+}
+
+
+/* =========================================================
+   FINAL RESULT
+========================================================= */
+
+function buildFinalResult(
+    autoSubmitted
+){
+
+    var theory=
+        gradeTheory();
+
+    return {
+
+        examId:
+            STATE.session.examId,
+
+        isTrial:
+            CONFIG.trialMode,
+
+        studentCode:
+            STATE.student.code,
+
+        studentName:
+            STATE.student.name,
+
+        group:
+            STATE.student.group,
+
+        course:
+            STATE.student.course,
+
+        startedAt:
+            STATE.session.startedAt,
+
+        submittedAt:
+            Date.now(),
+
+        autoSubmitted:
+            !!autoSubmitted,
+
+        submitReason:
+            autoSubmitted
+                ?
+                "TIMEOUT"
+                :
+                (
+                    CONFIG.trialMode
+                        ?
+                        "TRIAL"
+                        :
+                        "MANUAL"
+                ),
+
+        theory:
+            theory,
+
+        theoryPaper:
+            buildTheoryData(),
+
+        practical:{
+
+            answered:
+                practicalCount(),
+
+            unanswered:
+                CONFIG.practicalCount -
+                practicalCount(),
+
+            selections:
+                buildPracticalData()
+        },
+
+        totalAnswered:
+            theory.answered +
+            practicalCount(),
+
+        missingQuestions:{
+
+            theory:
+                missingTheory(),
+
+            practical:
+                missingPractical()
+        }
+    };
+}
+
+
+/* =========================================================
+   SUBMIT
+========================================================= */
+
+APP.submitExam=
+function(){
+
+    if(
+        !STATE.session ||
+        sessionStatus(
+            STATE.session
+        )===
+        "submitted"
+    ){
+
+        return false;
+    }
+
+    if(
+        theoryCount()!==
+        CONFIG.theoryCount ||
+        practicalCount()!==
+        CONFIG.practicalCount
+    ){
+
+        alert(
+            "Bạn chưa hoàn thành đủ " +
+            CONFIG.theoryCount +
+            " câu lý thuyết và " +
+            CONFIG.practicalCount +
+            " câu thực hành."
+        );
+
+        return false;
+    }
+
+    var confirmBox=
+        el(
+            "examSubmitConfirm"
+        );
+
+    if(
+        !confirmBox ||
+        !confirmBox.checked
+    ){
+
+        return false;
+    }
+
+    var confirmText=
+        CONFIG.trialMode
+            ?
+            "Xác nhận nộp bài thi thử?\n\nKết quả này không được ghi vào kỳ thi chính thức."
+            :
+            "Xác nhận nộp bài?\n\nSau khi nộp, bài thi sẽ bị khóa và học viên không thể tự tạo phiên thi mới.";
+
+    if(
+        !window.confirm(
+            confirmText
+        )
+    ){
+
+        return false;
+    }
+
+    finalizeExam(
+        false
+    );
+
+    return false;
+};
+
+
+/* =========================================================
+   FINALIZE
+========================================================= */
+
+function finalizeExam(
+    autoSubmitted
+){
+
+    if(
+        !STATE.session ||
+        sessionStatus(
+            STATE.session
+        )===
+        "submitted"
+    ){
+
+        return;
+    }
+
+    stopTimer();
+
+    var result=
+        buildFinalResult(
+            autoSubmitted
+        );
+
+    STATE.session.status=
+        "submitted";
+
+    STATE.session.submitted=
+        true;
+
+    STATE.session.submittedAt=
+        result.submittedAt;
+
+    STATE.session.submitReason=
+        result.submitReason;
+
+    STATE.session.result=
+        result;
+
+    STATE.session.remoteSave=
+        STATE.session.remoteSave ||
+        {};
+
+    if(CONFIG.trialMode){
+
+        STATE.session.remoteSave.status=
+            "trial_not_sent";
+
+    }else{
+
+        STATE.session.remoteSave.status=
+            "pending";
+    }
+
+    STATE.session.remoteSave.attempts=
+        Number(
+            STATE.session
+            .remoteSave
+            .attempts ||
+            0
+        );
+
+    saveSession();
+
+    openResultScreen();
+
+    if(!CONFIG.trialMode){
+
+        sendResultToGoogleForm();
+    }
+}
+
+
+/* =========================================================
+   FORM PAYLOAD
+========================================================= */
+
+function formPayload(){
+
+    if(
+        CONFIG.trialMode ||
+        !STATE.session ||
+        !STATE.session.result
+    ){
+
+        return null;
+    }
+
+    var r=
+        STATE.session.result;
+
+    var payload={};
+
+    payload[
+        CONFIG.formEntries.examId
+    ]=
+        r.examId;
+
+    payload[
+        CONFIG.formEntries.studentCode
+    ]=
+        r.studentCode;
+
+    payload[
+        CONFIG.formEntries.studentName
+    ]=
+        r.studentName;
+
+    payload[
+        CONFIG.formEntries.group
+    ]=
+        r.group ||
+        "";
+
+    payload[
+        CONFIG.formEntries.course
+    ]=
+        r.course ||
+        "";
+
+    payload[
+        CONFIG.formEntries.startedAt
+    ]=
+        formatDateTime(
+            r.startedAt
+        );
+
+    payload[
+        CONFIG.formEntries.submittedAt
+    ]=
+        formatDateTime(
+            r.submittedAt
+        );
+
+    payload[
+        CONFIG.formEntries.submitReason
+    ]=
+        r.submitReason;
+
+    payload[
+        CONFIG.formEntries.theoryAnswered
+    ]=
+        r.theory.answered;
+
+    payload[
+        CONFIG.formEntries.theoryCorrect
+    ]=
+        r.theory.correct;
+
+    payload[
+        CONFIG.formEntries.theoryWrong
+    ]=
+        r.theory.wrong;
+
+    payload[
+        CONFIG.formEntries.theoryScore
+    ]=
+        r.theory.score;
+
+    payload[
+        CONFIG.formEntries.practicalAnswered
+    ]=
+        r.practical.answered;
+
+    payload[
+        CONFIG.formEntries.practicalData
+    ]=
+        JSON.stringify(
+            r.practical.selections
+        );
+
+    payload[
+        CONFIG.formEntries.systemVersion
+    ]=
+        CONFIG.version +
+        " | BANK=" +
+        CONFIG.theoryBankVersion +
+        " | THEORY=" +
+        CONFIG.theoryCount +
+        " | PRACTICAL=" +
+        CONFIG.practicalCount;
+
+    return payload;
+}
+
+
+/* =========================================================
+   GOOGLE FORM
+========================================================= */
+
+function sendResultToGoogleForm(){
+
+    if(CONFIG.trialMode){
+
+        return;
+    }
+
+    if(
+        !STATE.session ||
+        !STATE.session.result ||
+        STATE.remoteSubmitting
+    ){
+
+        return;
+    }
+
+    if(!navigator.onLine){
+
+        STATE.session
+        .remoteSave
+        .status=
+            "pending";
+
+        saveSession();
+
+        renderRemoteStatus();
+
+        return;
+    }
+
+    var payload=
+        formPayload();
+
+    if(!payload){
+
+        return;
+    }
+
+    STATE.remoteSubmitting=
+        true;
+
+    STATE.session
+    .remoteSave
+    .attempts=
+        Number(
+            STATE.session
+            .remoteSave
+            .attempts ||
+            0
+        ) + 1;
+
+    STATE.session
+    .remoteSave
+    .lastAttemptAt=
+        Date.now();
+
+    STATE.session
+    .remoteSave
+    .status=
+        "sending";
+
+    saveSession();
+
+    renderRemoteStatus();
+
+    var iframe=
+        el(
+            "graduationFormFrame"
+        );
+
+    var form=
+        document.createElement(
+            "form"
+        );
+
+    form.method=
+        "POST";
+
+    form.action=
+        CONFIG.formAction;
+
+    form.target=
+        "graduationFormFrame";
+
+    form.style.display=
+        "none";
+
+
+    Object.keys(
+        payload
+    )
+    .forEach(
+        function(name){
+
+            var input=
+                document.createElement(
+                    "input"
+                );
+
+            input.type=
+                "hidden";
+
+            input.name=
+                name;
+
+            input.value=
+                String(
+                    payload[name]===
+                    undefined ||
+                    payload[name]===
+                    null
+                        ?
+                        ""
+                        :
+                        payload[name]
+                );
+
+            form.appendChild(
+                input
+            );
+        }
+    );
+
+
+    document.body
+    .appendChild(
+        form
+    );
+
+
+    var done=
+        false;
+
+    function finish(){
+
+        if(done){
+
+            return;
+        }
+
+        done=
+            true;
+
+        STATE.remoteSubmitting=
+            false;
+
+        STATE.session
+        .remoteSave
+        .status=
+            "sent";
+
+        STATE.session
+        .remoteSave
+        .sentAt=
+            Date.now();
+
+        saveSession();
+
+        renderRemoteStatus();
+
+        try{
+
+            form.remove();
+
+        }catch(error){}
+    }
+
+
+    function onLoad(){
+
+        iframe.removeEventListener(
+            "load",
+            onLoad
+        );
+
+        finish();
+    }
+
+
+    iframe.addEventListener(
+        "load",
+        onLoad
+    );
+
+
+    try{
+
+        HTMLFormElement
+        .prototype
+        .submit
+        .call(
+            form
+        );
+
+        setTimeout(
+            function(){
+
+                if(
+                    STATE.remoteSubmitting
+                ){
+
+                    iframe.removeEventListener(
+                        "load",
+                        onLoad
+                    );
+
+                    finish();
+                }
+
+            },
+            6000
+        );
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        STATE.remoteSubmitting=
+            false;
+
+        STATE.session
+        .remoteSave
+        .status=
+            "pending";
+
+        saveSession();
+
+        renderRemoteStatus();
+
+        try{
+
+            form.remove();
+
+        }catch(e){}
+    }
+}
+
+
+/* =========================================================
+   RETRY
+========================================================= */
+
+APP.retryRemoteSave=
+function(){
+
+    if(CONFIG.trialMode){
+
+        return false;
+    }
+
+    if(
+        !STATE.session ||
+        !STATE.session.result
+    ){
+
+        return false;
+    }
+
+    STATE.session
+    .remoteSave
+    .status=
+        "pending";
+
+    saveSession();
+
+    sendResultToGoogleForm();
+
+    return false;
+};
+
+
+window.addEventListener(
+    "online",
+    function(){
+
+        if(CONFIG.trialMode){
+
+            return;
+        }
+
+        if(
+            STATE.session &&
+            sessionStatus(
+                STATE.session
+            )===
+            "submitted" &&
+            STATE.session.remoteSave &&
+            STATE.session
+            .remoteSave
+            .status===
+            "pending"
+        ){
+
+            sendResultToGoogleForm();
+        }
+    }
+);
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function openResultScreen(){
+
+    var session=
+        STATE.session ||
+        loadSession();
+
+    if(
+        !session ||
+        !session.result
+    ){
+
+        return;
+    }
+
+    STATE.session=
+        session;
+
+    stopTimer();
+
+    el(
+        "examLookupPanel"
+    )
+    .classList
+    .add(
+        "exam-hidden"
+    );
+
+    el(
+        "examCandidatePanel"
+    )
+    .classList
+    .add(
+        "exam-hidden"
+    );
+
+    el(
+        "examSessionPanel"
+    )
+    .classList
+    .add(
+        "exam-hidden"
+    );
+
+    el(
+        "examResultPanel"
+    )
+    .classList
+    .remove(
+        "exam-hidden"
+    );
+
+    renderResult();
+
+    if(
+        !CONFIG.trialMode &&
+        STATE.session.remoteSave &&
+        STATE.session
+        .remoteSave
+        .status===
+        "pending" &&
+        navigator.onLine
+    ){
+
+        setTimeout(
+            sendResultToGoogleForm,
+            800
+        );
+    }
+}
+
+
+function renderResult(){
+
+    var r=
+        STATE.session.result;
+
+    var isAdmin=
+        (
+            STATE.student &&
+            STATE.student.isAdmin
+        ) ||
+        normalizeCode(
+            r.studentCode
+        )===
+        CONFIG.adminCode;
+
+
+    var html=
+
+        '<div class="result-head">' +
+
+            '<div class="result-icon">' +
+
+                String.fromCodePoint(
+                    10003
+                ) +
+
+            '</div>' +
+
+            '<h2 class="result-title">' +
+
+                (
+                    CONFIG.trialMode
+                        ?
+                        (
+                            r.autoSubmitted
+                                ?
+                                'Bài thi thử đã tự động nộp'
+                                :
+                                'Đã hoàn thành bài thi thử'
+                        )
+                        :
+                        (
+                            r.autoSubmitted
+                                ?
+                                'Bài thi đã tự động nộp'
+                                :
+                                'Bài thi đã được nộp'
+                        )
+                ) +
+
+            '</h2>' +
+
+            '<p class="exam-muted">' +
+
+                (
+                    CONFIG.trialMode
+                        ?
+                        'Đây là kết quả luyện tập và không ảnh hưởng tới lượt thi tốt nghiệp chính thức.'
+                        :
+                        (
+                            r.autoSubmitted
+                                ?
+                                'Hết thời gian làm bài. Phiên thi đã được khóa.'
+                                :
+                                'Phiên thi đã được khóa và không thể chỉnh sửa.'
+                        )
+                ) +
+
+            '</p>' +
+
+        '</div>';
+
+
+    html+=
+
+        '<div class="result-grid">' +
+
+            '<div class="result-box">' +
+
+                '<div class="result-value">' +
+
+                    escapeHtml(
+                        r.theory.score
+                    ) +
+
+                '</div>' +
+
+                '<div class="result-label">' +
+
+                    'Điểm lý thuyết /10' +
+
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="result-box">' +
+
+                '<div class="result-value">' +
+
+                    r.theory.correct +
+                    '/' +
+                    CONFIG.theoryCount +
+
+                '</div>' +
+
+                '<div class="result-label">' +
+
+                    'Câu đúng' +
+
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="result-box">' +
+
+                '<div class="result-value">' +
+
+                    r.theory.answered +
+                    '/' +
+                    CONFIG.theoryCount +
+
+                '</div>' +
+
+                '<div class="result-label">' +
+
+                    'Lý thuyết' +
+
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="result-box">' +
+
+                '<div class="result-value">' +
+
+                    r.practical.answered +
+                    '/' +
+                    CONFIG.practicalCount +
+
+                '</div>' +
+
+                '<div class="result-label">' +
+
+                    'Thực hành' +
+
+                '</div>' +
+
+            '</div>' +
+
+        '</div>';
+
+
+    html+=
+        '<div id="examRemoteStatusBox"></div>';
+
+
+    if(
+        CONFIG.trialMode ||
+        isAdmin
+    ){
+
+        html+=
+
+            '<div style="' +
+                'margin-top:16px;' +
+                'padding-top:16px;' +
+                'border-top:1px dashed #e4d8c8;' +
+            '">' +
+
+                '<div class="exam-muted" style="font-size:12px;margin-bottom:9px;">' +
+
+                    (
+                        CONFIG.trialMode
+                            ?
+                            'Bạn có thể xóa phiên thi thử để luyện lại với một bộ 20 câu lý thuyết khác.'
+                            :
+                            'Chức năng kiểm thử nội bộ. Nút này chỉ xóa phiên trên thiết bị, không xóa dữ liệu đã gửi lên Google Form.'
+                    ) +
+
+                '</div>' +
+
+                '<button ' +
+                    'class="exam-btn secondary" ' +
+                    'type="button" ' +
+                    'onclick="return window.OCDGraduationExam.resetTestSession();">' +
+
+                    (
+                        CONFIG.trialMode
+                            ?
+                            'LÀM LẠI BÀI THI THỬ'
+                            :
+                            'XÓA PHIÊN TEST ĐỂ THI LẠI'
+                    ) +
+
+                '</button>' +
+
+            '</div>';
+    }
+
+
+    el(
+        "examResultContent"
+    )
+    .innerHTML=
+        html;
+
+    renderRemoteStatus();
+}
+
+
+/* =========================================================
+   REMOTE STATUS
+========================================================= */
+
+function renderRemoteStatus(){
+
+    var box=
+        el(
+            "examRemoteStatusBox"
+        );
+
+    if(
+        !box ||
+        !STATE.session
+    ){
+
+        return;
+    }
+
+
+    if(CONFIG.trialMode){
+
+        box.innerHTML=
+
+            '<div class="remote-status sent">' +
+
+                '<strong>CHẾ ĐỘ THI THỬ</strong><br>' +
+
+                'Kết quả không được gửi tới Google Form và không tạo bản ghi trong BaiThiTotNghiep.' +
+
+            '</div>';
+
+        return;
+    }
+
+
+    var remote=
+        STATE.session
+        .remoteSave ||
+        {};
+
+
+    if(
+        remote.status===
+        "sent"
+    ){
+
+        box.innerHTML=
+
+            '<div class="remote-status sent">' +
+
+                '<strong>Đã gửi dữ liệu tới Google Form.</strong><br>' +
+
+                'ExamID: ' +
+
+                escapeHtml(
+                    STATE.session.examId
+                ) +
+
+            '</div>';
+
+        return;
+    }
+
+
+    if(
+        remote.status===
+        "sending"
+    ){
+
+        box.innerHTML=
+
+            '<div class="remote-status pending">' +
+
+                '<strong>Đang gửi dữ liệu bài thi...</strong>' +
+
+            '</div>';
+
+        return;
+    }
+
+
+    box.innerHTML=
+
+        '<div class="remote-status pending">' +
+
+            '<strong>Bài đã khóa trên thiết bị nhưng đang chờ gửi dữ liệu.</strong>' +
+
+            '<br><br>' +
+
+            '<button ' +
+                'class="exam-btn gold" ' +
+                'type="button" ' +
+                'onclick="return window.OCDGraduationExam.retryRemoteSave();">' +
+
+                'GỬI LẠI KẾT QUẢ' +
+
+            '</button>' +
+
+        '</div>';
+}
+
+
+/* =========================================================
+   RESET SESSION
+========================================================= */
+
+APP.resetTestSession=
+function(){
+
+    if(
+        !CONFIG.trialMode &&
+        (
+            !STATE.student ||
+            !STATE.student.isAdmin ||
+            normalizeCode(
+                STATE.student.code
+            )!==
+            CONFIG.adminCode
+        )
+    ){
+
+        alert(
+            "Bạn không có quyền sử dụng chức năng này."
+        );
+
+        return false;
+    }
+
+    var message=
+        CONFIG.trialMode
+            ?
+            "Làm lại bài thi thử?\n\nPhiên thi thử hiện tại trên thiết bị sẽ bị xóa và hệ thống sẽ tạo một bộ 20 câu lý thuyết mới."
+            :
+            "Xóa phiên TEST trên thiết bị này?\n\nDữ liệu đã gửi vào Google Form sẽ không bị xóa.";
+
+    if(
+        !window.confirm(
+            message
+        )
+    ){
+
+        return false;
+    }
+
+    stopTimer();
+
+    try{
+
+        localStorage.removeItem(
+            storageKey()
+        );
+
+    }catch(error){}
+
+    STATE.session=
+        null;
+
+    STATE.theoryIndex=
+        0;
+
+    STATE.practicalIndex=
+        0;
+
+    STATE.practicalSearch=
+        "";
+
+    STATE.practicalRenderMap=
+        {};
+
+    el(
+        "examResultPanel"
+    )
+    .classList
+    .add(
+        "exam-hidden"
+    );
+
+    el(
+        "examSessionPanel"
+    )
+    .classList
+    .add(
+        "exam-hidden"
+    );
+
+    el(
+        "examLookupPanel"
+    )
+    .classList
+    .remove(
+        "exam-hidden"
+    );
+
+    el(
+        "examCandidatePanel"
+    )
+    .classList
+    .remove(
+        "exam-hidden"
+    );
+
+    var input=
+        el(
+            "examStudentCode"
+        );
+
+    if(input){
+
+        input.value=
+            "";
+    }
+
+    setLookupMessage(
+
+        CONFIG.trialMode
+            ?
+            "Đã xóa phiên thi thử. Hãy nhập lại mã học viên để bắt đầu một đề 20 câu mới."
+            :
+            "Đã xóa phiên kiểm thử trên thiết bị.",
+
+        "success"
+    );
+
+    return false;
+};
+
+
+/* =========================================================
+   UPDATE HERO MODE
+========================================================= */
+
+function updatePageMode(){
+
+    if(!CONFIG.trialMode){
+
+        return;
+    }
+
+    var badge=
+        document.querySelector(
+            "#ocdGraduationExamPage .exam-hero-badge"
+        );
+
+    var title=
+        document.querySelector(
+            "#ocdGraduationExamPage .exam-hero h1"
+        );
+
+    var description=
+        document.querySelector(
+            "#ocdGraduationExamPage .exam-hero p"
+        );
+
+    var test=
+        document.querySelector(
+            "#ocdGraduationExamPage .exam-test"
+        );
+
+    if(badge){
+
+        badge.textContent=
+            "PHÒNG THI THỬ OCD";
+    }
+
+    if(title){
+
+        title.textContent=
+            "Thi thử tốt nghiệp";
+    }
+
+    if(description){
+
+        description.textContent=
+            "Luyện tập trước kỳ thi chính thức. Kết quả thi thử không ảnh hưởng tới lượt thi tốt nghiệp.";
+    }
+
+    if(test){
+
+        test.textContent=
+            "THI THỬ BAO GỒM 20 câu lý thuyết + 5 câu thực hành";
+    }
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+function init(){
+
+    try{
+
+        localStorage.removeItem(
+            CONFIG.lastCodeKey
+        );
+
+    }catch(error){}
+
+    var input=
+        el(
+            "examStudentCode"
+        );
+
+    if(input){
+
+        input.value=
+            "";
+    }
+
+    updatePageMode();
+
+    console.log(
+        CONFIG.version +
+        " READY | MODE=" +
+        (
+            CONFIG.trialMode
+                ?
+                "TRIAL"
+                :
+                "OFFICIAL"
+        ) +
+        " | THEORY BANK=" +
+        THEORY_BANK.length +
+        " | THEORY COUNT=" +
+        CONFIG.theoryCount +
+        " | PRACTICAL COUNT=" +
+        CONFIG.practicalCount
+    );
+}
+
+
+if(
+    document.readyState===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        init
+    );
+
+}else{
+
+    init();
+}
+
+
+})(window.OCDGraduationExam);
+
+</script>
+
+</div>
