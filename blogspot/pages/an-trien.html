@@ -1,0 +1,152 @@
+<!-- ===== ĐĂNG KÝ LÀM ẤN · dán toàn bộ khối này vào Trang Blogspot (chế độ HTML) ===== -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@f7b844b7188a84f9d8b6c17869630d3915ed22e8/dang-ky-lam-an/dang-ky-lam-an.css" rel="stylesheet">
+
+<div id="dla">
+  <!-- Banner: script tự dựng (ảnh 4 con ấn lấy từ bảng tính DoiQua) -->
+  <div id="dla-banner" class="hero">
+    <div class="seal">印</div>
+    <div><h2>Ấn triện thủ công, nâng tầm nét chữ</h2></div>
+  </div>
+
+  <div id="dla-form">
+    <!-- 1. Người đặt -->
+    <section class="box">
+      <h3><span class="num">1</span>Người đặt</h3>
+      <div id="dla-who" class="who">Đang kiểm tra phiên học viên…</div>
+
+      <label class="f" for="dla-code">Mã học viên <span style="font-weight:400">(để trống nếu bạn không phải học viên)</span></label>
+      <div class="row">
+        <input type="text" id="dla-code" autocomplete="off" placeholder="VD: D4-012">
+        <button type="button" class="btn" id="dla-check">Kiểm tra</button>
+      </div>
+
+      <label class="f" for="dla-name">Họ và tên *</label>
+      <input type="text" id="dla-name" autocomplete="name">
+
+      <div id="dla-saved-phone" class="saved hidden"><input type="checkbox" id="dla-use-phone" checked><label for="dla-use-phone">Dùng số điện thoại đã lưu: <b id="dla-sp"></b></label></div>
+      <div id="dla-phone-wrap">
+        <label class="f" for="dla-phone">Số điện thoại *</label>
+        <input type="tel" id="dla-phone" autocomplete="tel" inputmode="tel">
+        <div class="hint" id="dla-phone-hint"></div>
+      </div>
+
+      <div id="dla-saved-addr" class="saved hidden"><input type="checkbox" id="dla-use-addr" checked><label for="dla-use-addr">Gửi ấn về địa chỉ đã lưu: <b id="dla-sa"></b></label></div>
+      <div id="dla-addr-wrap">
+        <label class="f" for="dla-addr">Địa chỉ nhận ấn *</label>
+        <textarea id="dla-addr" autocomplete="street-address" placeholder="Số nhà, đường, phường/xã, tỉnh/thành"></textarea>
+      </div>
+
+      <div id="dla-saved-mail" class="saved hidden"><input type="checkbox" id="dla-use-mail" checked><label for="dla-use-mail">Nhận xác nhận qua email đã lưu: <b id="dla-sm"></b></label></div>
+      <div id="dla-mail-wrap">
+        <label class="f" for="dla-mail">Email <span style="font-weight:400">(tuỳ chọn, để nhận xác nhận đơn)</span></label>
+        <input type="email" id="dla-mail" autocomplete="email">
+      </div>
+    </section>
+
+    <!-- 2. Con ấn -->
+    <section class="box">
+      <h3><span class="num">2</span>Con ấn</h3>
+      <div id="dla-items"></div>
+      <button type="button" class="btn ghost" id="dla-add">+ Thêm một con ấn khác</button>
+    </section>
+
+    <!-- 3. Tạm tính -->
+    <section class="box bill" id="dla-bill">
+      <h3><span class="num">3</span>Tạm tính</h3>
+      <table id="dla-bill-t"></table>
+      <label class="f" for="dla-note">Ghi chú thêm cho GVCN</label>
+      <textarea id="dla-note" placeholder="Thời gian cần ấn, dịp tặng, mẫu tham khảo…"></textarea>
+      <input type="text" id="dla-hp" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      <p class="hint">Đây là giá tạm tính. GVCN sẽ liên hệ để xác nhận nội dung, mẫu khắc và giá cuối trước khi làm.</p>
+      <div class="err" id="dla-err"></div>
+      <button type="button" class="btn red" id="dla-send" style="width:100%;margin-top:12px;padding:13px">Gửi đăng ký</button>
+    </section>
+  </div>
+
+  <section class="box done hidden" id="dla-done">
+    <div class="seal">印</div>
+    <h3>Đã gửi đăng ký!</h3>
+    <p id="dla-done-t"></p>
+    <button type="button" class="btn" id="dla-again" style="margin-top:12px">Đặt thêm ấn</button>
+  </section>
+
+  <!-- Hỏi đáp nhanh -->
+  <section class="box faq">
+    <h3>Hỏi đáp nhanh</h3>
+    <details><summary>Vì sao tôi đóng ấn lại mờ?</summary>
+      <p>Hãy kiểm tra lần lượt: <b>bề mặt đóng ấn</b> có phẳng không; <b>chất lượng giấy</b> (giấy quá thô hoặc quá láng đều khó ăn mực); có <b>miếng kê phẳng</b>, hơi mềm bên dưới giấy chưa; <b>chu sa</b> còn đủ dầu, đều mịn hay đã khô vón; <b>cách dùng lực</b> — ấn thẳng, đều tay, giữ vài giây rồi nhấc thẳng lên; và <b>bề mặt ấn</b> có sạch, có bị bám chu sa cũ hay mặt ấn chưa phẳng.</p></details>
+    <details><summary>Danh chương và nhàn chương khác nhau thế nào?</summary>
+      <p><b>Danh chương</b> khắc tên, tên tự hoặc biệt hiệu của người viết, thường đóng cạnh lạc khoản (phần ký tên). <b>Nhàn chương</b> khắc địa danh, thời gian (năm tháng theo can chi) hoặc một câu ngắn, thường đóng ở đầu tác phẩm để mở đầu cho bài thư pháp.</p></details>
+    <details><summary>Âm văn và dương văn là gì?</summary>
+      <p><b>Âm văn</b>: chữ được khắc lõm xuống, khi đóng ra chữ trắng trên nền đỏ. <b>Dương văn</b>: khắc bỏ phần nền để chữ nổi lên, khi đóng ra chữ đỏ trên nền trắng. Bạn có thể ghi lựa chọn ở ô "Yêu cầu thêm".</p></details>
+    <details><summary>Nên chọn kích thước ấn bao nhiêu?</summary>
+      <p>Ấn nên cân với cỡ chữ ký và khổ tác phẩm, không lấn át chữ. Tham khảo: 0,8–1,5 cm cho thiệp, quạt, khổ nhỏ; 1,5–2 cm cho khổ vừa; 2–3 cm cho khổ lớn; trên 3 cm cho đại tự, tranh lớn. Nếu phân vân, hãy ghi khổ giấy bạn hay viết vào ghi chú.</p></details>
+    <details><summary>Sa đinh, ổ trùng, nứt là gì? Vì sao đá đẹp đắt hơn?</summary>
+      <p>Sa đinh là hạt cứng lẫn trong đá, làm mẻ dao và vỡ nét khắc; ổ trùng là lỗ rỗ bên trong đá; nứt là vết rạn có thể lan ra theo thời gian. Đá tốt hạn chế các lỗi này nên nét khắc sắc, bền. Đá đẹp còn có độ thấu quang nhẹ, màu vân đẹp, phù hợp làm ấn lâu dài hoặc làm quà.</p></details>
+    <details><summary>Tôi chưa nghĩ ra nội dung hay mẫu khắc thì sao?</summary>
+      <p>Hãy tích "Nhờ GVCN thiết kế" (300.000đ/mẫu) và ghi vài ý về tên, ý nghĩa bạn muốn. GVCN sẽ trao đổi với bạn về nội dung và mẫu.</p></details>
+    <details><summary>Bảo quản ấn và chu sa thế nào?</summary>
+      <p>Sau khi đóng, lau sạch chu sa trên mặt ấn bằng khăn mềm hoặc giấy, tránh để chu sa khô bám vào nét khắc. Cất ấn trong hộp, tránh rơi va đập. Hộp chu sa nên đậy kín, để nơi khô mát và thỉnh thoảng dùng que đảo đều để chu sa không bị khô, tách dầu.</p></details>
+    <details><summary>Sau khi gửi đăng ký thì sao?</summary>
+      <p>Đơn được ghi vào hệ thống và báo ngay cho GVCN. GVCN sẽ liên hệ qua số điện thoại bạn để lại để xác nhận nội dung khắc, mẫu, giá cuối, thời gian hoàn thành và cách thanh toán.</p></details>
+  </section>
+
+  <!-- Các bài viết liên quan: tự lấy bài có nhãn "Ấn triện" -->
+  <section class="box" id="dla-related"><h3>Các bài viết liên quan</h3></section>
+
+  <div class="bar" id="dla-bar">
+    <div class="bar-in">
+      <div><small>Tạm tính</small><strong id="dla-bar-t">0đ</strong></div>
+      <button type="button" class="btn red" id="dla-go">Xem &amp; gửi</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ====== CẤU HÌNH TRANG ĐĂNG KÝ LÀM ẤN - có thể sửa phần này ====== */
+window.DLA_CONFIG = {
+  /* URL Web App Apps Script (dùng chung với Phòng Luyện Công) */
+  API_URL: "https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec",
+  DESIGN_FEE: 300000,
+  MAX_ITEMS: 10,
+  MAX_QTY: 20,
+
+  /* Bảng giá - phải khớp với PRICES trong module DKLA (Code.gs) */
+  PRICES: {
+    type: {
+      danh: { label: "Danh chương", hint: "Khắc tên, tên tự hoặc biệt hiệu", ph: "VD: Thanh Phong" },
+      nhan: { label: "Nhàn chương", hint: "Địa danh, năm can chi, câu mở đầu", ph: "VD: Giáp Thìn xuân / Tâm an" }
+    },
+    size: {
+      s1: { label: "0,8 - 1,5 cm", add: 0 },
+      s2: { label: "1,5 - 2 cm",   add: 0 },
+      s3: { label: "2 - 3 cm",     add: 0 },
+      s4: { label: "Trên 3 cm",    add: 0 }
+    },
+    stone: {
+      thuong: { label: "Đá thường",  desc: "Đá phổ thông, giá mềm", prices: [900000] },
+      tot:    { label: "Đá tốt",     desc: "Ít sa đinh, không nứt, không ổ trùng", prices: [1200000] },
+      dep:    { label: "Đá đẹp",     desc: "Thấu quang nhẹ, không nứt, không sa đinh, không ổ trùng", prices: [1500000, 1800000, 2000000] },
+      cucdep: { label: "Đá cực đẹp", desc: "Đá tuyển chọn, vân màu đặc biệt", prices: [2500000, 3000000, 4000000, 5000000], customMin: 2000000 }
+    }
+  },
+
+  /* Banner đầu trang: ảnh lấy theo tên quà trong bảng tính DoiQua (tab QuaTang, cột Icon) */
+  BANNER: {
+    title: "Ấn triện thủ công, nâng tầm nét chữ",
+    subtitle: "Mỗi con ấn được chọn đá, chọn chữ và khắc tay riêng cho người viết.",
+    sheetId: "1-IkcpEkKQtIavl5DIf6Sbwx3p0aAfnSS4HjT6dn1u_E",
+    sheetName: "QuaTang",
+    items: ["Ấn Thọ Sơn Thạch", "Ấn Thanh Điền Thạch", "Ấn Xương Hoá Thạch", "Ấn Ba Lâm Thạch"]
+  },
+
+  /* Các bài viết liên quan: lấy bài Blogger theo nhãn */
+  RELATED: {
+    label: "Ấn triện",
+    show: 6
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@2ef56ad16f6b0c0b572ae44136bdcae1ea532448/dang-ky-lam-an/dang-ky-lam-an.min.js"></script>
+<!-- ===== HẾT KHỐI ĐĂNG KÝ LÀM ẤN ===== -->
