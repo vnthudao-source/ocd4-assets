@@ -30,7 +30,7 @@ const CSS=
     +".ocdid-frame{position:absolute;z-index:2;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}"
     +".ocdid-txt{display:flex;flex-direction:column;min-width:0;gap:2px}"
     +".ocdid-namewrap{max-width:100%}"
-    +".ocdid-name{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;color:inherit}"
+    +".ocdid-name{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;max-width:100%;overflow:hidden;overflow-wrap:anywhere;font-weight:700;line-height:1.25;color:inherit}"
     +".ocdid-meta{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;opacity:.75}"
     +".ocdid-sm{--ocdid-s:36px}.ocdid-md{--ocdid-s:48px}.ocdid-lg{--ocdid-s:68px}"
     +".ocdid-sm .ocdid-name{font-size:13px}.ocdid-md .ocdid-name{font-size:15px}.ocdid-lg .ocdid-name{font-size:18px}"

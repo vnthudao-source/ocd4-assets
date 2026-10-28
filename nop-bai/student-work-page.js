@@ -1,5 +1,7 @@
 /* =========================================================
-   OCD4 · TRANG NỘP BÀI / TÁC PHẨM HỌC VIÊN · v1.7.0
+   OCD4 · TRANG NỘP BÀI / TÁC PHẨM HỌC VIÊN · v1.8.0
+   - v1.8.0: nút thả tim trên mỗi bài (chung số tim với Phòng triển lãm, 15 tim thưởng 1 Hồng Ngọc);
+     thẻ học viên dùng chung trên thẻ bài (avatar, khung, nền hồ sơ, thuốc đa nhiệm cho cả bài của người khác).
    - Chỉ tải tab BaiMoiNhat (~80 bài mới nhất) thay vì toàn bộ TacPhamWeb.
    - Bài của chính học viên lấy riêng qua Reward Core (Apps Script lọc theo mã).
    - Không còn ô tra cứu: nhận diện học viên qua Minh Hồng / tài khoản.
@@ -3740,6 +3742,27 @@ function renderOwnWorks(){
                 commentLabel,
                 comment
             );
+            /* v1.8.0: số tim bài của mình */
+            if(
+                window.OCDWorkHeart &&
+                item.id
+            ){
+                const heart=
+                    window.OCDWorkHeart.button(
+                        {
+                            id:item.id,
+                            code:item.code,
+                            name:item.name
+                        },
+                        {
+                            inline:true
+                        }
+                    );
+                heart.style.marginTop="8px";
+                info.appendChild(
+                    heart
+                );
+            }
             card.append(
                 imageBox,
                 info
@@ -4382,6 +4405,19 @@ function createWorkCard(
             noImage()
         );
     }
+    /* v1.8.0: nút thả tim (chung số tim với Phòng triển lãm) – ocd-shared/ocd-work-heart.js */
+    if(
+        window.OCDWorkHeart &&
+        item.id
+    ){
+        imageBox.appendChild(
+            window.OCDWorkHeart.button({
+                id:item.id,
+                code:item.code,
+                name:item.name
+            })
+        );
+    }
     card.appendChild(
         imageBox
     );
@@ -4432,49 +4468,62 @@ function createWorkCard(
         );
     userRow.className=
         "swp-card-user";
-    userRow.appendChild(
-        miniAvatar(
-            account
-        )
-    );
-    const nameWrap=
-        document.createElement(
-            "div"
+    /* v1.8.0: thẻ học viên dùng chung (avatar, khung, nền hồ sơ, thuốc đa nhiệm) – ocd-shared/ocd-identity.js */
+    if(window.OCDIdentity){
+        userRow.appendChild(
+            window.OCDIdentity.create({
+                name:item.name || "Học viên",
+                size:"md",
+                background:info,
+                profile:account ? (account.profile || account) : null,
+                code:account ? "" : item.code
+            })
         );
-    nameWrap.className=
-        "swp-card-name-wrap";
-    const name=
-        document.createElement(
-            "div"
+    }else{
+        userRow.appendChild(
+            miniAvatar(
+                account
+            )
         );
-    name.className=
-        "swp-card-name";
-    name.textContent=
-        item.name
-        ||
-        "Học viên";
-    nameWrap.appendChild(
-        name
-    );
-    if(
-        account &&
-        account.multitask &&
-        typeof state.RS.applyMultitaskEffect===
-        "function"
-    ){
-        try{
-            state.RS.applyMultitaskEffect(
-                nameWrap,
-                name,
-                {
-                    size:"small"
-                }
+        const nameWrap=
+            document.createElement(
+                "div"
             );
-        }catch(error){}
+        nameWrap.className=
+            "swp-card-name-wrap";
+        const name=
+            document.createElement(
+                "div"
+            );
+        name.className=
+            "swp-card-name";
+        name.textContent=
+            item.name
+            ||
+            "Học viên";
+        nameWrap.appendChild(
+            name
+        );
+        if(
+            account &&
+            account.multitask &&
+            typeof state.RS.applyMultitaskEffect===
+            "function"
+        ){
+            try{
+                state.RS.applyMultitaskEffect(
+                    nameWrap,
+                    name,
+                    {
+                        size:"small"
+                    }
+                );
+            }catch(error){}
+        }
+        userRow.appendChild(
+            nameWrap
+        );
     }
-    userRow.appendChild(
-        nameWrap
-    );
     info.appendChild(
         userRow
     );

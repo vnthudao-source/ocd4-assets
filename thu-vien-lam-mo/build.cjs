@@ -8,6 +8,8 @@ const html = read('thu-vien-lam-mo.html').replace(/<!--[\s\S]*?-->/g, '').replac
 const src = '(function(){var r=document.getElementById("thu-vien-lam-mo");if(!r||r.getAttribute("data-tvlm"))return;'
   + 'r.setAttribute("data-tvlm","1");var st=document.createElement("style");st.textContent=' + JSON.stringify(css)
   + ';document.head.appendChild(st);r.innerHTML=' + JSON.stringify(html) + ';\n' + read('thu-vien-lam-mo.js') + '\n})();';
-const out = esbuild.transformSync(src, { loader: 'js', minify: true, keepNames: true, charset: 'utf8', target: 'es2018' }).code;
+/* Mô-đun dùng chung (thẻ học viên) gộp vào đầu file nén; tự bỏ qua nếu trang đã có */
+const shared = fs.readFileSync(path.join(dir, '..', 'ocd-shared', 'ocd-identity.js'), 'utf8');
+const out = esbuild.transformSync(shared + '\n' + src, { loader: 'js', minify: true, keepNames: true, charset: 'utf8', target: 'es2018' }).code;
 fs.writeFileSync(path.join(dir, 'thu-vien-lam-mo.min.js'), out);
 console.log('thu-vien-lam-mo.min.js', out.length, 'bytes');

@@ -3767,6 +3767,14 @@ function renderShowcasePosts(posts,token){
 }
 function safeShowcaseImage(url){try{const u=new URL(String(url||''));return u.protocol==='https:'?u.href:'';}catch(e){return '';}}
 async function hydrateShowcaseProfile(node,post,token){
+    /* Thẻ học viên dùng chung (avatar, khung, nền hồ sơ, hiệu ứng thuốc đa nhiệm chuẩn) – ocd-shared/ocd-identity.js */
+    if(post&&window.OCDIdentity){
+        if(token!==showcaseToken||!node.isConnected)return;
+        node.innerHTML='';
+        node.classList.add('lm-show-owner-shared');
+        node.appendChild(window.OCDIdentity.create({code:post.studentCode,name:post.name,meta:'Tổ '+(post.group||'—')+' · Khóa '+(post.course||'—'),size:'sm',background:node}));
+        return;
+    }
     const core=window.StudentRewardSystem;if(!post||!core||typeof core.getStudentRewardProfile!=='function')return;
     try{let promise=showcaseProfileCache.get(post.studentCode);if(!promise){promise=core.getStudentRewardProfile(post.studentCode);showcaseProfileCache.set(post.studentCode,promise);}const profile=await promise;if(token!==showcaseToken||!node.isConnected)return;const box=node.querySelector('.lm-show-avatar'),avatar=safeShowcaseImage(profile.avatar),frame=safeShowcaseImage(profile.avatarFrame),bg=safeShowcaseImage(profile.profileBackground);box.innerHTML='<span class="lm-show-avatar-core">'+(avatar?'<img src="'+escapeHTML(avatar)+'" alt="Avatar học viên" loading="lazy" onerror="this.parentNode.textContent=\'\u270d\'">':'\u270d')+'</span>'+(frame?'<img class="lm-show-frame" src="'+escapeHTML(frame)+'" alt="Khung avatar" loading="lazy" onerror="this.remove()">':'');if(bg)node.style.backgroundImage='linear-gradient(90deg,rgba(255,253,248,.88),rgba(255,253,248,.88)),url("'+bg.replace(/["\\]/g,'')+'")';if(profile.hasMultitaskPotion){const badge=document.createElement('span');badge.className='lm-show-potion';badge.textContent='\u2697';badge.title='Đang có Thuốc đa nhiệm';box.appendChild(badge);}}
     catch(e){showcaseProfileCache.delete(post.studentCode);console.warn('[Bản lâm] Không tải được avatar',e);}
