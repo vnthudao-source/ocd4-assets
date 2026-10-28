@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "tai-lieu",
+    "id": "4634618793487136051",
+    "title": "Kho Tài liệu Thanh Phong Thư Môn",
+    "url": "https://www.thudao.com/p/tai-lieu.html",
+    "version": "v1.0.3",
+    "source_sha256": "ee3392c34c48c22e41f60ec2011549129266334851047c47e34b77e0a7168a75"
+  },
+  {
+    "slug": "nop-bai",
+    "id": "35666050365421750",
+    "title": "CÁC HỌC VIÊN NỘP BÀI TẬP TẠI ĐÂY",
+    "url": "https://www.thudao.com/p/nop-bai.html",
+    "version": "v1.0.3",
+    "source_sha256": "f66d04de0f6e5a0a4aa0ec4889cc385e3c032ae13f3b1715b70df65c809b596d"
+  },
+  {
+    "slug": "tra-cuu",
+    "id": "8340724730179704716",
+    "title": "TRA CỨU HỒ SƠ HỌC VIÊN",
+    "url": "https://www.thudao.com/p/tra-cuu.html",
+    "version": "v1.0.3",
+    "source_sha256": "5815b597f48cc2cbd33db76239282c01632ad4c89d15631337bcd18bf7a027ef"
+  },
+  {
+    "slug": "ho-so",
+    "id": "796536481558137955",
+    "title": "HỒ SƠ XẾP HẠNG CÁ NHÂN - TẬP THỂ",
+    "url": "https://www.thudao.com/p/ho-so.html",
+    "version": "v1.0.3",
+    "source_sha256": "2663f88cb39a8008d0e51e12205d0af58afac5d0fa98d16a9ac5c539f2077b8f"
+  }
+]
