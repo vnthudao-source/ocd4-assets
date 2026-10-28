@@ -1,0 +1,3577 @@
+<div id="ocdGraduationResultPage">
+
+<style>
+/* =========================================================
+   OCD - KẾT QUẢ TỐT NGHIỆP
+   GRADUATION RESULT v1.0
+
+   DATA:
+   - NopBaiLuyenTap
+   - BaiThiTotNghiep
+   - ChamThiTotNghiep
+
+   CƠ CHẾ:
+   - Ghép bằng Exam ID
+   - LT 50%
+   - TH 50%
+   - Điểm cuối = (LT + TH) / 2
+   - >= 7: ĐẠT
+   - < 7: KHÔNG ĐẠT
+========================================================= */
+
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+#ocdGraduationResultPage{
+    --paper:#fffdf8;
+    --paper2:#f7f1e7;
+
+    --ink:#302923;
+    --muted:#786f66;
+    --line:#e3d7c7;
+
+    --brown:#765344;
+    --brown-dark:#51372d;
+
+    --gold:#aa7a35;
+
+    --green:#397153;
+    --green-soft:#eaf5ee;
+
+    --red:#963b3b;
+    --red-soft:#faeaea;
+
+    --orange:#a66d25;
+    --orange-soft:#fff1d7;
+
+    max-width:1100px;
+
+    margin:24px auto 60px;
+
+    padding:0 12px;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color:var(--ink);
+
+    line-height:1.6;
+}
+
+#ocdGraduationResultPage *{
+    box-sizing:border-box;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.gr-hero{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:40px 24px;
+
+    border:1px solid #dcc48d;
+    border-radius:22px;
+
+    background:
+        radial-gradient(
+            circle at 10% 15%,
+            rgba(181,135,69,.18),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 85%,
+            rgba(118,83,68,.11),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #fff7e6,
+            #fffdf8
+        );
+
+    text-align:center;
+
+    box-shadow:
+        0 12px 35px
+        rgba(55,40,28,.08);
+}
+
+.gr-hero-badge{
+    display:inline-block;
+
+    padding:6px 14px;
+
+    margin-bottom:11px;
+
+    border:1px solid #ddc48c;
+    border-radius:999px;
+
+    background:#fff8e5;
+
+    color:#805c27;
+
+    font-size:12px;
+    font-weight:900;
+}
+
+.gr-hero h1{
+    margin:0;
+
+    font-family:Georgia,serif;
+
+    font-size:35px;
+
+    color:var(--brown-dark);
+}
+
+.gr-hero p{
+    max-width:740px;
+
+    margin:10px auto 0;
+
+    color:var(--muted);
+}
+
+.gr-rule{
+    display:inline-flex;
+
+    margin-top:16px;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    background:#f5ead7;
+
+    color:#755427;
+
+    font-size:12px;
+    font-weight:900;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.gr-card{
+    margin-top:18px;
+
+    padding:22px;
+
+    border:1px solid var(--line);
+    border-radius:18px;
+
+    background:#fff;
+
+    box-shadow:
+        0 8px 25px
+        rgba(55,40,28,.055);
+}
+
+.gr-card-title{
+    margin:0 0 14px;
+
+    font-family:Georgia,serif;
+
+    font-size:21px;
+
+    color:var(--brown-dark);
+}
+
+
+/* =========================================================
+   LOOKUP
+========================================================= */
+
+.gr-search-row{
+    display:flex;
+
+    gap:10px;
+}
+
+.gr-input{
+    width:100%;
+    min-height:48px;
+
+    padding:10px 14px;
+
+    border:1px solid #d9cbb8;
+    border-radius:11px;
+
+    background:#fff;
+
+    color:var(--ink);
+
+    font-size:15px;
+
+    outline:none;
+}
+
+.gr-input:focus{
+    border-color:#ae8450;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(174,132,80,.12);
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.gr-btn{
+    min-height:44px;
+
+    padding:9px 17px;
+
+    border:0;
+    border-radius:11px;
+
+    background:var(--brown);
+
+    color:#fff;
+
+    font-size:13px;
+    font-weight:900;
+
+    cursor:pointer !important;
+    pointer-events:auto !important;
+}
+
+.gr-btn.secondary{
+    border:1px solid #d7c8b6;
+
+    background:#fff;
+
+    color:var(--brown-dark);
+}
+
+.gr-btn:disabled{
+    opacity:.45;
+
+    cursor:not-allowed !important;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.gr-message{
+    display:none;
+
+    margin-top:12px;
+
+    padding:11px 13px;
+
+    border-radius:10px;
+
+    font-size:13px;
+    font-weight:700;
+}
+
+.gr-message.show{
+    display:block;
+}
+
+.gr-message.loading{
+    background:#f4eee5;
+
+    color:#745c44;
+}
+
+.gr-message.success{
+    background:var(--green-soft);
+
+    color:#316446;
+}
+
+.gr-message.error{
+    background:var(--red-soft);
+
+    color:#8b3838;
+}
+
+
+/* =========================================================
+   EXAM ATTEMPT LIST
+========================================================= */
+
+.gr-attempt-list{
+    display:grid;
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.gr-attempt{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1fr)
+        auto;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px;
+
+    border:1px solid var(--line);
+    border-radius:12px;
+
+    background:var(--paper);
+}
+
+.gr-attempt-name{
+    color:var(--brown-dark);
+
+    font-weight:900;
+}
+
+.gr-attempt-meta{
+    margin-top:4px;
+
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+.gr-attempt-status{
+    display:inline-block;
+
+    margin-top:6px;
+
+    padding:4px 8px;
+
+    border-radius:999px;
+
+    font-size:10px;
+    font-weight:900;
+}
+
+.gr-attempt-status.graded{
+    background:var(--green-soft);
+
+    color:var(--green);
+}
+
+.gr-attempt-status.waiting{
+    background:var(--orange-soft);
+
+    color:var(--orange);
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.gr-profile-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    gap:10px;
+}
+
+.gr-info{
+    padding:12px;
+
+    border:1px solid var(--line);
+    border-radius:12px;
+
+    background:var(--paper);
+}
+
+.gr-info-label{
+    color:var(--muted);
+
+    font-size:10px;
+    font-weight:900;
+
+    text-transform:uppercase;
+}
+
+.gr-info-value{
+    margin-top:4px;
+
+    color:var(--brown-dark);
+
+    font-size:15px;
+    font-weight:900;
+
+    overflow-wrap:anywhere;
+}
+
+
+/* =========================================================
+   WAITING
+========================================================= */
+
+.gr-waiting{
+    margin-top:18px;
+
+    padding:22px;
+
+    border:1px solid #ead6aa;
+    border-radius:15px;
+
+    background:#fff7e8;
+
+    text-align:center;
+}
+
+.gr-waiting-icon{
+    display:flex;
+
+    width:62px;
+    height:62px;
+
+    margin:0 auto 10px;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#f5e6c9;
+
+    color:#956827;
+
+    font-size:28px;
+    font-weight:900;
+}
+
+.gr-waiting-title{
+    color:#765526;
+
+    font-family:Georgia,serif;
+
+    font-size:20px;
+    font-weight:900;
+}
+
+.gr-waiting-text{
+    margin-top:5px;
+
+    color:#816e57;
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   RESULT HERO
+========================================================= */
+
+.gr-result-hero{
+    margin-top:18px;
+
+    padding:28px 20px;
+
+    border-radius:18px;
+
+    text-align:center;
+}
+
+.gr-result-hero.pass{
+    border:1px solid #a9ccb6;
+
+    background:
+        linear-gradient(
+            135deg,
+            #edf8f0,
+            #fafffb
+        );
+}
+
+.gr-result-hero.fail{
+    border:1px solid #e1b2b2;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fceded,
+            #fffafa
+        );
+}
+
+.gr-result-icon{
+    display:flex;
+
+    width:72px;
+    height:72px;
+
+    margin:0 auto 11px;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    font-size:31px;
+    font-weight:900;
+}
+
+.pass .gr-result-icon{
+    background:#d8ecdf;
+
+    color:var(--green);
+}
+
+.fail .gr-result-icon{
+    background:#f2dada;
+
+    color:var(--red);
+}
+
+.gr-result-label{
+    font-size:12px;
+    font-weight:900;
+
+    letter-spacing:.05em;
+}
+
+.pass .gr-result-label{
+    color:var(--green);
+}
+
+.fail .gr-result-label{
+    color:var(--red);
+}
+
+.gr-final-score{
+    margin-top:3px;
+
+    font-family:Georgia,serif;
+
+    font-size:54px;
+    font-weight:900;
+
+    line-height:1.05;
+
+    color:var(--brown-dark);
+}
+
+.gr-final-status{
+    margin-top:8px;
+
+    font-family:Georgia,serif;
+
+    font-size:27px;
+    font-weight:900;
+}
+
+.pass .gr-final-status{
+    color:var(--green);
+}
+
+.fail .gr-final-status{
+    color:var(--red);
+}
+
+
+/* =========================================================
+   SCORE GRID
+========================================================= */
+
+.gr-score-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:10px;
+
+    margin-top:18px;
+}
+
+.gr-score-box{
+    padding:16px;
+
+    border:1px solid var(--line);
+    border-radius:13px;
+
+    background:var(--paper);
+
+    text-align:center;
+}
+
+.gr-score-number{
+    color:var(--brown-dark);
+
+    font-size:28px;
+    font-weight:900;
+}
+
+.gr-score-label{
+    color:var(--muted);
+
+    font-size:11px;
+}
+
+
+/* =========================================================
+   FORMULA
+========================================================= */
+
+.gr-formula{
+    margin-top:14px;
+
+    padding:13px;
+
+    border:1px dashed #d8c8b4;
+    border-radius:11px;
+
+    background:#fffaf2;
+
+    color:#705a45;
+
+    text-align:center;
+
+    font-size:13px;
+}
+
+.gr-formula strong{
+    color:var(--brown-dark);
+}
+
+
+/* =========================================================
+   PRACTICAL RESULTS
+========================================================= */
+
+.gr-section-head{
+    display:flex;
+
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-top:23px;
+    margin-bottom:11px;
+}
+
+.gr-section-title{
+    margin:0;
+
+    font-family:Georgia,serif;
+
+    font-size:20px;
+
+    color:var(--brown-dark);
+}
+
+.gr-practical-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:12px;
+}
+
+.gr-practical{
+    overflow:hidden;
+
+    border:1px solid var(--line);
+    border-radius:14px;
+
+    background:#fff;
+}
+
+.gr-practical-image-wrap{
+    aspect-ratio:4/3;
+
+    overflow:hidden;
+
+    background:#f2ede7;
+}
+
+.gr-practical-image{
+    display:block;
+
+    width:100%;
+    height:100%;
+
+    object-fit:contain;
+}
+
+.gr-no-image{
+    display:flex;
+
+    width:100%;
+    height:100%;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    color:var(--muted);
+
+    text-align:center;
+}
+
+.gr-practical-body{
+    padding:13px;
+}
+
+.gr-practical-question{
+    color:#966c34;
+
+    font-size:11px;
+    font-weight:900;
+}
+
+.gr-practical-title{
+    margin-top:3px;
+
+    color:var(--brown-dark);
+
+    font-size:15px;
+    font-weight:900;
+}
+
+.gr-practical-note{
+    margin-top:5px;
+
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+.gr-practical-scores{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:7px;
+
+    margin-top:10px;
+}
+
+.gr-small-score{
+    padding:8px;
+
+    border-radius:9px;
+
+    background:#f6f0e7;
+
+    text-align:center;
+}
+
+.gr-small-score-label{
+    color:var(--muted);
+
+    font-size:9px;
+    font-weight:900;
+
+    text-transform:uppercase;
+}
+
+.gr-small-score-value{
+    margin-top:2px;
+
+    color:var(--brown-dark);
+
+    font-size:18px;
+    font-weight:900;
+}
+
+.gr-comment{
+    margin-top:9px;
+
+    padding:10px;
+
+    border-radius:9px;
+
+    background:#f8f4ee;
+
+    color:#66594d;
+
+    font-size:12px;
+}
+
+
+/* =========================================================
+   EXAMINER
+========================================================= */
+
+.gr-examiner{
+    margin-top:18px;
+
+    padding:14px;
+
+    border:1px solid var(--line);
+    border-radius:12px;
+
+    background:#fffaf2;
+}
+
+.gr-examiner-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:9px;
+}
+
+
+/* =========================================================
+   NOTICE
+========================================================= */
+
+.gr-notice{
+    margin-top:15px;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:#f5f0e8;
+
+    color:#71665c;
+
+    font-size:12px;
+}
+
+
+/* =========================================================
+   UTIL
+========================================================= */
+
+.gr-hidden{
+    display:none !important;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:760px){
+
+    #ocdGraduationResultPage{
+        padding-left:8px;
+        padding-right:8px;
+    }
+
+    .gr-hero{
+        padding:27px 15px;
+    }
+
+    .gr-hero h1{
+        font-size:27px;
+    }
+
+    .gr-card{
+        padding:15px;
+    }
+
+    .gr-search-row{
+        display:grid;
+
+        grid-template-columns:1fr;
+    }
+
+    .gr-profile-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+    .gr-score-grid{
+        grid-template-columns:1fr;
+    }
+
+    .gr-practical-grid{
+        grid-template-columns:1fr;
+    }
+
+    .gr-final-score{
+        font-size:47px;
+    }
+
+}
+
+@media(max-width:440px){
+
+    .gr-profile-grid{
+        grid-template-columns:1fr;
+    }
+
+    .gr-examiner-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="gr-hero">
+
+    <div class="gr-hero-badge">
+        KẾT QUẢ TỐT NGHIỆP OCD
+    </div>
+
+    <h1>
+        Tra cứu kết quả tốt nghiệp
+    </h1>
+
+    <p>
+        Học viên tra cứu kết quả kỳ thi tốt nghiệp,
+        điểm lý thuyết, điểm thực hành và nhận xét
+        của giáo viên chấm thi.
+    </p>
+
+    <div class="gr-rule">
+        Lý thuyết 50% + Thực hành 50% - Đạt từ 7 điểm
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     LOOKUP
+========================================================= -->
+
+<section
+    class="gr-card"
+    id="grLookupPanel"
+>
+
+    <h2 class="gr-card-title">
+        Tra cứu học viên
+    </h2>
+
+    <div class="gr-search-row">
+
+        <input
+            class="gr-input"
+            id="grLookupInput"
+            type="text"
+            autocomplete="off"
+            placeholder="Nhập mã học viên hoặc Exam ID"
+            onkeydown="
+                if(event.key==='Enter'){
+                    event.preventDefault();
+                    return window.OCDGraduationResult.lookup();
+                }
+            "
+        >
+
+        <button
+            class="gr-btn"
+            id="grLookupButton"
+            type="button"
+            onclick="return window.OCDGraduationResult.lookup();"
+        >
+            TRA CỨU
+        </button>
+
+    </div>
+
+    <div
+        class="gr-message"
+        id="grMessage"
+    ></div>
+
+    <div
+        class="gr-attempt-list gr-hidden"
+        id="grAttemptList"
+    ></div>
+
+</section>
+
+
+<!-- =========================================================
+     RESULT
+========================================================= -->
+
+<section
+    class="gr-card gr-hidden"
+    id="grResultPanel"
+>
+
+    <div id="grResultContent"></div>
+
+</section>
+
+
+<script>
+/* =========================================================
+   OCD GRADUATION RESULT
+   v1.0
+========================================================= */
+
+window.OCDGraduationResult =
+window.OCDGraduationResult || {};
+
+
+(function(APP){
+
+"use strict";
+
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+var CONFIG={
+
+    version:
+        "OCD_GRADUATION_RESULT_V1.0",
+
+    spreadsheetId:
+        "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
+
+    examSheet:
+        "BaiThiTotNghiep",
+
+    gradingSheet:
+        "ChamThiTotNghiep",
+
+    passScore:
+        7,
+
+    theoryWeight:
+        0.5,
+
+    practicalWeight:
+        0.5,
+
+    timeout:
+        15000,
+
+    lastLookupKey:
+        "OCD_GRADUATION_RESULT_LAST_LOOKUP"
+
+};
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+var STATE={
+
+    exams:[],
+
+    gradings:[],
+
+    matches:[],
+
+    attemptRenderMap:{},
+
+    selectedExam:null,
+
+    selectedGrading:null
+
+};
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+function el(id){
+
+    return document.getElementById(id);
+}
+
+
+/* =========================================================
+   NORMALIZE
+========================================================= */
+
+function normalizeText(value){
+
+    return String(
+        value===undefined ||
+        value===null
+            ?
+            ""
+            :
+            value
+    )
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/đ/g,"d")
+    .replace(/\s+/g," ");
+}
+
+
+function normalizeCode(value){
+
+    return String(
+        value===undefined ||
+        value===null
+            ?
+            ""
+            :
+            value
+    )
+    .trim()
+    .toUpperCase();
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHtml(value){
+
+    return String(
+        value===undefined ||
+        value===null
+            ?
+            ""
+            :
+            value
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
+
+
+/* =========================================================
+   CSV
+========================================================= */
+
+function parseCSV(text){
+
+    var rows=[];
+    var row=[];
+    var field="";
+    var quoted=false;
+
+
+    text=
+        String(text || "")
+        .replace(/^\uFEFF/,"");
+
+
+    for(
+        var i=0;
+        i<text.length;
+        i++
+    ){
+
+        var c=
+            text[i];
+
+
+        if(c==='"'){
+
+            if(
+                quoted &&
+                text[i+1]==='"'
+            ){
+
+                field+='"';
+
+                i++;
+
+            }else{
+
+                quoted=
+                    !quoted;
+            }
+
+        }else if(
+            c==="," &&
+            !quoted
+        ){
+
+            row.push(field);
+
+            field="";
+
+        }else if(
+            (
+                c==="\n" ||
+                c==="\r"
+            ) &&
+            !quoted
+        ){
+
+            if(
+                c==="\r" &&
+                text[i+1]==="\n"
+            ){
+
+                i++;
+            }
+
+
+            row.push(field);
+
+
+            if(
+                row.some(
+                    function(v){
+
+                        return (
+                            String(v)
+                            .trim()!==""
+                        );
+                    }
+                )
+            ){
+
+                rows.push(row);
+            }
+
+
+            row=[];
+
+            field="";
+
+        }else{
+
+            field+=c;
+        }
+    }
+
+
+    row.push(field);
+
+
+    if(
+        row.some(
+            function(v){
+
+                return (
+                    String(v)
+                    .trim()!==""
+                );
+            }
+        )
+    ){
+
+        rows.push(row);
+    }
+
+
+    return rows;
+}
+
+
+/* =========================================================
+   FETCH
+========================================================= */
+
+function sheetUrl(sheetName){
+
+    return (
+        "https://docs.google.com/spreadsheets/d/" +
+        CONFIG.spreadsheetId +
+        "/gviz/tq?tqx=out:csv&sheet=" +
+        encodeURIComponent(
+            sheetName
+        ) +
+        "&_=" +
+        Date.now()
+    );
+}
+
+
+function fetchWithTimeout(url){
+
+    var controller=
+        typeof AbortController!=="undefined"
+            ?
+            new AbortController()
+            :
+            null;
+
+
+    var timer=
+        controller
+            ?
+            setTimeout(
+                function(){
+
+                    controller.abort();
+
+                },
+                CONFIG.timeout
+            )
+            :
+            null;
+
+
+    return fetch(
+        url,
+        {
+            cache:"no-store",
+
+            signal:
+                controller
+                    ?
+                    controller.signal
+                    :
+                    undefined
+        }
+    )
+
+    .then(
+        function(response){
+
+            if(!response.ok){
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+            }
+
+
+            return response.text();
+        }
+    )
+
+    .finally(
+        function(){
+
+            if(timer){
+
+                clearTimeout(timer);
+            }
+        }
+    );
+}
+
+
+function sleep(ms){
+
+    return new Promise(
+        function(resolve){
+
+            setTimeout(
+                resolve,
+                ms
+            );
+        }
+    );
+}
+
+
+async function fetchRetry(url){
+
+    var lastError=null;
+
+
+    for(
+        var i=0;
+        i<2;
+        i++
+    ){
+
+        try{
+
+            return await fetchWithTimeout(
+                url
+            );
+
+        }catch(error){
+
+            lastError=
+                error;
+
+
+            if(i===0){
+
+                await sleep(
+                    400
+                );
+            }
+        }
+    }
+
+
+    throw lastError;
+}
+
+
+/* =========================================================
+   COLUMN
+========================================================= */
+
+function findColumn(
+    headers,
+    aliases
+){
+
+    var normalized=
+        headers.map(
+            normalizeText
+        );
+
+
+    for(
+        var i=0;
+        i<aliases.length;
+        i++
+    ){
+
+        var wanted=
+            normalizeText(
+                aliases[i]
+            );
+
+
+        var exact=
+            normalized.indexOf(
+                wanted
+            );
+
+
+        if(exact!==-1){
+
+            return exact;
+        }
+    }
+
+
+    for(
+        var a=0;
+        a<aliases.length;
+        a++
+    ){
+
+        var partial=
+            normalizeText(
+                aliases[a]
+            );
+
+
+        for(
+            var h=0;
+            h<normalized.length;
+            h++
+        ){
+
+            if(
+                partial &&
+                normalized[h]
+                .indexOf(
+                    partial
+                )!==-1
+            ){
+
+                return h;
+            }
+        }
+    }
+
+
+    return -1;
+}
+
+
+function valueAt(
+    row,
+    index
+){
+
+    if(
+        index<0 ||
+        !row ||
+        index>=row.length
+    ){
+
+        return "";
+    }
+
+
+    return String(
+        row[index] || ""
+    )
+    .trim();
+}
+
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+function parseNumber(value){
+
+    var str=
+        String(
+            value===undefined ||
+            value===null
+                ?
+                ""
+                :
+                value
+        )
+        .trim()
+        .replace(
+            ",",
+            "."
+        );
+
+
+    if(str===""){
+
+        return null;
+    }
+
+
+    var number=
+        Number(str);
+
+
+    return Number.isFinite(number)
+        ?
+        number
+        :
+        null;
+}
+
+
+function round2(value){
+
+    return Math.round(
+        Number(value) *
+        100
+    ) / 100;
+}
+
+
+function scoreDisplay(value){
+
+    var n=
+        parseNumber(value);
+
+
+    if(n===null){
+
+        return "-";
+    }
+
+
+    return n.toFixed(2)
+        .replace(
+            /\.00$/,
+            ""
+        )
+        .replace(
+            /(\.\d)0$/,
+            "$1"
+        );
+}
+
+
+/* =========================================================
+   DRIVE IMAGE
+========================================================= */
+
+function driveIdFromUrl(value){
+
+    var str=
+        String(
+            value || ""
+        )
+        .trim();
+
+
+    if(!str){
+
+        return "";
+    }
+
+
+    var patterns=[
+
+        /\/file\/d\/([a-zA-Z0-9_-]+)/,
+
+        /[?&]id=([a-zA-Z0-9_-]+)/,
+
+        /\/d\/([a-zA-Z0-9_-]+)/
+    ];
+
+
+    for(
+        var i=0;
+        i<patterns.length;
+        i++
+    ){
+
+        var match=
+            str.match(
+                patterns[i]
+            );
+
+
+        if(match){
+
+            return match[1];
+        }
+    }
+
+
+    if(
+        /^[a-zA-Z0-9_-]{20,}$/
+        .test(str)
+    ){
+
+        return str;
+    }
+
+
+    return "";
+}
+
+
+function imageUrl(value){
+
+    var RS=
+        window.StudentRewardSystem;
+
+
+    if(
+        RS &&
+        typeof RS.convertDriveImageUrl===
+        "function"
+    ){
+
+        try{
+
+            return RS.convertDriveImageUrl(
+                value,
+                800
+            );
+
+        }catch(error){}
+    }
+
+
+    var id=
+        driveIdFromUrl(
+            value
+        );
+
+
+    if(id){
+
+        return (
+            "https://drive.google.com/thumbnail?id=" +
+            encodeURIComponent(id) +
+            "&sz=w800"
+        );
+    }
+
+
+    return String(
+        value || ""
+    );
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function setMessage(
+    text,
+    type
+){
+
+    var box=
+        el(
+            "grMessage"
+        );
+
+
+    box.className=
+        "gr-message show " +
+        (
+            type ||
+            "loading"
+        );
+
+
+    box.textContent=
+        text;
+}
+
+
+/* =========================================================
+   LOAD EXAM SHEET
+========================================================= */
+
+async function loadExams(){
+
+    var text=
+        await fetchRetry(
+            sheetUrl(
+                CONFIG.examSheet
+            )
+        );
+
+
+    var rows=
+        parseCSV(text);
+
+
+    if(
+        !rows ||
+        rows.length<2
+    ){
+
+        return [];
+    }
+
+
+    var headers=
+        rows[0];
+
+
+    var cols={
+
+        timestamp:
+            findColumn(
+                headers,
+                ["Dấu thời gian"]
+            ),
+
+        examId:
+            findColumn(
+                headers,
+                [
+                    "Exam ID",
+                    "ExamID"
+                ]
+            ),
+
+        code:
+            findColumn(
+                headers,
+                ["Mã học viên"]
+            ),
+
+        name:
+            findColumn(
+                headers,
+                ["Họ và tên"]
+            ),
+
+        group:
+            findColumn(
+                headers,
+                ["Tổ"]
+            ),
+
+        course:
+            findColumn(
+                headers,
+                [
+                    "Khoá",
+                    "Khóa"
+                ]
+            ),
+
+        startedAt:
+            findColumn(
+                headers,
+                ["Thời gian bắt đầu"]
+            ),
+
+        submittedAt:
+            findColumn(
+                headers,
+                ["Thời gian nộp"]
+            ),
+
+        submitReason:
+            findColumn(
+                headers,
+                ["Hình thức nộp"]
+            ),
+
+        theoryAnswered:
+            findColumn(
+                headers,
+                ["Số câu lý thuyết đã làm"]
+            ),
+
+        theoryCorrect:
+            findColumn(
+                headers,
+                ["Số câu lý thuyết đúng"]
+            ),
+
+        theoryWrong:
+            findColumn(
+                headers,
+                ["Số câu lý thuyết sai"]
+            ),
+
+        theoryScore:
+            findColumn(
+                headers,
+                ["Điểm lý thuyết"]
+            ),
+
+        practicalAnswered:
+            findColumn(
+                headers,
+                ["Số câu thực hành đã chọn"]
+            ),
+
+        practicalData:
+            findColumn(
+                headers,
+                ["PracticalData"]
+            ),
+
+        version:
+            findColumn(
+                headers,
+                ["Phiên bản hệ thống"]
+            )
+    };
+
+
+    if(
+        cols.examId<0 ||
+        cols.code<0
+    ){
+
+        throw new Error(
+            "Không nhận diện được cấu trúc BaiThiTotNghiep."
+        );
+    }
+
+
+    var result=[];
+
+
+    for(
+        var i=1;
+        i<rows.length;
+        i++
+    ){
+
+        var row=
+            rows[i];
+
+
+        var examId=
+            valueAt(
+                row,
+                cols.examId
+            );
+
+
+        if(!examId){
+
+            continue;
+        }
+
+
+        result.push({
+
+            rowNumber:
+                i+1,
+
+            timestamp:
+                valueAt(
+                    row,
+                    cols.timestamp
+                ),
+
+            examId:
+                examId,
+
+            studentCode:
+                normalizeCode(
+                    valueAt(
+                        row,
+                        cols.code
+                    )
+                ),
+
+            studentName:
+                valueAt(
+                    row,
+                    cols.name
+                ),
+
+            group:
+                valueAt(
+                    row,
+                    cols.group
+                ),
+
+            course:
+                valueAt(
+                    row,
+                    cols.course
+                ),
+
+            startedAt:
+                valueAt(
+                    row,
+                    cols.startedAt
+                ),
+
+            submittedAt:
+                valueAt(
+                    row,
+                    cols.submittedAt
+                ),
+
+            submitReason:
+                valueAt(
+                    row,
+                    cols.submitReason
+                ),
+
+            theoryAnswered:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.theoryAnswered
+                    )
+                ) || 0,
+
+            theoryCorrect:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.theoryCorrect
+                    )
+                ) || 0,
+
+            theoryWrong:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.theoryWrong
+                    )
+                ) || 0,
+
+            theoryScore:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.theoryScore
+                    )
+                ),
+
+            practicalAnswered:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.practicalAnswered
+                    )
+                ) || 0,
+
+            practicalRaw:
+                valueAt(
+                    row,
+                    cols.practicalData
+                ),
+
+            version:
+                valueAt(
+                    row,
+                    cols.version
+                )
+        });
+    }
+
+
+    return result;
+}
+
+
+/* =========================================================
+   LOAD GRADING SHEET
+========================================================= */
+
+async function loadGradings(){
+
+    var text=
+        await fetchRetry(
+            sheetUrl(
+                CONFIG.gradingSheet
+            )
+        );
+
+
+    var rows=
+        parseCSV(text);
+
+
+    /*
+       Tab mới có thể chỉ có header.
+       Trường hợp này KHÔNG phải lỗi.
+    */
+
+    if(
+        !rows ||
+        rows.length<1
+    ){
+
+        return [];
+    }
+
+
+    var headers=
+        rows[0];
+
+
+    var cols={
+
+        timestamp:
+            findColumn(
+                headers,
+                ["Dấu thời gian"]
+            ),
+
+        examId:
+            findColumn(
+                headers,
+                [
+                    "Exam ID",
+                    "ExamID"
+                ]
+            ),
+
+        code:
+            findColumn(
+                headers,
+                ["Mã học viên"]
+            ),
+
+        name:
+            findColumn(
+                headers,
+                ["Họ và tên"]
+            ),
+
+        group:
+            findColumn(
+                headers,
+                ["Tổ"]
+            ),
+
+        course:
+            findColumn(
+                headers,
+                [
+                    "Khoá",
+                    "Khóa"
+                ]
+            ),
+
+        theoryScore:
+            findColumn(
+                headers,
+                ["Điểm lý thuyết"]
+            ),
+
+        practicalScore:
+            findColumn(
+                headers,
+                ["Điểm thực hành"]
+            ),
+
+        practicalGraded:
+            findColumn(
+                headers,
+                [
+                    "Số câu đã chấm",
+                    "Số câu thực hành đã chấm"
+                ]
+            ),
+
+        gradingData:
+            findColumn(
+                headers,
+                ["GradingData"]
+            ),
+
+        examiner:
+            findColumn(
+                headers,
+                ["Người chấm"]
+            ),
+
+        gradedAt:
+            findColumn(
+                headers,
+                ["Thời gian chấm"]
+            ),
+
+        version:
+            findColumn(
+                headers,
+                ["Phiên bản hệ thống"]
+            )
+    };
+
+
+    if(
+        cols.examId<0
+    ){
+
+        throw new Error(
+            "Không nhận diện được cấu trúc ChamThiTotNghiep."
+        );
+    }
+
+
+    var result=[];
+
+
+    for(
+        var i=1;
+        i<rows.length;
+        i++
+    ){
+
+        var row=
+            rows[i];
+
+
+        var examId=
+            valueAt(
+                row,
+                cols.examId
+            );
+
+
+        if(!examId){
+
+            continue;
+        }
+
+
+        result.push({
+
+            rowNumber:
+                i+1,
+
+            timestamp:
+                valueAt(
+                    row,
+                    cols.timestamp
+                ),
+
+            examId:
+                examId,
+
+            studentCode:
+                normalizeCode(
+                    valueAt(
+                        row,
+                        cols.code
+                    )
+                ),
+
+            studentName:
+                valueAt(
+                    row,
+                    cols.name
+                ),
+
+            group:
+                valueAt(
+                    row,
+                    cols.group
+                ),
+
+            course:
+                valueAt(
+                    row,
+                    cols.course
+                ),
+
+            theoryScore:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.theoryScore
+                    )
+                ),
+
+            practicalScore:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.practicalScore
+                    )
+                ),
+
+            practicalGraded:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.practicalGraded
+                    )
+                ) || 0,
+
+            gradingRaw:
+                valueAt(
+                    row,
+                    cols.gradingData
+                ),
+
+            examiner:
+                valueAt(
+                    row,
+                    cols.examiner
+                ),
+
+            gradedAt:
+                valueAt(
+                    row,
+                    cols.gradedAt
+                ),
+
+            version:
+                valueAt(
+                    row,
+                    cols.version
+                )
+        });
+    }
+
+
+    return result;
+}
+
+
+/* =========================================================
+   GRADING MAP
+
+   Nếu một Exam ID có nhiều bản chấm,
+   ưu tiên dòng MỚI NHẤT trong Sheet.
+========================================================= */
+
+function buildGradingMap(gradings){
+
+    var map={};
+
+
+    gradings.forEach(
+        function(item){
+
+            map[
+                normalizeCode(
+                    item.examId
+                )
+            ]=
+                item;
+        }
+    );
+
+
+    return map;
+}
+
+
+/* =========================================================
+   LOOKUP
+========================================================= */
+
+APP.lookup=
+async function(){
+
+    var input=
+        el(
+            "grLookupInput"
+        );
+
+
+    var button=
+        el(
+            "grLookupButton"
+        );
+
+
+    var query=
+        String(
+            input.value ||
+            ""
+        )
+        .trim();
+
+
+    if(!query){
+
+        setMessage(
+            "Vui lòng nhập mã học viên hoặc Exam ID.",
+            "error"
+        );
+
+
+        return false;
+    }
+
+
+    try{
+
+        localStorage.setItem(
+            CONFIG.lastLookupKey,
+            query
+        );
+
+    }catch(error){}
+
+
+    button.disabled=
+        true;
+
+
+    button.textContent=
+        "ĐANG TRA CỨU...";
+
+
+    setMessage(
+        "Đang đọc dữ liệu bài thi và kết quả chấm...",
+        "loading"
+    );
+
+
+    el(
+        "grAttemptList"
+    )
+    .classList
+    .add(
+        "gr-hidden"
+    );
+
+
+    el(
+        "grResultPanel"
+    )
+    .classList
+    .add(
+        "gr-hidden"
+    );
+
+
+    try{
+
+        /*
+         Đọc song song 2 tab để nhanh hơn.
+        */
+
+        var data=
+            await Promise.all([
+
+                loadExams(),
+
+                loadGradings()
+
+            ]);
+
+
+        STATE.exams=
+            data[0];
+
+
+        STATE.gradings=
+            data[1];
+
+
+        var wanted=
+            normalizeCode(
+                query
+            );
+
+
+        var matches=
+            STATE.exams.filter(
+                function(exam){
+
+                    return (
+                        normalizeCode(
+                            exam.studentCode
+                        )===
+                        wanted
+                    ) ||
+                    (
+                        normalizeCode(
+                            exam.examId
+                        )===
+                        wanted
+                    );
+                }
+            );
+
+
+        if(!matches.length){
+
+            throw new Error(
+                "Không tìm thấy bài thi của học viên."
+            );
+        }
+
+
+        var gradingMap=
+            buildGradingMap(
+                STATE.gradings
+            );
+
+
+        STATE.matches=
+            matches.map(
+                function(exam){
+
+                    return {
+
+                        exam:
+                            exam,
+
+                        grading:
+                            gradingMap[
+                                normalizeCode(
+                                    exam.examId
+                                )
+                            ] ||
+                            null
+                    };
+                }
+            );
+
+
+        /*
+         Một Exam ID cụ thể
+         hoặc chỉ có 1 lượt thi:
+         mở thẳng kết quả.
+        */
+
+        if(
+            STATE.matches.length===1
+        ){
+
+            openMatch(
+                STATE.matches[0]
+            );
+
+
+            setMessage(
+                STATE.matches[0].grading
+                    ?
+                    "Đã tải kết quả tốt nghiệp."
+                    :
+                    "Đã tìm thấy bài thi. Kết quả đang chờ giáo viên chấm.",
+                "success"
+            );
+
+
+        }else{
+
+            renderAttemptList();
+
+
+            setMessage(
+                "Tìm thấy " +
+                STATE.matches.length +
+                " lượt thi. Hãy chọn đúng lượt cần xem.",
+                "success"
+            );
+        }
+
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+
+        setMessage(
+            error &&
+            error.message
+                ?
+                error.message
+                :
+                "Không thể tải dữ liệu kết quả.",
+            "error"
+        );
+
+
+    }finally{
+
+        button.disabled=
+            false;
+
+
+        button.textContent=
+            "TRA CỨU";
+    }
+
+
+    return false;
+};
+
+
+/* =========================================================
+   ATTEMPT LIST
+========================================================= */
+
+function renderAttemptList(){
+
+    var box=
+        el(
+            "grAttemptList"
+        );
+
+
+    STATE.attemptRenderMap={};
+
+
+    var list=
+        STATE.matches
+        .slice()
+        .reverse();
+
+
+    var html="";
+
+
+    list.forEach(
+        function(match,index){
+
+            STATE.attemptRenderMap[
+                String(index)
+            ]=
+                match;
+
+
+            var exam=
+                match.exam;
+
+
+            var grading=
+                match.grading;
+
+
+            var finalScore=
+                grading
+                    ?
+                    calculateFinalScore(
+                        exam,
+                        grading
+                    )
+                    :
+                    null;
+
+
+            html+=
+
+                '<div class="gr-attempt">' +
+
+                    '<div>' +
+
+                        '<div class="gr-attempt-name">' +
+                            escapeHtml(
+                                exam.studentName ||
+                                exam.studentCode
+                            ) +
+                        '</div>' +
+
+                        '<div class="gr-attempt-meta">' +
+
+                            'Exam ID: ' +
+                            escapeHtml(
+                                exam.examId
+                            ) +
+
+                            '<br>' +
+
+                            'Nộp bài: ' +
+                            escapeHtml(
+                                exam.submittedAt ||
+                                exam.timestamp ||
+                                "-"
+                            ) +
+
+                        '</div>';
+
+
+            if(grading){
+
+                html+=
+
+                    '<div class="gr-attempt-status graded">' +
+
+                        'ĐÃ CHẤM' +
+
+                        (
+                            finalScore!==null
+                                ?
+                                ' - ' +
+                                scoreDisplay(
+                                    finalScore
+                                ) +
+                                ' ĐIỂM'
+                                :
+                                ''
+                        ) +
+
+                    '</div>';
+
+            }else{
+
+                html+=
+
+                    '<div class="gr-attempt-status waiting">' +
+                        'ĐANG CHỜ CHẤM' +
+                    '</div>';
+            }
+
+
+            html+=
+
+                    '</div>' +
+
+                    '<button ' +
+                        'class="gr-btn" ' +
+                        'type="button" ' +
+                        'onclick="return window.OCDGraduationResult.openAttempt(' +
+                            index +
+                        ');">' +
+
+                        'XEM KẾT QUẢ' +
+
+                    '</button>' +
+
+                '</div>';
+        }
+    );
+
+
+    box.innerHTML=
+        html;
+
+
+    box.classList
+    .remove(
+        "gr-hidden"
+    );
+}
+
+
+APP.openAttempt=
+function(index){
+
+    var match=
+        STATE.attemptRenderMap[
+            String(index)
+        ];
+
+
+    if(match){
+
+        openMatch(
+            match
+        );
+    }
+
+
+    return false;
+};
+
+
+/* =========================================================
+   OPEN MATCH
+========================================================= */
+
+function openMatch(match){
+
+    STATE.selectedExam=
+        match.exam;
+
+
+    STATE.selectedGrading=
+        match.grading;
+
+
+    el(
+        "grAttemptList"
+    )
+    .classList
+    .add(
+        "gr-hidden"
+    );
+
+
+    el(
+        "grResultPanel"
+    )
+    .classList
+    .remove(
+        "gr-hidden"
+    );
+
+
+    renderResult();
+
+
+    try{
+
+        window.scrollTo({
+
+            top:
+                el(
+                    "grResultPanel"
+                ).offsetTop-20,
+
+            behavior:
+                "smooth"
+
+        });
+
+    }catch(error){}
+}
+
+
+/* =========================================================
+   INFO BOX
+========================================================= */
+
+function infoBox(
+    label,
+    value
+){
+
+    return (
+
+        '<div class="gr-info">' +
+
+            '<div class="gr-info-label">' +
+                escapeHtml(
+                    label
+                ) +
+            '</div>' +
+
+            '<div class="gr-info-value">' +
+                escapeHtml(
+                    value===undefined ||
+                    value===null ||
+                    value===""
+                        ?
+                        "-"
+                        :
+                        value
+                ) +
+            '</div>' +
+
+        '</div>'
+    );
+}
+
+
+/* =========================================================
+   FINAL SCORE
+
+   50% LT + 50% TH
+========================================================= */
+
+function calculateFinalScore(
+    exam,
+    grading
+){
+
+    if(
+        !exam ||
+        !grading
+    ){
+
+        return null;
+    }
+
+
+    /*
+       Điểm LT chính thức lấy từ bài thi gốc.
+       Điểm TH chính thức lấy từ bản GVCN chấm.
+    */
+
+    var theory=
+        parseNumber(
+            exam.theoryScore
+        );
+
+
+    var practical=
+        parseNumber(
+            grading.practicalScore
+        );
+
+
+    if(
+        theory===null ||
+        practical===null
+    ){
+
+        return null;
+    }
+
+
+    return round2(
+
+        theory *
+        CONFIG.theoryWeight +
+
+        practical *
+        CONFIG.practicalWeight
+
+    );
+}
+
+
+/* =========================================================
+   GRADING DATA
+========================================================= */
+
+function parseGradingData(raw){
+
+    if(!raw){
+
+        return [];
+    }
+
+
+    try{
+
+        var data=
+            JSON.parse(raw);
+
+
+        if(
+            !Array.isArray(
+                data
+            )
+        ){
+
+            return [];
+        }
+
+
+        return data
+            .filter(
+                function(item){
+
+                    return (
+                        item &&
+                        typeof item===
+                        "object"
+                    );
+                }
+            )
+            .sort(
+                function(a,b){
+
+                    return (
+                        Number(
+                            a.questionId ||
+                            a.q ||
+                            0
+                        ) -
+                        Number(
+                            b.questionId ||
+                            b.q ||
+                            0
+                        )
+                    );
+                }
+            );
+
+
+    }catch(error){
+
+        console.error(
+            "GradingData JSON lỗi:",
+            error
+        );
+
+
+        return [];
+    }
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function renderResult(){
+
+    var exam=
+        STATE.selectedExam;
+
+
+    var grading=
+        STATE.selectedGrading;
+
+
+    if(!exam){
+
+        return;
+    }
+
+
+    var html=
+
+        '<h2 class="gr-card-title">' +
+            'Hồ sơ kỳ thi' +
+        '</h2>' +
+
+
+        '<div class="gr-profile-grid">' +
+
+            infoBox(
+                "Học viên",
+                exam.studentName
+            ) +
+
+            infoBox(
+                "Mã học viên",
+                exam.studentCode
+            ) +
+
+            infoBox(
+                "Tổ",
+                exam.group
+            ) +
+
+            infoBox(
+                "Khóa",
+                exam.course
+            ) +
+
+            infoBox(
+                "Exam ID",
+                exam.examId
+            ) +
+
+            infoBox(
+                "Bắt đầu",
+                exam.startedAt
+            ) +
+
+            infoBox(
+                "Nộp bài",
+                exam.submittedAt
+            ) +
+
+            infoBox(
+                "Hình thức nộp",
+                exam.submitReason
+            ) +
+
+        '</div>';
+
+
+    /* =====================================================
+       CHƯA CHẤM
+    ===================================================== */
+
+    if(!grading){
+
+        html+=
+
+            '<div class="gr-waiting">' +
+
+                '<div class="gr-waiting-icon">' +
+                    String.fromCodePoint(
+                        9203
+                    ) +
+                '</div>' +
+
+                '<div class="gr-waiting-title">' +
+                    'Đang chờ chấm thi' +
+                '</div>' +
+
+                '<div class="gr-waiting-text">' +
+
+                    'Bài thi đã được hệ thống tiếp nhận nhưng chưa có ' +
+                    'kết quả chấm phần thực hành từ giáo viên.' +
+
+                    '<br>' +
+
+                    'Điểm lý thuyết hiện tại: ' +
+                    '<strong>' +
+                        escapeHtml(
+                            scoreDisplay(
+                                exam.theoryScore
+                            )
+                        ) +
+                    '/10</strong>' +
+
+                '</div>' +
+
+            '</div>';
+
+
+        html+=
+
+            '<div class="gr-notice">' +
+
+                'Kết quả tốt nghiệp chỉ được công bố sau khi giáo viên ' +
+                'hoàn tất chấm toàn bộ phần thực hành.' +
+
+            '</div>';
+
+
+        el(
+            "grResultContent"
+        )
+        .innerHTML=
+            html;
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       ĐÃ CHẤM
+    ===================================================== */
+
+    var theory=
+        parseNumber(
+            exam.theoryScore
+        );
+
+
+    var practical=
+        parseNumber(
+            grading.practicalScore
+        );
+
+
+    var finalScore=
+        calculateFinalScore(
+            exam,
+            grading
+        );
+
+
+    if(
+        theory===null ||
+        practical===null ||
+        finalScore===null
+    ){
+
+        html+=
+
+            '<div class="gr-message show error">' +
+
+                'Bản chấm chưa có đủ dữ liệu điểm để tính kết quả tốt nghiệp.' +
+
+            '</div>';
+
+
+        el(
+            "grResultContent"
+        )
+        .innerHTML=
+            html;
+
+
+        return;
+    }
+
+
+    var passed=
+        finalScore>=
+        CONFIG.passScore;
+
+
+    html+=
+
+        '<div class="gr-result-hero ' +
+            (
+                passed
+                    ?
+                    'pass'
+                    :
+                    'fail'
+            ) +
+        '">' +
+
+            '<div class="gr-result-icon">' +
+
+                (
+                    passed
+                        ?
+                        String.fromCodePoint(
+                            10003
+                        )
+                        :
+                        String.fromCodePoint(
+                            10005
+                        )
+                ) +
+
+            '</div>' +
+
+            '<div class="gr-result-label">' +
+                'ĐIỂM TỐT NGHIỆP' +
+            '</div>' +
+
+            '<div class="gr-final-score">' +
+                escapeHtml(
+                    finalScore.toFixed(2)
+                ) +
+            '</div>' +
+
+            '<div class="gr-final-status">' +
+
+                (
+                    passed
+                        ?
+                        'ĐẠT TỐT NGHIỆP'
+                        :
+                        'CHƯA ĐẠT TỐT NGHIỆP'
+                ) +
+
+            '</div>' +
+
+        '</div>';
+
+
+    /* =====================================================
+       SCORE GRID
+    ===================================================== */
+
+    html+=
+
+        '<div class="gr-score-grid">' +
+
+            '<div class="gr-score-box">' +
+
+                '<div class="gr-score-number">' +
+                    escapeHtml(
+                        scoreDisplay(
+                            theory
+                        )
+                    ) +
+                '</div>' +
+
+                '<div class="gr-score-label">' +
+                    'LÝ THUYẾT - 50%' +
+                '</div>' +
+
+            '</div>' +
+
+
+            '<div class="gr-score-box">' +
+
+                '<div class="gr-score-number">' +
+                    escapeHtml(
+                        scoreDisplay(
+                            practical
+                        )
+                    ) +
+                '</div>' +
+
+                '<div class="gr-score-label">' +
+                    'THỰC HÀNH - 50%' +
+                '</div>' +
+
+            '</div>' +
+
+
+            '<div class="gr-score-box">' +
+
+                '<div class="gr-score-number">' +
+                    escapeHtml(
+                        finalScore.toFixed(2)
+                    ) +
+                '</div>' +
+
+                '<div class="gr-score-label">' +
+                    'ĐIỂM TỐT NGHIỆP' +
+                '</div>' +
+
+            '</div>' +
+
+        '</div>';
+
+
+    html+=
+
+        '<div class="gr-formula">' +
+
+            '<strong>Cách tính:</strong> ' +
+
+            scoreDisplay(
+                theory
+            ) +
+
+            ' × 50% + ' +
+
+            scoreDisplay(
+                practical
+            ) +
+
+            ' × 50% = ' +
+
+            '<strong>' +
+                finalScore.toFixed(2) +
+            '</strong>' +
+
+            '<br>' +
+
+            'Điều kiện tốt nghiệp: điểm tổng từ ' +
+            CONFIG.passScore.toFixed(2) +
+            ' trở lên.' +
+
+        '</div>';
+
+
+    /* =====================================================
+       EXAMINER
+    ===================================================== */
+
+    html+=
+
+        '<div class="gr-examiner">' +
+
+            '<div class="gr-examiner-grid">' +
+
+                infoBox(
+                    "Người chấm",
+                    grading.examiner
+                ) +
+
+                infoBox(
+                    "Thời gian chấm",
+                    grading.gradedAt ||
+                    grading.timestamp
+                ) +
+
+            '</div>' +
+
+        '</div>';
+
+
+    /* =====================================================
+       PRACTICAL DETAIL
+    ===================================================== */
+
+    var details=
+        parseGradingData(
+            grading.gradingRaw
+        );
+
+
+    if(details.length){
+
+        html+=
+
+            '<div class="gr-section-head">' +
+
+                '<h3 class="gr-section-title">' +
+                    'Chi tiết phần thực hành' +
+                '</h3>' +
+
+                '<div style="font-size:12px;color:var(--muted);">' +
+                    details.length +
+                    ' bài' +
+                '</div>' +
+
+            '</div>' +
+
+
+            '<div class="gr-practical-grid">';
+
+
+        details.forEach(
+            function(item){
+
+                var questionId=
+                    item.questionId ||
+                    item.q ||
+                    "-";
+
+
+                var img=
+                    imageUrl(
+                        item.file
+                    );
+
+
+                var originalScore=
+                    item.originalScore;
+
+
+                var examScore=
+                    item.examScore;
+
+
+                html+=
+
+                    '<article class="gr-practical">' +
+
+
+                        '<div class="gr-practical-image-wrap">';
+
+
+                if(img){
+
+                    html+=
+
+                        '<img ' +
+                            'class="gr-practical-image" ' +
+                            'loading="lazy" ' +
+                            'src="' +
+                                escapeHtml(
+                                    img
+                                ) +
+                            '" ' +
+                            'alt="Bài thực hành">';
+
+                }else{
+
+                    html+=
+
+                        '<div class="gr-no-image">' +
+                            'Không có ảnh xem trước' +
+                        '</div>';
+                }
+
+
+                html+=
+
+                        '</div>' +
+
+
+                        '<div class="gr-practical-body">' +
+
+                            '<div class="gr-practical-question">' +
+                                'CÂU ' +
+                                escapeHtml(
+                                    questionId
+                                ) +
+                            '</div>' +
+
+                            '<div class="gr-practical-title">' +
+                                escapeHtml(
+                                    item.prompt ||
+                                    item.note ||
+                                    "Bài thực hành"
+                                ) +
+                            '</div>';
+
+
+                if(
+                    item.note &&
+                    item.note!==
+                    item.prompt
+                ){
+
+                    html+=
+
+                        '<div class="gr-practical-note">' +
+                            escapeHtml(
+                                item.note
+                            ) +
+                        '</div>';
+                }
+
+
+                html+=
+
+                    '<div class="gr-practical-scores">' +
+
+                        '<div class="gr-small-score">' +
+
+                            '<div class="gr-small-score-label">' +
+                                'Điểm cũ' +
+                            '</div>' +
+
+                            '<div class="gr-small-score-value">' +
+                                escapeHtml(
+                                    scoreDisplay(
+                                        originalScore
+                                    )
+                                ) +
+                            '</div>' +
+
+                        '</div>' +
+
+
+                        '<div class="gr-small-score">' +
+
+                            '<div class="gr-small-score-label">' +
+                                'Điểm thi' +
+                            '</div>' +
+
+                            '<div class="gr-small-score-value">' +
+                                escapeHtml(
+                                    scoreDisplay(
+                                        examScore
+                                    )
+                                ) +
+                            '</div>' +
+
+                        '</div>' +
+
+                    '</div>';
+
+
+                if(
+                    item.examinerComment
+                ){
+
+                    html+=
+
+                        '<div class="gr-comment">' +
+
+                            '<strong>Nhận xét:</strong><br>' +
+
+                            escapeHtml(
+                                item.examinerComment
+                            ) +
+
+                        '</div>';
+                }
+
+
+                if(
+                    item.usedOldScore
+                ){
+
+                    html+=
+
+                        '<div style="' +
+                            'margin-top:8px;' +
+                            'font-size:10px;' +
+                            'font-weight:900;' +
+                            'color:#7c642c;' +
+                        '">' +
+
+                            'GIÁO VIÊN GIỮ NGUYÊN ĐIỂM CŨ' +
+
+                        '</div>';
+                }
+
+
+                html+=
+
+                        '</div>' +
+
+                    '</article>';
+            }
+        );
+
+
+        html+=
+            '</div>';
+    }
+
+
+    html+=
+
+        '<div class="gr-notice">' +
+
+            'Điểm bài luyện tập cũ chỉ có giá trị tham khảo. ' +
+            'Điểm thực hành tốt nghiệp được lấy từ bản chấm của giáo viên. ' +
+            'Kết quả tốt nghiệp được tính theo tỷ trọng 50% lý thuyết và 50% thực hành.' +
+
+        '</div>';
+
+
+    el(
+        "grResultContent"
+    )
+    .innerHTML=
+        html;
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+function init(){
+
+    try{
+
+        var last=
+            localStorage.getItem(
+                CONFIG.lastLookupKey
+            );
+
+
+        if(last){
+
+            el(
+                "grLookupInput"
+            )
+            .value=
+                last;
+        }
+
+    }catch(error){}
+
+
+    console.log(
+        CONFIG.version +
+        " READY"
+    );
+}
+
+
+if(
+    document.readyState===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        init
+    );
+
+}else{
+
+    init();
+}
+
+
+})(window.OCDGraduationResult);
+
+</script>
+
+</div>
