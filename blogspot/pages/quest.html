@@ -1,0 +1,1206 @@
+<div id="ocdQuestPage">
+
+<style>
+#ocdQuestPage{--paper:#fffdf8;--ink:#352b24;--muted:#796f67;--brown:#71472d;--gold:#b88745;--line:#e8ddcd;--green:#47765b;--red:#963f36;max-width:1120px;margin:auto;padding:22px 12px 50px;font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+#ocdQuestPage,#ocdQuestPage *{box-sizing:border-box}#ocdQuestPage button{font:inherit}
+.qtop-banner{width:100%;margin:0 0 18px;overflow:hidden;border-radius:22px;border:1px solid #e1cfad;background:#f5eee2;box-shadow:0 12px 35px #48301e17}
+.qtop-banner img{display:block;width:100%;height:auto;object-fit:cover}.beast-rank-banner{position:relative;margin-bottom:0;left:50%;width:100vw;max-width:none;margin-left:-50vw;padding:18px max(18px,calc((100vw - 1120px)/2 + 12px));border-radius:0;background:linear-gradient(135deg,#171513,#2a2118);color:#fff}@media(min-width:641px){.beast-rank-banner{left:auto;width:100%;max-width:100%;margin:0;padding:18px 20px;border-radius:18px}}.beast-rank-head{text-align:center}.beast-rank-head .qkick{color:#d9b873}.beast-rank-head strong{display:block;margin-top:4px;color:#fff;font:700 24px Georgia,serif}.beast-rank-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"third first second";align-items:end;gap:12px;margin-top:16px}.beast-rank-card:nth-child(1){grid-area:first}.beast-rank-card:nth-child(2){grid-area:second}.beast-rank-card:nth-child(3){grid-area:third}.beast-rank-card{--br-img:none;position:relative;min-height:245px;border:1px solid rgba(255,255,255,.2);border-radius:17px;overflow:hidden;background:#111;isolation:isolate}.beast-rank-card:before{content:"";position:absolute;inset:0;z-index:-2;background-image:var(--br-img);background-size:cover;background-position:center}.beast-rank-card:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(8,7,6,.96) 0%,rgba(8,7,6,.7) 42%,rgba(8,7,6,.08) 78%)}.beast-rank-copy{position:absolute;left:0;right:0;bottom:0;padding:18px 14px;text-align:left}.beast-rank-copy b{display:block;font:700 22px Georgia,serif}.beast-rank-copy small{display:block;margin-top:6px;color:#eee2d2;font-size:11px;line-height:1.5}.beast-rank-pos{position:absolute;z-index:2;top:10px;left:10px;padding:6px 9px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(8,8,8,.46);font-size:10px;font-weight:900;backdrop-filter:blur(7px)}.beast-rank-loading{grid-column:1/-1;padding:28px;text-align:center;color:#ddd0bd;font-size:11px}.beast-rank-rules{margin:10px 0 24px;text-align:center}.beast-rank-rules a{display:inline-block;padding:7px 12px;border:1px solid #dcc8a8;border-radius:999px;color:#79562f;background:#fffaf0;font-size:10px;font-weight:900;text-decoration:none}.beast-rank-rules a:hover{text-decoration:underline}@media(max-width:640px){.beast-rank-banner{padding:13px}.beast-rank-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"third first second";align-items:end;gap:7px;margin-top:0}.beast-rank-card{min-height:260px;border-radius:12px}.beast-rank-card:before{background-position:62% center}.beast-rank-card[data-team="1"]:before,.beast-rank-card[data-team="2"]:before{background-position:70% center}.beast-rank-card:nth-child(1){grid-area:first;min-height:310px}.beast-rank-card:nth-child(2){grid-area:second;min-height:285px}.beast-rank-card:nth-child(3){grid-area:third;min-height:260px}.beast-rank-copy{padding:12px 8px}.beast-rank-copy b{font-size:14px}.beast-rank-copy small{font-size:8px;line-height:1.4}.beast-rank-pos{top:7px;left:7px;padding:4px 6px;font-size:8px}.beast-rank-head{margin-top:15px}.beast-rank-head strong{font-size:18px}}
+@media(max-width:640px){.qtop-banner{margin-bottom:12px;border-radius:15px}.qtop-banner img{max-height:none}}.beast-entry-sec{display:none}.beast-entry-sec.on{display:block}.beast-info-toggle{width:100%;display:flex;align-items:center;gap:10px;text-align:left;margin:8px 0 14px;padding:13px 14px;border:1px solid #dbc49f;border-radius:14px;background:#fffaf0;color:#4d3020;cursor:pointer}.beast-info-toggle strong{display:block;font:700 18px Georgia,serif}.beast-info-toggle small{display:block;margin-top:3px;color:#75695f;font-size:10px;line-height:1.5}.beast-info-toggle .beast-info-copy{display:block;min-width:0}.beast-info-toggle .beast-info-view{margin-left:auto;padding:6px 9px;border:1px solid #dcc8a8;border-radius:999px;color:#79562f;font-size:9px;font-weight:900;white-space:nowrap}.beast-info-desc{margin-top:18px;padding:16px;border-top:1px solid rgba(255,255,255,.16);text-align:center;color:#eee2d2;font-size:11px;line-height:1.7}.beast-info-desc a{display:inline-block;margin-top:8px;color:#e6c37d;font-weight:900;text-decoration:underline}@media(max-width:600px){.beast-info-toggle{flex-direction:column;align-items:stretch;text-align:center}.beast-info-toggle .beast-info-view{margin:2px auto 0}.beast-info-desc{font-size:10px;padding:14px 8px}}.beast-info-modal{display:none;position:fixed;inset:0;z-index:2147482995;padding:18px;background:#1b130dc7;align-items:center;justify-content:center}.beast-info-modal.on{display:flex}.beast-info-box{position:relative;width:min(900px,100%);max-height:calc(100dvh - 36px);overflow:auto;border-radius:22px;background:#171513}.beast-info-close{position:absolute;top:10px;right:10px;z-index:60;width:38px;height:38px;padding:0;border:2px solid #b53a32;border-radius:50%;background:#fffaf4;color:#b53a32;font:900 24px/32px Arial,sans-serif;box-shadow:0 5px 16px #2b1d1238}.beast-info-close:hover{background:#fff0ed}.beast-rank-modal{left:auto;width:100%;max-width:none;margin:0;padding:22px;border-radius:22px}.beast-rank-modal .beast-rank-head{padding-right:38px}@media(max-width:600px){.beast-info-modal{padding:10px}.beast-info-box{max-height:calc(100dvh - 20px)}.beast-rank-modal{padding:14px}.beast-info-close{top:8px;right:8px}.beast-entry-go{display:none}}.beast-entry-card{width:100%;display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #dfcfb5;border-radius:16px;background:#fffaf0;text-align:left;color:inherit}.beast-entry-icon{position:relative;width:62px;height:62px;flex:0 0 62px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#fff8dc 0%,#f2dfba 52%,transparent 72%);animation:beastFloat 2.8s ease-in-out infinite;filter:drop-shadow(0 0 7px #e6b84f) drop-shadow(0 0 14px #e6b84f88)}.beast-entry-icon img{width:58px;height:58px;object-fit:contain;max-height:none}.beast-entry-icon:after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid #e6b84f88;box-shadow:0 0 14px #e6b84f88;animation:beastAura 2.2s ease-in-out infinite}@keyframes beastFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes beastAura{0%,100%{opacity:.45;transform:scale(.94)}50%{opacity:1;transform:scale(1.08)}}.beast-entry-card strong{display:block;font:700 17px Georgia}.beast-entry-card small{display:block;margin-top:4px;line-height:1.45;color:#766b5d}.beast-entry-go{margin-left:auto;font-weight:900}.beast-entry-card.test{border-style:dashed}.beast-entry-card.active{box-shadow:0 0 0 2px #ead5aa inset}
+
+.qhero{padding:32px 28px;border:1px solid #e1cfad;border-radius:25px;background:radial-gradient(circle at 90% 0%,#b887452e,transparent 35%),linear-gradient(135deg,#fff9ec,#fffdf8);box-shadow:0 12px 35px #48301e17}
+.qkick{color:#a16207;font-size:9px;font-weight:900;letter-spacing:.13em}.qtitle{margin:5px 0;color:#5a351f;font:700 34px Georgia,serif}.qdesc{max-width:780px;color:#80756c;font-size:11px;line-height:1.7}
+.qsession{display:flex;gap:10px;align-items:center;margin-top:18px;padding:12px 14px;border:1px solid #eadfcf;border-radius:14px;background:#ffffffc7}.qsession.logged{cursor:pointer}.qdot{width:12px;height:12px;border-radius:50%;background:#aaa}.logged .qdot{background:#4f8b64;box-shadow:0 0 0 4px #4f8b641f}.qst{font-size:12px;font-weight:900}.qss{font-size:10px;color:#82786f;margin-top:2px}.qsession-open{display:none;margin-left:auto;padding:6px 9px;border:1px solid #dcc8a8;border-radius:999px;color:#79562f;font-size:9px;font-weight:900;white-space:nowrap}.qsession.logged .qsession-open{display:block}.qprofile-modal{display:none;position:fixed;inset:0;z-index:2147482990;padding:18px;background:#1b130dc7;align-items:center;justify-content:center}.qprofile-modal.on{display:flex}.qprofile-box{position:relative;width:min(620px,100%);max-height:calc(100vh - 36px);max-height:calc(100dvh - 36px);overflow:auto;border-radius:22px}.qprofile-box .qprofile{display:block!important;margin:0}.qprofile-close{position:absolute;top:10px;right:10px;z-index:20;width:38px;height:38px;padding:0;border:2px solid #b53a32;border-radius:50%;background:#fffaf4;color:#b53a32;font:900 24px/32px Arial;box-shadow:0 5px 16px #2b1d1238}.qprofile-close:hover{background:#fff0ed}@media(max-width:600px){.qprofile-modal{padding:10px}.qprofile-box{max-height:calc(100dvh - 20px)}.qprofile-close{top:8px;right:8px}}
+.qprofile{display:none;position:relative;isolation:isolate;margin-top:16px;padding:18px;border:1px solid #dac29c;border-radius:20px;background:#fffaf0;background-size:cover;background-position:center;overflow:hidden}.qprofile.on{display:block}.qprofile>*{position:relative;z-index:1}.qpi{display:grid;grid-template-columns:92px 1fr;gap:16px;align-items:center}.qavwrap{position:relative;width:92px;height:92px;display:flex;align-items:center;justify-content:center}.qav{position:relative;z-index:1;width:82px;height:82px;border:2px solid #dfc89f;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#f4e6ca;font:700 28px Georgia}.qav img{width:100%;height:100%;object-fit:cover}.qframe{display:none;position:absolute;z-index:2;inset:-2px;width:96px;height:96px;object-fit:contain;pointer-events:none}.qframe.on{display:block}.qname{font:700 21px Georgia;color:#4d3020}.qcode{font-size:9px;font-weight:900;color:#9a6a30}.qmeta{font-size:9px;color:#6c5442;margin-top:5px}.qgems{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.qgem{display:flex;gap:5px;align-items:center;padding:6px 8px;border:1px solid #e2d4c0;border-radius:10px;background:#fff;font-size:11px;font-weight:900}.qgem img{width:22px;height:22px;object-fit:contain}
+.qassets{margin-top:14px;padding-top:12px;border-top:1px solid #ded0ba}.qassets h4{margin:0;font-size:10px;color:#5b3a27}.qagrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:8px}.qasset{display:flex;gap:7px;align-items:center;padding:7px;border:1px solid #e6d9c7;border-radius:10px;background:#fff;font-size:8px;font-weight:800}.qasset img{width:32px;height:32px;border-radius:8px;object-fit:cover}
+.qsec{margin-top:27px}.qsec h2{margin:4px 0;color:#5a351f;font:700 24px Georgia}.qsec p{color:#80756c;font-size:10px}.npclogin{display:none;padding:20px;text-align:center;border:1px solid #e5d3b7;border-radius:16px;background:#fff9ec;font-size:11px}.npclogin.on{display:block}.npcgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.npccard{position:relative;padding:15px;border:1px solid var(--line);border-radius:18px;background:#fff;cursor:pointer;text-align:left;box-shadow:0 7px 20px #48301e12}.npccard:hover{transform:translateY(-2px)}.npccard.event-alert:after{content:"";position:absolute;right:12px;top:12px;width:12px;height:12px;border-radius:50%;background:#d62f2f;border:2px solid #fff;box-shadow:0 0 0 3px #d62f2f2b,0 2px 7px #0002}.npccard.event-alert:before{content:"SỰ KIỆN";position:absolute;right:31px;top:11px;padding:3px 6px;border-radius:999px;background:#fff0ed;color:#a6322b;font-size:7px;font-weight:900;letter-spacing:.06em}.npccard.surprise-alert:after{content:"";position:absolute;right:12px;top:12px;width:12px;height:12px;border-radius:50%;background:#e28a16;border:2px solid #fff;box-shadow:0 0 0 3px #e28a162b,0 2px 7px #0002;animation:qsurprise 1.4s ease-in-out infinite}.npccard.surprise-alert:before{content:"ĐỘT XUẤT";position:absolute;right:31px;top:11px;padding:3px 6px;border-radius:999px;background:#fff6df;color:#9a5a08;font-size:7px;font-weight:900;letter-spacing:.06em}@keyframes qsurprise{50%{transform:scale(1.18);box-shadow:0 0 0 6px #e28a1618,0 2px 7px #0002}}.npcrow{display:flex;gap:12px;align-items:center}.npcav{width:66px;height:66px;flex:0 0 66px;border:2px solid #e5d0aa;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#f4e6ca;font:700 24px Georgia}.npcav img{width:100%;height:100%;object-fit:cover}.npcname{font:700 17px Georgia;color:#4c2f20}.npcdesc{margin-top:5px;font-size:9px;color:#80756c;line-height:1.5}
+.qlist{overflow:hidden;border:1px solid var(--line);border-radius:19px;background:#fff}.qempty{padding:20px;text-align:center;color:#82786f;font-size:11px}.qgroup{border-bottom:1px solid #eee5d9}.qgroup:last-child{border:0}.qgroup summary{display:flex;gap:11px;align-items:center;padding:16px 18px;list-style:none;cursor:pointer}.qgroup summary::-webkit-details-marker{display:none}.qnum{width:32px;height:32px;flex:0 0 32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#f8ecd5;color:#8a581f;font-size:11px;font-weight:900}.qsum{flex:1}.qgn{font-size:13px;font-weight:900;color:#4e3222}.qgd{font-size:9px;color:#8a8179;margin-top:3px}.qgm{font-size:9px;font-weight:900;color:#9a6a30;margin-top:5px}.qbody{padding:0 18px 17px 61px}
+.qstep{position:relative;margin-top:8px;padding:11px 13px 11px 39px;border:1px solid #eee5d9;border-radius:12px;background:#fffdf9;font-size:10px;line-height:1.55}.qstep:before{content:"";position:absolute;left:13px;top:14px;width:14px;height:14px;border:2px solid #c9b18c;border-radius:50%}.qstep.done{border-color:#cfe1d4;background:#f5fbf7}.qstep.done:before{content:"\2713";display:flex;align-items:center;justify-content:center;width:18px;height:18px;left:11px;top:12px;border:0;background:#4f8b64;color:#fff;font-size:10px;font-weight:900}.qsn{font-weight:900;color:#563824}.qstate{margin-top:3px;color:#8c8178;font-size:9px}.qok{color:#47765b;font-weight:900}.qaction{display:inline-flex;margin-top:7px;padding:6px 9px;border:1px solid #dcc39d;border-radius:8px;color:#875b2d;text-decoration:none;font-weight:900}
+.qprogress,.qnote,.qcomplete,.qsync{margin-top:11px;padding:12px;border-radius:11px;font-size:10px;line-height:1.55}.qprogress{border:1px solid #eadfce;background:#fffaf2}.qnote{background:#f8f5ef;color:#776d64}.qcomplete{border:1px solid #cfe1d4;background:#edf7f0;color:#47765b;font-weight:700}.qsync{background:#fff8e9;color:#866126}.qph{display:flex;justify-content:space-between;font-weight:900}.qtrack{height:7px;margin-top:8px;border-radius:99px;background:#eee6dc;overflow:hidden}.qbar{height:100%;background:#59876a}.qbtn{width:100%;margin-top:9px;padding:10px;border:0;border-radius:11px;background:linear-gradient(135deg,#765034,#9a6b3e);color:#fff;font-size:10px;font-weight:900;cursor:pointer}.qbtn.green{background:linear-gradient(135deg,#47765b,#619374)}.qbtn:disabled{opacity:.55}
+.quiz{margin-top:12px}.question{margin-top:9px;padding:12px;border:1px solid #eadfce;border-radius:12px}.question b{font-size:10px}.option{display:flex;gap:7px;margin-top:6px;padding:8px;border:1px solid #eee5d9;border-radius:9px;font-size:10px;cursor:pointer}.result{display:none;margin-top:9px;padding:10px;border-radius:9px;font-size:10px}.result.on{display:block}.result.fail{background:#fff1f0;color:#963f36}.result.ok{background:#edf7f0;color:#47765b}.result.wait{background:#fff8e9;color:#866126}
+.nmodal{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:18px;background:#1c161299;overflow:hidden;overscroll-behavior:contain}.nmodal.on{display:flex}.nbox{width:100%;max-width:520px;max-height:calc(100vh - 36px);max-height:calc(100dvh - 36px);border-radius:22px;background:#fffdf8;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;position:relative}.nhead{text-align:center;padding:22px;background:#fff9ed}.nmav{width:88px;height:88px;margin:auto;border:3px solid #e5d0aa;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#f4e6ca}.nmav img{width:100%;height:100%;object-fit:cover}.nmname{margin-top:10px;font:700 22px Georgia}.nbody{padding:18px 18px 76px}.ndialog{padding:14px;border-left:3px solid #c99a55;background:#fff9ee;font-size:11px;line-height:1.7}#nmClose{position:absolute;top:10px;right:10px;z-index:50;width:38px;height:38px;min-width:38px;margin:0;padding:0;border:2px solid #b53a32;border-radius:50%;background:#fffaf4;color:#b53a32;box-shadow:0 5px 16px #2b1d1238;font:900 24px/32px Arial,sans-serif}#nmClose:hover{background:#fff0ed}
+.ndialog .npc-line{margin:0}
+.ndialog .npc-link{display:inline-flex;align-items:center;justify-content:center;margin-top:10px;padding:9px 12px;border:1px solid #d8bd91;border-radius:10px;background:#fff;color:#765034;font-weight:900;text-decoration:none}
+.ndialog .npc-link:hover{background:#fff4df}.nquest{margin-top:12px;padding:12px;border:1px solid #e8ded0;border-radius:11px;font-size:10px}.hiddenframe{position:absolute;width:1px;height:1px;opacity:0;left:-9999px}
+.beast-ui{font-size:12px;line-height:1.55}.nmav.beast-modal-banner{width:100%;height:auto;max-width:none;margin:0 0 14px;border:0;border-radius:16px;background:transparent;overflow:hidden}.nmav.beast-modal-banner img{display:block;width:100%;height:auto;max-height:none;object-fit:cover;border-radius:16px}.nhead:has(.beast-modal-banner){padding:14px 14px 18px}.nhead:has(.beast-modal-banner) .nmname{margin-top:4px}.beast-badge{display:inline-block;padding:4px 8px;border:1px solid #d8bd91;border-radius:999px;background:#fff9ed;font-weight:800}.beast-clock{margin:10px 0;font:700 24px Georgia;text-align:center}.beast-note{margin:8px 0;padding:10px;border-radius:10px;background:#fff9ee}.beast-q{margin:12px 0;padding:12px;border:1px solid #e8ded0;border-radius:12px}.beast-q b{display:block;margin-bottom:8px}.beast-opt{display:block;width:100%;margin:6px 0;padding:9px 10px;border:1px solid #ddd1bf;border-radius:9px;background:#fff;text-align:left}.beast-opt.on{border-color:#9c713e;background:#fff6e6}.beast-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.beast-actions .qbtn{flex:1;min-width:130px}.beast-test{margin-bottom:8px;padding:6px 8px;border:1px dashed #b98b49;border-radius:8px;text-align:center;font-weight:800}
+
+@media(max-width:850px){.npcgrid{grid-template-columns:repeat(2,1fr)}.qagrid{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){#ocdQuestPage{padding:12px 8px 40px}.qhero{padding:24px 17px}.qtitle{font-size:27px}.qagrid{grid-template-columns:repeat(2,1fr)}.npcrow{display:block;text-align:center}.npcav{margin:auto auto 8px}.qgroup summary{padding:14px 12px}.qbody{padding:0 12px 14px}}
+</style>
+<section class="qhero">
+ <div class="qkick">OCD QUEST</div><h1 class="qtitle">Trang Nhiệm Vụ</h1>
+ <p class="qdesc">Gặp gỡ các nhân vật trong Thanh Phong Thư Môn, khám phá website và hoàn thành các nhiệm vụ do Trợ giảng Minh Hồng giao cho bạn.</p>
+ <div class="qsession" id="qSession" role="button" tabindex="0"><span class="qdot"></span><div><div class="qst" id="qST">Chào mừng bạn đến Thanh Phong Thư Môn</div><div class="qss" id="qSS">Hãy xác minh mã học viên với Minh Hồng để bắt đầu nhiệm vụ.</div></div><span class="qsession-open">Xem thông tin</span></div>
+ <div class="qprofile-modal" id="qProfileModal" aria-hidden="true"><div class="qprofile-box"><button class="qprofile-close" id="qProfileClose" type="button" aria-label="Đóng thông tin học viên">×</button><div class="qprofile on" id="qProfile"><div class="qpi"><div class="qavwrap" id="qAvatarWrap"><div class="qav" id="qAvatar">書</div><img class="qframe" id="qFrame" alt="" aria-hidden="true"></div><div><div class="qcode" id="qCode"></div><div class="qname" id="qName"></div><div class="qmeta" id="qMeta"></div><div class="qgems" id="qGems"></div></div></div><div class="qassets"><h4>HÀNH TRANG <span id="qAssetCount"></span></h4><div class="qagrid" id="qAssets"></div></div></div></div></div>
+</section>
+<section class="qsec beast-entry-sec" id="beastEntrySec"><div class="qkick">SỰ KIỆN TỔ</div><div class="beast-rank-banner" id="beastRankBanner" aria-label="Bảng xếp hạng Chinh phục Linh Thú"><div class="beast-rank-head"><div class="qkick" id="beastRankDate">KẾT QUẢ GẦN NHẤT</div><strong>SỰ KIỆN CHINH PHỤC LINH THÚ TỪ 19:00-20:00 HÀNG NGÀY</strong></div><div class="beast-rank-grid" id="beastRankGrid"><div class="beast-rank-loading">Đang tải bảng xếp hạng gần nhất...</div></div></div><div class="beast-rank-rules"><a href="https://www.thudao.com/2026/09/chinh-phuc-linh-thu.html" target="_blank" rel="noopener">Xem thể lệ</a></div><button class="beast-entry-card" id="beastEntryBtn" type="button"><span class="beast-entry-icon" id="beastDailyIcon"></span><span><strong id="beastEntryTitle">Chinh phục Linh Thú</strong><small id="beastEntryStatus">Đăng nhập để kiểm tra trạng thái</small></span><span class="beast-entry-go">Mở</span></button></section>
+<section class="qsec"><div class="qkick">NHÂN VẬT</div><h2>Gặp gỡ các nhân vật</h2><p>Nhân vật sẽ phản hồi theo đúng nhiệm vụ bạn đang thực hiện.</p><div class="npclogin" id="npcLogin">Nói chuyện với Minh Hồng và nhập mã học viên để bắt đầu.</div><div class="npcgrid" id="npcGrid"></div></section>
+<section class="qsec"><div class="qkick">LỘ TRÌNH</div><h2>Danh sách nhiệm vụ</h2><p>Mỗi yêu cầu được kiểm tra độc lập. Nhiệm vụ hỗn hợp có thể gồm bài nộp, câu hỏi, vật phẩm và NPC.</p><div class="qlist" id="qList"><div class="qempty">Đang tải nhiệm vụ...</div></div></section>
+<div class="nmodal" id="nModal"><div class="nbox"><button class="qbtn" id="nmClose" type="button" aria-label="Đóng">×</button><div class="nhead"><div class="nmav" id="nmAv"></div><div class="nmname" id="nmName"></div></div><div class="nbody"><div class="ndialog" id="nmDialog"></div><div class="nquest" id="nmQuest"></div></div></div></div>
+<iframe name="ocdQuestActivityFormTarget" class="hiddenframe"></iframe><iframe name="ocdQuestFormTarget" class="hiddenframe"></iframe><iframe name="ocdQuestRewardFormTarget" class="hiddenframe"></iframe><iframe name="ocdBeastEventFormTarget" class="hiddenframe"></iframe><iframe name="ocdBeastResultFormTarget" class="hiddenframe"></iframe><iframe name="ocdBeastFinalFormTarget" class="hiddenframe"></iframe>
+<script>
+(function(){
+"use strict";
+if(window.__OCD_QUEST_PAGE_V3180__)return;window.__OCD_QUEST_PAGE_V3180__=1;
+/* =========================================================
+   OCD QUEST v3.26.0 - APPS SCRIPT SURPRISE ASSIGNMENT
+   true  = ép SKQ_0209 xuất hiện để kiểm thử
+   false = dùng lịch thật từ SuKienTruyenThong
+========================================================= */
+window.OCD_QUEST_EVENT_TEST=window.OCD_QUEST_EVENT_TEST||{
+ enabled:false,
+ questId:"SKQ_0209",
+ beast:{
+  enabled:false,
+  ignoreSchedule:false,
+  battleMinutes:10,
+  eventId:"BEAST_TEST",
+  allowReset:false
+ }
+};
+const C={version:"3.30.0",timeZone:"Asia/Ho_Chi_Minh",npcBook:"1-IkcpEkKQtIavl5DIf6Sbwx3p0aAfnSS4HjT6dn1u_E",npcSheet:"NhanVat",questBook:"10EjfikAuPyc1t_aGDDsUlq0eewo0WUl5qOyXjkVG28M",sheets:{quest:"NhiemVu",step:"BuocNhiemVu",question:"CauHoi",progress:"TienDoForm",activity:"HoatDongNhiemVu",dialogue:"HoiThoaiNPC",event:"SuKienTruyenThong"},giftBook:"1-IkcpEkKQtIavl5DIf6Sbwx3p0aAfnSS4HjT6dn1u_E",giftSheet:"QuaTangGVCN",tradeSheet:"MinhHongGiaoDich",exchangeSheet:"PhieuDoi",works:"https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?gid=1023688821&single=true&output=csv",fallback:"https://docs.google.com/spreadsheets/d/1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs/export?format=csv&gid=1837470623",formWait:1200,activityForm:{action:"https://docs.google.com/forms/d/e/1FAIpQLSdfbYq-uMMWRHcvJZxcn1_X4sW3CWJNyQXRXAgawFclC-cZQw/formResponse",target:"ocdQuestActivityFormTarget",fields:{studentCode:"entry.17565235",questId:"entry.1492892557",stepId:"entry.1962773712",stepType:"entry.1616883484",status:"entry.362786452",result:"entry.62128887",completedAt:"entry.1653056864"}},progressForm:{action:"https://docs.google.com/forms/d/e/1FAIpQLSeKQ_WF7f1t-0q69my3h5t2wdNC1HNMdbQTU7-QfvWMChqoeQ/formResponse",target:"ocdQuestFormTarget",fields:{studentCode:"entry.1705322576",questId:"entry.1754303676",status:"entry.347553244",correct:"entry.1540655773",total:"entry.599934961",startedAt:"entry.841738600",completedAt:"entry.1727972195",rewardStatus:"entry.1164148115"}},rewardForm:{action:"https://docs.google.com/forms/d/e/1FAIpQLSc48-Y-3nf4GtAKdE-Gq4uOMgOJSBUzvFruoSeQx8qmAok06Q/formResponse",target:"ocdQuestRewardFormTarget",fields:{scope:"entry.1737038806",studentCode:"entry.583300350",group:"entry.1930196666",course:"entry.1043199349",rewardType:"entry.1978772868",giftName:"entry.1254676473",gemType:"entry.1706258741",quantity:"entry.606656855",reason:"entry.360182186",giver:"entry.1383532227",status:"entry.1295235585"}}};
+/* =========================================================
+   BEAST EVENT v1.0.0 - CHINH PHỤC LINH THÚ
+   Sheet là nguồn trạng thái duy nhất. Không dùng localStorage.
+========================================================= */
+const BEAST={
+ version:"1.0.0",
+ schedule:{start:"19:00",end:"20:00",battleMinutes:10},
+ quiz:{questionsPerStudent:5,pool:"BEAST"},
+ rewards:{1:3,2:2,3:1,4:0,assistantMultiplier:2},
+ csv:{
+  event:"https://docs.google.com/spreadsheets/d/e/2PACX-1vQs-M8ctSJnddzI1PEibUYK5QN1qbK2GIdam5GXGnuqmhhFsNCvbsxhkHbnccJ4Tmvd-9EJMYDA3RcO/pub?gid=1565964261&single=true&output=csv",
+  result:"https://docs.google.com/spreadsheets/d/e/2PACX-1vQs-M8ctSJnddzI1PEibUYK5QN1qbK2GIdam5GXGnuqmhhFsNCvbsxhkHbnccJ4Tmvd-9EJMYDA3RcO/pub?gid=866834712&single=true&output=csv",
+  final:"https://docs.google.com/spreadsheets/d/e/2PACX-1vQs-M8ctSJnddzI1PEibUYK5QN1qbK2GIdam5GXGnuqmhhFsNCvbsxhkHbnccJ4Tmvd-9EJMYDA3RcO/pub?gid=177244121&single=true&output=csv",
+  questions:"https://docs.google.com/spreadsheets/d/e/2PACX-1vQs-M8ctSJnddzI1PEibUYK5QN1qbK2GIdam5GXGnuqmhhFsNCvbsxhkHbnccJ4Tmvd-9EJMYDA3RcO/pub?gid=2006719682&single=true&output=csv",
+  assistants:"https://docs.google.com/spreadsheets/d/e/2PACX-1vQs-M8ctSJnddzI1PEibUYK5QN1qbK2GIdam5GXGnuqmhhFsNCvbsxhkHbnccJ4Tmvd-9EJMYDA3RcO/pub?gid=1767609121&single=true&output=csv"
+ },
+ eventForm:{action:"https://docs.google.com/forms/d/e/1FAIpQLSd0hZS8jLNSxf9N8kJtbnwp6ijbudeZ-JWijE8dzKXfVCCR1Q/formResponse",target:"ocdBeastEventFormTarget",fields:{eventId:"entry.2001447255",day:"entry.1243873146",team:"entry.207220441",assistantCode:"entry.819563639",action:"entry.1634188609"}},
+ resultForm:{action:"https://docs.google.com/forms/d/e/1FAIpQLSdNswWmxLVCnW0gvOZaQAn5ibjrjhBN_sAChG5PR-75qTTcPw/formResponse",target:"ocdBeastResultFormTarget",fields:{eventId:"entry.173699053",studentCode:"entry.1223217323",studentName:"entry.1988828424",studentTeam:"entry.306115003",combatTeam:"entry.932150496",isAssistant:"entry.1931518249",questionIds:"entry.1948073181",answers:"entry.1025502606",correct:"entry.646768246",total:"entry.1026842227",startedAt:"entry.125955484",submittedAt:"entry.1813368022",duration:"entry.1761638989",status:"entry.1696751901"}},
+ finalForm:{action:"https://docs.google.com/forms/d/e/1FAIpQLScFKPqT-ySShsuPYsF6cUckk-iz2GlifSHARUqFEse6q0Z6oQ/formResponse",target:"ocdBeastFinalFormTarget",fields:{eventId:"entry.306714631",team:"entry.1567703104",completed:"entry.1429860735",correct:"entry.1528605714",score:"entry.1796852984",rank:"entry.1964688425",reward:"entry.1561856448",finalizedAt:"entry.1711948976",status:"entry.3825860"}}
+};
+
+const GEM={HOANG_NGOC:"Hoàng Ngọc",HAI_LAM_NGOC:"Hải Lam Ngọc",THACH_ANH_TIM:"Thạch Anh Tím",LAM_BAO_THACH:"Lam Bảo Thạch",LUC_THACH:"Lục Thạch",HONG_NGOC:"Hồng Ngọc"};
+const FB=[["Hoàng Thượng","王"],["Nữ hoạ gia","畫"],["Nông dân","田"],["Nghệ nhân","藝"],["Thư gia","書"],["Võ tướng","武"],["Con bạc","財"],["Con nghiện","藏"],["Gian thương","商"]];
+const S={code:"",logged:false,npcs:[],quests:[],steps:[],questions:[],remote:{},progressReady:false,progressError:"",rewardKeys:new Set(),ledgerReady:false,studentCsv:"",info:null,profile:null,subs:[],subLoaded:false,evidence:{},activityKeys:new Set(),activityReady:false,dialogues:[],trades:[],tradeReady:false,events:[],activeEvents:[],surpriseQuestId:"",surpriseDay:"",assignedSurpriseId:"",exchanges:[],exchangeReady:false,open:new Set(),busy:{},formPending:{},submissionUi:{},claimUi:{}};
+S.beast={ready:false,error:"",eventId:"",events:[],results:[],finals:[],questions:[],assistants:[],assistant:null,studentTeam:"",combatTeam:"",completed:false,test:null};
+const $=x=>document.getElementById(x),RS=()=>window.StudentRewardSystem,cl=v=>String(v==null?"":v).trim(),nm=v=>cl(v).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/\s+/g," "),tg=v=>cl(v).toUpperCase().replace(/\s+/g," "),esc=v=>cl(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),cd=v=>{try{return RS().normalizeCode(v)}catch(e){return cl(v).toUpperCase().replace(/\s+/g,"")}},sheetUrl=(b,s)=>"https://docs.google.com/spreadsheets/d/"+b+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(s),rewardName=v=>GEM[cl(v).toUpperCase()]||v;
+function csv(s){let o=[],r=[],v="",q=false;s=String(s||"").replace(/^\uFEFF/,"");for(let i=0;i<s.length;i++){let c=s[i];if(c=='"'){if(q&&s[i+1]=='"'){v+='"';i++}else q=!q}else if(c==","&&!q){r.push(v);v=""}else if((c=="\n"||c=="\r")&&!q){if(c=="\r"&&s[i+1]=="\n")i++;r.push(v);if(r.some(cl))o.push(r);r=[];v=""}else v+=c}if(v||r.length){r.push(v);if(r.some(cl))o.push(r)}return o}
+function col(h,n){let a=h.map(nm);for(let x of n){let i=a.indexOf(nm(x));if(i>=0)return i}return-1}
+/* =========================================================
+   OCD QUEST · APPS SCRIPT DATA LAYER v1.0
+   - Gom nhiều tab vào 1 yêu cầu; lọc sẵn dữ liệu của học viên ở máy chủ.
+   - Nội dung nhiệm vụ tải song song với bước xác minh học viên.
+   - Lỗi -> tự dùng lại nguồn cũ (gviz/CSV).
+========================================================= */
+const QAPI=(function(){
+ const API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
+ const QUEST_PUB="2PACX-1vQs-M8ctSJnddzI1PEibUYK5QN1qbK2GIdam5GXGnuqmhhFsNCvbsxhkHbnccJ4Tmvd-9EJMYDA3RcO";
+ const WORKS_PUB="2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA";
+ const STUDENT_BOOK="1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs";
+ const BEAST_GID={"1565964261":"LinhThuEvent","866834712":"LinhThuKetQua","177244121":"LinhThuTongKet","2006719682":"NganHangCauHoi","1767609121":"TroGiang"};
+ const QUEST_FILTER={TienDoForm:1,HoatDongNhiemVu:1},GIFT_FILTER={MinhHongGiaoDich:1};
+ const cache=new Map(),queues={},HEAVY={};let source="",paused=0;
+ function param(q,k){let m=String(q||"").match(new RegExp("(?:^|&)"+k+"=([^&#]*)"));return m?decodeURIComponent(m[1].replace(/\+/g," ")):""}
+ function item(u,force){
+  u=String(u||"");let m=u.match(/\/spreadsheets\/d\/([^/]+)\/gviz\/tq\?([^#]*)/);
+  if(m){let book=m[1],name=param(m[2],"sheet");if(!name)return null;
+   if(book===C.questBook)return{src:"quest",name:name,filter:!!QUEST_FILTER[name]};
+   if(book===C.giftBook||book===C.npcBook)return{src:"gift",name:name,filter:!!GIFT_FILTER[name]||param(m[2],"own")==="1"};
+   return null}
+  m=u.match(/\/spreadsheets\/d\/e\/([^/]+)\/pub\?([^#]*)/);
+  if(m){let g=param(m[2],"gid");
+   if(m[1]===QUEST_PUB&&BEAST_GID[g])return{src:"quest",name:BEAST_GID[g],filter:false};
+   if(m[1]===WORKS_PUB&&g==="1023688821")return{src:"students",name:"TacPhamWeb",filter:true};
+   if(m[1]===WORKS_PUB&&!g)return{src:"students",name:"Form Responses 1",filter:true};
+   return null}
+  m=u.match(/\/spreadsheets\/d\/([^/]+)\/export\?([^#]*)/);
+  if(m&&m[1]===STUDENT_BOOK){let g=param(m[2],"gid");
+   if(g==="1837470623")return{src:"students",name:"Form Responses 1",filter:true};
+   if(g==="1603096683")return{src:"students",name:"HocVien",filter:false}}
+  return null}
+ function key(it){return it.src+":"+it.name+(it.filter?"!":"")}
+ async function request(keys,code){
+  const ac=new AbortController(),t=setTimeout(()=>ac.abort(),15000),t0=Date.now();
+  try{
+   let r=await fetch(API+"?multi="+encodeURIComponent(keys.join(";"))+(code?"&code="+encodeURIComponent(code):"")+"&_="+Date.now(),{cache:"no-store",credentials:"omit",signal:ac.signal});
+   let j=JSON.parse(await r.text());
+   console.info("[OCD Quest] Apps Script "+(Date.now()-t0)+"ms:",keys.join(" ; "),j&&j.sheets&&j.sheets._ms||"");
+   if(!j||!j.ok||!j.sheets)throw Error(j&&j.error||"Apps Script trả về lỗi.");
+   return j.sheets
+  }finally{clearTimeout(t)}}
+ function enqueue(k){
+  let g=HEAVY[k]?k:"main",q=queues[g];
+  if(!q){q={keys:new Set(),code:S.code||""};q.promise=new Promise((res,rej)=>setTimeout(()=>{if(queues[g]===q)delete queues[g];request(Array.from(q.keys),q.code).then(res,rej)},0));queues[g]=q}
+  q.keys.add(k);
+  return q.promise.then(s=>{let rows=s[k];if(!Array.isArray(rows)||!rows.length)throw Error("Apps Script thiếu "+k);return rows})}
+ function get(it,force,pre){
+  let k=key(it),ck=k+"@"+(it.filter?S.code:""),c=cache.get(ck),now=Date.now();
+  if(c&&(force?((c.pre&&now-c.at<20000)||!c.done||now-c.done<1000):now-c.at<30000)){if(force)c.pre=false;return c.promise}
+  let p=enqueue(k),e={at:now,done:0,pre:!!pre,promise:p};cache.set(ck,e);
+  p.then(()=>{e.done=Date.now()},()=>{e.done=Date.now();if(cache.get(ck)===e)cache.delete(ck)});
+  return p}
+ function toCsv(rows){return rows.map(r=>r.map(v=>{v=v==null?"":String(v);return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(",")).join("\n")}
+ async function text(u,force){
+  let it=API?item(u,force):null;
+  if(it&&(!it.filter||S.code)&&Date.now()>=paused){
+   try{let rows=await get(it,force);source="Apps Script ("+new Date().toLocaleTimeString("vi-VN",{timeZone:C.timeZone})+")";return toCsv(rows)}
+   catch(e){console.warn("[OCD Quest] Apps Script lỗi, dùng nguồn cũ:",e&&e.message||e);if(e&&(e.name==="AbortError"||e.name==="TypeError"))paused=Date.now()+180000;source="Nguồn cũ dự phòng (Apps Script lỗi)"}
+  }
+  return textDirect(u,force)}
+ async function post(body){
+  const ac=new AbortController(),t=setTimeout(()=>ac.abort(),120000);
+  try{
+   let r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body),credentials:"omit",signal:ac.signal});
+   let x=await r.text();
+   try{return JSON.parse(x)}catch(e){throw Error("Apps Script trả về dữ liệu không hợp lệ.")}
+  }catch(e){if(e&&e.name==="AbortError")throw Error("Apps Script phản hồi chậm. Hãy bấm lại sau ít giây; hệ thống không phát thưởng trùng.");throw e}
+  finally{clearTimeout(t)}}
+ async function live(what,eid){let tries=0;for(;;){const ac=new AbortController(),t=setTimeout(()=>ac.abort(),12000),t0=Date.now();try{let r=await fetch(API+"?action=beastLive&what="+what+"&eventId="+encodeURIComponent(eid)+"&_="+Date.now(),{cache:"no-store",credentials:"omit",signal:ac.signal});let j=JSON.parse(await r.text());if(!j||!j.live)return null;if(!j.ok)throw Error(j.error||"Linh Thú: máy chủ báo lỗi.");console.info("[OCD Beast] đọc trực tiếp "+what+" "+(Date.now()-t0)+"ms");source="Apps Script trực tiếp ("+new Date().toLocaleTimeString("vi-VN",{timeZone:C.timeZone})+")";return j}catch(e){if(++tries>=2)throw e;await new Promise(r=>setTimeout(r,800))}finally{clearTimeout(t)}}}
+ function prefetch(list){if(!API)return;list.forEach(it=>{if(!it.filter||S.code)get(it,false,true).catch(()=>{})})}
+ const BEASTS=["LinhThuTongKet","NganHangCauHoi","TroGiang"];
+ return{
+  text:text,
+  post:post,
+  live:live,
+  source:()=>source,
+  prefetchContent(){prefetch([["quest","NhiemVu"],["quest","BuocNhiemVu"],["quest","CauHoi"],["quest","HoiThoaiNPC"],["quest","SuKienTruyenThong"],["gift","NhanVat"]].map(x=>({src:x[0],name:x[1],filter:false})))},
+  prefetchStudent(){prefetch([
+   {src:"quest",name:"TienDoForm",filter:true},{src:"quest",name:"HoatDongNhiemVu",filter:true},
+   {src:"gift",name:"QuaTangGVCN",filter:true},{src:"gift",name:"MinhHongGiaoDich",filter:true},{src:"gift",name:"PhieuDoi",filter:false},{src:"gift",name:"SoDuChotDaNhan",filter:true}
+  ])},
+  /* v3.27: dữ liệu Linh Thú tải sau khi danh sách nhiệm vụ đã hiện */
+  prefetchBeast(){prefetch(BEASTS.map(n=>({src:"quest",name:n,filter:false})))}
+ };
+})();
+window.OCDQuestApi=QAPI;
+async function text(u,force){return QAPI.text(u,force)}
+async function textDirect(u,force){let r=await fetch(u+(force?(u.includes("?")?"&":"?")+"_="+Date.now():""),{cache:force?"no-store":"default",credentials:"omit"});if(!r.ok)throw Error("HTTP "+r.status);return r.text()}
+async function sh(b,s,force){return csv(await text(sheetUrl(b,s),force))}
+async function waitCore(){let end=Date.now()+15000;while(Date.now()<end){let r=RS();if(r&&r.CONFIG&&r.getStudentRewardProfile){try{if(window.StudentRewardSystemReady)await window.StudentRewardSystemReady}catch(e){}return r}await new Promise(x=>setTimeout(x,100))}throw Error("Không tìm thấy Reward Core")}
+function sessionCode(){let c="";try{c=cd(window.OCDStudentSession&&window.OCDStudentSession.getCode&&window.OCDStudentSession.getCode())}catch(e){}if(c&&c!=="ADMIN"&&!(/^TV\d{6}$/.test(c)&&!/^TV(?!00)\d{2,3}0[1-4]01$/.test(c)))return c;try{let A=window.OCDAuth,me=A&&A.token&&A.token()&&A.me&&A.me();if(me){let l=cd(me.linked||(me.type!=="TV"?me.code:""));if(l)return l}}catch(e){}return c==="ADMIN"?c:""}
+function drive(v,z=400){v=cl(v);if(!v)return"";try{if(RS().convertDriveImageUrl)return RS().convertDriveImageUrl(v,z)||v}catch(e){}let m=v.match(/\/file\/d\/([^/?&#]+)|\/d\/([^/?&#]+)|[?&]id=([^&#]+)/i),id=m&&(m[1]||m[2]||m[3]);return id?"https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+z:v}
+function visual(n,cls="npcav"){let w=document.createElement("div");w.className=cls;if(n.image){let i=new Image;i.src=n.image;i.alt=n.name;i.onerror=()=>w.textContent=n.symbol||n.name[0];w.appendChild(i)}else w.textContent=n.symbol||n.name[0];return w}
+async function loadNpcs(){S.npcs=FB.map((x,i)=>({id:"NPC_"+(i+1),name:x[0],symbol:x[1],description:"Chào mừng bạn đến Thanh Phong Thư Môn.",image:""}));try{let d=await sh(C.npcBook,C.npcSheet),h=d[0],ni=col(h,["Nhân vật"]),ii=col(h,["Hình ảnh"]),di=col(h,["Mô tả"]);let a=d.slice(1).map((r,i)=>{let name=cl(r[ni]),f=FB.find(x=>nm(x[0])==nm(name));return name?{id:"NPC_"+(i+1),name,symbol:f?f[1]:name[0],image:ii>=0?drive(r[ii]):"",description:di>=0?cl(r[di]):""}:null}).filter(Boolean);if(a.length)S.npcs=a}catch(e){console.warn(e)}renderNpcs()}
+function mapQuest(d){if(!d.length)return[];let h=d[0],c={id:col(h,["QuestID"]),name:col(h,["TenNhiemVu"]),level:col(h,["Cap","Tuan","Tuần"]),desc:col(h,["MoTa"]),open:col(h,["DieuKienMo"]),reward:col(h,["LoaiThuong"]),amount:col(h,["SoLuongThuong"]),next:col(h,["NextQuest"]),status:col(h,["TrangThai"])};return d.slice(1).map(r=>({id:cl(r[c.id]),name:cl(r[c.name]),level:cl(r[c.level]),desc:cl(r[c.desc]),open:c.open>=0?cl(r[c.open]):"AUTO",reward:cl(r[c.reward]),amount:Number(r[c.amount])||0,next:cl(r[c.next]),status:cl(r[c.status])})).filter(q=>q.id&&nm(q.status)=="active")}
+function mapEvent(d){
+ if(!d.length)return[];
+ let h=d[0],c={id:col(h,["EventID"]),name:col(h,["TenSuKien","Tên sự kiện"]),calendar:col(h,["LoaiLich","Loại lịch"]),day:col(h,["Ngay","Ngày"]),month:col(h,["Thang","Tháng"]),pre:col(h,["MoTruocNgay","Mở trước ngày"]),npc:col(h,["NPC"]),quest:col(h,["QuestID"]),annual:col(h,["LapHangNam","Lặp hàng năm"]),desc:col(h,["MoTa","Mô tả"]),status:col(h,["TrangThai","Trạng thái"])};
+ return d.slice(1).map(r=>({id:cl(r[c.id]),name:cl(r[c.name]),calendar:cl(r[c.calendar]).toUpperCase(),day:Number(r[c.day])||0,month:Number(r[c.month])||0,pre:Math.max(0,Number(r[c.pre])||0),npc:cl(r[c.npc]),quest:cl(r[c.quest]),annual:c.annual>=0?cl(r[c.annual]):"TRUE",desc:c.desc>=0?cl(r[c.desc]):"",status:c.status>=0?cl(r[c.status]):"ACTIVE"})).filter(x=>x.id&&x.quest&&x.day&&x.month&&nm(x.status)==="active");
+}
+function vnDateParts(){let parts=new Intl.DateTimeFormat("en-CA",{timeZone:C.timeZone,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(new Date()),o={};parts.forEach(p=>{if(p.type!=="literal")o[p.type]=Number(p.value)});return{year:o.year,month:o.month,day:o.day,hour:o.hour||0,minute:o.minute||0,second:o.second||0}}
+function dayNo(y,m,d){return Math.floor(Date.UTC(y,m-1,d)/86400000)}
+function beastTestConfig(){
+ let root=window.OCD_QUEST_EVENT_TEST||{},x=root.beast||{};
+ return{enabled:x.enabled===true,ignoreSchedule:x.ignoreSchedule!==false,battleMinutes:Math.max(1,Number(x.battleMinutes)||BEAST.schedule.battleMinutes),eventId:cl(x.eventId||"BEAST_TEST"),allowReset:x.allowReset===true,rewardsEnabled:false};
+}
+function beastRuntimeEventId(){
+ let t=beastTestConfig();
+ if(t.enabled){let d=vnDateParts();return t.eventId+"_"+d.year+String(d.month).padStart(2,"0")+String(d.day).padStart(2,"0");}
+ let d=vnDateParts();
+ return "BEAST_"+d.year+String(d.month).padStart(2,"0")+String(d.day).padStart(2,"0");
+}
+function beastRuntimeDay(){
+ let d=vnDateParts();
+ return d.year+"-"+String(d.month).padStart(2,"0")+"-"+String(d.day).padStart(2,"0");
+}
+function beastBattleMinutes(){let t=beastTestConfig();return t.enabled?t.battleMinutes:BEAST.schedule.battleMinutes}
+/* v3.28: Linh Thú đọc trực tiếp (không cache, không dùng CSV công khai) cho LinhThuEvent/LinhThuKetQua */async function beastCsv(url,force){let w=url===BEAST.csv.event?"event":url===BEAST.csv.result?"result":"",eid=S.beast&&S.beast.eventId;if(w&&eid){try{let j=await QAPI.live(w,eid);if(j&&Array.isArray(j[w]))return j[w].map(r=>(r||[]).map(v=>v==null?"":String(v)))}catch(e){console.warn("[OCD Beast] đọc trực tiếp lỗi, dùng nguồn dự phòng:",e&&e.message||e)}}return csv(await text(url,force))}
+function beastResetState(){
+ S.beast={ready:false,error:"",eventId:beastRuntimeEventId(),events:[],results:[],finals:[],questions:[],assistants:[],assistant:null,studentTeam:"",combatTeam:"",completed:false,test:beastTestConfig()};
+}
+
+function beastTeamNumber(v){
+ let raw=cl(v),s=nm(raw),m=s.match(/\bto\s*([1-4])\b/i)||s.match(/(?:^|\s)([1-4])(?:\s|$)/);
+ if(m)return m[1];
+ if(s.includes("thanh phong mac vu"))return"1";
+ if(s.includes("truc mac thu"))return"2";
+ if(s.includes("vuong trieu ca biet"))return"3";
+ if(s.includes("noi it lam nhieu"))return"4";
+ return["1","2","3","4"].includes(s)?s:"";
+}
+function beastRows(d,map){
+ if(!d||!d.length)return[];
+ let h=d[0],idx={};
+ Object.keys(map).forEach(k=>idx[k]=col(h,map[k]));
+ return d.slice(1).map(r=>{let o={};Object.keys(idx).forEach(k=>o[k]=idx[k]>=0?cl(r[idx[k]]):"");return o});
+}
+function beastMapAssistants(d){
+ return beastRows(d,{code:["Mã học viên","Ma hoc vien"],name:["Họ và tên","Ho va ten"],team:["Tổ bạn muốn phụ trách","To ban muon phu trach"],role:["Vai trò","Vai tro"]})
+  .filter(x=>x.code&&x.team).map(x=>({...x,code:cd(x.code),team:beastTeamNumber(x.team)})).filter(x=>x.team);
+}
+function beastMapEvents(d){
+ return beastRows(d,{timestamp:["Dấu thời gian","Dau thoi gian"],eventId:["EventID"],day:["Ngày","Ngay"],team:["Tổ","To"],assistantCode:["Mã trợ giảng","Ma tro giang"],action:["Hành động","Hanh dong"]})
+  .filter(x=>x.eventId&&x.team&&x.action).map(x=>({...x,team:beastTeamNumber(x.team),assistantCode:cd(x.assistantCode),action:tg(x.action)}));
+}
+function beastMapResults(d){
+ return beastRows(d,{timestamp:["Dấu thời gian","Dau thoi gian"],eventId:["EventID"],studentCode:["Mã học viên","Ma hoc vien"],studentName:["Họ và tên","Ho va ten"],studentTeam:["Tổ gốc","To goc"],combatTeam:["Tổ chiến đấu","To chien dau"],isAssistant:["Là trợ giảng","La tro giang"],questionIds:["QuestionIDs"],answers:["Answers"],correct:["Số câu đúng","So cau dung"],total:["Tổng số câu","Tong so cau"],startedAt:["Bắt đầu lúc","Bat dau luc"],submittedAt:["Nộp lúc","Nop luc"],duration:["Thời gian làm","Thoi gian lam"],status:["Trạng thái","Trang thai"]})
+  .filter(x=>x.eventId&&x.studentCode).map(x=>({...x,studentCode:cd(x.studentCode),studentTeam:beastTeamNumber(x.studentTeam),combatTeam:beastTeamNumber(x.combatTeam),status:tg(x.status),correct:Number(x.correct)||0,total:Number(x.total)||0}));
+}
+function beastFinalScore(value,eventId){
+ let raw=cl(value),n=Number(raw.includes(",")?raw.replace(/\./g,"").replace(",","."):raw);
+ // Sheets vi_VN interpreted six-decimal scores as integers in the 40/40/20 rollout.
+ let day=String(eventId||"").match(/^BEAST_(\d{8})$/),packed=Number(raw.replace(/\./g,""));
+ if(day&&day[1]>="20260930"&&!raw.includes(",")&&Number.isInteger(packed)&&packed>=1000000&&packed<=100000000)n=packed/1000000;
+ return Number.isFinite(n)?n:0;
+}
+function beastMapFinals(d){
+ return beastRows(d,{timestamp:["Dấu thời gian","Dau thoi gian"],eventId:["EventID"],team:["Tổ","To"],completed:["Số người hoàn thành","So nguoi hoan thanh"],correct:["Tổng câu đúng","Tong cau dung"],score:["Điểm chinh phục","Diem chinh phuc"],rank:["Rank"],reward:["Thưởng mỗi người","Thuong moi nguoi"],finalizedAt:["Thời gian tổng kết","Thoi gian tong ket"],status:["Trạng thái","Trang thai"]})
+  .filter(x=>x.eventId&&x.team).map(x=>({...x,team:beastTeamNumber(x.team),completed:Number(x.completed)||0,correct:Number(x.correct)||0,score:beastFinalScore(x.score,x.eventId),rank:Number(x.rank)||0,reward:Number(x.reward)||0,status:tg(x.status)}));
+}
+function beastMapQuestions(d){
+ return beastRows(d,{id:["QuestionID"],text:["CauHoi","Câu hỏi"],A:["A"],B:["B"],C:["C"],D:["D"],answer:["DapAn","Đáp án"],topic:["ChuDe","Chủ đề"],difficulty:["DoKho","Độ khó"],pool:["Pool"],status:["TrangThai","Trạng thái"]})
+  .filter(x=>x.id&&x.text&&tg(x.pool||"BEAST")==="BEAST"&&(!x.status||tg(x.status)==="ACTIVE"))
+  .map(x=>({...x,answer:tg(x.answer)}));
+}
+
+const BEAST_PETS=[["Linh thú Cú","https://drive.google.com/file/d/1Iukr_1eoHfCZAn0AyLaxy4u-wE-l8I0g/view?usp=drivesdk"],["Linh thú Mèo","https://drive.google.com/file/d/1_echC_Y_PcIzP8rdcLzX9E3TfOswT57y/view?usp=drivesdk"],["Linh thú Rồng","https://drive.google.com/file/d/1nubbtI_w3qVxpLUrXCm528_kCK926_T0/view?usp=drivesdk"],["Linh thú Kỳ Lân","https://drive.google.com/file/d/16vG6n6-WIDmpmqwVP-haL0Ul-JlTTAWg/view?usp=drivesdk"],["Linh Thú Huyền Dực Phượng","https://drive.google.com/file/d/1Th1Q4bX0_eP4hIho2lqX08pMIN8AHbSe/view?usp=drive_link"],["Linh Thú Thanh Phong Long","https://drive.google.com/file/d/1PjuZV6CjsgyErxBCFZAVOQK0OLWsPo6s/view?usp=drive_link"],["Linh Thú Cửu Vĩ Hồ","https://drive.google.com/file/d/1m5xXEgY8kMbKVjYTbTWRNw7B7-35Dxp9/view?usp=drive_link"],["Linh Thú Huyền Giáp Quy","https://drive.google.com/file/d/1XOOYexbJkQ4QoCcvx4nDak6jH5PikamZ/view?usp=drive_link"],["Linh Thú Kim Sí Điểu","https://drive.google.com/file/d/1PH8P2deTA5xdZOy3OlzA5sQ9xaqSHq7X/view?usp=drive_link"],["Linh Thú Linh Quang Lộc","https://drive.google.com/file/d/1sbUdKDH6a2HUXqy-HHwpCdbzD8Uyzv5n/view?usp=drive_link"]];
+function beastDailyPet(){let d=beastRuntimeDay(),i=stableHash("BEAST_PET|"+d)%BEAST_PETS.length;return{name:BEAST_PETS[i][0],icon:BEAST_PETS[i][1]}}
+function renderBeastDailyPet(){let el=$("beastDailyIcon"),p=beastDailyPet(),img=document.createElement("img"),title=$("beastEntryTitle");img.src=drive(p.icon,300);img.alt=p.name;img.title=p.name;el.innerHTML="";el.appendChild(img);if(title)title.textContent=p.name+" đang mất kiểm soát"}
+function beastQuestionSeed(eventId,studentCode){return tg(eventId)+"|"+cd(studentCode)}
+function beastSeededRandom(seed){
+ let x=stableHash(seed)||0x9e3779b9;
+ return function(){x+=0x6D2B79F5;let t=x;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}
+}
+function beastAssignedQuestions(eventId,studentCode){
+ let pool=(S.beast&&S.beast.questions||[]).slice().sort((a,b)=>cl(a.id).localeCompare(cl(b.id),"en"));
+ let need=BEAST.quiz.questionsPerStudent;
+ if(pool.length<need)throw Error("Ngân hàng câu hỏi Linh Thú không đủ "+need+" câu ACTIVE.");
+ let rnd=beastSeededRandom(beastQuestionSeed(eventId||S.beast.eventId,studentCode||S.code));
+ for(let i=pool.length-1;i>0;i--){let j=Math.floor(rnd()*(i+1)),t=pool[i];pool[i]=pool[j];pool[j]=t}
+ return pool.slice(0,need);
+}
+function beastAssignedQuestionIds(eventId,studentCode){return beastAssignedQuestions(eventId,studentCode).map(x=>x.id)}
+function beastValidateAssignment(ids,eventId,studentCode){
+ let a=Array.isArray(ids)?ids:String(ids||"").split(/[|,;]+/).map(cl).filter(Boolean);
+ let expected=beastAssignedQuestionIds(eventId,studentCode);
+ return a.length===expected.length&&a.every((x,i)=>tg(x)===tg(expected[i]));
+}
+function beastQuizMessage(){
+ let b=S.beast||{},st=beastRefreshState();
+ if(!S.logged)return"Bạn cần nhập mã học viên trước.";
+ if(!b.ready)return b.error||"Đang tải dữ liệu Linh Thú...";
+ if(!b.combatTeam)return"Chưa xác định được tổ chiến đấu của bạn.";
+ if(b.completed&&!beastFinalConfirmed())return"Các tổ khác vẫn đang chinh phục linh thú, hãy chờ các tổ khác hoàn thành nhiệm vụ hoặc sau 20:00 để xem kết quả trận đấu";
+ if(!st||st.state==="WAITING"){let t=beastTestConfig(),p=vnDateParts(),mins=p.hour*60+p.minute;if(!(t.enabled&&t.ignoreSchedule)&&mins<19*60)return"Hiện tại chưa tới thời gian bắt đầu sự kiện. Hãy quay lại sau 19:00 để nhận nhiệm vụ chinh phục";return"Trợ giảng chưa mở nhiệm vụ, hãy chờ thêm giây lát"}
+ if(st.state==="FINISHED")return"Thời gian chinh phục Linh Thú của tổ đã kết thúc.";
+ if(st.state==="RESULT")return"Kết quả Chinh phục Linh Thú đã được tổng kết.";
+ return"";
+}
+function beastStartQuiz(){
+ let msg=beastQuizMessage();if(msg)throw Error(msg);
+ let st=beastRefreshState();if(st.state!=="ACTIVE")throw Error("Nhiệm vụ Linh Thú chưa sẵn sàng.");
+ let qs=beastAssignedQuestions(),now=Date.now();
+ S.beast.quizRun={eventId:S.beast.eventId,studentCode:S.code,team:S.beast.combatTeam,startedMs:now,questionIds:qs.map(q=>q.id),answers:{}};
+ return qs.map(q=>({id:q.id,text:q.text,A:q.A,B:q.B,C:q.C,D:q.D,topic:q.topic,difficulty:q.difficulty}));
+}
+function beastAnswer(questionId,choice){
+ let r=S.beast&&S.beast.quizRun;if(!r)throw Error("Bạn chưa bắt đầu nhiệm vụ Linh Thú.");
+ if(r.eventId!==S.beast.eventId||r.studentCode!==S.code)throw Error("Phiên làm bài Linh Thú không còn hợp lệ.");
+ let id=cl(questionId),c=tg(choice);
+ if(!r.questionIds.includes(id))throw Error("Câu hỏi không thuộc lượt Linh Thú của bạn.");
+ if(!["A","B","C","D"].includes(c))throw Error("Đáp án không hợp lệ.");
+ r.answers[id]=c;return{answered:Object.keys(r.answers).length,total:r.questionIds.length};
+}
+function beastQuizSnapshot(){
+ let r=S.beast&&S.beast.quizRun;
+ return r?{eventId:r.eventId,team:r.team,startedMs:r.startedMs,questionIds:r.questionIds.slice(),answers:{...r.answers},answered:Object.keys(r.answers).length,total:r.questionIds.length}:null;
+}
+function beastScoreAnswers(r){
+ let map=new Map((S.beast.questions||[]).map(q=>[q.id,q]));
+ return r.questionIds.reduce((n,id)=>n+(map.get(id)&&tg(map.get(id).answer)===tg(r.answers[id])?1:0),0);
+}
+function beastResultConfirmed(){
+ let b=S.beast||{},eid=tg(b.eventId);
+ return (b.results||[]).some(x=>tg(x.eventId)===eid&&x.studentCode===S.code&&x.combatTeam===b.combatTeam&&x.status==="COMPLETED"&&x.total===BEAST.quiz.questionsPerStudent);
+}
+async function beastReloadResultsOnly(){
+ let d=await beastCsv(BEAST.csv.result,true);S.beast.results=beastMapResults(d);beastResolveIdentity();return S.beast.results;
+}
+async function beastWaitResult(timeoutMs){
+ let end=Date.now()+(timeoutMs||15000);
+ while(Date.now()<end){try{await beastReloadResultsOnly();if(beastResultConfirmed())return true}catch(e){}await new Promise(r=>setTimeout(r,1200))}
+ return false;
+}
+async function beastSubmitQuiz(){
+ let b=S.beast||{},r=b.quizRun,pk=pendingFormKey("beast-result",b.eventId+"|"+S.code+"|"+(b.combatTeam||""));
+ if(!r)throw Error("Bạn chưa bắt đầu nhiệm vụ Linh Thú.");
+ if(b.completed||beastResultConfirmed()){pendingFormClear(pk);b.completed=true;return{confirmed:true,alreadyCompleted:true}}
+ let st=beastRefreshState();
+ if(st.state!=="ACTIVE")throw Error("Thời gian chinh phục Linh Thú của tổ đã kết thúc.");
+ if(r.eventId!==b.eventId||r.studentCode!==S.code||r.team!==b.combatTeam)throw Error("Phiên làm bài Linh Thú không còn hợp lệ.");
+ if(!beastValidateAssignment(r.questionIds,r.eventId,r.studentCode))throw Error("Bộ câu hỏi Linh Thú không hợp lệ.");
+ if(r.questionIds.length!==BEAST.quiz.questionsPerStudent||Object.keys(r.answers).length!==BEAST.quiz.questionsPerStudent)throw Error("Bạn cần trả lời đủ 5 câu trước khi nộp.");
+ if(S.busy.beastSubmit)throw Error("Đang gửi kết quả Linh Thú.");
+ S.busy.beastSubmit=true;
+ try{
+  try{await beastReloadResultsOnly()}catch(e){console.warn("[OCD Beast] đọc kết quả trước khi nộp lỗi, vẫn gửi bài (máy chủ chống trùng):",e&&e.message||e)}
+  if(beastResultConfirmed()){pendingFormClear(pk);b.completed=true;return{confirmed:true,alreadyCompleted:true}}
+   if(pendingFormHas(pk)){
+    let pendingOk=await beastWaitResult(15000);
+    if(pendingOk){pendingFormClear(pk);b.completed=true;return{confirmed:true,alreadyCompleted:true}}
+    throw Error("Đã gửi bài thành công! Dữ liệu đang được đồng bộ! Kết quả đã được ghi nhận.");
+   }
+  st=beastRefreshState();if(st.state!=="ACTIVE")throw Error("Thời gian chinh phục Linh Thú của tổ đã kết thúc.");
+  let correct=beastScoreAnswers(r),now=Date.now(),info=S.info||{},profile=S.profile||{};
+  let studentName=cl(info.name||info.fullName||profile.name||profile.fullName||"");
+  await postForm(BEAST.resultForm,{eventId:b.eventId,studentCode:S.code,studentName,studentTeam:b.studentTeam,combatTeam:b.combatTeam,isAssistant:b.assistant?"TRUE":"FALSE",questionIds:r.questionIds.join("|"),answers:r.questionIds.map(id=>r.answers[id]).join("|"),correct,total:r.questionIds.length,startedAt:new Date(r.startedMs).toISOString(),submittedAt:new Date(now).toISOString(),duration:Math.max(0,Math.round((now-r.startedMs)/1000)),status:"COMPLETED"});
+   pendingFormSet(pk);
+  let ok=await beastWaitResult(15000);
+  if(!ok)throw Error("Đã gửi bài thành công! Dữ liệu đang được đồng bộ! Kết quả đã được ghi nhận.");
+  pendingFormClear(pk);b.completed=true;return{confirmed:true,correct,total:r.questionIds.length};
+ }finally{S.busy.beastSubmit=false}
+}
+function beastResolveIdentity(){
+ let b=S.beast||{},info=S.info||{},profile=S.profile||{};
+ let rawTeam=cl(info.group||info.team||info.to||profile.group||profile.team||"");
+ b.studentTeam=beastTeamNumber(rawTeam);
+ b.assistant=(b.assistants||[]).find(x=>cd(x.code)===cd(S.code)||tg(x.code)===tg(S.code))||null;
+ b.combatTeam=b.assistant&&b.assistant.team?b.assistant.team:b.studentTeam;
+ let eid=tg(b.eventId);
+ b.completed=(b.results||[]).some(x=>tg(x.eventId)===eid&&x.studentCode===S.code&&x.status==="COMPLETED");
+}
+
+function beastParseTimestamp(v){
+ let s=cl(v);if(!s)return 0;
+ let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+ if(m)return Date.UTC(+m[3],+m[2]-1,+m[1],+m[4]-7,+m[5],+(m[6]||0));
+ let n=Date.parse(s);return Number.isFinite(n)?n:0;
+}
+function beastDayEndMs(openMs){
+ let d=new Date(openMs),parts=new Intl.DateTimeFormat("en-CA",{timeZone:C.timeZone,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d).reduce((a,x)=>(a[x.type]=x.value,a),{});
+ let target=parts.year+"-"+parts.month+"-"+parts.day+"T20:00:00+07:00";
+ return Date.parse(target);
+}
+function beastScheduleOpenNow(){
+ let t=beastTestConfig();if(t.enabled&&t.ignoreSchedule)return true;
+ let p=vnDateParts(),mins=p.hour*60+p.minute;
+ return mins>=19*60&&mins<20*60;
+}
+function beastTeamEventState(team){
+ let b=S.beast||{},eid=tg(b.eventId),tm=beastTeamNumber(team||b.combatTeam),test=beastTestConfig(),now=Date.now();
+ let rows=(b.events||[]).filter(x=>tg(x.eventId)===eid&&x.team===tm).map(x=>({...x,ms:beastParseTimestamp(x.timestamp)})).filter(x=>x.ms).sort((a,z)=>a.ms-z.ms);
+ let opens=rows.filter(x=>x.action==="OPEN"),finishes=rows.filter(x=>x.action==="FINISH");
+ let open=opens[0]||null,openMs=open?open.ms:0,finish=finishes.find(x=>!openMs||x.ms>=openMs)||null,finishMs=finish?finish.ms:0;
+ let deadline=0;
+ if(openMs){
+  deadline=openMs+beastBattleMinutes()*60000;
+  if(!(test.enabled&&test.ignoreSchedule))deadline=Math.min(deadline,beastDayEndMs(openMs));
+ }
+ let final=(b.finals||[]).find(x=>tg(x.eventId)===eid&&x.team===tm&&(!x.status||x.status==="FINAL"||x.status==="COMPLETED"))||null;
+ let state="WAITING";
+ if(final)state="RESULT";
+ else if(openMs){
+  if(finishMs||now>=deadline)state="FINISHED";
+  else state="ACTIVE";
+ }
+ return{state,eventId:b.eventId,team:tm,open,openMs,finish,finishMs,deadline,remainingMs:deadline?Math.max(0,deadline-now):0,final,canOpen:!!tm&&!openMs&&beastScheduleOpenNow(),canFinish:!!tm&&!!openMs&&!finishMs&&now<deadline,test};
+}
+function beastRefreshState(){
+ if(!S.beast)return null;
+ S.beast.teamState=beastTeamEventState(S.beast.combatTeam);
+ return S.beast.teamState;
+}
+
+function beastCanControl(){
+ let b=S.beast||{};
+ return !!(S.logged&&b.assistant&&b.combatTeam&&b.assistant.team===b.combatTeam&&cd(b.assistant.code)===S.code);
+}
+function beastHasAction(action,assistantOnly){
+ let b=S.beast||{},eid=tg(b.eventId),team=b.combatTeam,a=tg(action);
+ return (b.events||[]).some(x=>!x._local&&tg(x.eventId)===eid&&x.team===team&&x.action===a&&(!assistantOnly||x.assistantCode===S.code));
+}
+function beastEventKey(x){return [tg(x.eventId),beastTeamNumber(x.team),cd(x.assistantCode),tg(x.action),cl(x.timestamp)].join("|")}
+function beastMergeEvents(oldRows,newRows){
+ let map=new Map();
+ [...(oldRows||[]),...(newRows||[])].forEach(x=>{if(x&&x.eventId&&x.team&&x.action)map.set(beastEventKey(x),x)});
+ let rows=[...map.values()];return rows.filter(x=>!x._local||!rows.some(y=>!y._local&&tg(y.eventId)===tg(x.eventId)&&beastTeamNumber(y.team)===beastTeamNumber(x.team)&&tg(y.action)===tg(x.action)));
+}
+/* Retain sent and observed team actions when the published Sheet briefly lags. Local synthetic rows prevent duplicate OPEN submissions but never count as Sheet confirmation. */
+function beastActionMemoKey(){let b=S.beast||{};return"ocdBeastActionMemo:"+encodeURIComponent(cd(S.code))+":"+encodeURIComponent(tg(b.eventId)+"|"+beastTeamNumber(b.combatTeam))}
+function beastReadActionMemo(){let b=S.beast||{},k=beastActionMemoKey();try{let m=JSON.parse(localStorage.getItem(k)||"null");return m&&m.eventId===tg(b.eventId)&&m.team===beastTeamNumber(b.combatTeam)?m:null}catch(e){return null}}
+function beastRememberAction(action,timestamp){let b=S.beast||{},team=beastTeamNumber(b.combatTeam),eid=tg(b.eventId);if(!team||!eid)return;let m=beastReadActionMemo()||{eventId:eid,team};let ts=timestamp||new Date().toISOString();if(action==="OPEN"&&!m.openAt)m.openAt=ts;if(action==="FINISH"&&!m.finishAt)m.finishAt=ts;m.assistantCode=S.code;try{localStorage.setItem(beastActionMemoKey(),JSON.stringify(m))}catch(e){}}
+function beastActionMemoRows(rows){let b=S.beast||{},eid=tg(b.eventId),team=beastTeamNumber(b.combatTeam),out=(rows||[]).slice(),m=beastReadActionMemo();if(!m||!team)return out;let has=a=>out.some(x=>tg(x.eventId)===eid&&beastTeamNumber(x.team)===team&&tg(x.action)===a);if(m.openAt&&!has("OPEN"))out.push({eventId:b.eventId,team,assistantCode:cd(m.assistantCode),action:"OPEN",timestamp:m.openAt,_local:true});if(m.finishAt&&!has("FINISH"))out.push({eventId:b.eventId,team,assistantCode:cd(m.assistantCode),action:"FINISH",timestamp:m.finishAt,_local:true});return out}
+function beastRememberObservedActions(){let b=S.beast||{},eid=tg(b.eventId),team=beastTeamNumber(b.combatTeam),rows=(b.events||[]).filter(x=>tg(x.eventId)===eid&&beastTeamNumber(x.team)===team),opens=rows.filter(x=>tg(x.action)==="OPEN").sort((a,z)=>beastParseTimestamp(a.timestamp)-beastParseTimestamp(z.timestamp)),finishes=rows.filter(x=>tg(x.action)==="FINISH").sort((a,z)=>beastParseTimestamp(a.timestamp)-beastParseTimestamp(z.timestamp));if(opens[0])beastRememberAction("OPEN",opens[0].timestamp);if(finishes[0])beastRememberAction("FINISH",finishes[0].timestamp)}
+
+async function beastReloadEventOnly(){
+ let d=await beastCsv(BEAST.csv.event,true),fresh=beastMapEvents(d);
+ S.beast.events=beastMergeEvents(S.beast.events,beastActionMemoRows(fresh));beastRememberObservedActions();
+ beastRefreshState();
+ return S.beast.teamState;
+}
+async function beastWaitAction(action,timeoutMs){
+ let end=Date.now()+(timeoutMs||12000),a=tg(action);
+ while(Date.now()<end){
+  try{
+   await beastReloadEventOnly();
+   if(beastHasAction(a,false))return true;
+  }catch(e){}
+  await new Promise(r=>setTimeout(r,1200));
+ }
+ return false;
+}
+async function beastWriteAction(action,onSent){
+ let a=tg(action);
+ if(a!=="OPEN"&&a!=="FINISH")throw Error("Hành động Linh Thú không hợp lệ.");
+ if(!beastCanControl())throw Error("Chỉ Trợ giảng phụ trách tổ mới có quyền thực hiện thao tác này.");
+ if(S.busy.beastAction)throw Error("Đang xử lý thao tác Linh Thú.");
+ S.busy.beastAction=true;
+ let pk=pendingFormKey("beast-action",S.beast.eventId+"|"+S.beast.combatTeam+"|"+a);
+ try{
+  await beastReloadEventOnly();
+  let st=beastRefreshState();
+  if(a==="OPEN"){
+   if(st.openMs){pendingFormClear(pk);return st}
+   if(!st.canOpen)throw Error("Chưa đến thời gian mở nhiệm vụ Linh Thú.");
+  }else{
+   if(!st.openMs)throw Error("Nhiệm vụ Linh Thú của tổ chưa được mở.");
+   if(st.finishMs||st.state==="FINISHED"||st.state==="RESULT"){pendingFormClear(pk);return st}
+   if(!st.canFinish)throw Error("Thời gian chiến đấu của tổ đã kết thúc.");
+  }
+  if(pendingFormHas(pk)){
+   let seen=await beastWaitAction(a,a==="FINISH"?30000:18000);
+   if(seen){pendingFormClear(pk);return beastRefreshState()}
+   throw Error(a==="OPEN"?"Đã ghi nhận lệnh chiến đấu, Trợ giảng hãy kêu gọi học viên F5/ Tải lại trang để tranh quyền trả lời sớm":"Đã gửi lệnh thu quân. Dữ liệu đang được ghi. Quay lại xem tổng kết sau 20:00 cùng ngày và nhận phần thưởng cho tổ.");
+  }
+  pendingFormSet(pk);
+  await postForm(BEAST.eventForm,{eventId:S.beast.eventId,day:beastRuntimeDay(),team:S.beast.combatTeam,assistantCode:S.code,action:a});beastRememberAction(a);if(typeof onSent==="function")onSent();
+  let ok=await beastWaitAction(a,a==="FINISH"?30000:18000);
+  if(!ok){
+   try{await beastReloadEventOnly()}catch(e){}
+   let latest=beastRefreshState();
+   if((a==="FINISH"&&((latest.finishMs&&!(latest.finish&&latest.finish._local))||latest.state==="RESULT"))||(a==="OPEN"&&latest.openMs&&!(latest.open&&latest.open._local))){pendingFormClear(pk);return latest}
+   throw Error(a==="OPEN"?"Đã ghi nhận lệnh chiến đấu, Trợ giảng hãy kêu gọi học viên F5/ Tải lại trang để tranh quyền trả lời sớm":"Đã gửi lệnh thu quân. Dữ liệu đang được ghi. Quay lại xem tổng kết sau 20:00 cùng ngày và nhận phần thưởng cho tổ.");
+  }
+  pendingFormClear(pk);return beastRefreshState();
+ }finally{S.busy.beastAction=false}
+}
+async function beastOpen(onSent){return beastWriteAction("OPEN",onSent)}
+async function beastFinish(onSent){return beastWriteAction("FINISH",onSent)}
+function beastUniqueCompletedResults(){
+ let eid=tg(S.beast.eventId),map=new Map();
+ (S.beast.results||[]).filter(x=>tg(x.eventId)===eid&&x.status==="COMPLETED"&&x.total===BEAST.quiz.questionsPerStudent&&x.combatTeam).forEach(x=>{
+  let k=x.combatTeam+"|"+x.studentCode,ms=beastParseTimestamp(x.timestamp),old=map.get(k);
+  if(!old||(!old._ms&&ms)||(ms&&ms<old._ms))map.set(k,{...x,_ms:ms});
+ });
+  return [...map.values()];
+}
+function beastSummaryRows(){
+ // Linh Thu scoring: accuracy 40 + mobilization 40 + OPEN/FINISH coordination 20.
+ // Pmax is the highest completed count in this event, not the team roster size.
+ let rows=beastUniqueCompletedResults(),eid=tg(S.beast.eventId),out=["1","2","3","4"].map(team=>{
+  let a=rows.filter(x=>x.combatTeam===team),completed=a.length,correct=a.reduce((n,x)=>n+(Number(x.correct)||0),0);
+  let events=(S.beast.events||[]).filter(x=>!x._local&&tg(x.eventId)===eid&&x.team===team).map(x=>({...x,ms:beastParseTimestamp(x.timestamp)})).filter(x=>x.ms).sort((a,b)=>a.ms-b.ms);
+  let open=events.find(x=>x.action==="OPEN"),openMs=open?open.ms:0;
+  let finish=openMs?events.find(x=>x.action==="FINISH"&&x.ms>=openMs):null,finishMs=finish?finish.ms:0;
+  let durationMs=openMs&&finishMs?finishMs-openMs:null;
+  let coordinationPoints=0;
+  if(completed>0&&durationMs!==null&&durationMs<=600000){
+   coordinationPoints=durationMs<180000?20:durationMs<300000?15:durationMs<420000?10:5;
+  }
+  let accuracyPoints=completed?40*correct/(BEAST.quiz.questionsPerStudent*completed):0;
+  return{team,completed,correct,openMs,finishMs,durationMs,accuracyPoints,mobilizationPoints:0,coordinationPoints,score:0};
+ });
+ let maxCompleted=Math.max(0,...out.map(x=>x.completed));
+ out.forEach(x=>{
+  x.mobilizationPoints=maxCompleted?40*x.completed/maxCompleted:0;
+  // Stable decimal precision for the Form/Sheet summary round trip.
+  x.score=Number((x.accuracyPoints+x.mobilizationPoints+x.coordinationPoints).toFixed(6));
+ });
+ out.sort((a,b)=>b.score-a.score||b.completed-a.completed||b.correct-a.correct||(a.durationMs===null?Infinity:a.durationMs)-(b.durationMs===null?Infinity:b.durationMs)||Number(a.team)-Number(b.team));
+ out.forEach((x,i)=>{x.rank=i+1;x.reward=BEAST.rewards[x.rank]||0});
+ return out;
+}
+function beastFormatScore(value){return (Number(value)||0).toFixed(2).replace(".",",")}
+function beastAllTeamsClosed(){
+ // 20:00 là mốc đóng tuyệt đối của sự kiện.
+ // Sau 20:00, tổ chưa OPEN được xem là không tham gia và không được chặn tổng kết.
+ let test=beastTestConfig(),now=Date.now();
+ if(!(test.enabled&&test.ignoreSchedule)){
+  let p=vnDateParts(),mins=p.hour*60+p.minute;
+  if(mins>=20*60)return true;
+ }
+ return ["1","2","3","4"].every(team=>{
+  let st=beastTeamEventState(team);
+  if(!st.openMs)return false;
+  if(st.finishMs||st.state==="RESULT")return true;
+  return !!(st.deadline&&now>=st.deadline);
+ });
+}
+const BEAST_TEAM_CARDS={1:"https://drive.google.com/file/d/1VLwUU_73rOPsXNrrljhWkK3lF1EpE8KH/view?usp=drivesdk",2:"https://drive.google.com/file/d/10OzDAfhWpGdXQoyBTs_seFMw6giTu8Vg/view?usp=drivesdk",3:"https://drive.google.com/file/d/1036Hsa90s_A7uuXdfv0jFP49_CfzLqMS/view?usp=drivesdk",4:"https://drive.google.com/file/d/1zJr6Xw4uhFxK3klzvuwwp7ZDBTXJi7MC/view?usp=drivesdk"};
+function beastRewardReason(eventId,rank){return "BEAST:"+tg(eventId)+":RANK"+Number(rank)}
+function beastRewardPreview(){return beastRewardParticipants().map(x=>({studentCode:x.studentCode,studentName:x.studentName||"",team:x.combatTeam,rank:x.rank,reward:x.reward,isAssistant:tg(x.isAssistant)==="TRUE"}))}
+function beastRewardPreviewText(){let a=beastRewardPreview();if(!a.length)return"Không có học viên hợp lệ để nhận thưởng.";return "CHẾ ĐỘ TEST - KHÔNG CỘNG THƯỞNG THẬT\n\n"+a.map((x,i)=>(i+1)+". "+(x.studentName||x.studentCode)+" ("+x.studentCode+") - Tổ "+x.team+" - Rank "+x.rank+" - "+x.reward+" Hoàng Ngọc"+(x.isAssistant?" [Trợ giảng ×2]":"")).join("\n")+"\n\nTổng: "+a.length+" người."}
+function beastLatestFinalEvent(){let a=(S.beast&&S.beast.finals||[]).filter(x=>x.eventId);if(!a.length)return"";let map=new Map;a.forEach(x=>{let k=tg(x.eventId),ms=beastParseTimestamp(x.timestamp)||Date.parse(x.finalizedAt)||0,old=map.get(k);if(!old||ms>old.ms)map.set(k,{id:x.eventId,ms})});return [...map.values()].sort((a,b)=>b.ms-a.ms)[0]?.id||""}
+function beastLatestFinalRows(eventId){let byTeam=new Map;(S.beast.finals||[]).filter(x=>tg(x.eventId)===tg(eventId)&&x.team&&(x.status==="FINAL"||x.status==="COMPLETED")).forEach(x=>{let old=byTeam.get(x.team),ms=Date.parse(x.finalizedAt)||beastParseTimestamp(x.timestamp)||0,oms=old?(Date.parse(old.finalizedAt)||beastParseTimestamp(old.timestamp)||0):0;if(!old||ms>=oms)byTeam.set(x.team,x)});return[...byTeam.values()].sort((a,b)=>a.rank-b.rank||Number(a.team)-Number(b.team))}
+function beastSummarySignature(rows){return(rows||[]).slice().sort((a,b)=>Number(a.team)-Number(b.team)).map(x=>[x.team,x.completed,x.correct,x.score,x.rank,x.reward].join(":")).join("|")}
+function beastFinalMatchesSummary(){return beastSummarySignature(beastLatestFinalRows(S.beast.eventId))===beastSummarySignature(beastSummaryRows())}
+function beastDisplayRows(eventId){return tg(eventId)===tg(S.beast.eventId)&&(S.beast.results||[]).length?beastSummaryRows():beastLatestFinalRows(eventId)}
+function renderBeastRankBanner(){let g=$("beastRankGrid"),date=$("beastRankDate");if(!g)return;let eid=beastLatestFinalEvent()||((S.beast.results||[]).length?S.beast.eventId:"");if(!eid){g.innerHTML='<div class="beast-rank-loading">Chưa có kết quả Chinh phục Linh Thú.</div>';if(date)date.textContent="KẾT QUẢ GẦN NHẤT";return}let finals=beastDisplayRows(eid).filter(x=>x.rank>=1&&x.rank<=3).sort((a,b)=>a.rank-b.rank||Number(a.team)-Number(b.team));if(date){let dm=String(eid).match(/(20\d{2})[-/]?(\d{2})[-/]?(\d{2})/);date.textContent="TOP 3 TỔ CHIẾN THẮNG NGÀY "+(dm?dm[3]+"/"+dm[2]+"/"+dm[1]:eid)}if(!finals.length){g.innerHTML='<div class="beast-rank-loading">Chưa có kết quả xếp hạng.</div>';return}g.innerHTML="";finals.forEach(f=>{let team=f.team,url=BEAST_TEAM_CARDS[team]||"",card=document.createElement("div");card.className="beast-rank-card";card.dataset.team=team;if(url)card.style.setProperty("--br-img",'url("'+drive(url,900)+'")');card.innerHTML='<span class="beast-rank-pos">HẠNG '+f.rank+'</span><div class="beast-rank-copy"><b>Tổ '+team+'</b><small>'+f.completed+' học viên hoàn thành<br>'+f.correct+' câu trả lời đúng · '+beastFormatScore(f.score)+' điểm</small></div>';g.appendChild(card)})}
+function beastRewardKey(code,eventId,rank){return cd(code)+"|"+beastRewardReason(eventId,rank)}
+function beastRewarded(code,eventId,rank){return S.rewardKeys.has(beastRewardKey(code,eventId,rank))}
+function beastRewardPendingKey(x){return pendingFormKey("beast-reward",S.beast.eventId+"|"+x.studentCode+"|"+x.rank)}
+function beastRewardPending(x){return pendingFormHas(beastRewardPendingKey(x))}
+function beastRewardParticipants(){let finals=new Map(beastLatestFinalRows(S.beast.eventId).filter(x=>x.rank>0).map(x=>[x.team,x]));return beastUniqueCompletedResults().map(x=>{let f=finals.get(x.combatTeam);if(!f)return null;let base=Number(f.reward)||0,mult=tg(x.isAssistant)==="TRUE"?BEAST.rewards.assistantMultiplier:1;return{...x,rank:Number(f.rank)||0,reward:base*mult}}).filter(x=>x&&x.reward>0)}
+function beastAllRewardsConfirmed(){let a=beastRewardParticipants();return a.length>0&&a.every(x=>beastRewarded(x.studentCode,S.beast.eventId,x.rank))}
+function beastAnyRewardPending(){return beastRewardParticipants().some(x=>!beastRewarded(x.studentCode,S.beast.eventId,x.rank)&&beastRewardPending(x))}
+async function beastClaimRewards(){
+ /* Giai đoạn 2: Apps Script tự kiểm tra Trợ giảng, bài hoàn thành, rank/thưởng trong LinhThuTongKet và chống phát trùng. */
+ if(!beastCanControl())throw Error("Chỉ Trợ giảng mới có quyền phát thưởng.");
+ if(beastTestConfig().enabled)return{test:true,preview:beastRewardPreview(),text:beastRewardPreviewText()};
+ if(!beastFinalConfirmed())throw Error("Chưa có kết quả tổng kết chính thức.");
+ if(!beastFinalMatchesSummary())throw Error("LinhThuTongKet chưa khớp dữ liệu bài làm mới nhất. Hãy cập nhật tổng kết trước khi phát thưởng.");
+ if(S.busy.beastReward)throw Error("Đang phát thưởng Chinh phục Linh Thú.");
+ S.busy.beastReward=true;
+ try{
+  let a=beastRewardParticipants();if(!a.length)throw Error("Không có học viên hợp lệ để nhận thưởng.");
+  let srv=await QAPI.post({action:"beastReward",assistant:S.code,eventId:S.beast.eventId,items:a.map(x=>({code:x.studentCode}))});
+  if(!srv||!srv.ok)throw Error((srv&&srv.error)||"Apps Script chưa phát được thưởng Linh Thú.");
+  let res=srv.results||[],ok=res.filter(r=>r.status==="sent"||r.status==="already"),errs=res.filter(r=>r.status==="error");
+  ok.forEach(r=>{S.rewardKeys.add(beastRewardKey(r.code,S.beast.eventId,r.rank));pendingFormClear(pendingFormKey("beast-reward",S.beast.eventId+"|"+r.code+"|"+r.rank))});
+  if(errs.length)console.warn("[Linh Thú] Chưa phát được:",errs);
+  try{await loadLedger(true)}catch(e){}
+  return{total:a.length,confirmed:ok.length,pending:a.length-ok.length,errors:errs}
+ }finally{S.busy.beastReward=false}
+}
+async function beastClaimRewardsLegacy(){if(!beastCanControl())throw Error("Chỉ Trợ giảng mới có quyền phát thưởng.");if(beastTestConfig().enabled)return{test:true,preview:beastRewardPreview(),text:beastRewardPreviewText()};if(!beastFinalConfirmed())throw Error("Chưa có kết quả tổng kết chính thức.");if(!beastFinalMatchesSummary())throw Error("LinhThuTongKet chưa khớp dữ liệu bài làm mới nhất. Hãy cập nhật tổng kết trước khi phát thưởng.");if(S.busy.beastReward)throw Error("Đang phát thưởng Chinh phục Linh Thú.");S.busy.beastReward=true;try{await loadLedger();if(!S.ledgerReady)throw Error("Không đọc được QuaTangGVCN.");let a=beastRewardParticipants();if(!a.length)throw Error("Không có học viên hợp lệ để nhận thưởng.");let roster;try{roster=await loadHocVienCsv()}catch(e){throw Error("Không đọc được tab HocVien nên chưa gửi quà: "+String(e&&e.message||e))}for(let x of a){let pk=beastRewardPendingKey(x);if(beastRewarded(x.studentCode,S.beast.eventId,x.rank)){pendingFormClear(pk);continue}if(pendingFormHas(pk))continue;let studentRecord=findStudent(roster,x.studentCode);if(!studentRecord||!studentRecord.group||!studentRecord.course)throw Error("Tab HocVien chưa có đủ thông tin Tổ/Khóa cho học viên "+x.studentCode+"; chưa gửi quà để tránh ghi sai.");pendingFormSet(pk);await postForm(C.rewardForm,{scope:"Cá nhân",studentCode:x.studentCode,group:studentRecord.group,course:studentRecord.course,rewardType:"Linh thạch",giftName:"",gemType:GEM.HOANG_NGOC,quantity:x.reward,reason:beastRewardReason(S.beast.eventId,x.rank),giver:"GVCN",status:"Đang hiệu lực"})}let deadline=Date.now()+30000,confirmed=0;do{await loadLedger();if(!S.ledgerReady)throw Error("Không đọc được QuaTangGVCN khi đang chờ xác nhận.");a.forEach(x=>{if(beastRewarded(x.studentCode,S.beast.eventId,x.rank))pendingFormClear(beastRewardPendingKey(x))});confirmed=a.filter(x=>beastRewarded(x.studentCode,S.beast.eventId,x.rank)).length;if(confirmed===a.length||Date.now()>=deadline)break;await new Promise(r=>setTimeout(r,1500))}while(Date.now()<deadline);return{total:a.length,confirmed,pending:a.length-confirmed}}finally{S.busy.beastReward=false}}
+async function beastRewardButtonClick(button){if(!button||button.disabled)return;button.disabled=true;button.textContent="Đang gửi - đang đồng bộ với dữ liệu - vui lòng chờ trong giây lát...";try{let z=await beastClaimRewards();if(z.test)alert(z.text);else if(z.confirmed===z.total)alert("Sheet đã xác nhận đủ "+z.confirmed+"/"+z.total+" phần thưởng.");else alert("Sheet đã xác nhận "+z.confirmed+"/"+z.total+" phần thưởng. Các phần còn lại vẫn đang chờ đồng bộ; không gửi lại để tránh trùng.")}catch(e){alert(e.message||e)}finally{beastRenderModal()}}
+function beastFinalConfirmed(){
+ let eid=tg(S.beast.eventId);
+ return ["1","2","3","4"].every(team=>(S.beast.finals||[]).some(x=>tg(x.eventId)===eid&&x.team===team&&(x.status==="FINAL"||x.status==="COMPLETED")));
+}
+async function beastReloadFinalsOnly(){
+ let d=await beastCsv(BEAST.csv.final,true);S.beast.finals=beastMapFinals(d);beastRefreshState();return S.beast.finals;
+}
+async function beastWaitFinal(timeoutMs,expectedSignature){
+ let end=Date.now()+(timeoutMs||18000);
+ while(Date.now()<end){try{await beastReloadFinalsOnly();if(beastFinalConfirmed()&&(!expectedSignature||beastSummarySignature(beastLatestFinalRows(S.beast.eventId))===expectedSignature))return true}catch(e){}await new Promise(r=>setTimeout(r,1000))}
+ return false;
+}
+function beastMissingAssistantResults(){
+ let b=S.beast||{},eid=tg(b.eventId),finishedTeams=new Set((b.events||[]).filter(x=>tg(x.eventId)===eid&&x.action==="FINISH").map(x=>x.team));
+ let completed=beastUniqueCompletedResults();
+ return (b.assistants||[]).filter(a=>finishedTeams.has(a.team)&&!(completed||[]).some(x=>x.combatTeam===a.team&&cd(x.studentCode)===cd(a.code)));
+}
+async function beastWaitResultsReady(timeoutMs){
+ let started=Date.now(),end=started+(timeoutMs||150000),last="",stable=0,closeAt=["1","2","3","4"].map(team=>{let st=beastTeamEventState(team);return st.finishMs||st.deadline||0}).reduce((m,x)=>Math.max(m,x),0),settleAt=(closeAt||started)+(String(QAPI.source()).indexOf("Apps Script")===0?20000:90000);
+ while(Date.now()<end){
+  try{
+   let d=await beastCsv(BEAST.csv.result,true);S.beast.results=beastMapResults(d);beastResolveIdentity();
+   let sig=beastSummarySignature(beastSummaryRows());stable=sig&&sig===last?stable+1:1;last=sig;
+   if(stable>=3&&Date.now()>=settleAt)return true;
+  }catch(e){stable=0}
+  await new Promise(r=>setTimeout(r,2500));
+ }
+ return false;
+}
+async function beastFinalize(){
+ if(!beastCanControl())throw Error("Chỉ Trợ giảng mới có quyền tổng kết sự kiện.");
+ if(S.busy.beastFinalize)throw Error("Đang tổng kết Chinh phục Linh Thú.");
+ S.busy.beastFinalize=true;
+ let lockKey="ocdBeastFinalize:"+S.beast.eventId;
+ try{
+  await loadBeast(true);
+  if(!beastAllTeamsClosed())throw Error("Chưa thể tổng kết: vẫn còn tổ chưa kết thúc lượt chiến đấu.");
+  let ready=await beastWaitResultsReady(150000);
+  if(!ready)throw Error("Dữ liệu bài làm vẫn đang thay đổi. Hệ thống chưa ghi tổng kết để tránh sai số; hãy thử lại sau vài giây.");
+  let rows=beastSummaryRows(),signature=beastSummarySignature(rows);await beastReloadFinalsOnly();
+  if(beastSummarySignature(beastLatestFinalRows(S.beast.eventId))===signature)return rows;
+  try{let lock=JSON.parse(localStorage.getItem(lockKey)||"null");if(lock&&Date.now()-lock.at<90000)throw Error("Một lượt tổng kết đang được gửi. Hãy chờ Sheet xác nhận, không bấm lại.");localStorage.setItem(lockKey,JSON.stringify({at:Date.now(),signature}))}catch(e){if(e&&String(e.message).includes("Một lượt tổng kết"))throw e}
+  let now=new Date().toISOString();
+  for(let x of rows){let pk=pendingFormKey("beast-final",S.beast.eventId+"|"+signature+"|"+x.team);if(pendingFormHas(pk))continue;pendingFormSet(pk);await postForm(BEAST.finalForm,{eventId:S.beast.eventId,team:x.team,completed:x.completed,correct:x.correct,score:Number(x.score).toFixed(6).replace(".",","),rank:x.rank,reward:x.reward,finalizedAt:now,status:"FINAL"})}
+  let ok=await beastWaitFinal(30000,signature);
+  if(!ok)throw Error("Đã gửi snapshot tổng kết và đang chờ LinhThuTongKet xác nhận đủ 4 tổ. Không bấm lại; hãy kiểm tra sau vài giây.");
+  try{localStorage.removeItem(lockKey)}catch(e){}
+  renderBeastRankBanner();return rows;
+ }finally{S.busy.beastFinalize=false}
+}
+
+async function loadBeast(force){
+ if(!S.logged)return;
+ if(!S.beast||!S.beast.eventId)beastResetState();
+ let b=S.beast;b.ready=false;b.error="";b.eventId=beastRuntimeEventId();b.test=beastTestConfig();
+ try{
+  let z=await Promise.all([
+   beastCsv(BEAST.csv.event,force),
+   beastCsv(BEAST.csv.result,force),
+   beastCsv(BEAST.csv.final,force),
+   beastCsv(BEAST.csv.questions,force),
+   beastCsv(BEAST.csv.assistants,force)
+  ]);
+  b.events=beastMergeEvents(b.events,beastMapEvents(z[0]));b.results=beastMapResults(z[1]);b.finals=beastMapFinals(z[2]);b.questions=beastMapQuestions(z[3]);b.assistants=beastMapAssistants(z[4]);renderBeastRankBanner();
+  beastResolveIdentity();b.events=beastMergeEvents(b.events,beastActionMemoRows([]));beastRememberObservedActions();beastRefreshState();b.ready=true;
+ }catch(e){
+  b.error=String(e&&e.message||e);console.warn("[OCD Beast] load:",e);
+ }
+}
+function eventTestConfig(){let x=window.OCD_QUEST_EVENT_TEST||{};return{enabled:x.enabled===true,questId:cl(x.questId||"SKQ_0209")}}
+function refreshActiveEvents(){
+ let t=vnDateParts(),today=dayNo(t.year,t.month,t.day),test=eventTestConfig();
+ S.events.forEach(e=>{
+  e.year=t.year;e.eventDay=dayNo(t.year,e.month,e.day);e.startDay=e.eventDay-e.pre;
+  e.testActive=!!(test.enabled&&e.quest===test.questId);
+  e.active=e.testActive||(e.calendar==="DUONG_LICH"&&today>=e.startDay&&today<=e.eventDay);
+ });
+ S.activeEvents=S.events.filter(e=>e.active);
+}
+function eventForQuest(id){let base=cl(id).split("@")[0];return S.events.find(e=>e.quest===base)||null}
+function isEventQuest(q){return!!q&&(cl(q.level).toUpperCase()==="EVENT"||!!eventForQuest(q.id))}
+function isActiveEventQuest(id){return S.activeEvents.some(e=>e.quest===cl(id).split("@")[0])}
+function runtimeQuestId(id){
+ id=cl(id);if(!id||id.includes("@"))return id;
+ let e=eventForQuest(id);
+ if(!e)return id;
+ return e.testActive?id+"@TEST":id+"@"+(e.year||vnDateParts().year);
+}
+function eventPendingForNpc(n){return S.activeEvents.some(e=>nm(e.npc)===nm(n.name)&&progress(e.quest).status!=="COMPLETED")}
+function isSurpriseQuest(q){return!!q&&cl(q.level).toUpperCase()==="SURPRISE"}
+function surpriseNpcName(q){let s=q&&S.steps.find(x=>x.quest===q.id&&x.type==="NPC");return s?cl(s.req):""}
+function dateKey(){let x=vnDateParts();return String(x.year)+String(x.month).padStart(2,"0")+String(x.day).padStart(2,"0")}
+function stableHash(v){let h=2166136261;v=String(v);for(let i=0;i<v.length;i++){h^=v.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function surpriseEligible(q){
+ if(!q||progress(q.id).status==="COMPLETED")return false;
+ if(q.id==="DX_MYSTERY_BOX_10"&&mysteryBoxUseCount()<9)return false;
+ return true
+}
+async function recordSurpriseAssignment(q){
+ if(!q||S.assignedSurpriseId===q.id)return true;
+ let time=new Date().toISOString();
+ await postForm(C.progressForm,{studentCode:S.code,questId:q.id,status:"ASSIGNED",correct:0,total:0,startedAt:time,completedAt:"",rewardStatus:"NOT_DUE"});
+ S.assignedSurpriseId=q.id;
+ return true
+}
+async function refreshDailySurprise(){
+ /* v3.26.0: Apps Script quyết định nhiệm vụ đột xuất (đọc thẳng TienDoForm).
+    Nhiệm vụ đã giao được giữ đến khi hoàn thành; làm xong thì nhận nhiệm vụ mới ngay.
+    Apps Script lỗi -> chỉ hiện nhiệm vụ đã giao trong Sheet, không tự giao nhiệm vụ mới. */
+ S.surpriseQuestId="";S.surpriseDay=dateKey();
+ if(!S.logged||!S.progressReady)return;
+ let catalog=S.quests.filter(isSurpriseQuest);
+ if(!catalog.length)return;
+ let r=null;
+ try{r=await QAPI.post({action:"surprise",code:S.code,eligible:catalog.filter(surpriseEligible).map(q=>q.id)})}catch(e){console.warn("[OCD Quest] Giao nhiệm vụ đột xuất qua Apps Script lỗi:",e&&e.message||e)}
+ if(r&&r.ok){
+  let id=cl(r.questId).toUpperCase(),q=catalog.find(x=>cl(x.id).toUpperCase()===id);
+  if(q&&progress(q.id).status!=="COMPLETED"){S.surpriseQuestId=q.id;S.assignedSurpriseId=q.id}
+  console.info("[OCD Quest] Nhiệm vụ đột xuất: "+(id||"(không còn)")+(r.assigned?" - vừa giao":" - đang làm"));
+  return
+ }
+ if(r&&/thao tác không hợp lệ/i.test(String(r.error||"")))return refreshDailySurpriseLegacy();
+ if(r)console.warn("[OCD Quest] Apps Script từ chối giao nhiệm vụ đột xuất:",r.error);
+ let q=catalog.find(x=>x.id===S.assignedSurpriseId&&progress(x.id).status!=="COMPLETED");
+ if(q)S.surpriseQuestId=q.id
+}
+/* Cách cũ (v3.25.0): chỉ dùng khi Apps Script chưa cập nhật lên v15 */
+async function refreshDailySurpriseLegacy(){
+ S.surpriseQuestId="";S.surpriseDay=dateKey();
+ if(!S.logged||!S.progressReady)return;
+ let catalog=S.quests.filter(isSurpriseQuest),selected=catalog.find(q=>q.id===S.assignedSurpriseId&&progress(q.id).status!=="COMPLETED");
+ let key="ocdQuestSurprise:"+S.code+":"+S.surpriseDay,saved="";
+ if(!selected){try{saved=cl(localStorage.getItem(key))}catch(e){}selected=catalog.find(q=>q.id===saved&&progress(q.id).status!=="COMPLETED")}
+ if(!selected){
+  let candidates=catalog.filter(surpriseEligible);
+  if(!candidates.length)return;
+  selected=candidates[stableHash(S.code+"|"+S.surpriseDay)%candidates.length]
+ }
+ S.surpriseQuestId=selected.id;
+ try{localStorage.setItem(key,selected.id)}catch(e){}
+ if(S.assignedSurpriseId!==selected.id)await recordSurpriseAssignment(selected)
+}
+function surprisePendingForNpc(n){let q=S.quests.find(x=>x.id===S.surpriseQuestId);return!!q&&nm(surpriseNpcName(q))===nm(n.name)&&progress(q.id).status!=="COMPLETED"}
+function submissionRequirement(step){
+ let base=cl(step.req);
+ if(step.type!=="SUBMISSION"||!eventForQuest(step.quest))return base;
+ let e=eventForQuest(step.quest);
+ return e&&e.testActive?base+"-TEST":base+"-"+(e.year||vnDateParts().year);
+}
+function mapStep(d){if(!d.length)return[];let h=d[0],c={quest:col(h,["QuestID"]),id:col(h,["StepID"]),order:col(h,["ThuTu"]),name:col(h,["TenBuoc"]),type:col(h,["Loai"]),url:col(h,["URL"]),req:col(h,["YeuCau","Yêu cầu"]),guide:col(h,["HuongDan","Hướng dẫn"]),qty:col(h,["SoLuongYeuCau","Số lượng yêu cầu"])};return d.slice(1).map(r=>({quest:cl(r[c.quest]),id:cl(r[c.id]),order:Number(r[c.order])||0,name:cl(r[c.name]),type:cl(r[c.type]).toUpperCase(),url:c.url>=0?cl(r[c.url]):"",req:c.req>=0?cl(r[c.req]):"",guide:c.guide>=0?cl(r[c.guide]):"",qty:c.qty>=0?(Number(r[c.qty])||1):1})).filter(x=>x.quest&&x.id)}
+function mapDialogue(d){if(!d.length)return[];let h=d[0],c={id:col(h,["DialogueID"]),quest:col(h,["QuestID"]),step:col(h,["StepID"]),npc:col(h,["NPC"]),order:col(h,["ThuTu"]),content:col(h,["NoiDung","Nội dung"]),label:col(h,["NhanNut","Nhãn nút"]),status:col(h,["TrangThai","Trạng thái"])};return d.slice(1).map(r=>({id:cl(r[c.id]),quest:cl(r[c.quest]),step:cl(r[c.step]),npc:cl(r[c.npc]),order:Number(r[c.order])||0,content:cl(r[c.content]),label:c.label>=0?cl(r[c.label]):"",status:c.status>=0?cl(r[c.status]):"ACTIVE"})).filter(x=>x.id&&x.quest&&x.step&&x.npc&&(!x.status||nm(x.status)==="active")).sort((a,b)=>a.order-b.order)}
+function dialogueFor(step,npc){return S.dialogues.filter(x=>x.quest===step.quest&&x.step===step.id&&nm(x.npc)===nm(npc.name)).sort((a,b)=>a.order-b.order)}
+function dialogueParts(content){
+ let s=cl(content),re=/https?:\/\/[^\s<>"']+/gi,parts=[],last=0,m;
+ while((m=re.exec(s))){if(m.index>last)parts.push({type:"text",value:s.slice(last,m.index)});let url=m[0].replace(/[),.;!?]+$/,""),tail=m[0].slice(url.length);parts.push({type:"link",value:url});if(tail)parts.push({type:"text",value:tail});last=m.index+m[0].length}
+ if(last<s.length)parts.push({type:"text",value:s.slice(last)});
+ return parts.length?parts:[{type:"text",value:s}];
+}
+function renderDialogueContent(el,content){
+ el.innerHTML="";let p=document.createElement("p");p.className="npc-line";
+ dialogueParts(content).forEach(x=>{if(x.type==="link"){let a=document.createElement("a");a.className="npc-link";a.href=x.value;a.target="_blank";a.rel="noopener noreferrer";a.textContent="Đọc nội dung";p.appendChild(a)}else p.appendChild(document.createTextNode(x.value))});
+ el.appendChild(p);
+}
+function mapQ(d){if(!d.length)return[];let h=d[0],c={id:col(h,["QuestionID"]),quest:col(h,["QuestID"]),step:col(h,["StepID"]),order:col(h,["ThuTu"]),text:col(h,["CauHoi"]),a:col(h,["A"]),b:col(h,["B"]),c:col(h,["C"]),d:col(h,["D"]),answer:col(h,["DapAn"])};return d.slice(1).map(r=>({id:cl(r[c.id]),quest:cl(r[c.quest]),step:cl(r[c.step]),order:Number(r[c.order])||0,text:cl(r[c.text]),options:{A:cl(r[c.a]),B:cl(r[c.b]),C:cl(r[c.c]),D:cl(r[c.d])},answer:cl(r[c.answer]).toUpperCase()})).filter(x=>x.id&&x.quest)}
+function compileSteps(raw,questions){
+ let out=raw.slice(),seen=new Set(out.map(x=>x.quest+"|"+x.id));
+ let groups=new Map();
+ questions.forEach(q=>{
+  let sid=cl(q.step),k=q.quest+"|"+sid;
+  if(!groups.has(k))groups.set(k,[]);
+  groups.get(k).push(q);
+ });
+ groups.forEach((qs,k)=>{
+  let parts=k.split("|"),qid=parts[0],sid=parts.slice(1).join("|");
+  if(sid&&seen.has(k))return;
+  if(!sid){
+   let existing=out.find(x=>x.quest===qid&&x.type==="QUIZ");
+   if(existing)return;
+   sid=qid+"-QUIZ";
+   k=qid+"|"+sid;
+   if(seen.has(k))return;
+  }
+  let max=out.filter(x=>x.quest===qid).reduce((m,x)=>Math.max(m,x.order||0),0);
+  out.push({quest:qid,id:sid,order:max+1,name:"Thử thách kiến thức",type:"QUIZ",url:"",req:"ALL",guide:"Trả lời đúng toàn bộ câu hỏi để hoàn thành bước này.",qty:qs.length||1});
+  seen.add(k);
+ });
+ return out.sort((a,b)=>a.quest===b.quest?a.order-b.order:0);
+}
+/* v3.27: nhớ nội dung nhiệm vụ & tiến độ trên máy học viên -> mở trang hiện ngay, sau đó cập nhật ngầm */
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+const QCACHE="ocdQuestContent_v1";
+function applyQuests(r){let[d1,d2,d3,d4,d5]=r;S.events=mapEvent(d5);refreshActiveEvents();S.quests=mapQuest(d1);S.questions=mapQ(d3);S.steps=compileSteps(mapStep(d2),S.questions);S.dialogues=mapDialogue(d4);evaluate();renderAll()}
+async function loadQuests(){
+ let c=lsGet(QCACHE);if(c&&Array.isArray(c.d)&&c.d.length===5&&!S.quests.length){try{applyQuests(c.d)}catch(e){console.warn("[OCD Quest] cache:",e)}}
+ let r=await Promise.all([sh(C.questBook,C.sheets.quest),sh(C.questBook,C.sheets.step),sh(C.questBook,C.sheets.question),sh(C.questBook,C.sheets.dialogue),sh(C.questBook,C.sheets.event)]);
+ lsSet(QCACHE,{at:Date.now(),d:r});applyQuests(r);
+}
+function activityKey(questId,stepId,type){return S.code+"|"+runtimeQuestId(questId).toUpperCase()+"|"+cl(stepId).toUpperCase()+"|"+cl(type).toUpperCase()}
+function activityDone(step){return S.activityKeys.has(activityKey(step.quest,step.id,step.type))}
+function applyActivity(d){
+ let h=d[0]||[];
+ let si=col(h,["StudentCode","Mã học viên"]),qi=col(h,["QuestID"]),sti=col(h,["StepID"]),ty=col(h,["StepType"]),ss=col(h,["Status"]);
+ let set=new Set();
+ d.slice(1).forEach(r=>{
+  if(cd(r[si])!==S.code)return;
+  if(cl(r[ss]).toUpperCase()!=="COMPLETED")return;
+  set.add(activityKey(r[qi],r[sti],r[ty]));
+ });
+ S.activityKeys=set;S.activityReady=true;
+}
+async function loadActivity(){
+ if(!S.logged){S.activityReady=false;S.activityKeys=new Set();return}
+ let ck="ocdQuestAct_v1:"+S.code;
+ if(!S.activityReady){let c=lsGet(ck);if(c&&c.code===S.code){try{applyActivity(c.d)}catch(e){}}}
+ try{let d=await sh(C.questBook,C.sheets.activity,true);applyActivity(d);lsSet(ck,{code:S.code,d:d})}catch(e){console.warn("[OCD Quest] Activity:",e)}
+}
+async function recordActivity(step,result){
+ if(!S.logged)throw Error("Chưa xác minh học viên.");
+ await loadActivity();
+ if(!S.activityReady)throw Error("Không đọc được HoatDongNhiemVu.");
+ let pk=pendingFormKey("activity",activityKey(step.quest,step.id,step.type));
+ if(activityDone(step)){pendingFormClear(pk);return true}
+ if(!pendingFormHas(pk)){pendingFormSet(pk);let time=new Date().toISOString();await postForm(C.activityForm,{studentCode:S.code,questId:runtimeQuestId(step.quest),stepId:step.id,stepType:step.type,status:"COMPLETED",result:result||"",completedAt:time})}
+ for(let i=0;i<14;i++){await new Promise(r=>setTimeout(r,i?2200:(Date.now()-(S.formOkAt||0)<8000?0:1200)));await loadActivity();if(S.activityReady&&activityDone(step)){pendingFormClear(pk);return true}}
+ throw Error("Đã gửi yêu cầu. Chưa thấy xác nhận trong HoatDongNhiemVu; hệ thống sẽ không gửi lại để tránh trùng. Hãy bấm kiểm tra lại sau vài giây.");
+}
+function progress(id){let k=cl(runtimeQuestId(id)).toUpperCase();return S.progressReady&&S.remote[k]&&S.remote[k].status==="COMPLETED"?S.remote[k]:{status:"AVAILABLE"}}
+function unlocked(q){let c=cl(q.open);return!c||nm(c)=="auto"||c.split(/[,;|]+/).map(cl).filter(Boolean).every(id=>progress(id).status==="COMPLETED")}
+function currentRegularQuest(){
+ let regular=S.quests.filter(q=>!isEventQuest(q)&&!isSurpriseQuest(q)&&progress(q.id).status!=="COMPLETED"&&unlocked(q));
+ if(!regular.length)return null;
+ regular.sort((a,b)=>{
+  let an=Number(a.level),bn=Number(b.level);
+  if(Number.isFinite(an)&&Number.isFinite(bn)&&an!==bn)return an-bn;
+  return S.quests.indexOf(a)-S.quests.indexOf(b);
+ });
+ return regular[0];
+}
+function questVisible(q){
+ if(!q)return false;
+ if(isEventQuest(q))return isActiveEventQuest(q.id)&&progress(q.id).status!=="COMPLETED";
+ if(isSurpriseQuest(q))return q.id===S.surpriseQuestId&&progress(q.id).status!=="COMPLETED";
+ let cur=currentRegularQuest();
+ return !!cur&&cur.id===q.id;
+}
+function applyProgress(d){let h=d[0]||[],si=col(h,["StudentCode","Mã học viên"]),qi=col(h,["QuestID"]),sti=col(h,["Status"]),ci=col(h,["CorrectAnswers"]),ti=col(h,["TotalQuestions"]);if(si<0||qi<0||sti<0)throw Error("TienDoForm thiếu cột StudentCode, QuestID hoặc Status");let o={},assigned="";d.slice(1).forEach(r=>{let student=cd(r[si]),quest=cl(r[qi]).toUpperCase(),status=cl(r[sti]).toUpperCase();if(student!==S.code||!quest)return;if(status==="COMPLETED"){o[quest]={status:"COMPLETED",correct:Number(r[ci])||0,total:Number(r[ti])||0};if(assigned===quest)assigned=""}else if(status==="ASSIGNED"&&quest.startsWith("DX_")&&!o[quest])assigned=quest});if(assigned&&o[assigned]&&o[assigned].status==="COMPLETED")assigned="";S.remote=o;S.assignedSurpriseId=assigned;S.progressReady=true}
+async function loadProgress(){S.progressError="";if(!S.logged){S.progressReady=false;S.assignedSurpriseId="";return}let ck="ocdQuestProg_v1:"+S.code;if(!S.progressReady){let c=lsGet(ck);if(c&&c.code===S.code){try{applyProgress(c.d);renderAll()}catch(e){}}}try{let d=await sh(C.questBook,C.sheets.progress,true);applyProgress(d);lsSet(ck,{code:S.code,d:d})}catch(e){if(!S.progressReady){S.remote={};S.assignedSurpriseId=""}S.progressError=e&&e.message?e.message:"Không đọc được TienDoForm";console.warn("[OCD Quest] Progress:",e)}}
+/* v3.30.0: CHỐT SỔ – thưởng đã nhận, đã bán Minh Hồng, hộp bí ẩn đã mở trước mốc chốt nằm ở tab SoDuChotDaNhan.
+   Dòng QuaTangGVCN / MinhHongGiaoDich / PhieuDoi có thời gian <= Mốc chốt của học viên đã tính trong đó (không đếm lại). */
+const SNAP_TAB="SoDuChotDaNhan";
+function qMs(v){let m=cl(v).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/);return m?Date.UTC(+m[3],+m[2]-1,+m[1],+m[4]-7,+m[5],+(m[6]||0)):0}
+function qJson(v,f){try{return JSON.parse(cl(v))||f}catch(e){return f}}
+async function loadSnapKeys(all){let want=all||!S.code?"*":S.code;if(S.snapKeys&&(S.snapKeysFor==="*"||S.snapKeysFor===want))return S.snapKeys;let map=new Map;try{let d=csv(await text(sheetUrl(C.giftBook,SNAP_TAB)+(want==="*"?"":"&own=1"),false)),h=d[0]||[],ci=col(h,["Mã học viên"]),ti=col(h,["Mốc chốt"]),ri=col(h,["Thưởng đã nhận"]),si=col(h,["Đã bán Minh Hồng"]),mi=col(h,["Hộp bí ẩn đã mở"]),sti=col(h,["Trạng thái"]);if(ci>=0&&ti>=0&&ri>=0)d.slice(1).forEach(r=>{let code=cd(r[ci]),st=sti>=0?nm(r[sti]):"";if(!code||(st&&st!=="dang hieu luc"&&st!=="active"))return;let cut=qMs(r[ti]);if(!cut)return;let o=map.get(code);if(o&&o.cut>=cut)return;map.set(code,{cut:cut,reasons:qJson(r[ri],[]),sold:si>=0?qJson(r[si],{}):{},mystery:mi>=0?Math.max(0,parseInt(r[mi],10)||0):0})})}catch(e){console.warn("[OCD Quest] "+SNAP_TAB+":",e)}S.snapKeys=map;S.snapKeysFor=want;return map}
+function afterSnap(map,code,t){let s=map&&map.get(code);if(!s)return true;let ms=qMs(t);return!ms||ms>s.cut}
+async function loadLedger(all){S.ledgerReady=false;try{let sk=loadSnapKeys(all),d=csv(await text(sheetUrl(C.giftBook,C.giftSheet)+(all||!S.code?"":"&own=1"),true)),h=d[0]||[],si=col(h,["Mã học viên","StudentCode"]),ri=col(h,["Lý do tặng","Lý do","Reason"]),sti=col(h,["Trạng thái","Status"]),set=new Set;d.slice(1).forEach(r=>{let st=sti>=0?nm(r[sti]):"dang hieu luc",code=cd(r[si]),reason=cl(r[ri]).toUpperCase();if(code&&reason&&(!st||st=="dang hieu luc"||st=="active"))set.add(code+"|"+reason)});(await sk).forEach((x,code)=>x.reasons.forEach(t=>{let reason=cl(t).toUpperCase();if(reason)set.add(code+"|"+reason)}));S.rewardKeys=set;S.ledgerReady=true}catch(e){console.warn(e)}}
+async function loadStudentCsv(force){if(S.studentCsv&&!force)return S.studentCsv;let core=RS(),u=core&&core.CONFIG&&core.CONFIG.studentCsv,t="";if(u){try{t=core&&core.getStudentSubmissionsCsv?await core.getStudentSubmissionsCsv(S.code,!!force):await text(u,true)}catch(e){console.warn("[OCD Quest] Core studentCsv:",e)}}let info=t?findStudent(t,S.code):null;if(S.code&&!info){let hv="https://docs.google.com/spreadsheets/d/1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs/export?format=csv&gid=1603096683";try{let fresh=await text(hv,true);if(fresh&&findStudent(fresh,S.code))t=fresh}catch(e){console.warn("[OCD Quest] HocVien fallback:",e)}}if(!t)throw Error("Không có studentCsv");S.studentCsv=t;return t}
+async function loadHocVienCsv(){let u="https://docs.google.com/spreadsheets/d/1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs/export?format=csv&gid=1603096683",t=await text(u,true);if(!t)throw Error("Tab HocVien không có dữ liệu.");return t}
+function findStudent(t,w){let d=csv(t),h=d[0]||[],ci=col(h,["Mã học viên","StudentCode"]),ni=col(h,["Họ và tên","Họ tên","Name"]),gi=col(h,["Tổ","Group"]),ki=col(h,["Khóa","Khoá","Course"]);for(let i=d.length-1;i>0;i--)if(cd(d[i][ci])===w)return{name:ni>=0?cl(d[i][ni]):"",group:gi>=0?cl(d[i][gi]):"",course:ki>=0?cl(d[i][ki]):""};return null}
+function items(){return S.profile&&Array.isArray(S.profile.ownedItems)?S.profile.ownedItems:[]}
+/*
+ * ITEM GROUP MATCHING v3.14.2
+ *
+ * Mặc định: vật phẩm vẫn phải trùng tên chính xác.
+ *
+ * Riêng 4 nhóm dưới đây, nếu YeuCau trong BuocNhiemVu là tên nhóm
+ * thì mọi vật phẩm có tên bắt đầu bằng tên nhóm đều được chấp nhận:
+ *
+ * - Thẻ đổi Avatar
+ * - Linh Thú
+ * - Nền hồ sơ
+ * - Khung
+ *
+ * Ví dụ:
+ * "Thẻ đổi Avatar" -> "Thẻ đổi Avatar Hiệp khách"
+ * "Linh Thú"       -> "Linh Thú Thanh Long"
+ * "Nền hồ sơ"      -> "Nền hồ sơ Vườn hoa"
+ * "Khung"          -> "Khung Mực"
+ *
+ * Các yêu cầu cụ thể vẫn giữ đối chiếu chính xác.
+ * Ví dụ YeuCau = "Khung Mực" sẽ KHÔNG chấp nhận "Khung Đá".
+ */
+const ITEM_GROUP_REQUIREMENTS=new Set([
+ "the doi avatar",
+ "linh thu",
+ "nen ho so",
+ "khung"
+]);
+function itemMatchesRequirement(actual,required){
+ let a=nm(actual),r=nm(required);
+ if(!a||!r)return false;
+ // Tên cụ thể / tên giống hệt nhau.
+ if(a===r)return true;
+ // Chỉ tên nhóm được phép nhận các biến thể phía sau.
+ // Dấu cách giúp tránh nhận nhầm các từ chỉ tình cờ có cùng tiền tố.
+ if(ITEM_GROUP_REQUIREMENTS.has(r)&&a.startsWith(r+" "))return true;
+ return false;
+}
+function itemQty(name){
+ let n=0;
+ items().forEach(x=>{
+  let a=cl(x.giftName||x.name||(x.gift&&x.gift.name));
+  if(!itemMatchesRequirement(a,name))return;
+  let raw=x.quantity!=null?x.quantity:(x.qty!=null?x.qty:(x.count!=null?x.count:1));
+  let q=Number(raw);
+  if(Number.isFinite(q)&&q>0)n+=q;
+ });
+ return n;
+}
+function itemRequirement(step){let have=itemQty(step.req),need=Math.max(1,Number(step.qty)||1);return{have:have,need:need,matched:have>=need}}
+async function loadProfile(force){let r=await waitCore(),t=await loadStudentCsv(force),info=findStudent(t,S.code);if(!info)throw Error("Không tìm thấy thông tin học viên "+S.code+" trong studentCsv.");let profile=force&&r.refreshStudentRewardProfile?await r.refreshStudentRewardProfile(S.code,t):await r.getStudentRewardProfile(S.code,t,!!force);if(!profile)throw Error("Reward Core chưa trả về hồ sơ học viên "+S.code+".");S.info=info;S.profile=profile;renderProfile();return profile}
+function tradeItemQty(name){let wanted=nm(name),n=0;S.trades.forEach(x=>{if(x.student===S.code&&nm(x.item)===wanted)n+=Math.max(0,Number(x.qty)||0)});return n}
+function sellRequirement(step){let have=tradeItemQty(step.req),need=Math.max(1,Number(step.qty)||1);return{have:have,need:need,matched:have>=need}}
+async function loadTrades(force){
+ S.tradeReady=false;S.trades=[];
+ if(!S.logged)return;
+ try{
+  let sk=loadSnapKeys(false),d=await sh(C.giftBook,C.tradeSheet,force),h=d[0]||[];
+  let ci=col(h,["Mã học viên","StudentCode"]),ii=col(h,["Tên vật phẩm","Vật phẩm","Item"]),qi=col(h,["Số lượng","Quantity"]),xi=col(h,["Xác nhận","Confirmation"]),ti=col(h,["Dấu thời gian","Timestamp"]);
+  if(ci<0||ii<0||qi<0)throw Error("MinhHongGiaoDich thiếu cột bắt buộc");
+  let snap=await sk;
+  S.trades=d.slice(1).filter(r=>ti<0||afterSnap(snap,cd(r[ci]),r[ti])).map(r=>({student:cd(r[ci]),item:cl(r[ii]),qty:Number(r[qi])||0,confirm:xi>=0?cl(r[xi]):""})).filter(x=>x.student&&x.item&&x.qty>0);
+  /* v3.30.0: đã bán trước mốc chốt sổ */
+  let mine=snap.get(S.code);if(mine)Object.keys(mine.sold||{}).forEach(item=>{let qty=Number(mine.sold[item])||0;if(qty>0)S.trades.push({student:S.code,item:item,qty:qty,confirm:"",snapshot:true})});
+  S.tradeReady=true;
+ }catch(e){console.warn("[OCD Quest] MinhHongGiaoDich:",e)}
+}
+async function loadExchanges(force){
+ S.exchangeReady=false;S.exchanges=[];
+ if(!S.logged)return;
+ try{
+  let sk=loadSnapKeys(false),d=await sh(C.giftBook,C.exchangeSheet,force),h=d[0]||[];
+  let ci=col(h,["Mã học viên","StudentCode"]),ii=col(h,["Món quà muốn đổi","Tên vật phẩm","Vật phẩm"]),bi=col(h,["Là hộp bí ẩn"]),si=col(h,["Trạng thái","Status"]),ti=col(h,["Dấu thời gian","Timestamp"]);
+  if(ci<0||ii<0||bi<0||si<0)throw Error("PhieuDoi thiếu cột kiểm tra Hộp quà bí ẩn");
+  let snap=await sk;
+  S.exchanges=d.slice(1).map((r,index)=>({id:index+2,student:cd(r[ci]),item:cl(r[ii]),mystery:["true","1","yes","co"].includes(nm(r[bi])),status:nm(r[si]),at:ti>=0?r[ti]:""})).filter(x=>x.student===S.code&&x.mystery&&x.status==="da mo"&&nm(x.item).startsWith(nm("Hộp quà bí ẩn"))&&afterSnap(snap,x.student,x.at));
+  /* v3.30.0: hộp bí ẩn đã mở trước mốc chốt sổ */
+  let mine=snap.get(S.code);for(let i=0;i<(mine?mine.mystery:0);i++)S.exchanges.push({id:"snap-"+i,student:S.code,item:"Hộp quà bí ẩn",mystery:true,status:"da mo",snapshot:true});
+  S.exchangeReady=true
+ }catch(e){console.warn("[OCD Quest] PhieuDoi:",e)}
+}
+function parseSubs(t){let d=csv(t);if(!d.length)return[];let h=d[0],ci=col(h,["Mã học viên","Mã HV","StudentCode"]),di=col(h,["Mô tả bài tập","Mô tả","Description"]),si=col(h,["Điểm số","Điểm","Điểm giáo viên","Score"]),ni=col(h,["Nhận xét","Nhận xét GVCN","Comment"]);if(di<0)di=h.findIndex(x=>nm(x).includes("mo ta bai tap"));if(ci<0)throw Error("Thiếu cột Mã học viên");return d.slice(1).map(r=>({student:cd(r[ci]),description:di>=0?cl(r[di]):"",tag:di>=0?tg(r[di]):"",score:si>=0?Number(String(r[si]||"").replace(",",".")):NaN,comment:ni>=0?cl(r[ni]):""})).filter(x=>x.student)}
+/* v3.27: bài nộp lấy lại từ dữ liệu hồ sơ đã tải (Form Responses 1 lọc theo mã) – không đọc thêm 2 bảng lớn */
+async function loadSubs(force){let t=await loadStudentCsv(force);if(!t)throw Error("Không đọc được bài nộp.");S.subs=parseSubs(t).filter(r=>r.student===S.code);S.subLoaded=true;evaluate();return S.subs}
+function pendingFormKey(kind,id){return "ocdQuestPending:"+encodeURIComponent(S.code)+":"+encodeURIComponent(kind)+":"+encodeURIComponent(id)}
+function pendingFormHas(key){if(S.formPending[key])return true;try{return sessionStorage.getItem(key)==="1"}catch(e){return false}}
+function pendingFormSet(key){S.formPending[key]=true;try{sessionStorage.setItem(key,"1")}catch(e){}}
+function pendingFormClear(key){delete S.formPending[key];try{sessionStorage.removeItem(key)}catch(e){}}
+async function checkSubmission(step){let k="submission-check:"+step.id;if(S.busy[k])return S.busy[k];let run=(async()=>{let set=(state,text)=>{S.submissionUi[step.id]={state,text};renderAll()};set("checking","Đã nhận yêu cầu kiểm tra. Đang đọc lại dữ liệu bài nộp...");let lastError="";for(let i=1;i<=8;i++){try{await loadSubs(true);evaluate();if(S.evidence[step.id]&&S.evidence[step.id].matched){set("verified","Đã kiểm tra: tìm thấy bài nộp trong bảng.");S.open.add(step.quest);renderAll();return true}}catch(e){lastError=String(e&&e.message||e)}set("waiting",lastError?"Chưa đọc được nguồn bài nộp. Hệ thống sẽ thử lại sau 2 giây... ("+i+"/8)":"Chưa thấy bài trong Sheet. Hệ thống sẽ kiểm tra lại sau 2 giây... ("+i+"/8). Đừng gửi lại Form.");if(i<8)await new Promise(r=>setTimeout(r,2200))}set("missing","Đã kiểm tra 8 lần nhưng chưa thấy bài trong Sheet. Có thể dữ liệu đang cập nhật; đừng gửi lại ngay. Hãy bấm “Kiểm tra lại” sau vài giây.");return false})();S.busy[k]=run;try{return await run}finally{delete S.busy[k]}}
+function distinctItemGroupCount(name){
+ let wanted=nm(name),set=new Set;
+ items().forEach(x=>{let actual=cl(x.giftName||x.name||(x.gift&&x.gift.name));if(!actual||!itemMatchesRequirement(actual,name))return;let q=Number(x.quantity!=null?x.quantity:(x.qty!=null?x.qty:1));if(q>0)set.add(nm(actual))});
+ return set.size
+}
+function itemSetRequirement(step){
+ let names=cl(step.req).split("|").map(cl).filter(Boolean),owned=names.filter(x=>itemQty(x)>0);
+ return{have:owned.length,need:names.length,matched:names.length>0&&owned.length===names.length,missing:names.filter(x=>itemQty(x)<1)}
+}
+function mysteryBoxUseCount(){return S.exchangeReady?S.exchanges.length:0}
+function surpriseRequirement(step){
+ if(step.type==="COMMENT_CONTAINS"){let hit=S.subs.find(x=>x.student===S.code&&nm(x.comment).includes(nm(step.req)));return{have:hit?1:0,need:1,matched:!!hit,label:hit?"Đã tìm thấy nhận xét phù hợp.":"Chưa có nhận xét GVCN chứa từ “"+step.req+"”."}}
+ if(step.type==="SCORE_FIRST"){let target=Number(step.req),hit=S.subs.find(x=>x.student===S.code&&Number.isFinite(x.score)&&Math.abs(x.score-target)<0.001);return{have:hit?1:0,need:1,matched:!!hit,label:hit?"Đã tìm thấy bài đạt đúng "+target+" điểm.":"Chưa có bài đạt đúng "+target+" điểm."}}
+ if(step.type==="ITEM_SET"){let r=itemSetRequirement(step);r.label=r.matched?"Đã thu thập đủ bộ đồ dùng.":"Còn thiếu: "+r.missing.join(", ");return r}
+ if(step.type==="UNIQUE_ITEM_GROUP"){let have=distinctItemGroupCount(step.req),need=Math.max(1,Number(step.qty)||3);return{have,need,matched:have>=need,label:"Đang sở hữu "+have+"/"+need+" loại "+step.req+" khác nhau."}}
+ if(step.type==="MYSTERY_BOX_USE"){let have=mysteryBoxUseCount(),need=Math.max(1,Number(step.qty)||10);return{have,need,matched:have>=need,label:"Đã sử dụng "+have+"/"+need+" Hộp quà bí ẩn."}}
+ return{have:0,need:1,matched:false,label:"Chưa xác định được tiến độ."}
+}
+function questionsFor(step){return S.questions.filter(x=>x.quest===step.quest&&(!x.step||x.step===step.id)).sort((a,b)=>a.order-b.order)}
+function stepDone(x){if(x.type==="SUBMISSION")return!!(S.evidence[x.id]&&S.evidence[x.id].matched);if(x.type==="QUIZ"||x.type==="NPC")return activityDone(x);if(x.type==="ITEM")return itemRequirement(x).matched;if(x.type==="SELL_ITEM")return sellRequirement(x).matched;if(["COMMENT_CONTAINS","SCORE_FIRST","ITEM_SET","UNIQUE_ITEM_GROUP","MYSTERY_BOX_USE"].includes(x.type))return surpriseRequirement(x).matched;return false}
+/* v3.26.3: mô tả chỉ cần chứa đủ các thành phần của mã, đúng thứ tự, cách nhau bởi dấu bất kỳ: SKQ_2010-2026 = "SKQ 2010 2026" = "skq2010 2026"; T1 = "LM-T1" = "Tuần 1 - T1"; nhưng T10 không tính là T1, LM10-2 không tính là LM10 */
+function codeKey(v){return String(v==null?"":v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[đĐ]/g,"D").toUpperCase().replace(/\s+/g," ").trim()}
+function codeToks(v){let s=codeKey(v),out=[],re=/[A-Z]+|[0-9]+/g,m,last=0;while((m=re.exec(s))){out.push({t:m[0],sep:s.slice(last,m.index)});last=re.lastIndex}return out}
+function codeHit(desc,req){let q=codeToks(req).map(x=>x.t);if(!q.length)return false;let d=codeToks(desc);for(let i=0;i+q.length<=d.length;i++){let ok=true;for(let j=0;j<q.length;j++)if(d[i+j].t!==q[j]){ok=false;break}if(!ok)continue;if(i>0&&d[i].sep==="")continue;let nx=d[i+q.length];if(nx&&(nx.sep===""||(/^[0-9]+$/.test(nx.t)&&/^[-_.\/]+$/.test(nx.sep))))continue;return true}return false}
+function evaluate(){let e={};S.steps.forEach(x=>{if(x.type==="SUBMISSION"){let req=submissionRequirement(x),f=S.subs.slice().reverse().find(r=>r.student===S.code&&codeHit(r.description,req));e[x.id]={matched:!!f,description:f?f.description:"",requirement:req}}});S.evidence=e}
+function requiredStep(x){return["SUBMISSION","QUIZ","ITEM","NPC","SELL_ITEM","COMMENT_CONTAINS","SCORE_FIRST","ITEM_SET","UNIQUE_ITEM_GROUP","MYSTERY_BOX_USE"].includes(x.type)}
+function questState(q){
+ let all=S.steps.filter(x=>x.quest===q.id).sort((a,b)=>a.order-b.order);
+ let required=all.filter(requiredStep);
+ let done=required.filter(stepDone).length;
+ return{steps:all,required:required,done:done,total:required.length,ready:required.length>0&&done===required.length};
+}
+function questMetrics(q){
+ let quiz=S.steps.filter(x=>x.quest===q.id&&x.type==="QUIZ");
+ if(quiz.length){
+  let total=quiz.reduce((n,s)=>n+questionsFor(s).length,0);
+  return{correct:total,total:total};
+ }
+ let st=questState(q);
+ return{correct:st.done,total:st.total};
+}
+function renderProfile(){if(!S.logged||!S.profile)return;let r=RS(),card=$("qProfile"),wrap=$("qAvatarWrap"),name=$("qName"),frame=$("qFrame");card.classList.add("on");$("qCode").textContent=S.code;name.textContent=(S.info&&S.info.name)||("Học viên "+S.code);$("qMeta").textContent=[S.info&&S.info.group?"Tổ "+S.info.group:"",S.info&&S.info.course?"Khóa "+S.info.course:""].filter(Boolean).join(" / ");let av=S.profile.avatar||"",fr=S.profile.avatarFrame||"",bg=S.profile.profileBackground||"";try{if(!av&&r.getProfileAvatar)av=r.getProfileAvatar(items());if(!fr&&r.getProfileAvatarFrame)fr=r.getProfileAvatarFrame(items());if(!bg&&r.getProfileBackground)bg=r.getProfileBackground(items())}catch(e){}$("qAvatar").innerHTML=av?'<img src="'+esc(drive(av,400))+'" alt="">':"書";if(fr){frame.src=drive(fr,700);frame.classList.add("on")}else{frame.removeAttribute("src");frame.classList.remove("on")}card.style.backgroundImage=bg?'linear-gradient(90deg,rgba(255,250,240,.93),rgba(255,250,240,.78)),url("'+drive(bg,1600).replace(/["\\]/g,"")+'")':"";try{if(S.profile.hasMultitaskPotion&&r.applyMultitaskEffect)r.applyMultitaskEffect(wrap,name,{size:"medium"});else if(r.clearMultitaskEffect)r.clearMultitaskEffect(wrap,name)}catch(e){}let gb=$("qGems");gb.innerHTML="";let g=S.profile.gems||{};(r.GEM_ORDER||[]).forEach(k=>{let z=r.GEM_TYPES[k];if(z)gb.insertAdjacentHTML("beforeend",'<span class="qgem">'+(z.image?'<img src="https://drive.google.com/thumbnail?id='+encodeURIComponent(z.image)+'&sz=w80">':"")+'<span>'+Number(g[k]||0)+"</span></span>")});let m=new Map;items().forEach(x=>{let n=cl(x.giftName||x.name||(x.gift&&x.gift.name));if(!n)return;let k=nm(n);if(!m.has(k))m.set(k,{name:n,qty:0,image:drive(x.image||(x.gift&&x.gift.image)||"",200)});m.get(k).qty+=Math.max(1,Number(x.quantity)||1)});$("qAssetCount").textContent=m.size?"- "+m.size+" loại":"";
+$("qAssets").innerHTML=[...m.values()].map(x=>'<div class="qasset">'+(x.image?'<img src="'+esc(x.image)+'">':"物")+'<span>'+esc(x.name)+" × "+x.qty+"</span></div>").join("")||'<span style="font-size:9px">Chưa có vật phẩm.</span>'}
+
+function npcActiveSteps(n){let a=S.steps.filter(x=>{let q=S.quests.find(q=>q.id===x.quest);return x.type==="NPC"&&nm(x.req)===nm(n.name)&&q&&questVisible(q)});return a.sort((x,y)=>(isActiveEventQuest(y.quest)?1:0)-(isActiveEventQuest(x.quest)?1:0))}
+function renderBeastEntry(){let sec=$("beastEntrySec"),btn=$("beastEntryBtn"),label=$("beastEntryStatus");if(!sec||!btn||!label)return;renderBeastDailyPet();let test=beastTestConfig(),show=test.enabled||S.logged;sec.classList.toggle("on",show);btn.classList.toggle("test",test.enabled);if(!show)return;if(!S.logged){label.textContent=test.enabled?"TEST đang bật - nhập mã học viên để tham gia":"Đăng nhập để kiểm tra trạng thái";btn.onclick=null;return}if(!S.beast||!S.beast.ready){label.textContent=(S.beast&&S.beast.error)||"Đang tải dữ liệu Linh Thú...";btn.onclick=()=>openBeast();return}let st=beastRefreshState(),txt="";if(S.beast.completed)txt="Bạn đã hoàn thành lượt hôm nay";else if(st.state==="WAITING")txt=S.beast.assistant?"Bạn là Trợ giảng - chạm để mở nhiệm vụ":"Trợ giảng chưa mở nhiệm vụ";else if(st.state==="ACTIVE")txt="Đang chiến đấu - còn "+beastFmtRemaining(st.remainingMs);else if(st.state==="FINISHED")txt="Lượt chiến đấu của tổ đã kết thúc";else txt="Đã có kết quả sự kiện";if(test.enabled)txt="TEST - "+txt;label.textContent=txt;btn.classList.toggle("active",st.state==="ACTIVE");btn.onclick=()=>openBeast()}
+function renderNpcs(){let g=$("npcGrid");$("npcLogin").classList.toggle("on",!S.logged);g.style.display=S.logged?"grid":"none";g.innerHTML="";if(!S.logged)return;S.npcs.forEach(n=>{let b=document.createElement("button"),alertClass=eventPendingForNpc(n)?" event-alert":(surprisePendingForNpc(n)?" surprise-alert":"");b.className="npccard"+alertClass;b.type="button";b.innerHTML='<div class="npcrow"><div class="npcslot"></div><div><div class="npcname">'+esc(n.name)+'</div><div class="npcdesc">'+esc(n.description)+'</div></div></div>';b.querySelector(".npcslot").replaceWith(visual(n));b.onclick=()=>openNpc(n);g.appendChild(b)})}
+
+function beastFmtRemaining(ms){let s=Math.max(0,Math.ceil(ms/1000)),m=Math.floor(s/60);return String(m).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+/* Dán link ảnh banner Chinh phục Linh Thú vào đây (để trống: hiện ảnh Linh Thú của ngày) */
+const BEAST_MODAL_BANNER="https://lh3.googleusercontent.com/d/1QSJGZr4Ux7OMPVyoFnUf2fR3hY1Fx7Mw=w1600";
+function beastModalBase(){
+ let av=$("nmAv");av.className="nmav beast-modal-banner";av.innerHTML="";let bi=new Image;if(BEAST_MODAL_BANNER){bi.src=BEAST_MODAL_BANNER;bi.alt="Chinh phục Linh Thú";bi.onerror=function(){if(!this.dataset.fb){this.dataset.fb=1;this.src="https://drive.google.com/thumbnail?id=1QSJGZr4Ux7OMPVyoFnUf2fR3hY1Fx7Mw&sz=w1600"}}}else{let p=beastDailyPet();bi.src=drive(p.icon,600);bi.alt=p.name;bi.style.objectFit="contain";bi.style.maxHeight="200px"}av.appendChild(bi);$("nmName").textContent="Chinh phục Linh Thú";$("nmDialog").innerHTML="";$("nmQuest").innerHTML="";$("nModal").classList.add("on");document.body.style.overflow="hidden";
+}
+function beastRenderQuizUI(){
+ let b=S.beast,r=b.quizRun,qs=beastAssignedQuestions(),box=$("nmQuest"),pending=pendingFormHas(pendingFormKey("beast-result",b.eventId+"|"+S.code+"|"+(b.combatTeam||"")));
+ box.innerHTML='<div class="beast-ui">'+qs.map((q,i)=>'<div class="beast-q"><b>Câu '+(i+1)+'. '+esc(q.text)+'</b>'+["A","B","C","D"].map(k=>'<button class="beast-opt '+(r.answers[q.id]===k?"on":"")+'" data-bqid="'+esc(q.id)+'" data-bqa="'+k+'" type="button"><strong>'+k+'.</strong> '+esc(q[k])+'</button>').join("")+'</div>').join("")+'<div class="beast-actions"><button class="qbtn green" id="beastSubmitBtn" type="button">'+(pending?"Kiểm tra kết quả đã gửi":"Nộp 5 câu trả lời")+'</button></div></div>';
+ box.querySelectorAll(".beast-opt").forEach(btn=>{btn.disabled=pending;btn.onclick=()=>{if(pending)return;beastAnswer(btn.dataset.bqid,btn.dataset.bqa);beastRenderQuizUI()}});
+ let sb=$("beastSubmitBtn");if(sb)sb.onclick=async()=>{try{sb.disabled=true;sb.textContent="Đã gửi bài. Đang chờ kiểm tra Sheet.";let out=await beastSubmitQuiz();$("nmDialog").innerHTML='<div class="beast-note">Bạn đã hoàn thành nhiệm vụ Chinh phục Linh Thú. Kết quả đã được ghi nhận.</div>';$("nmQuest").innerHTML='<div class="beast-ui"><span class="beast-badge">Đã hoàn thành</span></div>';beastRefreshState()}catch(e){alert(e.message||e);beastRenderQuizUI()}};
+}
+function beastRenderModal(){
+ function addDailyPet(host){let p=beastDailyPet(),box=document.createElement("span"),im=document.createElement("img");box.className="beast-entry-icon";box.style.margin="2px auto 14px";box.style.width="96px";box.style.height="96px";im.src=drive(p.icon,400);im.alt=p.name;im.title=p.name;im.style.width="90px";im.style.height="90px";im.style.objectFit="contain";box.appendChild(im);host.appendChild(box)}
+ beastModalBase();
+ let b=S.beast||{},test=beastTestConfig(),d=$("nmDialog"),q=$("nmQuest");
+ d.innerHTML="";
+ if(test.enabled){let x=document.createElement("div");x.className="beast-test";x.textContent="CHẾ ĐỘ TEST - KHÔNG PHÁT THƯỞNG";d.appendChild(x)}
+ if(!b.ready){
+  let n=document.createElement("div");n.className="beast-note";n.textContent=b.error?("Không tải được dữ liệu Linh Thú: "+b.error):"Đang tải dữ liệu Linh Thú...";d.appendChild(n);
+  q.innerHTML='<div class="beast-ui"><div class="beast-actions"><button class="qbtn green" id="beastReloadBtn" type="button">Tải lại dữ liệu</button></div></div>';
+  let rb=$("beastReloadBtn");if(rb)rb.onclick=async()=>{rb.disabled=true;rb.textContent="Đang tải...";try{await loadBeast(true)}catch(e){}beastRenderModal()};
+  return;
+ }
+ let st=beastRefreshState(),msg=beastQuizMessage();
+ let note=document.createElement("div");note.className="beast-note";
+ if(st&&st.state==="ACTIVE")note.textContent="Tổ "+(b.combatTeam||"-")+" đang chinh phục Linh Thú.";
+ else note.textContent=msg||"Đang kiểm tra trạng thái Linh Thú...";
+ d.appendChild(note);
+ if(st&&st.state==="ACTIVE"){let clock=document.createElement("div");clock.className="beast-clock";clock.id="beastClock";clock.textContent=beastFmtRemaining(st.remainingMs);d.insertBefore(clock,note)}
+ if(b.quizRun&&st&&st.state==="ACTIVE"&&!b.completed){beastRenderQuizUI();return}
+ q.innerHTML="";
+ let wrap=document.createElement("div");wrap.className="beast-ui";
+ let badge=document.createElement("span");badge.className="beast-badge";badge.textContent="Tổ chiến đấu: "+(b.combatTeam||"Chưa xác định");wrap.appendChild(badge);
+ if(b.assistant){let an=document.createElement("div");an.className="beast-note";an.textContent="Trợ giảng: "+(b.assistant.name||S.code);wrap.appendChild(an)}
+ let actions=document.createElement("div");actions.className="beast-actions";wrap.appendChild(actions);q.appendChild(wrap);
+ function addBtn(id,label,green,handler){let bt=document.createElement("button");bt.className="qbtn"+(green?" green":"");bt.id=id;bt.type="button";bt.textContent=label;bt.onclick=handler;actions.appendChild(bt)}
+ if(b.assistant&&st&&st.canOpen)addBtn("beastOpenBtn",pendingFormHas(pendingFormKey("beast-action",b.eventId+"|"+b.combatTeam+"|OPEN"))?"Kiểm tra trạng thái mở":"Mở nhiệm vụ",true,async function(){let waiting=pendingFormHas(pendingFormKey("beast-action",b.eventId+"|"+b.combatTeam+"|OPEN"));this.disabled=true;this.textContent="Đang kiểm tra trạng thái";try{await beastOpen(()=>{this.textContent="Đã ghi nhận lệnh chiến đấu, Trợ giảng hãy kêu gọi học viên F5/ Tải lại trang để tranh quyền trả lời sớm"})}catch(e){alert(e.message||e)}beastRenderModal()});
+ if(st&&st.state==="ACTIVE"&&!b.completed)addBtn("beastStartBtn","Bắt đầu 5 câu hỏi",true,function(){try{beastStartQuiz();beastRenderQuizUI()}catch(e){alert(e.message||e)}});
+ if(b.assistant&&st&&st.canFinish){let warn=document.createElement("div");warn.className="beast-note";warn.innerHTML="<strong>Bạn là Trợ giảng của tổ.</strong><br>HÃY CHẮC CHẮN TẤT CẢ THÀNH VIÊN THAM GIA đã hoàn tất phần trả lời nhiệm vụ trước khi bấm vào nút “Hoàn tất nhiệm vụ” dưới đây.";wrap.appendChild(warn);addBtn("beastFinishBtn",pendingFormHas(pendingFormKey("beast-action",b.eventId+"|"+b.combatTeam+"|FINISH"))?"Kiểm tra trạng thái hoàn tất":"Hoàn tất nhiệm vụ",false,async function(){let waiting=pendingFormHas(pendingFormKey("beast-action",b.eventId+"|"+b.combatTeam+"|FINISH"));if(!waiting&&!confirm("Bạn là Trợ giảng của tổ. Hãy chắc chắn tất cả thành viên tham gia đã hoàn tất phần trả lời nhiệm vụ. Bạn có chắc chắn muốn Hoàn tất nhiệm vụ?"))return;this.disabled=true;this.textContent="Đang kiểm tra trạng thái";try{await beastFinish(()=>{this.textContent="Đã gửi lệnh thu quân. Dữ liệu đang được ghi. Quay lại xem tổng kết sau 20:00 cùng ngày và nhận phần thưởng cho tổ."});await beastReloadEventOnly()}catch(e){alert(e.message||e)}beastRenderModal()});}
+ if(b.assistant&&st&&st.state==="FINISHED"&&!beastFinalConfirmed()){
+  actions.innerHTML="";
+  let finishBox=document.createElement("div");finishBox.className="beast-note";
+finishBox.innerHTML='<div style="text-align:center;padding:12px 4px"><div style="font-size:11px;font-weight:900;letter-spacing:.12em;color:#8a6734;margin-bottom:7px">NHIỆM VỤ ĐÃ ĐÓNG</div><div style="font:700 23px Georgia,serif;color:#54351f;margin-bottom:8px">Tổ '+esc(b.combatTeam||"-")+' đã hoàn tất</div><div style="font-size:11px;line-height:1.7;color:#75695f">'+(st.finish&&st.finish._local?"Đã gửi yêu cầu hoàn tất. Trợ giảng hãy chờ đến khi hệ thống hoàn tất. Sheet chưa xác nhận lệnh.":"FINISH đã được hệ thống xác nhận. Trợ giảng hãy chờ đến khi hệ thống hoàn tất.")+" Chỉ các bài đủ 5 câu và có trạng thái COMPLETED mới được tính vào kết quả.</div></div>";
+  wrap.appendChild(finishBox);
+  let currentSummary=beastSummaryRows().find(x=>x.team===b.combatTeam);
+  if(currentSummary){let stat=document.createElement("div");stat.className="beast-note";stat.innerHTML='<strong>Kết quả tạm thời của Tổ '+esc(b.combatTeam)+'</strong><div style="margin-top:9px;line-height:1.8">Học viên hoàn thành: <strong>'+currentSummary.completed+'</strong><br>Tổng câu trả lời đúng: <strong>'+currentSummary.correct+'</strong><br>Điểm Chinh phục: <strong>'+beastFormatScore(currentSummary.score)+'</strong></div>';wrap.appendChild(stat)}
+  let waiting=document.createElement("div");waiting.className="beast-note";waiting.innerHTML="<strong>Đang chờ các tổ còn lại</strong><br>Bảng xếp hạng chính thức chỉ được xác định sau khi cả 4 tổ kết thúc lượt chiến đấu.";
+  wrap.appendChild(waiting);
+  addBtn("beastFinishReloadBtn","Đọc lại trạng thái",true,async function(){this.disabled=true;this.textContent="Đang đọc lại trạng thái";try{await loadBeast(true)}catch(e){alert(e.message||e)}beastRenderModal()});
+ }
+ if(beastFinalConfirmed()){
+  actions.innerHTML="";
+  let table=document.createElement("div");table.className="beast-note";
+  let rows=beastDisplayRows(S.beast.eventId).sort((a,b)=>a.rank-b.rank),synced=beastFinalMatchesSummary();
+  table.innerHTML="<strong>Kết quả Chinh phục Linh Thú</strong>"+rows.map(x=>"<div>Rank "+x.rank+" - Tổ "+x.team+": "+x.completed+" người, "+x.correct+" câu đúng, "+beastFormatScore(x.score)+" điểm</div>").join("")+(synced?"":"<div><strong>Dữ liệu bài làm mới hơn LinhThuTongKet. Cần cập nhật tổng kết trước khi phát thưởng.</strong></div>");
+  wrap.appendChild(table);
+  if(b.assistant&&!synced)addBtn("beastRefinalizeBtn","Cập nhật tổng kết mới nhất",true,async function(){this.disabled=true;this.textContent="Đang chờ Sheet đồng bộ kết quả...";try{await beastFinalize();alert("Đã cập nhật snapshot tổng kết mới nhất.")}catch(e){alert(e.message||e)}beastRenderModal()});
+  if(b.assistant&&synced){if(beastAllRewardsConfirmed()){let sent=document.createElement("div");sent.className="beast-note";/* Blogspot can show HTML entities literally: keep status copy plain and never encode icons as entities. */sent.textContent="Đã phát thưởng. Sheet đã xác nhận đủ cho tất cả học viên.";actions.appendChild(sent)}else{let pending=beastAnyRewardPending();addBtn("beastRewardBtn",pending?"Kiểm tra đồng bộ phần thưởng":"Nhận thưởng cho tất cả học viên",true,function(){beastRewardButtonClick(this)});if(pending){let wait=document.createElement("div");wait.className="beast-note";wait.textContent="Đang chờ Sheet xác nhận phần thưởng đã gửi. Hệ thống sẽ không gửi lại các phần đang chờ để tránh trùng.";actions.appendChild(wait)}}}
+ }else if(b.assistant&&beastAllTeamsClosed()){
+  addBtn("beastFinalizeBtn","Tổng kết 4 tổ",true,async function(){this.disabled=true;this.textContent="Đang chờ Sheet đồng bộ kết quả...";try{await beastFinalize()}catch(e){alert(e.message||e)}beastRenderModal()});
+ }
+
+}
+
+function openBeast(){if(!S.logged)throw Error("Bạn cần nhập mã học viên trước.");try{beastRenderModal()}catch(e){console.error("[OCD Beast] modal:",e);beastModalBase();let d=$("nmDialog"),q=$("nmQuest");d.textContent="Không thể dựng giao diện Linh Thú: "+String(e&&e.message||e);q.innerHTML='<button class="qbtn green" id="beastRecoverBtn" type="button">Tải lại dữ liệu Linh Thú</button>';let b=$("beastRecoverBtn");if(b)b.onclick=async()=>{b.disabled=true;try{await loadBeast(true);beastRenderModal()}catch(x){d.textContent="Lỗi tải dữ liệu Linh Thú: "+String(x&&x.message||x)}}}}
+function openNpc(n){
+ let av=$("nmAv");av.className="nmav";av.innerHTML="";if(n.image){let i=new Image;i.src=n.image;i.alt=n.name;i.onerror=()=>{av.textContent=n.symbol||n.name[0]};av.appendChild(i)}else av.textContent=n.symbol||n.name[0];$("nmName").textContent=n.name;
+ let a=npcActiveSteps(n),step=a.find(x=>!stepDone(x))||a[0];
+ if(step){
+  let ds=dialogueFor(step,n);
+  if(stepDone(step)){
+   let last=ds.length?ds[ds.length-1]:null;
+   renderDialogueContent($("nmDialog"),last?last.content:(step.guide||n.description));
+   $("nmQuest").innerHTML='<b>'+esc((S.quests.find(q=>q.id===step.quest)||{}).name||step.quest)+'</b><br>'+esc(step.name)+'<br><span class="qok">Đã hoàn thành cuộc trò chuyện với '+esc(n.name)+'.</span>';
+  }else if(ds.length){
+   playNpcDialogue(n,step,ds,0);
+  }else{
+   renderDialogueContent($("nmDialog"),step.guide||n.description);
+   $("nmQuest").innerHTML='<b>'+esc((S.quests.find(q=>q.id===step.quest)||{}).name||step.quest)+'</b><br>'+esc(step.name)+'<button class="qbtn green" id="npcConfirm" type="button">Xác nhận đã gặp '+esc(n.name)+'</button>';
+   setTimeout(()=>bindNpcComplete(n,step,$("npcConfirm")),0);
+  }
+ }else{
+  renderDialogueContent($("nmDialog"),n.description);
+  $("nmQuest").textContent="Hiện chưa có nhiệm vụ đang mở liên quan đến nhân vật này.";
+ }
+ $("nModal").classList.add("on");document.body.style.overflow="hidden";
+}
+function playNpcDialogue(n,step,ds,index){
+ let row=ds[index],last=index>=ds.length-1;
+ renderDialogueContent($("nmDialog"),row.content);
+ $("nmQuest").innerHTML='<b>'+esc((S.quests.find(q=>q.id===step.quest)||{}).name||step.quest)+'</b><br>'+esc(step.name);
+ let b=document.createElement("button");b.className="qbtn"+(last?" green":"");b.type="button";b.textContent=row.label||(last?"Hoàn thành cuộc trò chuyện":"Tiếp tục");$("nmQuest").appendChild(b);
+ if(last)bindNpcComplete(n,step,b);else b.onclick=()=>playNpcDialogue(n,step,ds,index+1);
+}
+function bindNpcComplete(n,step,b){
+ if(!b)return;
+ let notice=document.createElement("div");notice.className="qsync";notice.textContent="";b.after(notice);
+ b.onclick=async()=>{
+  if(S.busy["activity:"+step.id])return;
+  S.busy["activity:"+step.id]=1;b.disabled=true;b.textContent="Đã gửi thao tác. Đang kiểm tra Sheet.";notice.textContent="Đã nhận thao tác. Đang kiểm tra HoatDongNhiemVu; không bấm gửi lại.";
+  try{await recordActivity(step,"NPC:"+n.name);pendingFormClear(pendingFormKey("activity",activityKey(step.quest,step.id,step.type)));S.open.add(step.quest);renderAll();openNpc(n)}
+  catch(e){console.error("[OCD Quest] NPC activity:",e);b.disabled=false;b.textContent="Kiểm tra lại trạng thái";notice.textContent=String(e&&e.message||e)}
+  finally{S.busy["activity:"+step.id]=0}
+ };
+}
+function closeNpc(){$("nModal").classList.remove("on");document.body.style.overflow=""}
+function renderQuizStep(step){let box=document.createElement("div");box.className="quiz";let qs=questionsFor(step);if(stepDone(step)){box.innerHTML='<div class="qcomplete">Đã hoàn thành phần câu hỏi.</div>';return box}if(!qs.length){box.innerHTML='<div class="qnote">Bước này chưa có câu hỏi trong Sheet CauHoi.</div>';return box}qs.forEach((x,i)=>{let e=document.createElement("div");e.className="question";e.innerHTML='<b>Câu '+(i+1)+'. '+esc(x.text)+'</b>'+Object.entries(x.options).filter(y=>y[1]).map(y=>'<label class="option"><input type="radio" name="'+esc(step.id+"_"+x.id)+'" data-q="'+esc(x.id)+'" value="'+y[0]+'"><span><b>'+y[0]+'.</b> '+esc(y[1])+'</span></label>').join("");box.appendChild(e)});let b=document.createElement("button");b.className="qbtn";b.type="button";b.textContent="Nộp câu trả lời";let r=document.createElement("div");r.className="result";b.onclick=()=>{let answered=0,correct=0;qs.forEach(x=>{let a=box.querySelector('input[data-q="'+CSS.escape(x.id)+'"]:checked');if(a){answered++;if(a.value===x.answer)correct++}});if(answered<qs.length){r.className="result on fail";r.textContent="Bạn chưa trả lời đủ "+qs.length+" câu hỏi.";return}if(correct<qs.length){r.className="result on fail";r.textContent="Bạn trả lời đúng "+correct+"/"+qs.length+" câu. Hãy thử lại.";return}b.disabled=true;b.textContent="Đã gửi câu trả lời. Đang chờ kiểm tra.";r.className="result on wait";r.textContent="Đã nhận câu trả lời. Đang chờ HoatDongNhiemVu xác nhận; không bấm gửi lại.";recordActivity(step,correct+"/"+qs.length).then(()=>{S.open.add(step.quest);renderAll()}).catch(e=>{console.error("[OCD Quest] Quiz activity:",e);b.disabled=false;b.textContent="Kiểm tra lại trạng thái";r.className="result on wait";r.textContent=String(e&&e.message||e)})};box.append(b,r);return box}
+function renderStep(step,body){let done=stepDone(step),e=document.createElement("div");e.className="qstep"+(done?" done":"");let state=step.guide||step.req;if(step.type==="SUBMISSION"){let req=submissionRequirement(step);state+=(eventForQuest(step.quest)?'<br><b>Mã Mô tả bài tập: '+esc(req)+'</b>':'')+(done?'<br><span class="qok">Đã tìm thấy bài nộp "'+esc(req)+'"</span>':step.url?'<br><a class="qaction" target="_blank" rel="noopener noreferrer" href="'+esc(step.url)+'">Mở trang Nộp bài ở tab mới</a>':"")}else if(step.type==="ITEM"){let it=itemRequirement(step);state+=(it.matched?'<br><span class="qok">Đã xác nhận đang sở hữu '+it.have+' '+esc(step.req)+'.</span>':'<br>Hiện đang sở hữu: '+it.have+'/'+it.need+' '+esc(step.req))}else if(step.type==="SELL_ITEM"){let it=sellRequirement(step);state+=(it.matched?'<br><span class="qok">Đã xác nhận đã bán '+it.have+' '+esc(step.req)+' cho Minh Hồng.</span>':'<br>Đã xác nhận giao dịch: '+it.have+'/'+it.need+' '+esc(step.req))}else if(step.type==="NPC")state+=(done?'<br><span class="qok">Đã gặp '+esc(step.req)+' cho nhiệm vụ này.</span>':'<br><b>Bước này chỉ được tính khi bạn bấm vào '+esc(step.req)+' ở mục Nhân vật và bấm Hoàn thành cuộc trò chuyện.</b>'+(step.url?'<br><a class="qaction" target="_blank" rel="noopener noreferrer" href="'+esc(step.url)+'">Mở bài đọc ở tab mới</a>':''));else if(step.type==="QUIZ"&&done)state+='<br><span class="qok">Đã trả lời đúng toàn bộ câu hỏi.</span>';else if(["COMMENT_CONTAINS","SCORE_FIRST","ITEM_SET","UNIQUE_ITEM_GROUP","MYSTERY_BOX_USE"].includes(step.type)){let sr=surpriseRequirement(step);state+='<br>'+(sr.matched?'<span class="qok">'+esc(sr.label)+'</span>':esc(sr.label))}e.innerHTML='<div class="qsn">'+esc(step.name)+'</div><div class="qstate">'+state+'</div>';body.appendChild(e);if(step.type==="SUBMISSION"){let line=e.querySelector(".qstate"),ui=S.submissionUi[step.id];if(done){let ok=document.createElement("div");ok.className="qcomplete";ok.textContent="Đã kiểm tra: hệ thống đã tìm thấy bài nộp.";line.appendChild(ok)}else{if(ui){let msg=document.createElement("div");msg.className=ui.state==="missing"?"qsync":"qnote";msg.textContent=ui.text;line.appendChild(msg)}let b=document.createElement("button");b.type="button";b.className="qbtn";b.textContent=ui&&ui.state==="checking"?"Đang kiểm tra...":ui&&ui.state==="waiting"?"Đang chờ Sheet...":ui&&ui.state==="missing"?"Kiểm tra lại":"Tôi đã nộp bài - kiểm tra";b.disabled=!!S.busy["submission-check:"+step.id];b.onclick=()=>checkSubmission(step);line.appendChild(b)}}if(step.type==="QUIZ"&&!done){let pre=S.steps.filter(x=>x.quest===step.quest&&x.type==="NPC"&&x.order<step.order&&!stepDone(x));if(pre.length){let n=document.createElement("div");n.className="qnote";n.textContent="Câu hỏi sẽ mở sau khi bạn hoàn thành: "+pre.map(x=>x.name+" (gặp "+x.req+")").join(", ")+".";e.querySelector(".qstate").appendChild(n)}else body.appendChild(renderQuizStep(step))}}
+function renderAll(){renderBeastEntry();renderNpcs();renderQuests()}
+function renderQuests(){let list=$("qList");if(!S.quests.length){list.innerHTML='<div class="qempty">Đang tải nhiệm vụ...</div>';return}if(S.logged&&!S.progressReady){list.innerHTML='<div class="qempty">'+(S.progressError?"Chưa đọc được tiến độ từ TienDoForm. Vui lòng tải lại trang.":"Đang đối chiếu tiến độ đã hoàn thành...")+'</div>';return}list.querySelectorAll("details[data-id]").forEach(d=>d.open?S.open.add(d.dataset.id):S.open.delete(d.dataset.id));list.innerHTML="";let claimNotes=Object.values(S.claimUi).filter(Boolean);if(claimNotes.length){let note=document.createElement("div");note.className="qsync";note.textContent=claimNotes[claimNotes.length-1];list.appendChild(note)}let visible=S.quests.filter(questVisible);visible.sort((a,b)=>((isEventQuest(b)?2:isSurpriseQuest(b)?1:0)-(isEventQuest(a)?2:isSurpriseQuest(a)?1:0)));visible.forEach((q,i)=>{let p=progress(q.id),u=unlocked(q),st=questState(q),d=document.createElement("details");d.className="qgroup";d.dataset.id=q.id;if(S.open.has(q.id))d.open=true;let badge=p.status==="COMPLETED"?" - ĐÃ HOÀN THÀNH":!u?" - CHƯA MỞ":st.ready?" - ĐỦ ĐIỀU KIỆN NHẬN THƯỞNG":"";d.innerHTML='<summary><span class="qnum">'+(i+1)+'</span><div class="qsum"><div class="qgn">'+esc(q.name)+'</div><div class="qgd">'+esc(q.desc)+'</div><div class="qgm">Cấp '+esc(q.level)+' - Thưởng '+q.amount+' '+esc(rewardName(q.reward))+badge+'</div></div></summary><div class="qbody"></div>';let body=d.querySelector(".qbody");st.steps.forEach(x=>renderStep(x,body));if(p.status==="COMPLETED"&&hasReward(q))body.insertAdjacentHTML("beforeend",'<div class="qcomplete">Nhiệm vụ đã hoàn thành - Phần thưởng: '+q.amount+' '+esc(rewardName(q.reward))+'</div>');else if(p.status==="COMPLETED"){let fix=document.createElement("div");fix.className="qsync";fix.innerHTML="Nhiệm vụ đã ghi nhận hoàn thành nhưng chưa tìm thấy phần thưởng trong QuaTangGVCN.";let rb=document.createElement("button");rb.className="qbtn green";rb.type="button";rb.textContent="Nhận phần thưởng còn thiếu";rb.onclick=async()=>{if(S.busy["repair:"+q.id])return;S.busy["repair:"+q.id]=1;rb.disabled=true;rb.textContent="Đang gửi phần thưởng...";try{await loadLedger();if(!S.ledgerReady)throw Error("Không đọc được QuaTangGVCN");if(!hasReward(q)){await reward(q);S.rewardKeys.add(rewardKey(q))}setTimeout(async()=>{try{if(RS().loadSharedRewardData)await RS().loadSharedRewardData(true);await Promise.allSettled([loadLedger(),loadProfile(true)]);renderAll()}catch(e){}},3500);renderAll()}catch(e){console.error("[OCD Quest] Repair reward:",e);rb.disabled=false;rb.textContent="Thử nhận phần thưởng lại"}finally{S.busy["repair:"+q.id]=0}};fix.appendChild(rb);body.appendChild(fix)}else if(!S.logged)body.insertAdjacentHTML("beforeend",'<div class="qnote">Hãy xác minh mã học viên với Minh Hồng.</div>');else if(!u)body.insertAdjacentHTML("beforeend",'<div class="qnote">Hoàn thành nhiệm vụ trước để mở nhiệm vụ này.</div>');else{let w=document.createElement("div");w.className="qprogress";let pct=st.total?Math.round(st.done/st.total*100):0;w.innerHTML='<div class="qph"><span>TIẾN ĐỘ NHIỆM VỤ</span><span>'+st.done+'/'+st.total+'</span></div><div class="qtrack"><div class="qbar" style="width:'+pct+'%"></div></div>';let check=document.createElement("button");check.className="qbtn";check.type="button";check.textContent="Kiểm tra tiến độ";check.onclick=async()=>{check.disabled=true;try{let jobs=[loadSubs(true),loadActivity()];if(st.steps.some(x=>["ITEM","ITEM_SET","UNIQUE_ITEM_GROUP"].includes(x.type)))jobs.push(loadProfile(true));if(st.steps.some(x=>x.type==="MYSTERY_BOX_USE"))jobs.push(loadExchanges(true));if(st.steps.some(x=>x.type==="SELL_ITEM"))jobs.push(loadTrades(true));await Promise.allSettled(jobs);evaluate();S.open.add(q.id);renderAll()}finally{}};w.appendChild(check);if(st.ready){let claim=document.createElement("button");claim.className="qbtn green";claim.type="button";claim.textContent=S.busy["claim:"+q.id]?"Đang kiểm tra Sheet...":"Đã hoàn thành yêu cầu - Nhận thưởng";claim.disabled=!!S.busy["claim:"+q.id];claim.onclick=()=>claimQuest(q,claim);w.appendChild(claim)}body.appendChild(w)}list.appendChild(d)})}
+/* v8: gửi Form qua Apps Script -> máy chủ chờ Sheet ghi xong mới trả lời; lỗi rõ ràng -> gửi Form trực tiếp như cũ */const FORM_API=[["progress",()=>C.progressForm,["studentCode","questId","status"]],["activity",()=>C.activityForm,["studentCode","questId","stepId"]],["beastEvent",()=>BEAST.eventForm,["eventId","team","action"]],["beastResult",()=>BEAST.resultForm,["eventId","studentCode"]],["beastFinal",()=>BEAST.finalForm,["eventId","team"]]];/* v3.28: lệnh mở/thu quân và bài làm Linh Thú ghi thẳng vào Sheet, lỗi mới gửi Form */function postForm(cfg,v){if(cfg===BEAST.eventForm||cfg===BEAST.resultForm||cfg===BEAST.finalForm)return beastAppend(cfg,v).then(ok=>ok||postFormVia(cfg,v));return postFormVia(cfg,v)}async function beastAppend(cfg,v){let kind=cfg===BEAST.eventForm?"beastEvent":cfg===BEAST.finalForm?"beastFinal":"beastResult",row=[""].concat(Object.keys(cfg.fields).map(k=>v[k]==null?"":String(v[k]))),t0=Date.now();try{let r=await QAPI.post({action:"append",items:[{kind,row}]});if(r&&r.ok){console.info("[OCD Beast] ghi thẳng "+kind+" "+(Date.now()-t0)+"ms",r.dup&&r.dup[kind]?"(đã có sẵn)":"");S.formOkAt=Date.now();return true}console.warn("[OCD Beast] ghi thẳng bị từ chối, gửi Form:",r&&r.error);return false}catch(e){if(e&&/phản hồi chậm/.test(String(e.message)))return true;console.warn("[OCD Beast] không ghi thẳng được, gửi Form:",e&&e.message||e);return false}}function postFormVia(cfg,v){let hit=null;try{hit=FORM_API.find(x=>x[1]()===cfg)}catch(e){}if(!hit)return postFormDirect(cfg,v);let values={},t0=Date.now();Object.keys(v).forEach(k=>{if(cfg.fields[k])values[cfg.fields[k]]=v[k]==null?"":String(v[k])});let keys=hit[2].map(k=>cfg.fields[k]).filter(Boolean);return QAPI.post({action:"form",form:hit[0],values,keys}).then(r=>{if(r&&r.ok){console.info("[OCD Quest] Gửi "+hit[0]+" qua Apps Script "+(Date.now()-t0)+"ms, Sheet đã xác nhận: "+(r.confirmed?"có":"chưa"));if(r.confirmed)S.formOkAt=Date.now();return true}console.warn("[OCD Quest] Apps Script từ chối, gửi Form trực tiếp:",r&&r.error);return postFormDirect(cfg,v)},e=>{if(e&&/phản hồi chậm/.test(String(e.message))){console.warn("[OCD Quest] Apps Script phản hồi chậm, không gửi lại để tránh trùng.");return true}console.warn("[OCD Quest] Không gọi được Apps Script, gửi Form trực tiếp:",e&&e.message||e);return postFormDirect(cfg,v)})}function postFormDirect(cfg,v){return new Promise((res,rej)=>{try{let f=document.createElement("form");f.method="POST";f.action=cfg.action;f.target=cfg.target;f.style.display="none";Object.keys(v).forEach(k=>{if(!cfg.fields[k])return;let i=document.createElement("input");i.type="hidden";i.name=cfg.fields[k];i.value=v[k]==null?"":v[k];f.appendChild(i)});document.body.appendChild(f);f.submit();setTimeout(()=>{f.remove();res(true)},C.formWait)}catch(e){rej(e)}})}
+async function reward(q){
+ /* Giai đoạn 2: Apps Script tự lấy số thưởng từ NhiemVu, kiểm tra TienDoForm và chống phát trùng. */
+ let rid=runtimeQuestId(q.id),srv=await QAPI.post({action:"questReward",code:S.code,questId:rid});
+ if(!srv||!srv.ok)throw Error((srv&&srv.error)||"Apps Script chưa phát được phần thưởng. Hãy bấm lại sau ít giây.");
+ S.rewardKeys.add(rewardKey(q));pendingFormClear(pendingFormKey("reward",rid));
+ return true
+}
+async function rewardLegacy(q){let gem=GEM[cl(q.reward).toUpperCase()];if(!gem)throw Error("Loại thưởng chưa hỗ trợ: "+q.reward);let pk=pendingFormKey("reward",runtimeQuestId(q.id));await loadLedger();if(S.ledgerReady&&hasReward(q)){pendingFormClear(pk);return true}if(!pendingFormHas(pk)){pendingFormSet(pk);let i=S.info||{};await postForm(C.rewardForm,{scope:"Cá nhân",studentCode:S.code,group:cl(i.group),course:cl(i.course),rewardType:"Linh thạch",giftName:"",gemType:gem,quantity:q.amount,reason:"QUEST:"+runtimeQuestId(q.id),giver:"Minh Hồng",status:"Đang hiệu lực"})}if(await confirmReward(q)){pendingFormClear(pk);return true}throw Error("Yêu cầu thưởng đã được gửi nhưng QuaTangGVCN chưa xác nhận. Hệ thống đang chờ; không gửi lại để tránh trùng. Hãy kiểm tra lại sau vài giây.")}
+function rewardKey(q){return S.code+"|QUEST:"+runtimeQuestId(q.id).toUpperCase()}
+function hasReward(q){return S.rewardKeys.has(rewardKey(q))}
+async function confirmReward(q,tries=14){for(let i=0;i<tries;i++){await new Promise(r=>setTimeout(r,i?2200:(Date.now()-(S.formOkAt||0)<8000?0:1200)));await loadLedger();if(S.ledgerReady&&hasReward(q))return true}return false}
+async function confirmQuestProgress(q,tries=14){for(let i=0;i<tries;i++){await new Promise(r=>setTimeout(r,i?2200:(Date.now()-(S.formOkAt||0)<8000?0:1200)));await loadProgress();if(progress(q.id).status==="COMPLETED")return true}return false}
+async function finalizeQuest(q,correct,total){
+ let lock="finalize:"+q.id;if(S.busy[lock]||!unlocked(q))return false;
+ S.busy[lock]=1;S.open.add(q.id);
+ try{
+  await Promise.all([loadProgress(),loadLedger()]);
+  if(!S.progressReady)throw Error("Không đọc được TienDoForm để xác nhận hoàn tất.");
+  let time=new Date().toISOString(),pk=pendingFormKey("progress",runtimeQuestId(q.id));
+  if(progress(q.id).status!=="COMPLETED"){
+   if(!pendingFormHas(pk)){pendingFormSet(pk);await postForm(C.progressForm,{studentCode:S.code,questId:runtimeQuestId(q.id),status:"COMPLETED",correct:correct||0,total:total||0,startedAt:time,completedAt:time,rewardStatus:"PENDING"})}
+   if(!await confirmQuestProgress(q))throw Error("Đã gửi yêu cầu hoàn tất. Chưa thấy xác nhận trong TienDoForm; hệ thống đang chờ và sẽ không gửi lại để tránh trùng. Hãy kiểm tra lại sau vài giây.");
+   pendingFormClear(pk);
+  }else pendingFormClear(pk);
+  S.remote[runtimeQuestId(q.id)]={status:"COMPLETED",correct:correct||0,total:total||0};
+  if(!S.ledgerReady)throw Error("Đã xác nhận hoàn tất trong TienDoForm; chưa đọc được QuaTangGVCN để xác minh phần thưởng.");
+  let already=hasReward(q);
+  if(!already)await reward(q);else pendingFormClear(pendingFormKey("reward",runtimeQuestId(q.id)));
+  let detail={studentCode:S.code,questId:q.id,progressQuestId:runtimeQuestId(q.id),questName:q.name,rewardType:q.reward,rewardAmount:q.amount,nextQuest:q.next,completedAt:time,rewardStatus:already?"ALREADY_REWARDED":"SUBMITTED",rewardSource:"QuaTangGVCN",rewardReason:"QUEST:"+runtimeQuestId(q.id)};
+  window.dispatchEvent(new CustomEvent("ocdQuestCompleted",{detail:detail}));
+  document.dispatchEvent(new CustomEvent("ocd:quest-completed",{detail:detail}));
+  renderAll();
+  setTimeout(async()=>{try{let r=RS();if(r&&r.loadSharedRewardData)await r.loadSharedRewardData(true);await Promise.allSettled([loadProgress(),loadLedger(),loadProfile(true)]);renderAll()}catch(e){}},3500);
+  return true;
+ }catch(e){console.error("[OCD Quest] Finalize:",e);S.claimUi[q.id]=String(e&&e.message||e);renderAll();return false}
+ finally{S.busy[lock]=0}
+}
+async function claimQuest(q,b){
+ let lock="claim:"+q.id;if(S.busy[lock]||!unlocked(q))return;
+ S.busy[lock]=1;S.claimUi[q.id]="Đã nhận yêu cầu hoàn tất. Đang kiểm tra các điều kiện mới nhất...";S.open.add(q.id);renderAll();
+ try{
+  let needsSubmission=S.steps.some(x=>x.quest===q.id&&["SUBMISSION","COMMENT_CONTAINS","SCORE_FIRST"].includes(x.type));
+  let needsItem=S.steps.some(x=>x.quest===q.id&&["ITEM","ITEM_SET","UNIQUE_ITEM_GROUP"].includes(x.type));
+  let needsExchange=S.steps.some(x=>x.quest===q.id&&x.type==="MYSTERY_BOX_USE");
+  let needsSell=S.steps.some(x=>x.quest===q.id&&x.type==="SELL_ITEM");
+  let jobs=[];
+  if(needsSubmission)jobs.push(loadSubs(true));
+  if(needsItem)jobs.push(loadProfile(true));
+  if(needsExchange)jobs.push(loadExchanges(true));
+  if(needsSell)jobs.push(loadTrades(true));
+  if(jobs.length)await Promise.all(jobs);
+  if(needsSell&&!S.tradeReady)throw Error("Chưa đọc được MinhHongGiaoDich. Chưa gửi yêu cầu hoàn tất; hãy kiểm tra lại sau vài giây.");
+  if(needsExchange&&!S.exchangeReady)throw Error("Chưa đọc được PhieuDoi. Chưa gửi yêu cầu hoàn tất; hãy kiểm tra lại sau vài giây.");
+  await loadActivity();
+  if(!S.activityReady&&S.steps.some(x=>x.quest===q.id&&(x.type==="QUIZ"||x.type==="NPC")))throw Error("Chưa đọc được HoatDongNhiemVu. Chưa gửi yêu cầu hoàn tất; hãy kiểm tra lại sau vài giây.");
+  evaluate();let st=questState(q);
+  if(!st.ready){let missing=st.required.filter(x=>!stepDone(x)).map(x=>x.name);S.claimUi[q.id]="Đã kiểm tra lại nhưng chưa thấy đủ điều kiện: "+missing.join(", ")+". Nếu bạn vừa nộp bài, đừng gửi lại; chờ Sheet cập nhật rồi bấm “Kiểm tra tiến độ”.";return}
+  S.claimUi[q.id]="Đã xác nhận đủ điều kiện. Đang gửi yêu cầu hoàn tất và chờ Sheet xác nhận...";renderAll();
+  let m=questMetrics(q),ok=await finalizeQuest(q,m.correct,m.total);
+  if(ok)S.claimUi[q.id]="Đã kiểm tra TienDoForm và QuaTangGVCN: nhiệm vụ hoàn tất, phần thưởng đã được ghi nhận.";
+  else if(!S.claimUi[q.id])S.claimUi[q.id]="Yêu cầu đã gửi; đang chờ Sheet xác nhận. Không bấm gửi lại. Hãy kiểm tra lại sau vài giây.";
+ }catch(e){console.error("[OCD Quest] Claim:",e);S.claimUi[q.id]=String(e&&e.message||e)}
+ finally{S.busy[lock]=0;renderAll()}
+}
+async function session(){
+ let old=S.code,n=sessionCode(),accessError="";
+ if(n&&n!=="ADMIN"){
+  try{
+   const r=await waitCore();
+   if(!r||typeof r.assertStudentActive!=="function"){
+    throw new Error("Hệ thống trạng thái học viên chưa sẵn sàng.");
+   }
+   if(typeof r.prefetchStudent==="function")r.prefetchStudent(n);
+   await r.assertStudentActive(n,{forceRefresh:false});
+  }catch(e){
+   console.warn("[OCD Quest Student Status Gate]",e);
+   accessError=String(e&&e.message||"Tài khoản học viên đang tạm dừng hoặc chưa được kích hoạt.").trim();
+   n="";
+  }
+ }
+ S.logged=!!n&&n!=="ADMIN";
+ S.code=S.logged?n:"";
+ $("qSession").classList.toggle("logged",S.logged);
+ $("qST").textContent=S.logged?"Minh Hồng đã xác nhận học viên":accessError?"Tài khoản học viên không hoạt động":"Chào mừng bạn đến Thanh Phong Thư Môn";
+ $("qSS").textContent=S.logged?"Mã học viên "+S.code+" đang được sử dụng cho Trang Nhiệm Vụ.":accessError||"Hãy nói chuyện với Minh Hồng và nhập mã học viên để bắt đầu nhiệm vụ.";
+ if(old!==S.code){
+  S.remote={};S.progressReady=false;S.progressError="";S.rewardKeys=new Set;S.studentCsv="";S.info=null;S.profile=null;S.subs=[];S.subLoaded=false;S.evidence={};S.activityKeys=new Set();S.activityReady=false;S.trades=[];S.tradeReady=false;S.exchanges=[];S.exchangeReady=false;S.surpriseQuestId="";S.surpriseDay="";S.assignedSurpriseId="";beastResetState()
+ }
+ $("qProfile").classList.toggle("on",S.logged);
+ renderAll();
+ if(S.logged&&old!==S.code)loadStudentData()
+}
+
+async function loadStudentData(){if(!S.logged)return;QAPI.prefetchStudent();let prof=loadProfile(false).catch(e=>{console.error("[OCD Quest Profile]",e);$("qST").textContent="Chưa tải được hồ sơ học viên";$("qSS").textContent=String(e&&e.message||e);renderAll()});/* v3.27: tiến độ, hoạt động, bài nộp… chạy song song với hồ sơ, danh sách nhiệm vụ hiện ngay khi có tiến độ */await Promise.allSettled([loadProgress().then(()=>renderAll()),loadActivity(),loadLedger(),loadSubs(false),loadTrades(false),loadExchanges(false),prof]);evaluate();renderAll();QAPI.prefetchBeast();await Promise.allSettled([refreshDailySurprise(),loadBeast(false)]);beastResolveIdentity();if(S.beast&&S.beast.assistant)loadLedger(true).then(renderAll,()=>{});evaluate();renderAll()}
+function openStudentProfile(){if(!S.logged)return;let m=$("qProfileModal");if(!m)return;m.classList.add("on");m.setAttribute("aria-hidden","false");document.body.style.overflow="hidden"}function closeStudentProfile(){let m=$("qProfileModal");if(!m)return;m.classList.remove("on");m.setAttribute("aria-hidden","true");document.body.style.overflow=""}function bind(){if($("nmClose"))$("nmClose").onclick=closeNpc;window.addEventListener("ocdAuthChanged",session);let qs=$("qSession"),pc=$("qProfileClose"),pm=$("qProfileModal");if(qs)qs.onclick=openStudentProfile;if(pc)pc.onclick=closeStudentProfile;if(pm)pm.onclick=e=>{if(e.target===pm)closeStudentProfile()};window.addEventListener("pageshow",e=>{if(e.persisted&&S.logged)loadStudentData()});document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.logged)loadStudentData()});$("nModal").onclick=e=>{if(e.target===$("nModal"))closeNpc()};document.addEventListener("keydown",e=>{if(e.key==="Escape")closeNpc()});["ocdStudentSessionChanged","ocd:student-session-changed","ocdStudentVerified"].forEach(n=>window.addEventListener(n,session));window.addEventListener("ocdRewardProfileChanged",()=>S.logged&&loadProfile(true))}
+
+let beastLivePollBusy=false,beastLivePollAt=0,beastLivePollState="",BEAST_POLL_FAST=4000+Math.floor(Math.random()*2000);/* v3.29: mỗi máy hỏi trạng thái 4–6 giây/lần, lệch nhau để máy chủ không bị dồn */
+function beastLiveStateKey(st){
+ if(!st)return "";
+ return [st.state||"",st.openAt||"",st.finishAt||"",st.canFinish?1:0,beastFinalConfirmed()?1:0].join("|");
+}
+setInterval(async()=>{
+ let m=$("nModal"),av=$("nmAv");
+ if(!m||!m.classList.contains("on")||!av||!av.classList.contains("beast-modal-banner")||!S.logged||!S.beast||!S.beast.ready)return;
+ let st=beastRefreshState(),c=$("beastClock");
+ if(c&&st&&st.state==="ACTIVE")c.textContent=beastFmtRemaining(st.remainingMs);
+ let now=Date.now();
+ if(beastLivePollBusy||now-beastLivePollAt<(st&&(st.state==="ACTIVE"||(st.state==="WAITING"&&st.canOpen))?BEAST_POLL_FAST:8000))return;
+ beastLivePollAt=now;
+ beastLivePollBusy=true;
+ try{
+  let before=beastLiveStateKey(st);
+  await beastReloadEventOnly();
+  let afterState=beastRefreshState(),after=beastLiveStateKey(afterState);
+  if(!beastLivePollState)beastLivePollState=before;
+  if(after!==before||after!==beastLivePollState){
+   beastLivePollState=after;
+   beastRenderModal();
+  }else beastLivePollState=after;
+ }catch(e){
+  console.warn("[OCD Beast] live event refresh:",e);
+ }finally{
+  beastLivePollBusy=false;
+ }
+},1000);
+window.OCDQuestPage={version:C.version,refreshSession:session,reloadNpc:loadNpcs,reloadQuest:loadQuests,reloadProgress:loadProgress,reloadActivity:loadActivity,reloadRewards:loadLedger,reloadAssets:()=>loadProfile(true),reloadSubmissions:()=>loadSubs(true),reloadTrades:()=>loadTrades(true),reloadExchanges:()=>loadExchanges(true),reloadBeast:()=>loadBeast(true),getBeastState:()=>({ready:S.beast.ready,error:S.beast.error,eventId:S.beast.eventId,test:S.beast.test,studentTeam:S.beast.studentTeam,combatTeam:S.beast.combatTeam,isAssistant:!!S.beast.assistant,assistant:S.beast.assistant,completed:S.beast.completed,eventRows:S.beast.events.length,resultRows:S.beast.results.length,finalRows:S.beast.finals.length,questionCount:S.beast.questions.length,assistantCount:S.beast.assistants.length,teamState:beastRefreshState()}),getBeastTeamState:()=>beastRefreshState(),beastOpen:()=>beastOpen(),beastFinish:()=>beastFinish(),beastFinalize:()=>beastFinalize(),beastClaimRewards:()=>beastClaimRewards(),getBeastSummary:()=>beastSummaryRows(),openBeast:()=>openBeast(),getBeastQuestions:()=>beastAssignedQuestions().map(q=>({id:q.id,text:q.text,A:q.A,B:q.B,C:q.C,D:q.D,topic:q.topic,difficulty:q.difficulty})),getBeastQuestionIds:()=>beastAssignedQuestionIds(),beastStartQuiz:()=>beastStartQuiz(),beastAnswer:(id,choice)=>beastAnswer(id,choice),getBeastQuiz:()=>beastQuizSnapshot(),beastSubmitQuiz:()=>beastSubmitQuiz(),getProgress:progress,getState:()=>({version:C.version,studentCode:S.code,quests:S.quests.length,steps:S.steps.map(x=>({quest:x.quest,id:x.id,type:x.type,requirement:x.type==="SUBMISSION"?submissionRequirement(x):x.req,guide:x.guide,item:x.type==="ITEM"?itemRequirement(x):null,sell:x.type==="SELL_ITEM"?sellRequirement(x):null,done:stepDone(x)})),dialogues:S.dialogues.length,evidence:S.evidence,activityReady:S.activityReady,activityKeys:[...S.activityKeys],tradeReady:S.tradeReady,trades:S.trades.length,events:S.events.map(e=>({eventId:e.id,questId:e.quest,npc:e.npc,year:e.year,active:e.active,testActive:!!e.testActive,runtimeQuestId:runtimeQuestId(e.quest)})),activeEvents:S.activeEvents.map(e=>e.id),surpriseQuestId:S.surpriseQuestId,surpriseDay:S.surpriseDay,assignedSurpriseId:S.assignedSurpriseId,exchangeReady:S.exchangeReady,mysteryBoxUses:mysteryBoxUseCount(),remoteProgress:S.remote})};
+async function start(){bind();QAPI.prefetchContent();/* v3.26.2: Minh Hồng/tài khoản có thể sẵn sàng muộn hơn trang -> kiểm tra lại vài lần */[400,1200,2500,5000].forEach(t=>setTimeout(()=>{if(!S.logged&&sessionCode())session()},t));/* v6: nhận diện học viên và tải nhiệm vụ chạy song song; session() tự gọi loadStudentData() một lần */await Promise.allSettled([session(),loadNpcs(),loadQuests()])}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
+})();
+</script>
+</div>
+
