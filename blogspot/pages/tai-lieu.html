@@ -1,0 +1,4460 @@
+<div id="tpCalligraphyLibrary">
+
+<style>
+#tpCalligraphyLibrary{
+    --ink:#29251f;
+    --soft:#665f56;
+    --brown:#86613b;
+    --dark:#604326;
+    --gold:#b39468;
+    --paper:#f7f2e8;
+    --light:#fffdf8;
+    --line:#e4dbcc;
+    --red:#a54135;
+    font-family:Georgia,"Times New Roman",serif;
+    color:var(--ink)
+}
+
+#tpCalligraphyLibrary,
+#tpCalligraphyLibrary *{
+    box-sizing:border-box
+}
+
+#tpCalligraphyLibrary button,
+#tpCalligraphyLibrary input{
+    font:inherit
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+#tpCalligraphyLibrary .tp-login{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:18px 12px;
+    background:var(--paper)
+}
+
+#tpCalligraphyLibrary .tp-login-box{
+    width:100%;
+    max-width:520px;
+    padding:30px 18px;
+    background:var(--light);
+    border:1px solid var(--line);
+    box-shadow:0 12px 35px rgba(70,52,30,.08);
+    text-align:center
+}
+
+#tpCalligraphyLibrary .tp-seal{
+    width:56px;
+    height:56px;
+    margin:0 auto 17px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--brown);
+    color:var(--brown);
+    font-size:26px
+}
+
+#tpCalligraphyLibrary .tp-eye{
+    color:var(--brown);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:2px
+}
+
+#tpCalligraphyLibrary .tp-login h2{
+    margin:8px 0 0;
+    font-size:27px
+}
+
+#tpCalligraphyLibrary .tp-desc{
+    max-width:430px;
+    margin:12px auto 19px;
+    color:var(--soft);
+    font-size:13px;
+    line-height:1.7
+}
+
+#tpCalligraphyLibrary .tp-login-form{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px
+}
+
+#tpCalligraphyLibrary .tp-input{
+    width:100%;
+    height:47px;
+    padding:0 13px;
+    border:1px solid #e4dbcc;
+    background:#fff;
+    outline:0
+}
+
+#tpCalligraphyLibrary .tp-main-btn{
+    min-height:47px;
+    border:0;
+    background:var(--dark);
+    color:#fff;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:700
+}
+
+#tpCalligraphyLibrary .tp-main-btn:disabled{
+    opacity:.6;
+    cursor:default
+}
+
+#tpCalligraphyLibrary .tp-msg{
+    min-height:19px;
+    margin-top:8px;
+    color:var(--red);
+    font-size:11.5px
+}
+
+
+/* =========================================================
+   UPGRADE
+========================================================= */
+
+#tpCalligraphyLibrary .tp-up-check{
+    display:none
+}
+
+#tpCalligraphyLibrary .tp-up-label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    margin-top:18px;
+    padding-top:15px;
+    border-top:1px solid var(--line);
+    color:var(--dark);
+    cursor:pointer
+}
+
+#tpCalligraphyLibrary .tp-up-label small{
+    display:block;
+    color:var(--soft);
+    font-size:10px
+}
+
+#tpCalligraphyLibrary .tp-chev{
+    width:8px;
+    height:8px;
+    border-right:1px solid currentColor;
+    border-bottom:1px solid currentColor;
+    transform:rotate(45deg)
+}
+
+#tpCalligraphyLibrary .tp-up-check:checked + .tp-up-label .tp-chev{
+    transform:rotate(225deg)
+}
+
+#tpCalligraphyLibrary .tp-upgrade{
+    display:none;
+    margin-top:12px;
+    padding:15px;
+    border:1px solid var(--line);
+    background:#faf7f0;
+    text-align:left;
+    font-size:11.5px
+}
+
+#tpCalligraphyLibrary .tp-up-check:checked ~ .tp-upgrade{
+    display:block
+}
+
+#tpCalligraphyLibrary .tp-price{
+    display:flex;
+    justify-content:space-between;
+    margin:11px 0;
+    padding:9px 0;
+    border-top:1px dashed #e4dbcc;
+    border-bottom:1px dashed #e4dbcc
+}
+
+#tpCalligraphyLibrary .tp-price strong{
+    color:#a54135;
+    font-size:18px
+}
+
+#tpCalligraphyLibrary .tp-bank{
+    margin-top:11px;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    background:#fff
+}
+
+#tpCalligraphyLibrary .tp-bank div{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:5px 0;
+    border-bottom:1px dashed #eee4d7
+}
+
+#tpCalligraphyLibrary .tp-bank div:last-child{
+    border:0
+}
+
+#tpCalligraphyLibrary .tp-bank span{
+    color:var(--soft)
+}
+
+#tpCalligraphyLibrary .tp-red{
+    color:var(--red)
+}
+
+#tpCalligraphyLibrary .tp-qr{
+    text-align:center;
+    margin-top:13px
+}
+
+#tpCalligraphyLibrary .tp-qr img{
+    width:180px;
+    max-width:100%;
+    display:block;
+    margin:8px auto;
+    border:1px solid var(--line)
+}
+
+#tpCalligraphyLibrary .tp-note{
+    margin-top:11px;
+    padding:9px 10px;
+    border-left:3px solid var(--gold);
+    background:#fffaf1;
+    color:var(--soft);
+    line-height:1.6
+}
+
+#tpCalligraphyLibrary .tp-up-benefits{
+    margin:12px 0;
+    padding:12px;
+    border:1px solid var(--line);
+    background:#fff
+}
+
+#tpCalligraphyLibrary .tp-up-benefits-title{
+    margin-bottom:7px;
+    color:var(--dark);
+    font-weight:700
+}
+
+#tpCalligraphyLibrary .tp-up-benefit{
+    display:flex;
+    gap:8px;
+    padding:7px 0;
+    border-bottom:1px dashed #eee4d7
+}
+
+#tpCalligraphyLibrary .tp-up-benefit:last-child{
+    border:0
+}
+
+#tpCalligraphyLibrary .tp-up-benefit-icon{
+    width:19px;
+    height:19px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #d8c9b5;
+    border-radius:50%
+}
+
+
+/* =========================================================
+   LIBRARY
+========================================================= */
+
+#tpCalligraphyLibrary .tp-library{
+    display:none;
+    width:100%;
+    max-width:1220px;
+    margin:auto;
+    padding:12px;
+    background:var(--paper)
+}
+
+
+/* =========================================================
+   WELCOME
+========================================================= */
+
+#tpCalligraphyLibrary .tp-welcome{
+    display:none;
+    margin-bottom:13px;
+    padding:15px;
+    border:1px solid #d8c9b5;
+    background:var(--light)
+}
+
+#tpCalligraphyLibrary .tp-w-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+    padding-bottom:12px;
+    border-bottom:1px solid #e4dbcc
+}
+
+
+/* =========================================================
+   TV4 - AVATAR + STUDENT IDENTITY
+========================================================= */
+
+#tpCalligraphyLibrary .tp-w-identity{
+    min-width:0;
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:10px
+}
+
+#tpCalligraphyLibrary .tp-w-avatar{
+    width:48px;
+    height:48px;
+    flex:0 0 48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    border:1px solid #d8c9b5;
+    border-radius:50%;
+    background:#faf7f0;
+    color:#86613b;
+    font-size:20px
+}
+
+#tpCalligraphyLibrary .tp-w-avatar img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover
+}
+
+#tpCalligraphyLibrary .tp-w-user{
+    min-width:0;
+    flex:1
+}
+
+#tpCalligraphyLibrary .tp-w-small{
+    color:#86613b;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:1.5px
+}
+
+#tpCalligraphyLibrary .tp-w-name{
+    margin:4px 0 0;
+    font-size:18px
+}
+
+#tpCalligraphyLibrary .tp-w-code{
+    margin-top:4px;
+    color:#665f56;
+    font-size:10px
+}
+
+
+/* =========================================================
+   ASSETS
+========================================================= */
+
+#tpCalligraphyLibrary .tp-head-assets{
+    width:auto;
+    max-width:260px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:5px
+}
+
+#tpCalligraphyLibrary .tp-asset-label{
+    color:#86613b;
+    font-size:7px;
+    font-weight:700;
+    letter-spacing:.8px;
+    text-transform:uppercase
+}
+
+
+/* =========================================================
+   GEMS COMPACT
+========================================================= */
+
+#tpCalligraphyLibrary .tp-header-gems{
+    max-width:180px;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:3px
+}
+
+#tpCalligraphyLibrary .tp-head-gem{
+    display:inline-flex;
+    align-items:center;
+    gap:2px;
+    min-height:19px;
+    padding:2px 4px 2px 2px;
+    border:1px solid #e4dbcc;
+    border-radius:5px;
+    background:#faf7f0;
+    font-size:8px
+}
+
+#tpCalligraphyLibrary .tp-head-gem img{
+    width:13px;
+    height:13px;
+    object-fit:contain
+}
+
+#tpCalligraphyLibrary .tp-head-gem strong{
+    font-size:8px;
+    line-height:1
+}
+
+#tpCalligraphyLibrary .tp-no-gem{
+    padding:3px 5px;
+    border:1px solid #e4dbcc;
+    border-radius:5px;
+    color:#665f56;
+    font-size:8px
+}
+
+
+/* =========================================================
+   ITEMS
+========================================================= */
+
+#tpCalligraphyLibrary .tp-header-items{
+    width:100%;
+    max-width:260px;
+    display:flex;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:4px
+}
+
+#tpCalligraphyLibrary .tp-head-item{
+    max-width:135px;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    min-height:25px;
+    padding:3px 5px 3px 3px;
+    border:1px solid #e4dbcc;
+    border-radius:6px;
+    background:#fffdf8
+}
+
+#tpCalligraphyLibrary .tp-head-item-image{
+    width:18px;
+    height:18px;
+    flex:0 0 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    border:1px solid #eadfce;
+    border-radius:4px;
+    background:#faf7f0;
+    color:#86613b;
+    font-size:10px
+}
+
+#tpCalligraphyLibrary .tp-head-item-image img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain
+}
+
+#tpCalligraphyLibrary .tp-head-item-info{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:3px
+}
+
+#tpCalligraphyLibrary .tp-head-item-name{
+    max-width:88px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:#49392c;
+    font-size:7.5px;
+    line-height:1.2
+}
+
+#tpCalligraphyLibrary .tp-head-item-qty{
+    flex:none;
+    color:#a54135;
+    font-size:8px;
+    font-weight:700
+}
+
+#tpCalligraphyLibrary .tp-no-item{
+    padding:3px 5px;
+    border:1px solid #e4dbcc;
+    border-radius:5px;
+    color:#665f56;
+    font-size:8px
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+#tpCalligraphyLibrary .tp-summary{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin-top:11px
+}
+
+#tpCalligraphyLibrary .tp-s-card{
+    padding:9px;
+    border:1px solid #e4dbcc;
+    background:#faf7f0
+}
+
+#tpCalligraphyLibrary .tp-s-card span{
+    display:block;
+    margin-bottom:3px;
+    color:#665f56;
+    font-size:9px
+}
+
+#tpCalligraphyLibrary .tp-w-title{
+    margin:15px 0 8px;
+    color:#604326;
+    font-size:11.5px;
+    font-weight:700
+}
+
+
+/* =========================================================
+   GIFTS
+========================================================= */
+
+#tpCalligraphyLibrary .tp-gifts{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:7px
+}
+
+#tpCalligraphyLibrary .tp-gift{
+    display:flex;
+    gap:9px;
+    padding:10px;
+    border:1px solid #e4dbcc;
+    background:#faf7f0
+}
+
+#tpCalligraphyLibrary .tp-gift-icon{
+    width:38px;
+    height:38px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #d8c9b5;
+    background:#fff;
+    font-size:20px
+}
+
+#tpCalligraphyLibrary .tp-gift strong{
+    display:block;
+    margin-bottom:3px;
+    font-size:11.5px
+}
+
+#tpCalligraphyLibrary .tp-gift p{
+    margin:0;
+    color:#665f56;
+    font-size:10px
+}
+
+
+/* =========================================================
+   INTRO / SECTIONS
+========================================================= */
+
+#tpCalligraphyLibrary .tp-intro{
+    margin:25px 0;
+    padding:18px;
+    border:1px solid var(--line);
+    background:var(--light)
+}
+
+#tpCalligraphyLibrary .tp-intro h2{
+    margin:0 0 7px
+}
+
+#tpCalligraphyLibrary .tp-intro p{
+    margin:0;
+    color:#665f56;
+    font-size:12px;
+    line-height:1.7
+}
+
+#tpCalligraphyLibrary .tp-sec{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:32px 0 16px
+}
+
+#tpCalligraphyLibrary .tp-sec h2{
+    margin:0;
+    white-space:nowrap;
+    font-size:21px
+}
+
+#tpCalligraphyLibrary .tp-line{
+    height:1px;
+    flex:1;
+    background:#e4dbcc
+}
+
+
+/* =========================================================
+   VIDEOS
+========================================================= */
+
+#tpCalligraphyLibrary .tp-videos{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px
+}
+
+#tpCalligraphyLibrary .tp-video{
+    overflow:hidden;
+    border:1px solid #e4dbcc;
+    background:#fffdf8
+}
+
+#tpCalligraphyLibrary .tp-video.low{
+    border-color:#d5b58a
+}
+
+#tpCalligraphyLibrary .tp-thumb{
+    position:relative;
+    aspect-ratio:16/9;
+    overflow:hidden;
+    background:#e5dfd5;
+    cursor:pointer;
+    touch-action:manipulation
+}
+
+#tpCalligraphyLibrary .tp-thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    pointer-events:none
+}
+
+#tpCalligraphyLibrary .tp-play{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none
+}
+
+#tpCalligraphyLibrary .tp-play:before{
+    content:"";
+    width:56px;
+    height:56px;
+    display:block;
+    border-radius:50%;
+    background:rgba(31,25,20,.82)
+}
+
+#tpCalligraphyLibrary .tp-play:after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-38%,-50%);
+    width:0;
+    height:0;
+    border-top:9px solid transparent;
+    border-bottom:9px solid transparent;
+    border-left:14px solid #fff
+}
+
+#tpCalligraphyLibrary .tp-v-info{
+    padding:14px
+}
+
+#tpCalligraphyLibrary .tp-v-meta{
+    display:flex;
+    justify-content:space-between;
+    gap:7px
+}
+
+#tpCalligraphyLibrary .tp-lesson{
+    color:#86613b;
+    font-size:9px;
+    font-weight:700
+}
+
+#tpCalligraphyLibrary .tp-level-tag{
+    padding:4px 7px;
+    border-radius:99px;
+    background:#f2ebe0;
+    font-size:9px
+}
+
+#tpCalligraphyLibrary .tp-level-tag.high{
+    background:#fff0e4;
+    color:#a6542f
+}
+
+#tpCalligraphyLibrary .tp-v-info h3{
+    margin:6px 0;
+    font-size:17px
+}
+
+#tpCalligraphyLibrary .tp-v-info p{
+    margin:0;
+    color:#665f56;
+    font-size:11px
+}
+
+#tpCalligraphyLibrary .tp-watch{
+    margin-top:10px;
+    border:0;
+    background:none;
+    color:#604326;
+    cursor:pointer;
+    font-weight:700;
+    touch-action:manipulation
+}
+
+
+/* =========================================================
+   PAGES
+========================================================= */
+
+#tpCalligraphyLibrary .tp-pages{
+    display:none;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-top:18px
+}
+
+#tpCalligraphyLibrary .tp-page{
+    min-height:37px;
+    padding:0 12px;
+    border:1px solid #e4dbcc;
+    background:#fffdf8;
+    cursor:pointer
+}
+
+#tpCalligraphyLibrary .tp-page:disabled{
+    opacity:.35
+}
+
+
+/* =========================================================
+   DOCUMENTS
+========================================================= */
+
+#tpCalligraphyLibrary .tp-docs{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px
+}
+
+#tpCalligraphyLibrary .tp-doc{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    border:1px solid #e4dbcc;
+    background:#fffdf8;
+    color:inherit;
+    text-decoration:none
+}
+
+#tpCalligraphyLibrary .tp-doc-icon{
+    width:45px;
+    height:45px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #b39468;
+    color:#86613b;
+    font-size:20px
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+#tpCalligraphyLibrary .tp-status{
+    grid-column:1/-1;
+    padding:30px 12px;
+    border:1px solid #e4dbcc;
+    background:#fffdf8;
+    color:#665f56;
+    text-align:center
+}
+
+#tpCalligraphyLibrary .tp-spinner{
+    width:28px;
+    height:28px;
+    margin:0 auto 10px;
+    border:2px solid #e4dbcc;
+    border-top-color:#86613b;
+    border-radius:50%;
+    animation:tpSpin .7s linear infinite
+}
+
+@keyframes tpSpin{
+    to{transform:rotate(360deg)}
+}
+
+
+/* =========================================================
+   WARNING
+========================================================= */
+
+#tpCalligraphyLibrary .tp-modal{
+    position:fixed;
+    inset:0;
+    z-index:999999;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:12px;
+    background:rgba(20,17,14,.82)
+}
+
+#tpCalligraphyLibrary .tp-modal.open{
+    display:flex
+}
+
+#tpCalligraphyLibrary .tp-warning{
+    width:100%;
+    max-width:440px;
+    padding:22px 18px;
+    border:1px solid #e4dbcc;
+    background:#fffdf8;
+    text-align:center
+}
+
+#tpCalligraphyLibrary .tp-score-box{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin:13px 0
+}
+
+#tpCalligraphyLibrary .tp-score-box div{
+    padding:9px;
+    border:1px solid #e4dbcc;
+    background:#faf7f0
+}
+
+#tpCalligraphyLibrary .tp-warning-actions{
+    display:grid;
+    gap:7px
+}
+
+#tpCalligraphyLibrary .tp-warning-actions button{
+    min-height:41px;
+    border:0;
+    font-weight:700;
+    cursor:pointer;
+    touch-action:manipulation
+}
+
+#tpCalligraphyLibrary .tp-practice{
+    background:#604326;
+    color:#fff
+}
+
+#tpCalligraphyLibrary .tp-anyway{
+    background:#eee4d6
+}
+
+#tpCalligraphyLibrary .tp-cancel{
+    border:1px solid #e4dbcc!important;
+    background:#fff
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:649px){
+
+    #tpCalligraphyLibrary .tp-w-head{
+        gap:8px
+    }
+
+    #tpCalligraphyLibrary .tp-w-avatar{
+        width:42px;
+        height:42px;
+        flex-basis:42px
+    }
+
+    #tpCalligraphyLibrary .tp-w-identity{
+        gap:7px
+    }
+
+    #tpCalligraphyLibrary .tp-head-assets{
+        max-width:150px
+    }
+
+    #tpCalligraphyLibrary .tp-header-items{
+        max-width:150px
+    }
+
+    #tpCalligraphyLibrary .tp-head-item{
+        max-width:78px
+    }
+
+    #tpCalligraphyLibrary .tp-head-item-name{
+        max-width:43px
+    }
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media(min-width:650px){
+
+    #tpCalligraphyLibrary .tp-login{
+        align-items:center
+    }
+
+    #tpCalligraphyLibrary .tp-login-form{
+        grid-template-columns:1fr auto!important
+    }
+
+    #tpCalligraphyLibrary .tp-summary{
+        grid-template-columns:repeat(3,1fr)
+    }
+
+    #tpCalligraphyLibrary .tp-gifts{
+        grid-template-columns:1fr 1fr
+    }
+
+    #tpCalligraphyLibrary .tp-videos,
+    #tpCalligraphyLibrary .tp-docs{
+        grid-template-columns:repeat(2,1fr)
+    }
+}
+
+@media(min-width:980px){
+
+    #tpCalligraphyLibrary .tp-videos{
+        grid-template-columns:repeat(3,1fr)
+    }
+}
+
+/* TV4.1: card assets from the remaining canonical inventory. */
+#tpCalligraphyLibrary .tp-welcome.tp-has-background{
+    background-size:cover;background-position:center;background-repeat:no-repeat
+}
+#tpCalligraphyLibrary .tp-welcome.tp-has-background .tp-w-head,
+#tpCalligraphyLibrary .tp-welcome.tp-has-background .tp-summary,
+#tpCalligraphyLibrary .tp-welcome.tp-has-background .tp-score-box{
+    background:rgba(255,253,248,.9);border-radius:8px;padding:10px
+}
+#tpCalligraphyLibrary .tp-w-avatar{
+    position:relative;overflow:visible;border:0;background:transparent;isolation:isolate
+}
+#tpCalligraphyLibrary .tp-avatar-face{
+    width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+    border:1px solid #d8c9b5;border-radius:50%;overflow:hidden;background:#faf7f0
+}
+#tpCalligraphyLibrary .tp-w-avatar img.tp-avatar-frame{
+    position:absolute;inset:-18%;width:136%;height:136%;max-width:none;
+    object-fit:contain;z-index:2;pointer-events:none;border:0;border-radius:0
+}
+#tpCalligraphyLibrary .tp-w-identity{gap:16px}
+#tpCalligraphyLibrary .tp-name-effect{position:relative;display:inline-flex;max-width:100%}
+#tpCalligraphyLibrary .tp-name-effect.reward-multitask-wrap{margin:10px 18px}
+#tpCalligraphyLibrary .reward-multitask-name{
+    animation:tpPotionColor 2.8s linear infinite,tpPotionGlow 1.6s ease-in-out infinite alternate
+}
+#tpCalligraphyLibrary .reward-multitask-star{
+    position:absolute;z-index:3;pointer-events:none;line-height:1;color:#fbbf24;
+    font-size:13px;text-shadow:0 0 6px #fff;animation:tpPotionStar 1.6s ease-in-out infinite
+}
+#tpCalligraphyLibrary .reward-multitask-star-left{left:-16px;top:-8px}
+#tpCalligraphyLibrary .reward-multitask-star-right{right:-16px;top:-8px;animation-delay:.35s}
+#tpCalligraphyLibrary .reward-multitask-star-bottom-left{left:-10px;bottom:-8px;animation-delay:.7s}
+#tpCalligraphyLibrary .reward-multitask-star-bottom-right{right:-10px;bottom:-8px;animation-delay:1.05s}
+@keyframes tpPotionColor{0%,100%{color:#b7791f}25%{color:#db2777}50%{color:#7c3aed}75%{color:#0284c7}}
+@keyframes tpPotionGlow{from{text-shadow:0 0 2px #fbbf24}to{text-shadow:0 0 8px #fbbf24}}
+@keyframes tpPotionStar{0%,100%{opacity:.35;transform:scale(.7)}50%{opacity:1;transform:scale(1.1)}}
+@media(prefers-reduced-motion:reduce){
+    #tpCalligraphyLibrary .reward-multitask-name,
+    #tpCalligraphyLibrary .reward-multitask-star{animation:none}
+}
+
+
+/* TV5: a quiet library, compact profile, separate replay and guide lists. */
+#tpCalligraphyLibrary{--paper:#f8f5ef;--light:#fffefa;--line:#e7dfd3;--dark:#514538}
+#tpCalligraphyLibrary .tp-library{max-width:1180px;padding:24px 16px 48px}
+#tpCalligraphyLibrary .tp-library-hero{padding:36px 26px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(120deg,#eee7d8,#fffdf7);margin-bottom:18px}
+#tpCalligraphyLibrary .tp-library-hero .tp-eye{margin-bottom:12px}
+#tpCalligraphyLibrary .tp-library-hero h1{font-size:clamp(25px,5vw,38px);line-height:1.25;margin:0 0 12px;color:var(--dark)}
+#tpCalligraphyLibrary .tp-library-hero p{font-size:14px;line-height:1.8;max-width:680px;color:var(--soft);margin:0}
+#tpCalligraphyLibrary .tp-library-state{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;font-family:Arial,sans-serif}
+#tpCalligraphyLibrary .tp-state-pill{padding:7px 12px;border-radius:99px;background:#fffefa;border:1px solid var(--line);font-size:11px}
+#tpCalligraphyLibrary .tp-profile-panel{display:none;margin:0 0 24px;border:1px solid var(--line);border-radius:12px;background:var(--light)}
+#tpCalligraphyLibrary .tp-profile-panel summary{cursor:pointer;padding:15px 18px;color:var(--dark);font-family:Arial,sans-serif;font-weight:700;font-size:13px}
+#tpCalligraphyLibrary .tp-profile-hint{font-size:10px;color:var(--soft);font-weight:400;margin-left:8px}
+#tpCalligraphyLibrary .tp-profile-panel .tp-welcome{border:0;border-top:1px solid var(--line);margin:0;border-radius:0 0 12px 12px}
+#tpCalligraphyLibrary .tp-intro{padding:20px 0;background:transparent;border:0}
+#tpCalligraphyLibrary .tp-sec{margin:28px 0 14px}
+#tpCalligraphyLibrary .tp-section-note{color:var(--soft);font-size:12px;line-height:1.7;margin:0 0 16px}
+#tpCalligraphyLibrary .tp-video{border-radius:14px;box-shadow:0 5px 18px rgba(65,48,29,.04)}
+#tpCalligraphyLibrary .tp-v-info{padding:17px}
+#tpCalligraphyLibrary .tp-v-info h3{line-height:1.45}
+#tpCalligraphyLibrary .tp-video.locked{background:#f2eee7}
+#tpCalligraphyLibrary .tp-video.locked .tp-thumb{cursor:default}
+#tpCalligraphyLibrary .tp-video.locked .tp-thumb img{filter:saturate(.25);opacity:.65}
+#tpCalligraphyLibrary .tp-video.locked .tp-play:before{background:#7b7265}
+#tpCalligraphyLibrary .tp-video.locked .tp-watch{background:#e6dfd3;color:#76694f;cursor:not-allowed}
+#tpCalligraphyLibrary .tp-doc{border-radius:12px}
+#tpCalligraphyLibrary .tp-pages{margin:18px 0 26px}
+@media(min-width:720px){#tpCalligraphyLibrary .tp-videos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1050px){#tpCalligraphyLibrary .tp-videos{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:649px){#tpCalligraphyLibrary .tp-library{padding:14px 10px 32px}#tpCalligraphyLibrary .tp-library-hero{padding:26px 20px}#tpCalligraphyLibrary .tp-profile-hint{display:block;margin:5px 0 0 17px}}
+
+
+#tpCalligraphyLibrary .tp-upgrade-video-body{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    min-height:265px;padding:30px 22px;text-align:center;background:#f1ece3;height:100%
+}
+#tpCalligraphyLibrary .tp-upgrade-video-icon{font-size:30px;margin-bottom:16px}
+#tpCalligraphyLibrary .tp-upgrade-video-body h3{font-size:19px;line-height:1.55;margin:14px 0;color:var(--dark)}
+#tpCalligraphyLibrary .tp-upgrade-video-body p{font-size:12px;line-height:1.7;margin:0;color:var(--soft)}
+
+
+#tpCalligraphyLibrary .tp-card-payment{width:100%;margin-top:20px;padding-top:18px;border-top:1px solid #d8c9b5;text-align:left;font-family:Arial,sans-serif;font-size:11px}
+#tpCalligraphyLibrary .tp-card-payment>strong{display:block;line-height:1.6;color:var(--dark)}
+#tpCalligraphyLibrary .tp-card-payment-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px;padding:7px 0;border-bottom:1px dashed #e0d7c9}
+#tpCalligraphyLibrary .tp-card-payment-row strong{overflow-wrap:anywhere}
+#tpCalligraphyLibrary .tp-card-payment p{margin:12px 0 5px;font-size:11px}
+#tpCalligraphyLibrary .tp-card-payment .tp-card-transfer-info{color:var(--red);overflow-wrap:anywhere}
+#tpCalligraphyLibrary .tp-card-upgrade-qr{display:block;width:190px;max-width:100%;height:auto;margin:12px auto;border:1px solid var(--line);border-radius:8px}
+#tpCalligraphyLibrary .tp-card-payment-note{line-height:1.7}
+
+</style>
+
+
+<!--=========================================================
+     LOGIN
+=========================================================-->
+
+<div class="tp-login" id="tpLoginScreen">
+
+<div class="tp-login-box">
+
+<div class="tp-seal">書</div>
+
+<div class="tp-eye">THANH PHONG THƯ MÔN</div>
+
+<h2>Kho tài liệu học viên</h2>
+
+<p class="tp-desc">
+Nhập Mã học viên hoặc Mã trợ giảng để xem thư viện video và bài giảng theo khóa.
+</p>
+
+<div class="tp-login-form">
+
+<input autocomplete="off" class="tp-input" id="tpPasswordInput" onkeydown="tpPasswordKey(event)" placeholder="Nhập Mã học viên..." type="text" />
+
+<button class="tp-main-btn" id="tpLoginButton" onclick="tpLogin()" type="button">
+Đăng nhập
+</button>
+
+</div>
+
+<div class="tp-msg" id="tpPasswordMessage"></div>
+
+
+<input class="tp-up-check" id="tpUpgradeCheck" type="checkbox" />
+
+<label class="tp-up-label" for="tpUpgradeCheck" onclick="tpUpdateQR()">
+
+<span>
+<small>Muốn xem thêm video trả phí?</small>
+<strong>Nâng cấp tài khoản</strong>
+</span>
+
+<span class="tp-chev"></span>
+
+</label>
+
+
+<div class="tp-upgrade">
+
+<p>
+Học viên trong HocVien và trợ giảng trong TroGiang đều có thể vào thư viện. Trợ giảng được xem video trả phí như học viên có gói nâng cấp.
+</p>
+
+<div class="tp-up-benefits">
+
+<div class="tp-up-benefits-title">
+Tài khoản nâng cấp được:
+</div>
+
+<div class="tp-up-benefit">
+<span class="tp-up-benefit-icon">✓</span>
+<span>Quyền ưu tiên nhận xét bài tập</span>
+</div>
+
+<div class="tp-up-benefit">
+<span class="tp-up-benefit-icon">✓</span>
+<span>Xem lại bài giảng của khóa đang theo học</span>
+</div>
+
+<div class="tp-up-benefit">
+<span class="tp-up-benefit-icon">✓</span>
+<span>Mở khoá toàn bộ video hướng dẫn các bài</span>
+</div>
+
+</div>
+
+<div class="tp-price">
+<span>Phí nâng cấp</span>
+<strong>800.000đ</strong>
+</div>
+
+<input class="tp-input" id="tpUpgradePhone" oninput="tpScheduleQR()" placeholder="Nhập SĐT Zalo" type="tel" />
+
+<div class="tp-bank">
+
+<div>
+<span>Ngân hàng</span>
+<strong>MB Bank</strong>
+</div>
+
+<div>
+<span>Số tài khoản</span>
+<strong>0530113118888</strong>
+</div>
+
+<div>
+<span>Chủ tài khoản</span>
+<strong>BUI KHAC SANG</strong>
+</div>
+
+<div>
+<span>Số tiền</span>
+<strong class="tp-red">800.000đ</strong>
+</div>
+
+<div>
+<span>Nội dung CK</span>
+<strong class="tp-red" id="tpTransferSyntax">HOCTHUPHAP [SĐT]</strong>
+</div>
+
+</div>
+
+<div class="tp-qr">
+
+<img alt="VietQR" id="tpQrImage" src="https://img.vietqr.io/image/MB-0530113118888-compact2.png?amount=800000&amp;addInfo=HOCTHUPHAP&amp;accountName=BUI%20KHAC%20SANG" />
+
+<div id="tpQrStatus">
+Nhập SĐT để cập nhật QR.
+</div>
+
+</div>
+
+<div class="tp-note">
+Sau khi được xét duyệt vào gói nâng cấp, Mã học viên sẽ được mở thêm video trả phí.
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+<!--=========================================================
+     LIBRARY
+=========================================================-->
+
+<div class="tp-library" id="tpLibraryContent">
+<header class="tp-library-hero">
+    <div class="tp-eye">THANH PHONG THƯ MÔN</div>
+    <h1>Học từ nét bút, vững từng ngày</h1>
+    <p>Không gian bài giảng, hướng dẫn và tài liệu dành cho hành trình luyện chữ của bạn.</p>
+    <div class="tp-library-state" id="tpLibraryState"></div>
+</header>
+<details class="tp-profile-panel" id="tpProfilePanel">
+    <summary><span>Thông tin học viên</span><span class="tp-profile-hint">Nhấn để mở / thu gọn</span></summary>
+
+
+<div class="tp-welcome" id="tpStudentWelcome">
+
+<div class="tp-w-head">
+
+
+<!--TV4: AVATAR + NAME-->
+
+<div class="tp-w-identity">
+
+<div class="tp-w-avatar" id="tpStudentAvatar">
+書
+</div>
+
+<div class="tp-w-user">
+
+<div class="tp-w-small">
+CHÀO MỪNG HỌC VIÊN
+</div>
+
+<h3 class="tp-w-name" id="tpWelcomeName">
+Đang tải...
+</h3>
+
+<div class="tp-w-code" id="tpWelcomeCode"></div>
+
+</div>
+
+</div>
+
+
+<!--ASSETS-->
+
+<div class="tp-head-assets">
+
+<div class="tp-asset-label">
+Linh thạch
+</div>
+
+<div class="tp-header-gems" id="tpHeaderGems">
+<span class="tp-no-gem">Đang tải...</span>
+</div>
+
+<div class="tp-asset-label">
+Vật phẩm
+</div>
+
+<div class="tp-header-items" id="tpHeaderItems">
+<span class="tp-no-item">Đang tải...</span>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="tp-summary">
+
+<div class="tp-s-card">
+<span>Rank hiện tại</span>
+<strong id="tpWelcomePoints">...</strong>
+</div>
+
+<div class="tp-s-card">
+<span>Tổng linh thạch</span>
+<strong id="tpWelcomeGemTotal">...</strong>
+</div>
+
+<div class="tp-s-card">
+<span>Danh hiệu</span>
+<strong id="tpWelcomeTitle">...</strong>
+</div>
+
+</div>
+
+<div class="tp-w-title">
+Quà thành tích
+</div>
+
+<div class="tp-gifts" id="tpGiftGrid"></div>
+
+</div>
+
+
+</details>
+
+<div class="tp-intro">
+<h2>Mỗi lần xem, một lần luyện</h2>
+<p>
+Hãy học theo từng cấp độ, luyện tập đều đặn và nộp bài để tích lũy điểm kinh nghiệm.
+</p>
+</div>
+
+
+<section class="tp-replay-section">
+<div class="tp-sec">
+<small>01</small>
+<h2>Video xem lại</h2>
+<span class="tp-line"></span>
+</div>
+<p class="tp-section-note" id="tpReplayNote">Bài giảng dành cho khóa đang theo học.</p>
+<div class="tp-videos" id="tpReplayGrid"><div class="tp-status">Đang tải bài giảng...</div></div>
+<div class="tp-pages" id="tpReplayPages"></div>
+</section>
+
+<div class="tp-sec">
+<small>02</small>
+<h2>Video hướng dẫn</h2>
+<span class="tp-line"></span>
+</div>
+
+<div class="tp-videos" id="tpVideoGrid">
+
+<div class="tp-status">
+<div class="tp-spinner"></div>
+Đang tải thư viện video...
+</div>
+
+</div>
+
+<div class="tp-pages" id="tpVideoPages"></div>
+
+
+<div class="tp-sec">
+<small>03</small>
+<h2>Tài liệu tham khảo</h2>
+<span class="tp-line"></span>
+</div>
+
+
+<div class="tp-docs">
+
+<a class="tp-doc" id="tpPaidReferenceBook" hidden style="display:none" rel="noopener" target="_blank">
+
+<div class="tp-doc-icon">文</div>
+
+<div>
+<h3>Sách Thư pháp Việt – Quyển 1</h3>
+<p>Kiến thức dành cho người mới bắt đầu.</p>
+</div>
+
+</a>
+
+
+<a class="tp-doc" href="thu-vien-lam-mo.html">
+
+<div class="tp-doc-icon">書</div>
+
+<div>
+<h3>Mẫu chữ tham khảo</h3>
+<p>Tham khảo bố cục, nét chữ và phương pháp lâm mô.</p>
+</div>
+
+</a>
+
+</div>
+
+</div>
+
+
+<!--=========================================================
+     WARNING
+=========================================================-->
+
+<div class="tp-modal" id="tpWarningModal" onclick="tpWarningOutside(event)">
+
+<div class="tp-warning">
+
+<h3>Thử thách cao hơn đang chờ bạn</h3>
+
+<p id="tpWarningText"></p>
+
+<div class="tp-score-box">
+
+<div>
+<span>Rank hiện tại</span>
+<strong id="tpCurrentPoints">0</strong>
+</div>
+
+<div>
+<span>Rank khuyến nghị</span>
+<strong id="tpRequiredPoints">0</strong>
+</div>
+
+</div>
+
+<p>
+Bạn nên luyện tập thêm trước khi học bài này.
+Đây chỉ là khuyến nghị và không khóa nội dung.
+</p>
+
+<div class="tp-warning-actions">
+
+<button class="tp-practice" onclick="tpGoPractice()" type="button">
+Làm bài tập để tăng Rank
+</button>
+
+<button class="tp-anyway" onclick="tpWatchAnyway()" type="button">
+Tôi vẫn muốn xem
+</button>
+
+<button class="tp-cancel" onclick="tpCloseWarning()" type="button">
+Để sau
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<script>
+
+window.OCDMinhHongPageContext="personal";
+window.OCDMinhHongContentTab="ThuVien";
+
+
+(function(){
+
+"use strict";
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+var APP={
+
+    PASSWORD:"123456",
+
+    SHEET_ID:
+    "1hLNi_OP6ScSz8OUH-Qj7qc5LTTPAHevZQg9MvFBvVro",
+
+    SHEET_GID:"0",
+
+    PRIORITY_SHEET_GID:"705559221",
+
+    ASSISTANT_CSV:
+    "https://docs.google.com/spreadsheets/d/10EjfikAuPyc1t_aGDDsUlq0eewo0WUl5qOyXjkVG28M/gviz/tq?gid=1767609121&headers=1&tqx=out:csv&range=B:E",
+
+    STUDENT_REGISTRY:
+    "https://docs.google.com/spreadsheets/d/1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs/export?format=csv&gid=1603096683",
+
+    STUDENT_REGISTRY_FALLBACK:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?gid=1603096683&single=true&output=csv",
+
+    RANKING:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?gid=1326884435&single=true&output=csv",
+
+    SUBMISSIONS:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?output=csv",
+
+    DELETE_LOG:
+    "https://docs.google.com/spreadsheets/d/1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs/export?format=csv&gid=521976322",
+
+    FORM:
+    "https://forms.gle/Af3jRUYfUD9try9h8",
+
+    PAGE_SIZE:6,
+
+    DIFFICULTY_STEP:5,
+
+    loginMode:"",
+    pendingCode:"",
+    currentCode:"",
+    loginCompleted:false,
+
+    student:null,
+    profile:null,
+
+    videos:[],
+    replays:[],
+    page:1,
+    replayPage:1,
+    permissionLoaded:false,
+    upgradeCode:"",
+
+    pendingVideo:null,
+    currentVideo:null,
+
+    accessCodes:null,
+    priorityCodes:null,
+
+    assistantMap:null,
+    assistantPromise:null,
+    assistantLoadedAt:0,
+
+    registryMap:null,
+    registryPromise:null,
+    registryLoadedAt:0,
+    legacyMap:null,
+
+    validSubmissionCsv:"",
+
+    profileRefreshing:false,
+
+    autoLoginRunning:false,
+    autoLoginFinished:false,
+    autoLoginCode:""
+
+};
+
+
+/* =========================================================
+   LEVELS
+========================================================= */
+
+var LEVELS=[
+    {min:0,name:"Tân thủ nhập môn"},
+    {min:100,name:"Cầm bút chắc chắn"},
+    {min:300,name:"Biết cách lấy mực"},
+    {min:700,name:"Lộ phong đều đặn"},
+    {min:1500,name:"Trung phong sắc nét"},
+    {min:3000,name:"Nhãn lực nâng cao"},
+    {min:5000,name:"Chương pháp ổn định"},
+    {min:8000,name:"Cao thủ"},
+    {min:12000,name:"Thoát tục tự nhiên"},
+    {min:20000,name:"Thư gia tố chất"}
+];
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function id(x){
+    return document.getElementById(x);
+}
+
+function trim(v){
+    return String(v==null?"":v).trim();
+}
+
+function norm(v){
+    return trim(v)
+        .replace(/[\uFEFF\u200B-\u200D\u2060]/g,"")
+        .replace(/\s+/g,"")
+        .toUpperCase();
+}
+
+function nt(v){
+    return trim(v)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .replace(/đ/g,"d")
+        .replace(/\s+/g," ");
+}
+
+
+/* =========================================================
+   TV4 - CLEAN ITEM DISPLAY NAME
+
+   Sửa trường hợp Blogger / dữ liệu cũ trả:
+   &#215;
+   &times;
+
+   thành ký tự Unicode thật.
+========================================================= */
+
+function cleanItemDisplayName(value){
+
+    return trim(
+        String(value==null?"":value)
+
+        .replace(
+            /&#0*215;|&#x0*d7;|&times;/gi,
+            String.fromCharCode(215)
+        )
+    );
+}
+
+
+/* =========================================================
+   CSV
+========================================================= */
+
+function csv(t){
+
+    t=String(t||"")
+        .replace(/^\uFEFF/,"");
+
+    var a=[];
+    var r=[];
+    var f="";
+    var q=false;
+
+    for(var i=0;i<t.length;i++){
+
+        var c=t[i];
+
+        if(c=='"'){
+
+            if(q && t[i+1]=='"'){
+                f+='"';
+                i++;
+            }else{
+                q=!q;
+            }
+
+        }else if(c==","&&!q){
+
+            r.push(f);
+            f="";
+
+        }else if((c=="\n"||c=="\r")&&!q){
+
+            if(c=="\r"&&t[i+1]=="\n"){
+                i++;
+            }
+
+            r.push(f);
+
+            if(r.some(x=>trim(x)!=="")){
+                a.push(r);
+            }
+
+            r=[];
+            f="";
+
+        }else{
+
+            f+=c;
+        }
+    }
+
+    r.push(f);
+
+    if(r.some(x=>trim(x)!=="")){
+        a.push(r);
+    }
+
+    return a;
+}
+
+
+/* =========================================================
+   COLUMN
+========================================================= */
+
+function col(h,aliases){
+
+    var n=h.map(nt);
+
+    for(var a of aliases){
+
+        var x=n.indexOf(nt(a));
+
+        if(x>=0){
+            return x;
+        }
+    }
+
+    for(var a2 of aliases){
+
+        var w=nt(a2);
+
+        for(var i=0;i<n.length;i++){
+
+            if(w && n[i].indexOf(w)>=0){
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
+
+/* =========================================================
+   FETCH
+========================================================= */
+
+async function fetchText(url){
+    var controller=typeof AbortController!=="undefined"?new AbortController():null;
+    var timer=controller?setTimeout(function(){controller.abort();},12000):null;
+    try{
+        var response=await fetch(url+(url.includes("?")?"&":"?")+"_="+Date.now(),
+            {cache:"no-store",signal:controller?controller.signal:undefined});
+        if(!response.ok) throw new Error("HTTP "+response.status);
+        var text=await response.text();
+        if(/^\s*(?:<!doctype|<html)/i.test(text)) throw new Error("Nguồn dữ liệu trả trang HTML thay vì CSV.");
+        return text;
+    }finally{if(timer!==null) clearTimeout(timer);}
+}
+
+
+/* =========================================================
+   WAIT CORE
+========================================================= */
+
+function waitCore(){
+
+    return new Promise((resolve,reject)=>{
+
+        var n=0;
+
+        var t=setInterval(()=>{
+
+            var R=window.StudentRewardSystem;
+
+            if(
+                R &&
+                R.version &&
+                typeof R.getStudentRewardProfile==="function" &&
+                typeof R.fetchCSV==="function" &&
+                typeof R.parseCSV==="function"
+            ){
+
+                clearInterval(t);
+                resolve(R);
+
+            }else if(++n>=200){
+
+                clearInterval(t);
+
+                reject(
+                    Error(
+                        "Không tìm thấy StudentRewardSystem Core canonical."
+                    )
+                );
+            }
+
+        },50);
+
+    });
+}
+
+
+/* =========================================================
+   STUDENT DIRECTORY
+========================================================= */
+
+function studentDirectoryFromRows(rows){
+    var header=-1;
+    for(var i=0;i<Math.min((rows || []).length,10);i++){
+        if(col(rows[i],["mã học viên","ma hoc vien"])>=0){header=i;break;}
+    }
+    if(header<0) throw new Error("Không đọc được cột Mã học viên của tab HocVien.");
+    var h=rows[header];
+    var cc=col(h,["mã học viên","ma hoc vien"]);
+    var nc=col(h,["họ và tên","ho va ten","họ tên","ho ten"]);
+    var gc=col(h,["tổ","to"]),kc=col(h,["khóa","khoá","khoa"]),sc=col(h,["trạng thái","trang thai"]);
+    var map=new Map();
+    rows.slice(header+1).forEach(function(row){
+        var code=norm(row[cc]);
+        if(code) map.set(code,{code:code,name:nc>=0?trim(row[nc]):"",
+            group:gc>=0?trim(row[gc]):"",course:kc>=0?trim(row[kc]):"",
+            status:sc>=0?norm(row[sc]):"",identitySource:"HocVien"});
+    });
+    return map;
+}
+
+async function loadDirectory(url,forceRefresh){
+    var R=window.StudentRewardSystem;
+    var errors=[];
+    if(R && typeof R.loadStudentRegistry==="function"){
+        try{
+            var registry=await R.loadStudentRegistry(Boolean(forceRefresh));
+            if(registry && registry.studentMap && registry.studentMap.size){
+                var mapped=new Map();
+                registry.studentMap.forEach(function(student,code){
+                    var key=norm(code);
+                    if(key) mapped.set(key,Object.assign({},student,{code:key,identitySource:"HocVien"}));
+                });
+                return mapped;
+            }
+        }catch(error){errors.push(error);}
+    }
+    var urls=[url,APP.STUDENT_REGISTRY_FALLBACK].filter(Boolean);
+    for(var i=0;i<urls.length;i++){
+        try{
+            var rows;
+            if(R && typeof R.fetchRows==="function"){
+                rows=await R.fetchRows(urls[i]);
+            }else{
+                rows=csv(await fetchText(urls[i]));
+            }
+            var result=studentDirectoryFromRows(rows);
+            if(!result.size) throw new Error("Tab HocVien chưa trả về mã học viên.");
+            return result;
+        }catch(error){errors.push(error);}
+    }
+    throw new Error("Chưa tải được danh sách HocVien. "+(errors.length?errors[errors.length-1].message:""));
+}
+
+async function ensureStudentDirectory(forceRefresh){
+    if(APP.registryPromise) return APP.registryPromise;
+    if(!forceRefresh && APP.registryMap && APP.registryMap.size && Date.now()-APP.registryLoadedAt<15000){
+        return APP.registryMap;
+    }
+    var task=loadDirectory(APP.STUDENT_REGISTRY,forceRefresh).then(function(map){
+        APP.registryMap=map;
+        APP.registryLoadedAt=Date.now();
+        return map;
+    });
+    APP.registryPromise=task;
+    try{return await task;}finally{if(APP.registryPromise===task) APP.registryPromise=null;}
+}
+
+
+/* =========================================================
+   FIND STUDENT
+========================================================= */
+
+function assistantDirectoryFromRows(rows){
+    var header=-1;
+    for(var i=0;i<Math.min((rows || []).length,10);i++){
+        if(col(rows[i],["mã học viên","ma hoc vien"])>=0){header=i;break;}
+    }
+    if(header<0) throw new Error("Không đọc được cột Mã học viên của tab TroGiang.");
+    var h=rows[header],cc=col(h,["mã học viên","ma hoc vien"]);
+    var nc=col(h,["họ và tên","ho va ten","họ tên","ho ten"]);
+    var kc=col(h,["bạn tốt nghiệp khoá mấy?","ban tot nghiep khoa may"]);
+    var gc=col(h,["tổ bạn muốn phụ trách","to ban muon phu trach"]);
+    var map=new Map();
+    rows.slice(header+1).forEach(function(row){
+        var code=norm(row[cc]);
+        if(code) map.set(code,{code:code,name:nc>=0?trim(row[nc]):"",
+            course:kc>=0?trim(row[kc]):"",group:gc>=0?trim(row[gc]):"",
+            identitySource:"TroGiang",isAssistant:true});
+    });
+    return map;
+}
+
+async function ensureAssistantDirectory(forceRefresh){
+    if(APP.assistantPromise) return APP.assistantPromise;
+    if(!forceRefresh && APP.assistantMap && Date.now()-APP.assistantLoadedAt<15000) return APP.assistantMap;
+    var task=fetchText(APP.ASSISTANT_CSV).then(function(text){
+        var map=assistantDirectoryFromRows(csv(text));
+        APP.assistantMap=map;APP.assistantLoadedAt=Date.now();return map;
+    }).catch(function(error){APP.assistantMap=null;throw error;});
+    APP.assistantPromise=task;
+    try{return await task;}finally{if(APP.assistantPromise===task) APP.assistantPromise=null;}
+}
+
+function isAssistantCode(code){
+    return Boolean(APP.assistantMap && APP.assistantMap.has(norm(code)));
+}
+
+async function findStudent(code){
+    code=norm(code);
+    var results=await Promise.allSettled([ensureStudentDirectory(false),ensureAssistantDirectory(false)]);
+    function matched(){
+        var student=APP.registryMap && APP.registryMap.get(code);
+        if(student) return Object.assign({},student,{isAssistant:isAssistantCode(code)});
+        return APP.assistantMap && APP.assistantMap.get(code) || null;
+    }
+    var found=matched();
+    if(found) return found;
+    // Retry both lists for newly added codes. One unavailable source must not block the other.
+    results=await Promise.allSettled([ensureStudentDirectory(true),ensureAssistantDirectory(true)]);
+    found=matched();
+    if(found) return found;
+    var failed=results.find(function(result){return result.status==="rejected";});
+    if(failed) throw new Error("Chưa xác minh được mã từ HocVien / TroGiang. "+failed.reason.message);
+    return null;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function statusError(student){
+    return student && (student.identitySource==="HocVien" || student.identitySource==="TroGiang")
+        ?"":"Không tìm thấy mã trong danh sách HocVien hoặc TroGiang.";
+}
+
+
+/* =========================================================
+   GOI800K PERMISSION
+========================================================= */
+
+async function loadPermission(gid,column){
+
+    var u=
+        "https://docs.google.com/spreadsheets/d/"+
+        APP.SHEET_ID+
+        "/gviz/tq?gid="+
+        gid+
+        "&headers=0&tqx=out:csv&range="+
+        encodeURIComponent(column);
+
+    var rows=csv(
+        await fetchText(u)
+    );
+
+    var o={};
+
+    rows.forEach(r=>
+
+        r.forEach(v=>{
+
+            var c=norm(v);
+
+            if(c){
+                o[c]=true;
+            }
+
+        })
+
+    );
+
+    return o;
+}
+
+
+/* =========================================================
+   LOAD BOTH GOI800K SOURCES
+========================================================= */
+
+async function loadAccessPermissions(){
+    APP.priorityCodes={};APP.permissionLoaded=false;
+    var results=await Promise.allSettled([
+        loadPermission(APP.PRIORITY_SHEET_GID,"A:A"),
+        ensureAssistantDirectory(false)
+    ]);
+    if(results[0].status==="fulfilled"){
+        APP.priorityCodes=results[0].value;APP.permissionLoaded=true;
+    }else{console.warn("[ThuVien] Chưa tải được MaHocVien:",results[0].reason);}
+    if(results[1].status==="rejected") console.warn("[ThuVien] Chưa tải được TroGiang:",results[1].reason);
+    syncUpgradeState();return {priorityCodes:APP.priorityCodes,assistantMap:APP.assistantMap};
+}
+
+
+function hasLibraryAccess(code){
+    code=norm(code);
+    return Boolean((APP.registryMap && APP.registryMap.has(code)) || isAssistantCode(code));
+}
+
+
+function hasPaidAccess(){
+    var code=norm(APP.currentCode);
+    if(!APP.loginCompleted || !code || !hasLibraryAccess(code)) return false;
+    if(isAssistantCode(code)) return true;
+    return Boolean(APP.permissionLoaded && APP.priorityCodes &&
+        Object.prototype.hasOwnProperty.call(APP.priorityCodes,code) && APP.priorityCodes[code]===true);
+}
+
+
+function courseKey(value){
+    var text=nt(value).replace(/\s+/g,"");
+    if(/^(all|tatca)$/.test(text)) return "all";
+    var match=text.match(/^(?:ocd|d|khoa|k)?0*(\d+)$/);
+    return match?String(Number(match[1])):text;
+}
+
+function matchesStudentCourse(value){
+    var courses=String(value || "").split(/[,;|\/]+/).map(courseKey);
+    // All removes the course restriction; it does not unlock paid videos.
+    if(courses.indexOf("all")>=0) return true;
+    var current=courseKey(APP.student && APP.student.course);
+    return Boolean(current && courses.indexOf(current)>=0);
+}
+
+function canWatchVideo(video){
+    if(!video || !APP.loginCompleted || !hasLibraryAccess(APP.currentCode)) return false;
+    if(video.kind==="replay" && !matchesStudentCourse(video.course)) return false;
+    return !video.paid || hasPaidAccess();
+}
+
+function renderLibraryHeader(){
+    var box=id("tpLibraryState");
+    if(!box) return;
+    box.innerHTML="";
+    [trim(APP.student && APP.student.name) || APP.currentCode,
+     "Khóa "+(trim(APP.student && APP.student.course) || "chưa cập nhật"),
+     hasPaidAccess()?(isAssistantCode(APP.currentCode)?"Trợ giảng "+String.fromCharCode(183)+" đã mở video trả phí":"Đã mở video trả phí"):(APP.permissionLoaded?"Thư viện cơ bản":"Đang dùng thư viện cơ bản "+String.fromCharCode(183)+" chưa xác minh gói nâng cấp")]
+    .forEach(function(text){var pill=document.createElement("span");pill.className="tp-state-pill";pill.textContent=text;box.appendChild(pill);});
+}
+
+
+/* =========================================================
+   MANUAL LOGIN
+========================================================= */
+
+async function login(){
+
+    if(APP.loginCompleted){
+        return;
+    }
+
+    var inp=id("tpPasswordInput");
+    var msg=id("tpPasswordMessage");
+
+    var v=trim(inp.value);
+
+    if(!v){
+
+        msg.textContent=
+            "Vui lòng nhập Mã học viên.";
+
+        return;
+    }
+
+
+    var code=norm(v);
+    APP.upgradeCode=code;
+
+    msg.textContent=
+        "Đang xác minh Mã học viên...";
+
+    try{
+
+        var s=
+            await findStudent(code);
+
+        if(!s){
+            openUpgradePanel();
+            msg.textContent=
+                "Không tìm thấy mã trong HocVien hoặc TroGiang.";
+
+            return;
+        }
+
+        var er=statusError(s);
+
+        if(er){
+
+            msg.textContent=er;
+
+            return;
+        }
+
+        APP.student=s;
+        APP.pendingCode=code;
+
+        msg.textContent=
+            "Đang kiểm tra quyền truy cập thư viện...";
+
+        if(hasLibraryAccess(code)){
+            APP.priorityCodes={};
+            APP.permissionLoaded=false;
+            grantAccess();
+            // Enter the free library immediately; only paid playback waits for MaHocVien.
+            await loadAccessPermissions();
+            renderLibraryHeader();
+            renderVideoPage();
+            syncContext();
+        }else{
+
+            APP.pendingCode="";
+
+            msg.textContent=
+                "Mã học viên chưa có trong HocVien hoặc TroGiang.";
+        }
+
+    }catch(e){
+
+        console.error(
+            "[ThuVien TV4] Login:",
+            e
+        );
+
+        msg.textContent=
+            "Không thể kết nối dữ liệu học viên. Vui lòng thử lại.";
+    }
+}
+
+
+/* =========================================================
+   MINH HỒNG VERIFIED CODE
+========================================================= */
+
+function getVerifiedMinhHongCode(){
+
+    try{
+
+        var session=
+            window.OCDStudentSession;
+
+        if(
+            !session ||
+            typeof session.getState!=="function"
+        ){
+            return "";
+        }
+
+        var state=session.getState();
+
+        if(
+            !state ||
+            state.verified!==true
+        ){
+            return "";
+        }
+
+        return norm(state.code);
+
+    }catch(e){
+
+        return "";
+    }
+}
+
+
+/* =========================================================
+   AUTO LOGIN FROM MINH HỒNG
+========================================================= */
+
+async function tryAutoLoginFromMinhHong(){
+
+    if(
+        APP.loginCompleted ||
+        APP.autoLoginRunning
+    ){
+        return false;
+    }
+
+    var code=
+        getVerifiedMinhHongCode();
+
+    if(!code){
+        return false;
+    }
+
+    if(
+        APP.autoLoginFinished &&
+        APP.autoLoginCode===code
+    ){
+        return false;
+    }
+
+    APP.autoLoginRunning=true;
+    APP.autoLoginCode=code;
+    APP.upgradeCode=code;
+
+    var msg=id("tpPasswordMessage");
+    var inp=id("tpPasswordInput");
+    var button=id("tpLoginButton");
+
+    try{
+
+        if(inp){
+            inp.value=code;
+        }
+
+        if(button){
+            button.disabled=true;
+        }
+
+        if(msg){
+            msg.textContent=
+                "Đã nhận diện học viên. Đang kiểm tra quyền thư viện...";
+        }
+
+        var student=
+            await findStudent(code);
+
+        if(!student){
+            openUpgradePanel();
+            if(msg){
+                msg.textContent="";
+            }
+
+            if(inp){
+                inp.value="";
+            }
+
+            APP.autoLoginFinished=true;
+
+            return false;
+        }
+
+
+        var er=statusError(student);
+
+        if(er){
+
+            if(msg){
+                msg.textContent=er;
+            }
+
+            APP.autoLoginFinished=true;
+
+            return false;
+        }
+
+
+        if(!hasLibraryAccess(code)){
+
+            APP.autoLoginFinished=true;
+
+            if(msg){
+
+                msg.textContent=
+                    "Mã học viên đã được nhận diện nhưng chưa có trong HocVien hoặc TroGiang.";
+            }
+
+            return false;
+        }
+
+
+        APP.student=student;
+        APP.pendingCode=code;
+        APP.priorityCodes={};
+        APP.permissionLoaded=false;
+        grantAccess();
+        APP.autoLoginFinished=true;
+        await loadAccessPermissions();
+        renderLibraryHeader();
+        renderVideoPage();
+        syncContext();
+
+        return true;
+
+    }catch(e){
+
+        console.error(
+            "[ThuVien TV4] Auto Login:",
+            e
+        );
+
+        if(msg){
+            msg.textContent="";
+        }
+
+        return false;
+
+    }finally{
+
+        APP.autoLoginRunning=false;
+
+        if(button){
+            button.disabled=false;
+        }
+    }
+}
+
+
+/* =========================================================
+   LOGIN HELPERS
+========================================================= */
+
+function passwordKey(e){
+
+    if(
+        e.key==="Enter" ||
+        e.keyCode===13
+    ){
+
+        e.preventDefault();
+
+        login();
+    }
+}
+
+
+function openLibrary(){
+
+    id("tpLoginScreen").style.display="none";
+    id("tpLibraryContent").style.display="block";
+    renderReferenceAccess();
+}
+
+
+function grantAccess(){
+
+    APP.loginMode="student";
+
+    APP.currentCode=
+        APP.pendingCode;
+
+    APP.pendingCode="";
+
+    APP.loginCompleted=true;
+
+    id("tpPasswordMessage").textContent="";
+
+    openLibrary();
+
+    prepareWelcome();
+
+    connectMinhHong();
+
+    loadVideos();
+
+    loadProfile(false);
+}
+
+
+function connectMinhHong(){
+
+    var s=window.OCDStudentSession;
+
+    if(
+        s &&
+        typeof s.confirmStudent==="function"
+    ){
+
+        try{
+
+            s.confirmStudent(
+                APP.currentCode,
+                "thu-vien"
+            );
+
+        }catch(e){}
+    }
+
+    syncContext();
+}
+
+
+/* =========================================================
+   LEVEL
+========================================================= */
+
+function levelName(p){
+
+    var out=LEVELS[0].name;
+
+    LEVELS.forEach(x=>{
+
+        if(p>=x.min){
+            out=x.name;
+        }
+
+    });
+
+    return out;
+}
+
+
+/* =========================================================
+   SUBMISSION HELPERS
+========================================================= */
+
+function driveId(u){
+
+    var m=
+        String(u||"").match(
+            /\/file\/d\/([^/?&#]+)|\/d\/([^/?&#]+)|[?&]id=([^&#]+)/i
+        );
+
+    return m
+        ?(m[1]||m[2]||m[3])
+        :"";
+}
+
+
+function compact(v){
+
+    var m=
+        String(v||"").match(
+            /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})[\s,]+(\d{1,2}):(\d{2})(?::(\d{2}))?/
+        );
+
+    if(!m){
+        return "";
+    }
+
+    var p=
+        n=>String(n).padStart(2,"0");
+
+    return(
+        m[3]+
+        p(m[2])+
+        p(m[1])+
+        p(m[4])+
+        p(m[5])+
+        p(m[6]||0)
+    );
+}
+
+
+function submissionId(ts,c,f){
+
+    return(
+        compact(ts)+
+        "|"+
+        trim(c)+
+        "|"+
+        (driveId(f)||trim(f))
+    );
+}
+
+
+function deletedSet(R,text){
+
+    var rows=
+        R.parseCSV(text||"");
+
+    var set=new Set;
+
+    if(rows.length<2){
+        return set;
+    }
+
+    var h=rows[0];
+
+    var ic=
+        R.findColumn(
+            h,
+            [
+                "mã bài nộp",
+                "ma bai nop",
+                "submission id"
+            ]
+        );
+
+    var ac=
+        R.findColumn(
+            h,
+            [
+                "hành động",
+                "hanh dong",
+                "action"
+            ]
+        );
+
+    var state=new Map;
+
+    rows.slice(1).forEach(r=>{
+
+        var x=trim(r[ic]);
+
+        if(!x){
+            return;
+        }
+
+        var a=
+            ac>=0
+            ?nt(r[ac])
+            :"xoa";
+
+        state.set(
+            x,
+            !(
+                a.includes("khoi phuc") ||
+                a==="restore"
+            )
+        );
+    });
+
+    state.forEach((v,k)=>{
+
+        if(v){
+            set.add(k);
+        }
+
+    });
+
+    return set;
+}
+
+
+function validSubmissionCsv(R,text,deleted){
+
+    var rows=
+        R.parseCSV(text||"");
+
+    if(!rows.length){
+        return "";
+    }
+
+    var h=rows[0];
+
+    var cc=
+        R.findColumn(
+            h,
+            [
+                "mã học viên",
+                "ma hoc vien"
+            ]
+        );
+
+    var tc=
+        R.findColumn(
+            h,
+            [
+                "dấu thời gian",
+                "timestamp"
+            ]
+        );
+
+    var fc=
+        R.findColumn(
+            h,
+            [
+                "tải bài tập lên",
+                "tai bai tap len",
+                "bài tập"
+            ]
+        );
+
+    var ic=
+        R.findColumn(
+            h,
+            [
+                "mã bài nộp",
+                "submission id"
+            ]
+        );
+
+    if(cc<0){
+        return rowsToCsv([h]);
+    }
+
+    var keep=[h];
+
+    rows.slice(1).forEach(r=>{
+
+        if(
+            R.normalizeCode(r[cc]) !==
+            R.normalizeCode(APP.currentCode)
+        ){
+            return;
+        }
+
+        var sid=
+            ic>=0
+            ?trim(r[ic])
+            :"";
+
+        if(!sid){
+
+            sid=
+                submissionId(
+                    tc>=0?r[tc]:"",
+                    r[cc],
+                    fc>=0?r[fc]:""
+                );
+        }
+
+        if(!deleted.has(sid)){
+            keep.push(r);
+        }
+    });
+
+    return rowsToCsv(keep);
+}
+
+
+function rowsToCsv(rows){
+
+    return rows.map(r=>
+
+        r.map(v=>{
+
+            v=String(
+                v==null?"":v
+            );
+
+            return /[",\r\n]/.test(v)
+                ?'"'+v.replace(/"/g,'""')+'"'
+                :v;
+
+        }).join(",")
+
+    ).join("\r\n");
+}
+
+
+function rankFromCsv(R,text){
+
+    var rows=
+        R.parseCSV(text||"");
+
+    if(rows.length<2){
+        return 0;
+    }
+
+    var sc=
+        R.findColumn(
+            rows[0],
+            [
+                "điểm",
+                "diem",
+                "điểm số",
+                "diem so",
+                "điểm giáo viên"
+            ]
+        );
+
+    var total=0;
+    var count=rows.length-1;
+
+    if(sc>=0){
+
+        rows.slice(1).forEach(r=>{
+
+            var x=
+                typeof R.parseScore==="function"
+                ?R.parseScore(r[sc])
+                :parseFloat(
+                    String(r[sc]).replace(",",".")
+                );
+
+            if(
+                x!==null &&
+                !isNaN(x)
+            ){
+                total+=x;
+            }
+
+        });
+    }
+
+    return count+total;
+}
+
+
+/* =========================================================
+   TV4 - AVATAR RESOLVER
+
+   Ưu tiên:
+   1. Core helper nếu có
+   2. canonical.avatar
+   3. canonical.avatarImage
+   4. canonical.profileAvatar
+========================================================= */
+
+function resolveCanonicalAvatar(R,canonical,ownedItems){
+
+    var avatar="";
+
+
+    if(
+        R &&
+        typeof R.getProfileAvatar==="function"
+    ){
+
+        try{
+
+            var a=
+                R.getProfileAvatar(
+                    ownedItems
+                );
+
+            if(typeof a==="string"){
+
+                avatar=trim(a);
+
+            }else if(
+                a &&
+                typeof a==="object"
+            ){
+
+                avatar=
+                    trim(
+                        a.image ||
+                        a.url ||
+                        a.avatar ||
+                        (
+                            a.gift &&
+                            a.gift.image
+                        )
+                    );
+            }
+
+        }catch(e){}
+    }
+
+
+    if(
+        !avatar &&
+        canonical
+    ){
+
+        if(
+            typeof canonical.avatar==="string"
+        ){
+
+            avatar=
+                trim(canonical.avatar);
+
+        }else if(
+            canonical.avatar &&
+            typeof canonical.avatar==="object"
+        ){
+
+            avatar=
+                trim(
+                    canonical.avatar.image ||
+                    canonical.avatar.url ||
+                    canonical.avatar.avatar
+                );
+        }
+    }
+
+
+    if(
+        !avatar &&
+        canonical
+    ){
+
+        avatar=
+            trim(
+                canonical.avatarImage ||
+                canonical.profileAvatar ||
+                canonical.profileImage
+            );
+    }
+
+
+    return avatar;
+}
+
+
+/* =========================================================
+   LOAD PROFILE
+========================================================= */
+
+async function loadProfile(force){
+
+    if(APP.profileRefreshing){
+        return;
+    }
+
+    APP.profileRefreshing=true;
+
+    try{
+
+        var R=
+            await waitCore();
+
+        var subUrl=
+            R.CONFIG &&
+            R.CONFIG.studentCsv
+            ?R.CONFIG.studentCsv
+            :APP.SUBMISSIONS;
+
+        var res=
+            await Promise.all([
+
+                R.fetchCSV(subUrl),
+
+                R.fetchCSV(
+                    APP.DELETE_LOG
+                )
+
+            ]);
+
+        var filtered=
+            validSubmissionCsv(
+                R,
+                res[0],
+                deletedSet(
+                    R,
+                    res[1]
+                )
+            );
+
+        APP.validSubmissionCsv=
+            filtered;
+
+        var rank=
+            rankFromCsv(
+                R,
+                filtered
+            );
+
+        // Older Core versions do not forward force to the shared inventory.
+        if(typeof R.loadSharedRewardData==="function"){
+            await R.loadSharedRewardData(Boolean(force));
+        }
+
+        var canonical=
+            await R.getStudentRewardProfile(
+                R.normalizeCode(
+                    APP.currentCode
+                ),
+                filtered,
+                Boolean(force),
+                {adminBypass:true}
+            );
+
+
+        var gems=
+            canonical &&
+            canonical.gems &&
+            typeof canonical.gems==="object"
+            ?canonical.gems
+            :(
+                canonical &&
+                canonical.rewardData &&
+                canonical.rewardData.gems
+            )||{};
+
+
+        var ownedItems=
+            canonical &&
+            Array.isArray(
+                canonical.ownedItems
+            )
+            ?canonical.ownedItems
+            :[];
+
+
+        var avatar=
+            resolveCanonicalAvatar(
+                R,
+                canonical,
+                ownedItems
+            );
+
+
+        var reward=resolveAchievementReward(R,canonical,filtered);
+
+
+        var total=0;
+
+        (
+            R.GEM_ORDER ||
+            Object.keys(gems)
+        ).forEach(k=>{
+
+            total+=
+                Number(
+                    gems[k]||0
+                );
+        });
+
+
+        APP.profile={
+
+            name:
+            trim(
+                canonical &&
+                canonical.name
+            )
+            ||
+            trim(
+                APP.student &&
+                APP.student.name
+            )
+            ||
+            (
+                "Học viên "+
+                APP.currentCode
+            ),
+
+            avatar:avatar,
+
+            points:rank,
+
+            title:
+            levelName(rank),
+
+            gems:gems,
+
+            totalGems:total,
+
+            ownedItems:ownedItems,
+
+            reward:reward,
+
+            canonical:canonical,
+
+            RS:R
+        };
+
+
+        renderWelcome();
+
+        renderVideoPage();
+
+        syncContext();
+
+
+    }catch(e){
+
+        console.error(
+            "[ThuVien TV4]",
+            e
+        );
+
+        APP.profile={
+
+            name:
+            trim(
+                APP.student &&
+                APP.student.name
+            )
+            ||
+            APP.currentCode,
+
+            avatar:"",
+
+            points:0,
+
+            title:"Chưa đồng bộ",
+
+            gems:null,
+
+            totalGems:0,
+
+            ownedItems:[],
+
+            reward:null,
+
+            RS:null
+        };
+
+        renderWelcome();
+
+        syncContext();
+
+    }finally{
+
+        APP.profileRefreshing=false;
+    }
+}
+
+
+/* =========================================================
+   PREPARE WELCOME
+========================================================= */
+
+function prepareWelcome(){
+    id("tpProfilePanel").style.display="block";
+    id("tpProfilePanel").open=false;
+    renderLibraryHeader();
+
+    id(
+        "tpStudentWelcome"
+    ).style.display="block";
+
+    id(
+        "tpWelcomeName"
+    ).textContent=
+        trim(
+            APP.student &&
+            APP.student.name
+        )
+        ||
+        "Đang đồng bộ hồ sơ...";
+
+    id(
+        "tpWelcomeCode"
+    ).textContent=
+        "Mã học viên: "+
+        APP.currentCode;
+}
+
+
+/* =========================================================
+   TV4 - RENDER AVATAR
+========================================================= */
+
+function ownedItemQuantity(item){
+    if(!item) return 0;
+    var raw=item.quantity;
+    if(raw===undefined || raw===null || raw==="") raw=1;
+    var value=Number(raw);
+    return isFinite(value) && value>0 ? value : 0;
+}
+
+function currentProfileItems(p){
+    return (p && Array.isArray(p.ownedItems) ? p.ownedItems : [])
+        .filter(function(item){return ownedItemQuantity(item)>0;});
+}
+
+function renderStudentAvatar(){
+    var box=id("tpStudentAvatar");
+    if(!box) return;
+    box.innerHTML="";
+    var p=APP.profile;
+    var R=p && p.RS;
+    var items=currentProfileItems(p);
+    var avatar=resolveCanonicalAvatar(R,p && p.canonical,items);
+    var face=document.createElement("span");
+    face.className="tp-avatar-face";
+    face.textContent="書";
+    box.appendChild(face);
+    if(avatar){
+        var img=document.createElement("img");
+        img.alt=p.name || "Avatar học viên";
+        img.decoding="async";
+        img.src=R && typeof R.convertDriveImageUrl==="function"
+            ?R.convertDriveImageUrl(avatar,160):avatar;
+        img.onerror=function(){face.textContent="書";};
+        face.textContent="";
+        face.appendChild(img);
+    }
+    var frame=R && typeof R.getProfileAvatarFrame==="function"
+        ?R.getProfileAvatarFrame(items):"";
+    if(frame){
+        var overlay=document.createElement("img");
+        overlay.className="tp-avatar-frame";
+        overlay.alt="";
+        overlay.setAttribute("aria-hidden","true");
+        overlay.decoding="async";
+        overlay.src=frame;
+        overlay.onerror=function(){overlay.remove();};
+        box.appendChild(overlay);
+    }
+}
+
+function renderStudentEffects(){
+    var p=APP.profile;
+    var R=p && p.RS;
+    var items=currentProfileItems(p);
+    var card=id("tpStudentWelcome");
+    var background=R && typeof R.getProfileBackground==="function"
+        ?R.getProfileBackground(items):"";
+    if(card){
+        card.classList.toggle("tp-has-background",Boolean(background));
+        card.style.backgroundImage=background ? "url("+JSON.stringify(background)+")":"";
+    }
+    var name=id("tpWelcomeName");
+    if(!name) return;
+    var wrap=id("tpWelcomeNameEffect");
+    if(!wrap){
+        wrap=document.createElement("div");
+        wrap.id="tpWelcomeNameEffect";
+        wrap.className="tp-name-effect";
+        name.parentNode.insertBefore(wrap,name);
+        wrap.appendChild(name);
+    }
+    wrap.classList.remove("reward-multitask-wrap","reward-multitask-size-medium");
+    name.classList.remove("reward-multitask-name");
+    wrap.querySelectorAll(".reward-multitask-star").forEach(function(star){star.remove();});
+    var enabled=R && typeof R.hasMultitaskPotion==="function" && R.hasMultitaskPotion(items);
+    if(enabled && typeof R.applyMultitaskEffect==="function"){
+        R.applyMultitaskEffect(wrap,name,{size:"medium"});
+    }
+}
+
+
+/* =========================================================
+   RENDER WELCOME
+========================================================= */
+
+function renderWelcome(){
+
+    var p=APP.profile;
+
+    if(!p){
+        return;
+    }
+
+    id(
+        "tpWelcomeName"
+    ).textContent=
+        p.name;
+
+    id(
+        "tpWelcomePoints"
+    ).textContent=
+        Number(
+            p.points||0
+        ).toLocaleString(
+            "vi-VN"
+        );
+
+    id(
+        "tpWelcomeGemTotal"
+    ).textContent=
+        p.gems
+        ?Number(
+            p.totalGems||0
+        ).toLocaleString(
+            "vi-VN"
+        )
+        :"—";
+
+    id(
+        "tpWelcomeTitle"
+    ).textContent=
+        p.title||"—";
+
+
+    renderStudentAvatar();
+    renderStudentEffects();
+    renderLibraryHeader();
+
+    renderGems();
+
+    renderItems();
+
+    renderGifts();
+}
+
+
+/* =========================================================
+   GEMS
+========================================================= */
+
+function renderGems(){
+
+    var b=id("tpHeaderGems");
+
+    b.innerHTML="";
+
+    var p=APP.profile;
+    var R=p&&p.RS;
+
+    if(
+        !p ||
+        !p.gems ||
+        !R
+    ){
+
+        b.innerHTML=
+            '<span class="tp-no-gem">Chưa có linh thạch</span>';
+
+        return;
+    }
+
+    var any=false;
+
+    (
+        R.GEM_ORDER ||
+        Object.keys(p.gems)
+    ).forEach(k=>{
+
+        var n=
+            Number(
+                p.gems[k]||0
+            );
+
+        var g=
+            R.GEM_TYPES &&
+            R.GEM_TYPES[k];
+
+        if(
+            n<=0 ||
+            !g
+        ){
+            return;
+        }
+
+        any=true;
+
+        var s=
+            document.createElement(
+                "span"
+            );
+
+        s.className=
+            "tp-head-gem";
+
+        var im=
+            document.createElement(
+                "img"
+            );
+
+        im.src=
+            typeof R.convertDriveImageUrl==="function"
+            ?R.convertDriveImageUrl(
+                g.image,
+                48
+            )
+            :g.image;
+
+        im.alt=
+            g.displayName||k;
+
+        im.onerror=function(){
+            this.style.display="none";
+        };
+
+        var st=
+            document.createElement(
+                "strong"
+            );
+
+        st.textContent=n;
+
+        s.append(
+            im,
+            st
+        );
+
+        b.appendChild(s);
+    });
+
+
+    if(!any){
+
+        b.innerHTML=
+            '<span class="tp-no-gem">Chưa có linh thạch</span>';
+    }
+}
+
+
+/* =========================================================
+   TV4 - GROUP OWNED ITEMS
+========================================================= */
+
+function groupOwnedItemsForDisplay(items){
+
+    var map=new Map();
+
+    (
+        Array.isArray(items)
+        ?items
+        :[]
+    ).forEach(function(item){
+
+        if(!item){
+            return;
+        }
+
+
+        var name=
+            cleanItemDisplayName(
+                item.giftName ||
+                item.name ||
+                (
+                    item.gift &&
+                    item.gift.name
+                )
+            );
+
+
+        if(!name){
+            return;
+        }
+
+
+        var key=nt(name);
+
+        if(!key){
+            return;
+        }
+
+
+        var quantity=ownedItemQuantity(item);
+
+        if(
+            !isFinite(quantity) ||
+            quantity<=0
+        ){
+            return;
+        }
+
+
+        var image=
+            trim(
+                item.image ||
+                (
+                    item.gift &&
+                    item.gift.image
+                )
+            );
+
+
+        if(!map.has(key)){
+
+            map.set(
+                key,
+                {
+                    name:name,
+                    quantity:0,
+                    image:image
+                }
+            );
+        }
+
+
+        var current=
+            map.get(key);
+
+        current.quantity+=quantity;
+
+
+        if(
+            !current.image &&
+            image
+        ){
+            current.image=image;
+        }
+
+    });
+
+
+    return Array.from(
+        map.values()
+    );
+}
+
+
+/* =========================================================
+   TV4 - RENDER ITEMS
+========================================================= */
+
+function renderItems(){
+
+    var b=
+        id("tpHeaderItems");
+
+    if(!b){
+        return;
+    }
+
+    b.innerHTML="";
+
+
+    var p=APP.profile;
+    var R=p&&p.RS;
+
+
+    var items=
+        groupOwnedItemsForDisplay(
+            p&&p.ownedItems
+        );
+
+
+    if(!items.length){
+
+        b.innerHTML=
+            '<span class="tp-no-item">Chưa có vật phẩm</span>';
+
+        return;
+    }
+
+
+    items.forEach(function(item){
+
+        var card=
+            document.createElement(
+                "div"
+            );
+
+        card.className=
+            "tp-head-item";
+
+
+        /*
+        TV4:
+        Không dùng entity HTML.
+        */
+
+        card.title=
+            item.name+
+            " "+
+            String.fromCharCode(215)+
+            item.quantity;
+
+
+        var imageBox=
+            document.createElement(
+                "div"
+            );
+
+        imageBox.className=
+            "tp-head-item-image";
+
+
+        if(item.image){
+
+            var img=
+                document.createElement(
+                    "img"
+                );
+
+            img.alt=item.name;
+
+            img.loading="lazy";
+
+            img.decoding="async";
+
+
+            img.src=
+                R &&
+                typeof R.convertDriveImageUrl==="function"
+                ?R.convertDriveImageUrl(
+                    item.image,
+                    96
+                )
+                :item.image;
+
+
+            img.onerror=function(){
+
+                imageBox.innerHTML="";
+                imageBox.textContent="物";
+            };
+
+
+            imageBox.appendChild(img);
+
+        }else{
+
+            imageBox.textContent="物";
+        }
+
+
+        var info=
+            document.createElement(
+                "div"
+            );
+
+        info.className=
+            "tp-head-item-info";
+
+
+        var name=
+            document.createElement(
+                "span"
+            );
+
+        name.className=
+            "tp-head-item-name";
+
+        name.textContent=
+            item.name;
+
+
+        var qty=
+            document.createElement(
+                "strong"
+            );
+
+        qty.className=
+            "tp-head-item-qty";
+
+
+        /*
+        TV4 FIX:
+        Không ghi:
+        &#215;
+
+        Không dùng innerHTML.
+
+        Tạo trực tiếp Unicode ×.
+        */
+
+        qty.textContent=
+            String.fromCharCode(215)+
+            Number(
+                item.quantity||1
+            ).toLocaleString(
+                "vi-VN"
+            );
+
+
+        info.append(
+            name,
+            qty
+        );
+
+
+        card.append(
+            imageBox,
+            info
+        );
+
+
+        b.appendChild(card);
+
+    });
+}
+
+
+/* =========================================================
+   GIFTS
+========================================================= */
+
+// Match BXH: rewardData first, then Core calculation from undeleted submissions.
+function resolveAchievementReward(R,canonical,submissionCsv){
+    var root=canonical && canonical.profile || canonical || {};
+    var source=root.rewardData || root.reward || {};
+    var computed={longestStreak:0,bestHighRun:0,streakGift:null,highScoreGift:null};
+    if(R && typeof R.calculateStudentRewardData==="function"){
+        var rows=R.parseCSV(submissionCsv || "");
+        if(rows.length){
+            var headers=rows[0];
+            var code=R.findColumn(headers,["mã học viên","ma hoc vien"]);
+            var time=R.findColumn(headers,["dấu thời gian","dau thoi gian","timestamp"]);
+            var score=R.findColumn(headers,["điểm","diem","điểm số","diem so"]);
+            var target=R.normalizeCode(APP.currentCode);
+            var submissions=rows.slice(1).map(function(row,index){
+                return {
+                    code:code>=0?R.normalizeCode(row[code]):"",
+                    timestamp:time>=0?row[time] || "":"",
+                    score:score>=0?row[score] || "":"",
+                    originalIndex:index+1
+                };
+            }).filter(function(item){return item.code===target;});
+            computed=R.calculateStudentRewardData(submissions);
+        }
+    }
+    var reward=Object.assign({},computed);
+    Object.keys(source).forEach(function(key){
+        if(source[key]!==undefined) reward[key]=source[key];
+    });
+    ["streakGift","highScoreGift"].forEach(function(key){
+        var achieved=reward[key];
+        var fallback=computed[key];
+        if(achieved && !achieved.icon && fallback && achieved.name===fallback.name){
+            reward[key]=Object.assign({},fallback,achieved,{icon:fallback.icon});
+        }
+    });
+    return reward;
+}
+
+function renderGifts(){
+    var b=id("tpGiftGrid");
+    if(!b) return;
+    b.innerHTML="";
+    var r=APP.profile && APP.profile.reward || {};
+    b.appendChild(gift(
+        r.streakGift,
+        "Quà luyện tập liên tục",
+        "Chuỗi luyện tập dài nhất: "+Number(r.longestStreak || 0)+" ngày."
+    ));
+    b.appendChild(gift(
+        r.highScoreGift,
+        "Quà chuỗi điểm cao",
+        "Chuỗi điểm cao dài nhất: "+Number(r.bestHighRun || 0)+" bài."
+    ));
+}
+
+function achievementIconText(value){
+    // Accept Unicode and legacy numeric entities without inserting HTML.
+    return String(value || String.fromCodePoint(0x1F381))
+        .replace(/&#(x[0-9a-f]+|[0-9]+);/gi,function(entity,code){
+            var number=code.charAt(0).toLowerCase()==="x"
+                ?parseInt(code.slice(1),16):parseInt(code,10);
+            return number>=0 && number<=0x10FFFF?String.fromCodePoint(number):entity;
+        });
+}
+
+function gift(g,t,d){
+    var c=document.createElement("div");
+    c.className="tp-gift";
+    var i=document.createElement("div");
+    i.className="tp-gift-icon";
+    i.textContent=g?achievementIconText(g.icon):String.fromCodePoint(0x1F381);
+    i.setAttribute("aria-hidden","true");
+    var x=document.createElement("div");
+    var title=document.createElement("strong");
+    var description=document.createElement("p");
+    title.textContent=g && g.name?g.name:t;
+    description.textContent=d+(g?"":" Chưa đạt thành tích.");
+    c.title=title.textContent+" — "+description.textContent;
+    x.append(title,description);
+    c.append(i,x);
+    return c;
+}
+
+
+/* =========================================================
+   VIDEOS
+========================================================= */
+
+async function loadVideos(){
+    try{
+        var url="https://docs.google.com/spreadsheets/d/"+APP.SHEET_ID+
+            "/gviz/tq?gid="+APP.SHEET_GID+"&headers=1&tqx=out:csv&range=A:G";
+        var groups=partitionLibraryVideos(csv(await fetchText(url)));
+        APP.videos=groups.guides;
+        APP.replays=groups.replays;
+        APP.page=1;
+        APP.replayPage=1;
+        renderVideoPage();
+        syncContext();
+    }catch(error){
+        console.error("[ThuVien] Video:",error);
+        ["tpVideoGrid","tpReplayGrid"].forEach(function(key){id(key).innerHTML='<div class="tp-status">Không thể tải dữ liệu video. Vui lòng tải lại trang.</div>';});
+    }
+}
+
+function partitionLibraryVideos(rows){
+    var result={guides:[],replays:[]};
+    (rows || []).slice(1).forEach(function(row,index){
+        var youtube=youtubeId(row[2]);
+        if(!trim(row[1]) || !youtube) return;
+        var replay=nt(row[6])==="video xem lai";
+        var section=nt(row[6]);
+        if(section && !replay && section!=="video huong dan") return;
+        var course=trim(row[5]);
+        if(replay && !matchesStudentCourse(course)) return;
+        if(!replay && course && !matchesStudentCourse(course)) return;
+        var ordinal=Number(row[0]);
+        var video={lesson:trim(row[0]) || index+1,title:trim(row[1]),id:youtube,
+            description:trim(row[3]),paid:nt(row[4])==="tra phi",course:course,
+            kind:replay?"replay":"guide",difficulty:replay?0:(ordinal>0?ordinal:index+1)*APP.DIFFICULTY_STEP};
+        (replay?result.replays:result.guides).push(video);
+    });
+    return result;
+}
+
+
+function youtubeId(v){
+
+    v=
+        trim(v)
+        .replace(
+            /&amp;/g,
+            "&"
+        );
+
+    var m=
+        v.match(
+            /(?:youtu\.be\/|[?&]v=|\/(?:shorts|embed|live)\/)([A-Za-z0-9_-]{11})/
+        );
+
+    return /^[A-Za-z0-9_-]{11}$/.test(v)
+        ?v
+        :(m?m[1]:"");
+}
+
+
+function studentPoints(){
+
+    if(
+        APP.loginMode!=="student"
+    ){
+        return null;
+    }
+
+    if(!APP.profile){
+        return null;
+    }
+
+    return Number(
+        APP.profile.points||0
+    );
+}
+
+
+function renderReferenceAccess(){
+    var book=id("tpPaidReferenceBook");
+    if(!book) return;
+    var allowed=hasPaidAccess();
+    book.hidden=!allowed;
+    book.style.display=allowed?"":"none";
+    if(allowed){
+        book.href="https://drive.google.com/file/d/1fnc2DUZewco11OoNc89hm4x1-jAT90Lu/view?usp=sharing";
+    }else{
+        book.removeAttribute("href");
+    }
+}
+
+function renderVideoPage(){
+    renderReferenceAccess();
+    renderVideoList("guide");
+    renderVideoList("replay");
+}
+
+function renderVideoList(kind){
+    var replay=kind==="replay";
+    var grid=id(replay?"tpReplayGrid":"tpVideoGrid");
+    var videos=replay?APP.replays:APP.videos;
+    var pageKey=replay?"replayPage":"page";
+    if(!grid) return;
+    grid.innerHTML="";
+    if(replay){
+        id("tpReplayNote").textContent="Bài giảng của khóa "+(trim(APP.student && APP.student.course) || "chưa cập nhật")+" đang theo học.";
+    }
+    APP[pageKey]=Math.max(1,Math.min(APP[pageKey],Math.ceil(videos.length/APP.PAGE_SIZE) || 1));
+    if(!videos.length){
+        grid.innerHTML='<div class="tp-status">'+(replay?"Chưa có video xem lại cho khóa đang theo học.":"Chưa có video hướng dẫn.")+'</div>';
+    }else{
+        var start=(APP[pageKey]-1)*APP.PAGE_SIZE;
+        videos.slice(start,start+APP.PAGE_SIZE).forEach(function(video){grid.appendChild(videoCard(video));});
+    }
+    renderPages(kind);
+}
+
+
+function lockedPaidVideoCard(video){
+    var card=document.createElement("article");
+    card.className="tp-video locked tp-upgrade-video";
+    var body=document.createElement("div");body.className="tp-upgrade-video-body";
+    var icon=document.createElement("div");icon.className="tp-upgrade-video-icon";
+    icon.textContent=String.fromCodePoint(0x1F512);
+    icon.setAttribute("aria-hidden","true");
+    var label=document.createElement("span");label.className="tp-lesson";
+    label.textContent=(video.kind==="replay"?"VIDEO XEM LẠI":"VIDEO HƯỚNG DẪN")+
+        " "+String.fromCharCode(183)+" TRẢ PHÍ";
+    var title=document.createElement("h3");
+    title.textContent="Nâng cấp gói học viên để xem Video trả phí";
+    var note=document.createElement("p");
+    note.textContent="Mã học viên của bạn chưa được mở quyền xem video này.";
+    body.append(icon,label,title,note,upgradePaymentCard());card.appendChild(body);
+    return card;
+}
+
+function videoCard(video){
+    if(video.paid && !hasPaidAccess()) return lockedPaidVideoCard(video);
+    var points=studentPoints();
+    var allowed=canWatchVideo(video);
+    var card=document.createElement("article");
+    card.className="tp-video"+(!allowed?" locked":(points!==null && points<video.difficulty?" low":""));
+    var thumb=document.createElement("div");
+    thumb.className="tp-thumb";
+    thumb.tabIndex=allowed?0:-1;
+    thumb.setAttribute("role","button");
+    thumb.setAttribute("aria-disabled",String(!allowed));
+    thumb.setAttribute("aria-label",allowed?"Xem "+video.title:"Video trả phí: "+video.title);
+    var image=document.createElement("img");image.loading="lazy";image.alt="";
+    image.src="https://img.youtube.com/vi/"+video.id+"/hqdefault.jpg";
+    var play=document.createElement("span");play.className="tp-play";
+    thumb.append(image,play);
+    thumb.addEventListener("click",function(){requestVideo(video);});
+    thumb.addEventListener("keydown",function(event){if(event.key==="Enter" || event.key===" "){event.preventDefault();requestVideo(video);}});
+    var info=document.createElement("div");info.className="tp-v-info";
+    var meta=document.createElement("div");meta.className="tp-v-meta";
+    var label=document.createElement("span");label.className="tp-lesson";
+    label.textContent=(video.kind==="replay"?"BUỔI ":"BÀI ")+video.lesson;
+    var badge=document.createElement("span");badge.className="tp-level-tag";
+    badge.textContent=video.paid
+        ?"Trả phí "+String.fromCharCode(183)+(allowed?" đã mở":" chưa mở")
+        :"Miễn phí";
+    meta.append(label,badge);
+    var title=document.createElement("h3");title.textContent=video.title;
+    var description=document.createElement("p");description.textContent=video.description;
+    var button=document.createElement("button");button.className="tp-watch";button.type="button";
+    button.disabled=!allowed;
+    button.textContent=allowed?"Xem video "+String.fromCharCode(8594):"Cần gói nâng cấp";
+    button.addEventListener("click",function(){requestVideo(video);});
+    info.append(meta,title,description);
+    if(video.kind!=="replay"){
+        var level=document.createElement("p");level.className="tp-section-note";level.textContent="Rank khuyến nghị: "+video.difficulty;info.appendChild(level);
+    }
+    info.appendChild(button);card.append(thumb,info);return card;
+}
+
+
+function renderPages(kind){
+    var replay=kind==="replay";
+    var box=id(replay?"tpReplayPages":"tpVideoPages");
+    var videos=replay?APP.replays:APP.videos;
+    var pageKey=replay?"replayPage":"page";
+    var count=Math.ceil(videos.length/APP.PAGE_SIZE);
+    box.innerHTML="";box.style.display=count>1?"flex":"none";
+    if(count<=1) return;
+    var previous=document.createElement("button"),next=document.createElement("button"),label=document.createElement("span");
+    previous.type=next.type="button";previous.className=next.className="tp-page";
+    previous.textContent="Trang trước";next.textContent="Trang sau";
+    previous.disabled=APP[pageKey]===1;next.disabled=APP[pageKey]===count;
+    label.textContent="Trang "+APP[pageKey]+" / "+count;
+    previous.onclick=function(){APP[pageKey]--;renderVideoList(kind);};
+    next.onclick=function(){APP[pageKey]++;renderVideoList(kind);};
+    box.append(previous,label,next);
+}
+
+
+/* =========================================================
+   VIDEO DIRECT TO YOUTUBE
+========================================================= */
+
+function requestVideo(x){
+    if(!canWatchVideo(x)) return;
+
+    if(
+        !x ||
+        !x.id
+    ){
+        return;
+    }
+
+
+    APP.currentVideo=x;
+
+    syncContext();
+
+
+    var p=
+        studentPoints();
+
+
+    if(
+        APP.loginMode!=="student" ||
+        p===null ||
+        p>=x.difficulty
+    ){
+
+        openYouTube(x);
+
+        return;
+    }
+
+
+    APP.pendingVideo=x;
+
+
+    id(
+        "tpCurrentPoints"
+    ).textContent=p;
+
+
+    id(
+        "tpRequiredPoints"
+    ).textContent=
+        x.difficulty;
+
+
+    id(
+        "tpWarningText"
+    ).textContent=
+        "Bạn đang có "+
+        p+
+        " Rank, bài học này được khuyến nghị từ "+
+        x.difficulty+
+        " Rank.";
+
+
+    id(
+        "tpWarningModal"
+    ).classList.add(
+        "open"
+    );
+}
+
+
+function openYouTube(x){
+    if(!canWatchVideo(x)) return;
+
+    if(
+        !x ||
+        !x.id
+    ){
+        return;
+    }
+
+
+    APP.currentVideo=x;
+
+    syncContext();
+
+
+    document.body.style.overflow="";
+
+
+    var url=
+        "https://www.youtube.com/watch?v="+
+        encodeURIComponent(
+            x.id
+        );
+
+
+    window.location.assign(url);
+}
+
+
+function watchAnyway(){
+
+    var x=
+        APP.pendingVideo;
+
+
+    id(
+        "tpWarningModal"
+    ).classList.remove(
+        "open"
+    );
+
+
+    APP.pendingVideo=null;
+
+    document.body.style.overflow="";
+
+
+    if(x){
+        openYouTube(x);
+    }
+}
+
+
+function goPractice(){
+
+    closeWarning();
+
+    window.open(
+        APP.FORM,
+        "_blank",
+        "noopener"
+    );
+}
+
+
+function closeWarning(){
+
+    var modal=
+        id("tpWarningModal");
+
+    if(modal){
+
+        modal.classList.remove(
+            "open"
+        );
+    }
+
+    APP.pendingVideo=null;
+    APP.currentVideo=null;
+
+    document.body.style.overflow="";
+
+    syncContext();
+}
+
+
+function warningOutside(e){
+
+    if(
+        e.target===
+        id("tpWarningModal")
+    ){
+        closeWarning();
+    }
+}
+
+
+/* =========================================================
+   QR
+========================================================= */
+
+function upgradeTransferInfo(){
+    var code=norm(APP.currentCode || APP.upgradeCode);
+    var input=id("tpUpgradePhone");
+    var phone=input?String(input.value || "").replace(/\D/g,"").substring(0,15):"";
+    if(input) input.value=phone;
+    return "HOCTHUPHAP"+(code?" "+code:"")+(phone?" "+phone:"");
+}
+
+function upgradeQrUrl(info){
+    return "https://img.vietqr.io/image/MB-0530113118888-compact2.png"+
+        "?amount=800000&addInfo="+encodeURIComponent(info)+
+        "&accountName="+encodeURIComponent("BUI KHAC SANG");
+}
+
+function updateQR(){
+    var info=upgradeTransferInfo();
+    var syntax=id("tpTransferSyntax"),image=id("tpQrImage"),status=id("tpQrStatus");
+    if(syntax) syntax.textContent=info;
+    if(image) image.src=upgradeQrUrl(info);
+    if(status) status.textContent="QR đã sẵn sàng"+(APP.currentCode || APP.upgradeCode?" cho mã "+norm(APP.currentCode || APP.upgradeCode):"")+".";
+    document.querySelectorAll(".tp-card-transfer-info").forEach(function(node){node.textContent=info;});
+    document.querySelectorAll(".tp-card-upgrade-qr").forEach(function(node){node.src=upgradeQrUrl(info);});
+}
+
+function openUpgradePanel(){
+    var checkbox=id("tpUpgradeCheck");
+    if(checkbox) checkbox.checked=true;
+    updateQR();
+}
+
+function syncUpgradeState(){
+    var checkbox=id("tpUpgradeCheck");
+    if(checkbox) checkbox.checked=!hasPaidAccess();
+    updateQR();
+}
+
+function upgradePaymentCard(){
+    var panel=document.createElement("div");panel.className="tp-card-payment";
+    var title=document.createElement("strong");title.textContent="Chuyển khoản nâng cấp tài khoản";panel.appendChild(title);
+    [["Ngân hàng","MB Bank"],["Số tài khoản","0530113118888"],
+     ["Chủ tài khoản","BUI KHAC SANG"],["Số tiền","800.000đ"]].forEach(function(pair){
+        var row=document.createElement("div");row.className="tp-card-payment-row";
+        var label=document.createElement("span"),value=document.createElement("strong");
+        label.textContent=pair[0];value.textContent=pair[1];row.append(label,value);panel.appendChild(row);
+    });
+    var transferLabel=document.createElement("p");transferLabel.textContent="Nội dung chuyển khoản:";
+    var transferInfo=document.createElement("strong");transferInfo.className="tp-card-transfer-info";transferInfo.textContent=upgradeTransferInfo();
+    var image=document.createElement("img");image.className="tp-card-upgrade-qr";
+    image.alt="Mã QR chuyển khoản nâng cấp tài khoản học viên";image.loading="lazy";image.decoding="async";
+    image.src=upgradeQrUrl(transferInfo.textContent);
+    var status=document.createElement("p");status.className="tp-card-payment-note";
+    status.textContent="Quét QR để chuyển khoản. Sau khi được xác nhận vào gói nâng cấp, mã học viên sẽ được mở video trả phí.";
+    image.onerror=function(){image.style.display="none";status.textContent="Chưa tải được QR. Bạn có thể chuyển khoản theo thông tin tài khoản và nội dung bên trên.";};
+    panel.append(transferLabel,transferInfo,image,status);return panel;
+}
+
+
+var qrT;
+
+
+function scheduleQR(){
+
+    clearTimeout(qrT);
+
+    qrT=
+        setTimeout(
+            updateQR,
+            250
+        );
+}
+
+
+/* =========================================================
+   MINH HỒNG CONTEXT
+========================================================= */
+
+function context(){
+
+    if(
+        APP.loginMode!=="student" ||
+        !APP.loginCompleted ||
+        !APP.currentCode
+    ){
+        return null;
+    }
+
+
+    var p=
+        APP.profile||{};
+
+
+    var r=
+        p.reward||{};
+
+
+    var v=
+        APP.currentVideo||
+        APP.pendingVideo;
+
+
+    var owned=
+        Array.isArray(
+            p.ownedItems
+        )
+        ?p.ownedItems
+        :[];
+
+
+    return{
+
+        page:"ThuVien",
+
+        studentCode:
+        APP.currentCode,
+
+        data:{
+
+            studentName:
+            trim(
+                p.name||
+                (
+                    APP.student &&
+                    APP.student.name
+                )
+            ),
+
+            group:
+            trim(
+                APP.student &&
+                APP.student.group
+            ),
+
+            course:
+            trim(
+                APP.student &&
+                APP.student.course
+            ),
+
+            rank:
+            Number(
+                p.points||0
+            ),
+
+            rankingPoints:
+            Number(
+                p.points||0
+            ),
+
+            title:
+            trim(p.title),
+
+            totalGems:
+            Number(
+                p.totalGems||0
+            ),
+
+            ownedItemTypes:
+            groupOwnedItemsForDisplay(
+                owned
+            ).length,
+
+            longestStreak:
+            Number(
+                r.longestStreak||0
+            ),
+
+            bestHighRun:
+            Number(
+                r.bestHighRun||0
+            ),
+
+            videoCount:
+            APP.videos.length+APP.replays.length,
+
+            replayVideoCount:APP.replays.length,
+            paidVideoAccess:hasPaidAccess(),
+
+            currentVideoTitle:
+            v
+            ?trim(v.title)
+            :"",
+
+            currentVideoLesson:
+            v
+            ?trim(v.lesson)
+            :"",
+
+            currentVideoDifficulty:
+            v
+            ?Number(
+                v.difficulty||0
+            )
+            :0
+        },
+
+        conditions:{
+
+            library_access:true,
+
+            profile_ready:
+            Boolean(
+                APP.profile
+            ),
+
+            has_rank:
+            Number(
+                p.points||0
+            )>0,
+
+            no_rank:
+            Number(
+                p.points||0
+            )<=0,
+
+            has_gems:
+            Number(
+                p.totalGems||0
+            )>0,
+
+            no_gems:
+            Number(
+                p.totalGems||0
+            )<=0,
+
+            has_items:
+            owned.length>0,
+
+            no_items:
+            owned.length===0,
+
+            viewing_video:
+            Boolean(v),
+
+            video_above_rank:
+            Boolean(
+                v &&
+                Number(
+                    p.points||0
+                )
+                <
+                Number(
+                    v.difficulty||0
+                )
+            ),
+
+            video_suitable_rank:
+            Boolean(
+                v &&
+                Number(
+                    p.points||0
+                )
+                >=
+                Number(
+                    v.difficulty||0
+                )
+            )
+        }
+    };
+}
+
+
+function syncContext(){
+
+    var a=
+        window.OCDMinhHongContext;
+
+    var p=
+        context();
+
+
+    if(
+        a &&
+        p &&
+        typeof a.set==="function"
+    ){
+
+        try{
+
+            a.set(
+                p,
+                "thu-vien"
+            );
+
+            return true;
+
+        }catch(e){}
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+window.addEventListener(
+    "ocdRewardProfileChanged",
+    function(e){
+
+        var c=
+            norm(
+                e &&
+                e.detail &&
+                e.detail.code
+            );
+
+
+        if(
+            APP.loginMode==="student" &&
+            APP.loginCompleted &&
+            c===norm(
+                APP.currentCode
+            )
+        ){
+
+            loadProfile(true);
+        }
+    }
+);
+
+
+window.addEventListener(
+    "ocdStudentSessionChanged",
+    function(){
+
+        if(
+            !APP.loginCompleted
+        ){
+
+            var code=
+                getVerifiedMinhHongCode();
+
+
+            if(
+                code &&
+                code!==APP.autoLoginCode
+            ){
+
+                APP.autoLoginFinished=false;
+            }
+
+
+            tryAutoLoginFromMinhHong();
+
+        }else{
+
+            syncContext();
+        }
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key==="Escape"){
+            closeWarning();
+        }
+    }
+);
+
+
+/* =========================================================
+   MOBILE SAFETY
+========================================================= */
+
+document.body.style.overflow="";
+
+
+/* =========================================================
+   PRELOAD DIRECTORY
+========================================================= */
+
+setTimeout(()=>{
+
+    ensureStudentDirectory(false)
+    .catch(
+        ()=>{}
+    );
+
+},120);
+
+
+/* =========================================================
+   AUTO LOGIN WATCHER
+========================================================= */
+
+function startAutoLoginWatcher(){
+
+    var tries=0;
+    var maxTries=80;
+
+
+    function check(){
+
+        if(APP.loginCompleted){
+            return;
+        }
+
+
+        tries++;
+
+
+        var code=
+            getVerifiedMinhHongCode();
+
+
+        if(code){
+
+            tryAutoLoginFromMinhHong();
+
+            return;
+        }
+
+
+        if(
+            tries<maxTries
+        ){
+
+            setTimeout(
+                check,
+                100
+            );
+        }
+    }
+
+
+    check();
+}
+
+
+setTimeout(
+    startAutoLoginWatcher,
+    0
+);
+
+
+/* =========================================================
+   PUBLIC API
+========================================================= */
+
+window.OCDThuVienLibrary={
+
+    version:
+    "TV4-4.0-canonical-items-avatar-auto-session",
+
+    getCode:
+    ()=>APP.currentCode||"",
+
+    getStudent:
+    ()=>APP.student
+        ?Object.assign(
+            {},
+            APP.student
+        )
+        :null,
+
+    getRank:
+    ()=>APP.profile
+        ?Number(
+            APP.profile.points||0
+        )
+        :null,
+
+    getAvatar:
+    ()=>APP.profile
+        ?trim(
+            APP.profile.avatar
+        )
+        :"",
+
+    getOwnedItems:
+    ()=>APP.profile &&
+        Array.isArray(
+            APP.profile.ownedItems
+        )
+        ?APP.profile.ownedItems.slice()
+        :[],
+
+    getCurrentVideo:
+    ()=>APP.currentVideo
+        ?Object.assign(
+            {},
+            APP.currentVideo
+        )
+        :null,
+
+    getMinhHongContext:
+    context,
+
+    syncMinhHongContext:
+    syncContext,
+
+    refreshProfile:
+    ()=>loadProfile(true),
+
+    tryAutoLogin:
+    tryAutoLoginFromMinhHong
+};
+
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+window.tpLogin=
+    login;
+
+window.tpPasswordKey=
+    passwordKey;
+
+window.tpUpdateQR=
+    updateQR;
+
+window.tpScheduleQR=
+    scheduleQR;
+
+window.tpWatchAnyway=
+    watchAnyway;
+
+window.tpGoPractice=
+    goPractice;
+
+window.tpCloseWarning=
+    closeWarning;
+
+window.tpWarningOutside=
+    warningOutside;
+
+
+console.log(
+    "KHO TAI LIEU TV4 - CANONICAL ITEMS + AVATAR + MINH HONG AUTO LOGIN READY"
+);
+
+})();
+
+</script>
+
+</div>
