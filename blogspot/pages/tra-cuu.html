@@ -1,0 +1,6491 @@
+<div>
+
+<!--=========================================================
+     TRANG TRA CỨU HỌC VIÊN
+     PROFILE MARKET v4.9.6
+     + ADMIN QUICK ACTIONS
+     + LEARNING INSIGHT v1.6
+     + MINH HỒNG SESSION BRIDGE
+
+     UPDATE v1.6
+     ---------------------------------------------------------
+     - Bỏ hoàn toàn khối Minh Hồng riêng khỏi trang
+     - Bỏ "Vật phẩm nên ưu tiên" khỏi giao diện trang
+     - Vẫn GIỮ toàn bộ engine tính lời khuyên
+     - Vẫn GIỮ engine chọn vật phẩm Cực phẩm
+     - (v1.7.1) Đã bỏ phần gửi lời khuyên sang Minh Hồng
+     - Ngũ giác chỉ số + hồ sơ phân tích hiển thị ngay trên trang
+     - Tự đọc mã từ OCDStudentSession
+     - Tự điền mã vào ô tra cứu
+     - Có thể tự kích hoạt tra cứu
+     - Chỉ CONFIRM Session sau khi hồ sơ tải thành công
+     - ADMIN không ghi vào Student Session
+
+     GIỮ:
+     - Tra cứu
+     - Hồ sơ
+     - Linh thạch
+     - Vật phẩm
+     - Chợ phiên
+     - Danh sách bài
+     - Rank
+     - Biểu đồ
+     - Mốc mục tiêu
+     - Cache
+     - Lazy load
+     - Entity fix
+=========================================================-->
+
+
+<!--=========================================================
+     PROFILE MARKET GỐC
+=========================================================-->
+
+<link href="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@v18.5.1/profile-market.css" rel="stylesheet"></link>
+
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@6a50f511325148ccf42d60b81ad75ccbf86cd1ce/profile-market.min.js"></script>
+
+<!-- Ngũ giác chỉ số v1.1.0 -->
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@6cfcb0e36c5947356e3180c193625e8b7d712237/profile-pentagon.min.js"></script>
+
+
+<style>
+
+/* =========================================================
+   ADMIN
+========================================================= */
+
+.student-profile-badge.admin-quick-action{
+    padding:0 !important;
+    overflow:hidden;
+    background:transparent !important;
+    border:0 !important;
+}
+
+.student-profile-badge.admin-quick-action .admin-original-icon{
+    display:none !important;
+}
+
+.student-profile-badge.admin-quick-action .admin-quick-action-text{
+    display:block;
+    width:100%;
+}
+
+.admin-profile-link{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+
+    width:100%;
+    min-height:36px;
+
+    padding:8px 13px;
+
+    box-sizing:border-box;
+
+    border-radius:999px;
+
+    color:#fff !important;
+    text-decoration:none !important;
+
+    font-size:11px;
+    line-height:1.25;
+    font-weight:900;
+
+    white-space:nowrap;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 5px 14px rgba(15,23,42,.14);
+
+    transition:
+        transform .16s ease,
+        box-shadow .16s ease,
+        filter .16s ease;
+}
+
+.admin-profile-link:hover{
+    transform:translateY(-1px);
+
+    box-shadow:
+        0 7px 18px rgba(15,23,42,.18);
+
+    filter:brightness(1.04);
+}
+
+.admin-grade-link{
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #4f46e5
+        );
+}
+
+.admin-gift-link{
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #c026d3
+        );
+}
+
+.admin-graduation-link{
+    background:
+        linear-gradient(
+            135deg,
+            #9a3412,
+            #b45309
+        );
+}
+
+
+/* =========================================================
+   INSIGHT ROOT
+========================================================= */
+
+#studentInsightSection{
+    display:none;
+
+    max-width:1100px;
+
+    margin:24px auto 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color:#332b26;
+}
+
+#studentInsightSection.visible{
+    display:block;
+}
+
+.insight-shell{
+    overflow:hidden;
+
+    background:#fff;
+
+    border:1px solid #eadfce;
+    border-radius:22px;
+
+    box-shadow:
+        0 10px 30px rgba(72,48,30,.10);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.insight-header{
+    padding:26px 25px 22px;
+
+    background:
+        radial-gradient(
+            circle at 90% 0%,
+            rgba(245,158,11,.16),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #fffaf1,
+            #fff
+        );
+
+    border-bottom:1px solid #f0e6d8;
+}
+
+.insight-kicker{
+    margin-bottom:5px;
+
+    color:#a16207;
+
+    font-size:10px;
+    font-weight:900;
+
+    letter-spacing:.12em;
+}
+
+.insight-title{
+    margin:0;
+
+    color:#633718;
+
+    font-size:24px;
+    line-height:1.25;
+    font-weight:900;
+}
+
+.insight-desc{
+    max-width:780px;
+
+    margin:7px 0 0;
+
+    color:#746a62;
+
+    font-size:12px;
+    line-height:1.65;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.insight-body{
+    padding:22px;
+}
+
+.insight-loading{
+    display:none;
+
+    padding:18px;
+
+    border-radius:14px;
+
+    background:#eff6ff;
+    color:#1d4ed8;
+
+    text-align:center;
+
+    font-size:12px;
+    font-weight:800;
+}
+
+.insight-loading.visible{
+    display:block;
+}
+
+.insight-content{
+    display:none;
+}
+
+.insight-content.visible{
+    display:block;
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.insight-summary-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0,1fr)
+        );
+
+    gap:10px;
+}
+
+.insight-stat{
+    min-width:0;
+
+    padding:15px 12px;
+
+    border:1px solid #eee5d9;
+
+    border-radius:15px;
+
+    background:#fffdf9;
+
+    text-align:center;
+}
+
+.insight-stat-value{
+    display:block;
+
+    overflow:hidden;
+
+    color:#713f12;
+
+    font-size:22px;
+    line-height:1.1;
+    font-weight:900;
+
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.insight-stat-label{
+    display:block;
+
+    margin-top:6px;
+
+    color:#78716c;
+
+    font-size:9px;
+    line-height:1.35;
+    font-weight:900;
+
+    text-transform:uppercase;
+}
+
+
+/* =========================================================
+   RANK
+========================================================= */
+
+.insight-rank-box{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1fr)
+        auto;
+
+    gap:13px;
+
+    align-items:center;
+
+    margin-top:12px;
+
+    padding:15px 16px;
+
+    border:1px solid #ead9bc;
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff9e9,
+            #fff
+        );
+}
+
+.insight-rank-label{
+    color:#9a5b13;
+
+    font-size:9px;
+    font-weight:900;
+
+    text-transform:uppercase;
+}
+
+.insight-rank-name{
+    margin-top:4px;
+
+    color:#5c361f;
+
+    font-size:17px;
+    font-weight:900;
+}
+
+.insight-rank-next{
+    margin-top:5px;
+
+    color:#746a62;
+
+    font-size:10.5px;
+    line-height:1.55;
+}
+
+.insight-rank-icon{
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    width:50px;
+    height:50px;
+
+    border-radius:50%;
+
+    background:#fef3c7;
+
+    font-size:25px;
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.insight-section{
+    margin-top:17px;
+}
+
+.insight-section-head{
+    margin-bottom:11px;
+}
+
+.insight-section-title{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    color:#4c2f20;
+
+    font-size:18px;
+    font-weight:900;
+}
+
+.insight-section-desc{
+    margin-top:3px;
+
+    color:#8a817a;
+
+    font-size:10px;
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.insight-card{
+    min-width:0;
+
+    padding:18px;
+
+    border:1px solid #ece4d9;
+
+    border-radius:17px;
+
+    background:#fff;
+}
+
+.insight-card-title{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    margin-bottom:5px;
+
+    color:#5b3925;
+
+    font-size:16px;
+    line-height:1.35;
+    font-weight:900;
+}
+
+.insight-card-subtitle{
+    margin-bottom:13px;
+
+    color:#8a817a;
+
+    font-size:10px;
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   CHART
+========================================================= */
+
+.insight-trend-row{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1.35fr)
+        minmax(0,.65fr);
+
+    gap:14px;
+
+    margin-top:14px;
+}
+
+.insight-chart-wrap{
+    position:relative;
+
+    width:100%;
+    min-height:250px;
+
+    overflow:hidden;
+
+    border:1px solid #f0e7db;
+
+    border-radius:13px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(250,245,237,.55),
+            rgba(255,255,255,.95)
+        );
+}
+
+#studentProgressChart{
+    display:block;
+
+    width:100%;
+    min-height:250px;
+}
+
+.insight-chart-empty{
+    display:none;
+
+    min-height:250px;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    color:#948b83;
+
+    text-align:center;
+
+    font-size:11px;
+    line-height:1.5;
+}
+
+.insight-chart-empty.visible{
+    display:flex;
+}
+
+.insight-chart-wrap.is-empty #studentProgressChart{
+    display:none;
+}
+
+
+/* =========================================================
+   TREND
+========================================================= */
+
+.insight-trend-box{
+    height:100%;
+    min-height:210px;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+}
+
+.insight-trend-icon{
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    width:54px;
+    height:54px;
+
+    margin-bottom:9px;
+
+    border-radius:50%;
+
+    background:#f8fafc;
+
+    font-size:28px;
+}
+
+.insight-trend-name{
+    font-size:19px;
+    font-weight:900;
+}
+
+.insight-trend-detail{
+    margin-top:8px;
+
+    color:#78716c;
+
+    font-size:11px;
+    line-height:1.55;
+}
+
+.insight-trend-box.up .insight-trend-name{
+    color:#15803d;
+}
+
+.insight-trend-box.down .insight-trend-name{
+    color:#b91c1c;
+}
+
+.insight-trend-box.stable .insight-trend-name{
+    color:#a16207;
+}
+
+.insight-trend-box.insufficient .insight-trend-name{
+    color:#64748b;
+}
+
+
+/* =========================================================
+   GOALS
+========================================================= */
+
+.insight-goal-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0,1fr)
+        );
+
+    gap:10px;
+}
+
+.insight-goal{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:15px;
+
+    border:1px solid #eadfce;
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffdf9,
+            #fff
+        );
+}
+
+.insight-goal-badge{
+    display:inline-block;
+
+    margin-bottom:8px;
+
+    padding:4px 8px;
+
+    border-radius:999px;
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+    font-size:8px;
+    font-weight:900;
+
+    text-transform:uppercase;
+}
+
+.insight-goal-name{
+    color:#4b3325;
+
+    font-size:13px;
+    line-height:1.4;
+    font-weight:900;
+}
+
+.insight-goal-detail{
+    margin-top:6px;
+
+    min-height:38px;
+
+    color:#786f68;
+
+    font-size:10px;
+    line-height:1.55;
+}
+
+.insight-progress{
+    height:7px;
+
+    margin-top:11px;
+
+    overflow:hidden;
+
+    border-radius:999px;
+
+    background:#eee8e0;
+}
+
+.insight-progress-bar{
+    height:100%;
+
+    width:0;
+
+    border-radius:inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #d97706,
+            #f59e0b
+        );
+}
+
+.insight-progress-caption{
+    margin-top:6px;
+
+    color:#8a817a;
+
+    font-size:9px;
+    font-weight:700;
+}
+
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+.insight-note{
+    margin-top:14px;
+
+    padding:10px 12px;
+
+    border-radius:11px;
+
+    background:#f8fafc;
+
+    color:#64748b;
+
+    font-size:9px;
+    line-height:1.55;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:800px){
+
+    .insight-summary-grid{
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0,1fr)
+            );
+    }
+
+    .insight-trend-row{
+        grid-template-columns:1fr;
+    }
+
+    .insight-goal-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .admin-profile-link{
+        min-height:34px;
+
+        padding:7px 9px;
+
+        font-size:9.5px;
+
+        white-space:normal;
+
+        text-align:center;
+    }
+
+    #studentInsightSection{
+        margin:
+            18px
+            8px
+            0;
+    }
+
+    .insight-header{
+        padding:
+            20px
+            16px
+            18px;
+    }
+
+    .insight-title{
+        font-size:21px;
+    }
+
+    .insight-body{
+        padding:14px;
+    }
+
+    .insight-stat{
+        padding:13px 8px;
+    }
+
+    .insight-stat-value{
+        font-size:20px;
+    }
+
+    .insight-card{
+        padding:13px;
+    }
+
+    .insight-chart-wrap,
+    #studentProgressChart,
+    .insight-chart-empty{
+        min-height:220px;
+    }
+
+}
+
+</style>
+
+
+<!--=========================================================
+     APP
+=========================================================-->
+
+<div id="rewardExchangeApp">
+
+    <div class="rx-title">
+        HỒ SƠ HỌC VIÊN
+    </div>
+
+    <div class="rx-desc">
+        Tra cứu hồ sơ, linh thạch, vật phẩm và Chợ phiên.
+    </div>
+
+
+    <!--=====================================================
+         SEARCH
+    ======================================================-->
+
+    <section class="rx-search">
+
+        <div class="rx-section-title">
+            Tra cứu hồ sơ
+        </div>
+
+        <div class="rx-day">
+            Nhập đúng Mã học viên để mở hồ sơ.
+        </div>
+
+
+        <div class="rx-search-row">
+
+            <input autocomplete="off" class="rx-input" id="rxStudentCode" placeholder="Nhập Mã học viên..." spellcheck="false" type="text" />
+
+
+            <button class="rx-search-btn" id="rxSearchButton" type="button">
+                TRA CỨU
+            </button>
+
+        </div>
+
+
+        <div class="rx-message" id="rxMessage"></div>
+
+
+        <!--PROFILE-->
+
+        <div class="student-profile-module" id="studentProfileModule">
+
+            <div class="student-profile-overlay"></div>
+
+
+            <div class="student-profile-inner">
+
+                <div class="student-profile-main">
+
+                    <div class="student-profile-avatar" id="studentProfileAvatar"></div>
+
+
+                    <div class="student-profile-content">
+
+                        <div class="student-profile-label">
+                            HỒ SƠ HỌC VIÊN
+                        </div>
+
+
+                        <div class="student-profile-name-wrap" id="studentProfileNameWrap">
+
+                            <div class="student-profile-name" id="studentProfileName"></div>
+
+                        </div>
+
+
+                        <div class="student-profile-badges">
+
+                            <div class="student-profile-badge">
+
+                                <span class="admin-original-icon" id="profileStreakIcon"></span>
+
+                                <span class="admin-quick-action-text" id="profileStreakText"></span>
+
+                            </div>
+
+
+                            <div class="student-profile-badge">
+
+                                <span class="admin-original-icon" id="profileHighIcon"></span>
+
+                                <span class="admin-quick-action-text" id="profileHighText"></span>
+
+                            </div>
+
+
+                            <div class="student-profile-badge">
+
+                                <span class="admin-original-icon" id="profileTitleIcon"></span>
+
+                                <span class="admin-quick-action-text" id="profileTitleText"></span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="student-profile-actions">
+
+                    <button class="student-profile-action" id="profileLearningButton" type="button">
+
+                        <span id="profileLearningIcon"></span>
+
+                        <span>
+                            Thông tin học tập
+                        </span>
+
+                    </button>
+
+
+                    <button class="student-profile-action" id="profileGemButton" type="button">
+
+                        <span id="profileGemIcon"></span>
+
+                        <span>
+                            Linh thạch
+                        </span>
+
+                        <span class="student-profile-action-number" id="profileGemTotal">
+                            0
+                        </span>
+
+                    </button>
+
+
+                    <button class="student-profile-action" id="profileItemButton" type="button">
+
+                        <span id="profileItemIcon"></span>
+
+                        <span>
+                            Vật phẩm
+                        </span>
+
+                        <span class="student-profile-action-number" id="profileItemTotal">
+                            0
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!--LEARNING-->
+
+        <div class="rx-expand-panel" id="profileLearningPanel">
+
+            <div class="rx-panel-title">
+                Thông tin học tập
+            </div>
+
+
+            <div class="learning-info-grid">
+
+                <div class="learning-info-item">
+
+                    <div class="learning-info-label">
+                        Tổ
+                    </div>
+
+                    <div class="learning-info-value" id="learningGroup">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="learning-info-item">
+
+                    <div class="learning-info-label">
+                        Khóa
+                    </div>
+
+                    <div class="learning-info-value" id="learningCourse">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="learning-info-item">
+
+                    <div class="learning-info-label">
+                        Điểm trung bình
+                    </div>
+
+                    <div class="learning-info-value learning-average" id="learningAverage">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="learning-info-item">
+
+                    <div class="learning-info-label">
+                        Điểm xếp hạng
+                    </div>
+
+                    <div class="learning-info-value learning-ranking" id="learningRanking">
+                        -
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="learning-status" id="learningStatus">
+
+                <div class="learning-status-title" id="learningStatusTitle"></div>
+
+                <div id="learningStatusDetail"></div>
+
+            </div>
+
+
+            <div class="submission-section" id="submissionSection">
+
+                <button class="submission-toggle-button" id="submissionToggleButton" type="button">
+
+                    <div class="submission-toggle-inner">
+
+                        <div class="submission-toggle-left">
+
+                            <span id="submissionBookIcon"></span>
+
+                            <span>
+                                Danh sách bài đã nộp
+                            </span>
+
+                            <span class="submission-toggle-count" id="submissionCount"></span>
+
+                        </div>
+
+
+                        <span class="submission-toggle-arrow" id="submissionSafeArrow"></span>
+
+                    </div>
+
+                </button>
+
+
+                <div class="submission-content" id="submissionContent">
+
+                    <div class="submission-table-wrapper">
+
+                        <table class="submission-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>STT</th>
+
+                                    <th>
+                                        Thời gian nộp
+                                    </th>
+
+                                    <th>
+                                        Bài tập
+                                    </th>
+
+                                    <th>
+                                        Điểm số
+                                    </th>
+
+                                    <th>
+                                        Nhận xét
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="submissionTableBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!--GEMS-->
+
+        <div class="rx-expand-panel" id="profileGemPanel">
+
+            <div class="rx-panel-title">
+                Linh thạch hiện có
+            </div>
+
+            <div class="profile-gem-grid" id="profileGemGrid"></div>
+
+        </div>
+
+
+        <!--ITEMS-->
+
+        <div class="rx-expand-panel" id="profileItemPanel">
+
+            <div class="rx-panel-title">
+                Vật phẩm đang sở hữu
+            </div>
+
+            <div class="profile-item-grid" id="profileItemGrid"></div>
+
+        </div>
+
+    </section>
+
+
+    <!--=====================================================
+         MARKET
+    ======================================================-->
+
+    <div class="market-toggle-wrap">
+
+        <button class="market-toggle-button" id="marketToggleButton" type="button">
+
+            <div class="market-toggle-content">
+
+                <div class="market-toggle-left">
+
+                    <div class="market-toggle-icon" id="marketToggleIcon"></div>
+
+
+                    <div>
+
+                        <div class="market-toggle-title">
+                            Chợ phiên thu đổi linh thạch
+                        </div>
+
+                        <div class="market-toggle-subtitle">
+                            Giá đổi được làm mới theo ngày.
+                            Giao dịch được xác nhận trực tiếp trên trang.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="market-toggle-arrow" id="marketSafeArrow"></div>
+
+            </div>
+
+        </button>
+
+
+        <div class="rx-market-panel" id="marketPanel">
+
+            <div class="rx-market-day" id="marketDayLabel">
+                Mở Chợ phiên để tải dữ liệu hôm nay.
+            </div>
+
+
+            <div class="rx-message" id="rxMarketMessage"></div>
+
+
+            <div class="rx-grid" id="rxNpcGrid"></div>
+
+
+            <div class="market-info-area">
+
+                <details class="market-info-details">
+
+                    <summary>
+
+                        <span class="market-info-title">
+
+                            <span id="marketIntroSafeIcon"></span>
+
+                            <span>
+                                Giới thiệu
+                            </span>
+
+                        </span>
+
+
+                        <span class="market-info-arrow safe-down-arrow"></span>
+
+                    </summary>
+
+
+                    <div class="market-info-body">
+
+                        <p>
+                            <strong>
+                                Chợ phiên thu đổi linh thạch
+                            </strong>
+                            là nơi các thương nhân ghé qua mỗi ngày.
+                        </p>
+
+                        <p>
+                            Vật phẩm được chia thành
+                            <strong>
+                                6 phẩm cấp
+                            </strong>
+                            tương ứng với hệ thống phần thưởng.
+                        </p>
+
+                        <p>
+                            Việc mua bán vật phẩm trong hệ thống
+                            sử dụng Hồng Ngọc.
+                        </p>
+
+                        <p>
+                            <a href="https://www.thudao.com/2026/09/gioi-thieu-chuc-nang-cho-phien.html?m=1" target="_blank" rel="noopener" style="color:#9a3f2c;font-weight:700;text-decoration:underline">Tìm hiểu thêm →</a>
+                        </p>
+
+                    </div>
+
+                </details>
+
+
+                <details class="market-info-details">
+
+                    <summary>
+
+                        <span class="market-info-title">
+
+                            <span id="marketGuideSafeIcon"></span>
+
+                            <span>
+                                Hướng dẫn
+                            </span>
+
+                        </span>
+
+
+                        <span class="market-info-arrow safe-down-arrow"></span>
+
+                    </summary>
+
+
+                    <div class="market-info-body">
+
+                        <p>
+                            <strong>Bước 1:</strong>
+                            Nhập Mã học viên.
+                        </p>
+
+                        <p>
+                            <strong>Bước 2:</strong>
+                            Kiểm tra số Hồng Ngọc.
+                        </p>
+
+                        <p>
+                            <strong>Bước 3:</strong>
+                            Chọn vật phẩm hoặc kèo đổi.
+                        </p>
+
+                        <p>
+                            <strong>Bước 4:</strong>
+                            Kiểm tra Phiếu đổi quà.
+                        </p>
+
+                        <p>
+                            <strong>Bước 5:</strong>
+                            Xác nhận giao dịch.
+                        </p>
+
+                    </div>
+
+                </details>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!--=====================================================
+         INSIGHT
+         KHÔNG CÒN MINH HỒNG / VẬT PHẨM ƯU TIÊN Ở ĐÂY
+    ======================================================-->
+
+    <section id="studentInsightSection">
+
+        <div class="insight-shell">
+
+            <div class="insight-header">
+
+                <div class="insight-kicker">
+                    HỒ SƠ PHÂN TÍCH CÁ NHÂN
+                </div>
+
+                <h2 class="insight-title">
+                    Sự tiến bộ của bạn
+                </h2>
+
+                <p class="insight-desc">
+                    Hệ thống phân tích tiến độ học tập,
+                    chất lượng các bài gần đây và những mục tiêu
+                    đang ở gần bạn nhất.
+
+                </p>
+
+            </div>
+
+
+            <div class="insight-body">
+
+                <div class="insight-loading" id="studentInsightLoading">
+                    Đang phân tích quá trình học tập...
+                </div>
+
+
+                <div class="insight-content" id="studentInsightContent">
+
+                    <!--SUMMARY-->
+
+                    <div class="insight-summary-grid">
+
+                        <div class="insight-stat">
+
+                            <span class="insight-stat-value" id="insightLatest">
+                                -
+                            </span>
+
+                            <span class="insight-stat-label">
+                                Bài gần nhất
+                            </span>
+
+                        </div>
+
+
+                        <div class="insight-stat">
+
+                            <span class="insight-stat-value" id="insightHighest">
+                                -
+                            </span>
+
+                            <span class="insight-stat-label">
+                                Điểm cao nhất
+                            </span>
+
+                        </div>
+
+
+                        <div class="insight-stat">
+
+                            <span class="insight-stat-value" id="insightGraded">
+                                0
+                            </span>
+
+                            <span class="insight-stat-label">
+                                Bài đã chấm
+                            </span>
+
+                        </div>
+
+
+                        <div class="insight-stat">
+
+                            <span class="insight-stat-value" id="insightRank">
+                                -
+                            </span>
+
+                            <span class="insight-stat-label">
+                                Rank hiện tại
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--RANK-->
+
+                    <div class="insight-rank-box">
+
+                        <div>
+
+                            <div class="insight-rank-label">
+                                Danh hiệu Rank hiện tại
+                            </div>
+
+                            <div class="insight-rank-name" id="studentCurrentRankTitle">
+                                -
+                            </div>
+
+                            <div class="insight-rank-next" id="studentRankNextText"></div>
+
+                        </div>
+
+
+                        <div class="insight-rank-icon" id="studentRankIcon"></div>
+
+                    </div>
+
+
+                    <!--CHART-->
+
+                    <div class="insight-trend-row">
+
+                        <div class="insight-card">
+
+                            <div class="insight-card-title">
+
+                                <span id="insightChartIcon"></span>
+
+                                <span>
+                                    Biểu đồ tiến bộ
+                                </span>
+
+                            </div>
+
+
+                            <div class="insight-card-subtitle">
+                                Điểm giáo viên chấm theo trình tự thời gian.
+                            </div>
+
+
+                            <div class="insight-chart-wrap" id="studentChartWrap">
+
+                                <svg id="studentProgressChart" preserveaspectratio="none" role="img" viewbox="0 0 760 260"></svg>
+
+
+                                <div class="insight-chart-empty" id="studentChartEmpty">
+                                    Bạn chưa có đủ bài được chấm
+                                    để tạo biểu đồ tiến bộ.
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="insight-card">
+
+                            <div class="insight-trend-box insufficient" id="studentTrendBox">
+
+                                <div class="insight-trend-icon" id="studentTrendIcon"></div>
+
+                                <div class="insight-trend-name" id="studentTrendName">
+                                    Chưa đủ dữ liệu
+                                </div>
+
+                                <div class="insight-trend-detail" id="studentTrendDetail">
+                                    Hãy hoàn thành thêm một vài bài.
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--GOALS-->
+
+                    <div class="insight-section">
+
+                        <div class="insight-section-head">
+
+                            <div class="insight-section-title">
+
+                                <span id="insightGoalIcon"></span>
+
+                                <span>
+                                    Mốc mục tiêu quan trọng
+                                </span>
+
+                            </div>
+
+                            <div class="insight-section-desc">
+                                Hệ thống ưu tiên những mục tiêu
+                                đang ở gần bạn nhất.
+                            </div>
+
+                        </div>
+
+
+                        <div class="insight-goal-grid" id="studentGoalGrid"></div>
+
+                    </div>
+
+
+                    <div class="insight-note" id="studentInsightNote"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!--=========================================================
+     MODAL
+=========================================================-->
+
+<div class="rx-modal" id="rxModal">
+
+    <div class="rx-modal-box">
+
+        <div class="rx-modal-title">
+            PHIẾU ĐỔI QUÀ
+        </div>
+
+        <div class="rx-ticket-notice" id="rxTicketNotice"></div>
+
+        <div class="rx-ticket" id="rxTicket"></div>
+
+        <button class="rx-form-confirm" id="rxConfirmFormButton" type="button">
+            XÁC NHẬN ĐỔI QUÀ
+        </button>
+
+        <div class="rx-form-help" id="rxFormHelp"></div>
+
+        <button class="rx-modal-close" id="rxModalClose" type="button">
+            Đóng
+        </button>
+
+    </div>
+
+</div>
+
+
+<iframe id="rxHiddenFormFrame" name="rxHiddenFormFrame" style="border: 0; display: none; height: 0; width: 0;"></iframe>
+
+
+<!--=========================================================
+     SAFE ICONS
+=========================================================-->
+
+<script>
+(function(){
+
+"use strict";
+
+
+const UI={
+
+    scroll:
+        String.fromCodePoint(0x1F4DC),
+
+    compass:
+        String.fromCodePoint(0x1F9ED),
+
+    down:
+        String.fromCodePoint(0x25BC),
+
+    chart:
+        String.fromCodePoint(0x1F4C8),
+
+    target:
+        String.fromCodePoint(0x1F3AF)
+
+};
+
+
+function setText(
+    id,
+    value
+){
+
+    const target=
+        document.getElementById(
+            id
+        );
+
+
+    if(target){
+
+        target.textContent=
+            value;
+    }
+
+}
+
+
+function start(){
+
+    setText(
+        "marketIntroSafeIcon",
+        UI.scroll
+    );
+
+
+    setText(
+        "marketGuideSafeIcon",
+        UI.compass
+    );
+
+
+    setText(
+        "marketSafeArrow",
+        UI.down
+    );
+
+
+    setText(
+        "submissionSafeArrow",
+        UI.down
+    );
+
+
+    setText(
+        "insightChartIcon",
+        UI.chart
+    );
+
+
+    setText(
+        "insightGoalIcon",
+        UI.target
+    );
+
+
+    document
+    .querySelectorAll(
+        ".safe-down-arrow"
+    )
+    .forEach(
+        function(item){
+
+            item.textContent=
+                UI.down;
+
+        }
+    );
+
+}
+
+
+if(
+    document.readyState===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        start,
+        {
+            once:true
+        }
+    );
+
+}else{
+
+    start();
+}
+
+
+})();
+</script>
+
+
+<!--=========================================================
+     ADMIN PATCH
+=========================================================-->
+
+<script>
+(function(){
+
+"use strict";
+
+
+const CONFIG={
+
+    code:
+        "ADMIN",
+
+    gradeUrl:
+        "https://www.thudao.com/p/core-v31.html",
+
+    giftUrl:
+        "https://www.thudao.com/p/tess-linh-thu.html",
+
+    graduationUrl:
+        "https://www.thudao.com/p/gid.html"
+
+};
+
+
+const UI={
+
+    grade:
+        String.fromCodePoint(0x1F4DD),
+
+    gift:
+        String.fromCodePoint(0x1F381),
+
+    graduation:
+        String.fromCodePoint(0x1F393)
+
+};
+
+
+let scheduled=
+    false;
+
+
+function elements(){
+
+    return{
+
+        input:
+            document.getElementById(
+                "rxStudentCode"
+            ),
+
+        streakIcon:
+            document.getElementById(
+                "profileStreakIcon"
+            ),
+
+        streakText:
+            document.getElementById(
+                "profileStreakText"
+            ),
+
+        highIcon:
+            document.getElementById(
+                "profileHighIcon"
+            ),
+
+        highText:
+            document.getElementById(
+                "profileHighText"
+            ),
+
+        titleIcon:
+            document.getElementById(
+                "profileTitleIcon"
+            ),
+
+        titleText:
+            document.getElementById(
+                "profileTitleText"
+            )
+
+    };
+
+}
+
+
+function isAdmin(){
+
+    const data=
+        elements();
+
+
+    return Boolean(
+
+        data.input
+
+        &&
+
+        String(
+            data.input.value ||
+            ""
+        )
+        .trim()
+        .toUpperCase()
+
+        ===
+
+        CONFIG.code
+
+    );
+
+}
+
+
+function resetBadge(
+    icon,
+    text
+){
+
+    if(!text){
+
+        return;
+    }
+
+
+    const badge=
+        text.closest(
+            ".student-profile-badge"
+        );
+
+
+    if(badge){
+
+        badge.classList.remove(
+            "admin-quick-action"
+        );
+    }
+
+
+    if(icon){
+
+        icon.classList.remove(
+            "admin-original-icon"
+        );
+    }
+
+}
+
+
+function createButton(
+    icon,
+    text,
+    url,
+    iconString,
+    label,
+    cssClass
+){
+
+    if(!text){
+
+        return;
+    }
+
+
+    const badge=
+        text.closest(
+            ".student-profile-badge"
+        );
+
+
+    if(!badge){
+
+        return;
+    }
+
+
+    badge.classList.add(
+        "admin-quick-action"
+    );
+
+
+    if(icon){
+
+        icon.classList.add(
+            "admin-original-icon"
+        );
+
+        icon.textContent=
+            "";
+    }
+
+
+    const current=
+        text.querySelector(
+            ".admin-profile-link"
+        );
+
+
+    if(
+        current &&
+        current.getAttribute(
+            "href"
+        )===
+        url
+    ){
+
+        return;
+    }
+
+
+    text.textContent=
+        "";
+
+
+    const link=
+        document.createElement(
+            "a"
+        );
+
+
+    link.className=
+        "admin-profile-link "+
+        cssClass;
+
+
+    link.href=
+        url;
+
+
+    link.target=
+        "_blank";
+
+
+    link.rel=
+        "noopener noreferrer";
+
+
+    const iconNode=
+        document.createElement(
+            "span"
+        );
+
+
+    iconNode.textContent=
+        iconString;
+
+
+    const labelNode=
+        document.createElement(
+            "span"
+        );
+
+
+    labelNode.textContent=
+        label;
+
+
+    link.appendChild(
+        iconNode
+    );
+
+
+    link.appendChild(
+        labelNode
+    );
+
+
+    text.appendChild(
+        link
+    );
+
+}
+
+
+function patch(){
+
+    scheduled=
+        false;
+
+
+    const data=
+        elements();
+
+
+    if(
+        !data.streakText ||
+        !data.highText ||
+        !data.titleText
+    ){
+
+        return;
+    }
+
+
+    if(!isAdmin()){
+
+        resetBadge(
+            data.streakIcon,
+            data.streakText
+        );
+
+        resetBadge(
+            data.highIcon,
+            data.highText
+        );
+
+        resetBadge(
+            data.titleIcon,
+            data.titleText
+        );
+
+        return;
+    }
+
+
+    createButton(
+        data.streakIcon,
+        data.streakText,
+        CONFIG.gradeUrl,
+        UI.grade,
+        "Chấm bài",
+        "admin-grade-link"
+    );
+
+
+    createButton(
+        data.highIcon,
+        data.highText,
+        CONFIG.giftUrl,
+        UI.gift,
+        "Tặng quà theo tổ",
+        "admin-gift-link"
+    );
+
+
+    createButton(
+        data.titleIcon,
+        data.titleText,
+        CONFIG.graduationUrl,
+        UI.graduation,
+        "Chấm bài tốt nghiệp",
+        "admin-graduation-link"
+    );
+
+}
+
+
+function schedule(){
+
+    if(scheduled){
+
+        return;
+    }
+
+
+    scheduled=
+        true;
+
+
+    requestAnimationFrame(
+        patch
+    );
+
+}
+
+
+function start(){
+
+    const profile=
+        document.getElementById(
+            "studentProfileModule"
+        );
+
+
+    if(profile){
+
+        new MutationObserver(
+            schedule
+        )
+        .observe(
+            profile,
+            {
+                subtree:true,
+                childList:true,
+                characterData:true
+            }
+        );
+
+    }
+
+
+    const input=
+        document.getElementById(
+            "rxStudentCode"
+        );
+
+
+    const button=
+        document.getElementById(
+            "rxSearchButton"
+        );
+
+
+    if(input){
+
+        input.addEventListener(
+            "input",
+            schedule
+        );
+    }
+
+
+    if(button){
+
+        button.addEventListener(
+            "click",
+            function(){
+
+                [
+                    0,
+                    200,
+                    600
+                ]
+                .forEach(
+                    function(delay){
+
+                        setTimeout(
+                            schedule,
+                            delay
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    schedule();
+
+}
+
+
+if(
+    document.readyState===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        start,
+        {
+            once:true
+        }
+    );
+
+}else{
+
+    start();
+}
+
+
+})();
+</script>
+
+
+<!--=========================================================
+     SESSION ADAPTER
+=========================================================-->
+
+<script>
+(function(){
+
+"use strict";
+
+
+if(
+    window.__OCD_PROFILE_SESSION_ADAPTER_V1__
+){
+
+    return;
+}
+
+
+window.__OCD_PROFILE_SESSION_ADAPTER_V1__=
+    true;
+
+
+const CONFIG={
+
+    adminCode:
+        "ADMIN",
+
+    autoSearch:
+        true,
+
+    autoSearchDelay:
+        550
+
+};
+
+
+let autoSearchUsed=
+    false;
+
+
+function normalize(value){
+
+    return String(
+        value ||
+        ""
+    )
+    .trim()
+    .toUpperCase()
+    .replace(
+        /\s+/g,
+        ""
+    );
+
+}
+
+
+function sessionCode(){
+
+    try{
+
+        if(
+            window.OCDStudentSession &&
+            typeof window.OCDStudentSession.getCode===
+            "function"
+        ){
+
+            return normalize(
+                window.OCDStudentSession.getCode()
+            );
+
+        }
+
+    }catch(error){}
+
+
+    return "";
+
+}
+
+
+function fillFromSession(){
+
+    if(autoSearchUsed){
+
+        return;
+    }
+
+
+    const code=
+        sessionCode();
+
+
+    if(
+        !code ||
+        code===
+        CONFIG.adminCode
+    ){
+
+        return;
+    }
+
+
+    const input=
+        document.getElementById(
+            "rxStudentCode"
+        );
+
+
+    const button=
+        document.getElementById(
+            "rxSearchButton"
+        );
+
+
+    if(
+        !input ||
+        !button
+    ){
+
+        return;
+    }
+
+
+    /*
+       Không ghi đè nếu người dùng
+       đã tự nhập mã khác.
+    */
+
+    if(
+        normalize(
+            input.value
+        )
+        &&
+        normalize(
+            input.value
+        )!==
+        code
+    ){
+
+        return;
+    }
+
+
+    input.value=
+        code;
+
+
+    try{
+
+        input.dispatchEvent(
+            new Event(
+                "input",
+                {
+                    bubbles:true
+                }
+            )
+        );
+
+    }catch(error){}
+
+
+    if(
+        CONFIG.autoSearch
+    ){
+
+        autoSearchUsed=
+            true;
+
+
+        setTimeout(
+            function(){
+
+                /*
+                   Kiểm tra lại để tránh trường hợp
+                   người dùng đã sửa input.
+                */
+
+                if(
+                    normalize(
+                        input.value
+                    )===
+                    code
+                ){
+
+                    button.click();
+                }
+
+            },
+            CONFIG.autoSearchDelay
+        );
+
+    }
+
+}
+
+
+function start(){
+
+    setTimeout(
+        fillFromSession,
+        200
+    );
+
+}
+
+
+if(
+    document.readyState===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        start,
+        {
+            once:true
+        }
+    );
+
+}else{
+
+    start();
+}
+
+
+})();
+</script>
+
+
+<!--=========================================================
+     LEARNING INSIGHT v1.6
+=========================================================-->
+
+<script>
+(function(){
+
+"use strict";
+
+
+if(
+    window.OCDLearningInsightV16Loaded
+){
+
+    return;
+}
+
+
+window.OCDLearningInsightV16Loaded=
+    true;
+
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const CONFIG={
+
+    adminCode:
+        "ADMIN",
+
+    worksCsv:
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRP5cc8duj1XrCXMrymo6Cj7aqIkWfX6bHxGeW-lXcSewfQXhM8fZ5rzbNIQ9mBeVuB8yYr_o1aBoYA/pub?gid=1023688821&single=true&output=csv",
+
+    fallbackCsv:
+        "https://docs.google.com/spreadsheets/d/1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs/export?format=csv&gid=1837470623",
+
+    deleteCsv:
+        "https://docs.google.com/spreadsheets/d/1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs/export?format=csv&gid=521976322",
+
+    cacheVersion:
+        "v16",
+
+    cacheTTL:
+        5*60*1000,
+
+    graduationAverage:
+        7,
+
+    graduationSubmissions:
+        100,
+
+    scorePlanStart:
+        70,
+
+    trendWindow:
+        3,
+
+    recentWindow:
+        5,
+
+    mediumWindow:
+        10,
+
+    chartLimit:
+        18,
+
+    successWait:
+        10000
+
+};
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+const UI={
+
+    rank:
+        String.fromCodePoint(0x1F3C6),
+
+    up:
+        String.fromCodePoint(0x2197),
+
+    down:
+        String.fromCodePoint(0x2198),
+
+    stable:
+        String.fromCodePoint(0x2192),
+
+    neutral:
+        String.fromCodePoint(0x2022),
+
+    tip:
+        String.fromCodePoint(0x1F4A1),
+
+    score:
+        String.fromCodePoint(0x1F4CA),
+
+    target:
+        String.fromCodePoint(0x1F3AF),
+
+    warning:
+        String.fromCodePoint(0x26A0),
+
+    check:
+        String.fromCodePoint(0x2705),
+
+    market:
+        String.fromCodePoint(0x1F3EA),
+
+    dice:
+        String.fromCodePoint(0x1F3B2),
+
+    gift:
+        String.fromCodePoint(0x1F381),
+
+    fire:
+        String.fromCodePoint(0x1F525)
+
+};
+
+
+const CHAR={
+
+    openQuote:
+        String.fromCodePoint(0x201C),
+
+    closeQuote:
+        String.fromCodePoint(0x201D),
+
+    dash:
+        String.fromCodePoint(0x2014)
+
+};
+
+
+/* =========================================================
+   RANK
+========================================================= */
+
+const RANK_LEVELS=[
+
+    {
+        min:0,
+        name:"Tân thủ nhập môn"
+    },
+
+    {
+        min:100,
+        name:"Cầm bút chắc chắn"
+    },
+
+    {
+        min:300,
+        name:"Biết cách lấy mực"
+    },
+
+    {
+        min:700,
+        name:"Lộ phong đều đặn"
+    },
+
+    {
+        min:1500,
+        name:"Trung phong sắc nét"
+    },
+
+    {
+        min:3000,
+        name:"Nhãn lực nâng cao"
+    },
+
+    {
+        min:5000,
+        name:"Chương pháp ổn định"
+    },
+
+    {
+        min:8000,
+        name:"Cao thủ"
+    },
+
+    {
+        min:12000,
+        name:"Thoát tục tự nhiên"
+    },
+
+    {
+        min:20000,
+        name:"Thư gia tố chất"
+    }
+
+];
+
+
+const STREAK_RULES=[
+
+    {
+        target:5,
+        name:"Mầm cây chăm chỉ"
+    },
+
+    {
+        target:7,
+        name:"Phiếu bé ngoan"
+    },
+
+    {
+        target:14,
+        name:"Cây nhỏ bền bỉ"
+    },
+
+    {
+        target:30,
+        name:"Ngọn lửa không tắt"
+    }
+
+];
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const state={
+
+    RS:null,
+
+    works:null,
+
+    worksPromise:null,
+
+    deletedIds:
+        new Set(),
+
+    analysisCache:
+        new Map(),
+
+    giftCatalog:null,
+
+
+    currentAnalysis:null,
+
+
+    token:0,
+
+    scheduled:false,
+
+    marketObserver:null,
+
+    marketTimer:null
+
+};
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+function el(id){
+
+    return document.getElementById(
+        id
+    );
+
+}
+
+
+/* =========================================================
+   TEXT
+========================================================= */
+
+function decodeDisplayText(value){
+
+    return String(
+        value===undefined ||
+        value===null
+        ?
+        ""
+        :
+        value
+    )
+
+    .replace(
+        /&#x([0-9a-f]+);/gi,
+        function(
+            full,
+            hex
+        ){
+
+            const number=
+                parseInt(
+                    hex,
+                    16
+                );
+
+
+            return Number.isFinite(
+                number
+            )
+            ?
+            String.fromCodePoint(
+                number
+            )
+            :
+            full;
+
+        }
+    )
+
+    .replace(
+        /&#(\d+);/g,
+        function(
+            full,
+            decimal
+        ){
+
+            const number=
+                parseInt(
+                    decimal,
+                    10
+                );
+
+
+            return Number.isFinite(
+                number
+            )
+            ?
+            String.fromCodePoint(
+                number
+            )
+            :
+            full;
+
+        }
+    )
+
+    .replace(
+        /&quot;/gi,
+        "\""
+    )
+
+    .replace(
+        /&apos;/gi,
+        "'"
+    )
+
+    .replace(
+        /&#39;/gi,
+        "'"
+    )
+
+    .replace(
+        /&nbsp;/gi,
+        " "
+    )
+
+    .replace(
+        /&amp;/gi,
+        "&"
+    );
+
+}
+
+
+function clean(value){
+
+    return decodeDisplayText(
+        value
+    )
+    .trim();
+
+}
+
+
+function normalizeText(value){
+
+    return clean(
+        value
+    )
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(
+        /[\u0300-\u036f]/g,
+        ""
+    )
+    .replace(
+        /đ/g,
+        "d"
+    )
+    .replace(
+        /\s+/g,
+        " "
+    );
+
+}
+
+
+/* =========================================================
+   CORE
+========================================================= */
+
+function getCore(){
+
+    const RS=
+        window.StudentRewardSystem;
+
+
+    if(
+        RS &&
+        typeof RS.normalizeCode===
+        "function"
+    ){
+
+        state.RS=
+            RS;
+
+
+        return RS;
+    }
+
+
+    return null;
+
+}
+
+
+function normalizeCode(value){
+
+    const RS=
+        getCore();
+
+
+    if(
+        RS &&
+        typeof RS.normalizeCode===
+        "function"
+    ){
+
+        return RS.normalizeCode(
+            value
+        );
+
+    }
+
+
+    return clean(
+        value
+    )
+    .toUpperCase()
+    .replace(
+        /\s+/g,
+        ""
+    );
+
+}
+
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+function numberValue(value){
+
+    const number=
+        Number(
+            clean(
+                value
+            )
+            .replace(
+                /[^\d,.\-]/g,
+                ""
+            )
+            .replace(
+                ",",
+                "."
+            )
+        );
+
+
+    return Number.isFinite(
+        number
+    )
+    ?
+    number
+    :
+    null;
+
+}
+
+
+function formatNumber(value){
+
+    const number=
+        Number(
+            value
+        );
+
+
+    if(
+        !Number.isFinite(
+            number
+        )
+    ){
+
+        return CHAR.dash;
+    }
+
+
+    return number.toLocaleString(
+        "vi-VN",
+        {
+            minimumFractionDigits:0,
+            maximumFractionDigits:2
+        }
+    );
+
+}
+
+
+function mean(values){
+
+    if(!values.length){
+
+        return null;
+    }
+
+
+    return(
+        values.reduce(
+            function(
+                total,
+                value
+            ){
+
+                return total+value;
+
+            },
+            0
+        )
+        /
+        values.length
+    );
+
+}
+
+
+function standardDeviation(values){
+
+    if(
+        values.length<2
+    ){
+
+        return null;
+    }
+
+
+    const avg=
+        mean(
+            values
+        );
+
+
+    return Math.sqrt(
+        mean(
+            values.map(
+                function(value){
+
+                    return Math.pow(
+                        value-avg,
+                        2
+                    );
+
+                }
+            )
+        )
+    );
+
+}
+
+
+function ratioAtLeast(
+    values,
+    threshold
+){
+
+    if(!values.length){
+
+        return 0;
+    }
+
+
+    return(
+        values.filter(
+            function(value){
+
+                return(
+                    value>=
+                    threshold
+                );
+
+            }
+        )
+        .length
+        /
+        values.length
+    );
+
+}
+
+
+/* =========================================================
+   IDLE
+========================================================= */
+
+
+
+/* =========================================================
+   CACHE
+========================================================= */
+
+function cacheKey(name){
+
+    return(
+        "ocd-insight-"+
+        CONFIG.cacheVersion+
+        "-"+
+        name
+    );
+
+}
+
+
+function readCache(name){
+
+    try{
+
+        const raw=
+            sessionStorage.getItem(
+                cacheKey(
+                    name
+                )
+            );
+
+
+        if(!raw){
+
+            return null;
+        }
+
+
+        const data=
+            JSON.parse(
+                raw
+            );
+
+
+        if(
+            !data ||
+            !data.time ||
+            Date.now()-
+            data.time>
+            CONFIG.cacheTTL
+        ){
+
+            sessionStorage.removeItem(
+                cacheKey(
+                    name
+                )
+            );
+
+
+            return null;
+        }
+
+
+        return data.value;
+
+    }catch(error){
+
+        return null;
+    }
+
+}
+
+
+function writeCache(
+    name,
+    value
+){
+
+    try{
+
+        sessionStorage.setItem(
+
+            cacheKey(
+                name
+            ),
+
+            JSON.stringify({
+
+                time:
+                    Date.now(),
+
+                value:
+                    value
+
+            })
+
+        );
+
+    }catch(error){}
+
+}
+
+
+/* =========================================================
+   CSV
+========================================================= */
+
+function parseCSV(text){
+
+    const rows=[];
+
+    let row=[];
+
+    let value="";
+
+    let quoted=false;
+
+
+    text=
+        String(
+            text ||
+            ""
+        )
+        .replace(
+            /^\uFEFF/,
+            ""
+        );
+
+
+    for(
+        let i=0;
+        i<text.length;
+        i++
+    ){
+
+        const char=
+            text[i];
+
+
+        if(char==='"'){
+
+            if(
+                quoted &&
+                text[i+1]==='"'
+            ){
+
+                value+='"';
+
+                i++;
+
+            }else{
+
+                quoted=
+                    !quoted;
+            }
+
+
+            continue;
+        }
+
+
+        if(
+            char==="," &&
+            !quoted
+        ){
+
+            row.push(
+                value
+            );
+
+            value="";
+
+            continue;
+        }
+
+
+        if(
+            (
+                char==="\n" ||
+                char==="\r"
+            )
+            &&
+            !quoted
+        ){
+
+            if(
+                char==="\r" &&
+                text[i+1]==="\n"
+            ){
+
+                i++;
+            }
+
+
+            row.push(
+                value
+            );
+
+
+            if(
+                row.some(
+                    function(cell){
+
+                        return clean(
+                            cell
+                        );
+
+                    }
+                )
+            ){
+
+                rows.push(
+                    row
+                );
+
+            }
+
+
+            row=[];
+
+            value="";
+
+            continue;
+        }
+
+
+        value+=char;
+
+    }
+
+
+    if(
+        value ||
+        row.length
+    ){
+
+        row.push(
+            value
+        );
+
+
+        if(
+            row.some(
+                function(cell){
+
+                    return clean(
+                        cell
+                    );
+
+                }
+            )
+        ){
+
+            rows.push(
+                row
+            );
+
+        }
+
+    }
+
+
+    return rows;
+
+}
+
+
+function csvObjects(text){
+
+    const rows=
+        parseCSV(
+            text
+        );
+
+
+    if(
+        rows.length<2
+    ){
+
+        return [];
+    }
+
+
+    const headers=
+        rows[0]
+        .map(
+            normalizeText
+        );
+
+
+    return rows
+    .slice(1)
+    .filter(
+        function(row){
+
+            return row.some(
+                function(cell){
+
+                    return clean(
+                        cell
+                    );
+
+                }
+            );
+
+        }
+    )
+    .map(
+        function(row){
+
+            const object={};
+
+
+            headers.forEach(
+                function(
+                    header,
+                    index
+                ){
+
+                    if(header){
+
+                        object[header]=
+                            row[index] ||
+                            "";
+
+                    }
+
+                }
+            );
+
+
+            return object;
+
+        }
+    );
+
+}
+
+
+function column(
+    object,
+    aliases
+){
+
+    if(!object){
+
+        return "";
+    }
+
+
+    for(
+        const alias
+        of aliases
+    ){
+
+        const key=
+            normalizeText(
+                alias
+            );
+
+
+        if(
+            Object.prototype
+            .hasOwnProperty
+            .call(
+                object,
+                key
+            )
+        ){
+
+            return object[key];
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+async function fetchText(
+    url,
+    cacheName
+){
+
+    const cached=
+        readCache(
+            cacheName
+        );
+
+
+    if(
+        typeof cached===
+        "string"
+        &&
+        cached.length
+    ){
+
+        return cached;
+    }
+
+
+    /* v1.7: đọc qua Apps Script (lọc sẵn theo học viên, dữ liệu mới ngay); lỗi thì tải CSV như cũ */
+    const RSX=window.StudentRewardSystem, byCode=String(url).split("#code=")[1];
+    try{
+        let apiText="";
+        if(RSX && byCode && typeof RSX.getStudentSheetCsv==="function"){
+            apiText=await RSX.getStudentSheetCsv("TacPhamWeb",decodeURIComponent(byCode));
+        }else if(RSX && !byCode && typeof RSX.fetchCSV==="function"){
+            apiText=await RSX.fetchCSV(url);
+        }
+        if(apiText){ writeCache(cacheName,apiText); return apiText; }
+    }catch(error){}
+
+    const response=
+        await fetch(
+            url,
+            {
+                cache:"no-cache"
+            }
+        );
+
+
+    if(!response.ok){
+
+        throw new Error(
+            "HTTP "+
+            response.status
+        );
+    }
+
+
+    const text=
+        await response.text();
+
+
+    writeCache(
+        cacheName,
+        text
+    );
+
+
+    return text;
+
+}
+
+
+/* =========================================================
+   TIME
+========================================================= */
+
+function timeValue(value){
+
+    const text=
+        clean(
+            value
+        );
+
+
+    const match=
+        text.match(
+            /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})(?:[\s,]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/
+        );
+
+
+    if(match){
+
+        return new Date(
+
+            Number(match[3]),
+
+            Number(match[2])-1,
+
+            Number(match[1]),
+
+            Number(match[4] || 0),
+
+            Number(match[5] || 0),
+
+            Number(match[6] || 0)
+
+        ).getTime();
+
+    }
+
+
+    return(
+        Date.parse(
+            text
+        )
+        ||
+        0
+    );
+
+}
+
+
+/* =========================================================
+   SUBMISSION ID
+========================================================= */
+
+function driveId(value){
+
+    const text=
+        String(
+            value ||
+            ""
+        );
+
+
+    const patterns=[
+
+        /\/file\/d\/([^/?&#]+)/i,
+
+        /\/d\/([^/?&#]+)/i,
+
+        /[?&]id=([^&#]+)/i
+
+    ];
+
+
+    for(
+        const pattern
+        of patterns
+    ){
+
+        const match=
+            text.match(
+                pattern
+            );
+
+
+        if(match){
+
+            return match[1];
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+function compactTime(value){
+
+    const match=
+        String(
+            value ||
+            ""
+        )
+        .match(
+            /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})[\s,]+(\d{1,2}):(\d{2})(?::(\d{2}))?/
+        );
+
+
+    if(!match){
+
+        return "";
+    }
+
+
+    function pad(value){
+
+        return String(
+            value
+        )
+        .padStart(
+            2,
+            "0"
+        );
+
+    }
+
+
+    return(
+        match[3]+
+        pad(match[2])+
+        pad(match[1])+
+        pad(match[4])+
+        pad(match[5])+
+        pad(match[6] || 0)
+    );
+
+}
+
+
+function submissionId(row){
+
+    const existing=
+        clean(
+            column(
+                row,
+                [
+                    "Mã bài nộp"
+                ]
+            )
+        );
+
+
+    if(existing){
+
+        return existing;
+    }
+
+
+    const timestamp=
+        column(
+            row,
+            [
+                "Dấu thời gian"
+            ]
+        );
+
+
+    const code=
+        clean(
+            column(
+                row,
+                [
+                    "Mã học viên"
+                ]
+            )
+        );
+
+
+    const file=
+        column(
+            row,
+            [
+                "Tải bài tập lên"
+            ]
+        );
+
+
+    return(
+        compactTime(
+            timestamp
+        )
+        +
+        "|"+
+        code+
+        "|"+
+        (
+            driveId(
+                file
+            )
+            ||
+            clean(
+                file
+            )
+        )
+    );
+
+}
+
+
+/* =========================================================
+   DELETE LOG
+========================================================= */
+
+function buildDeletedIds(rows){
+
+    const map=
+        new Map();
+
+
+    rows.forEach(
+        function(row){
+
+            const id=
+                clean(
+                    column(
+                        row,
+                        [
+                            "Mã bài nộp"
+                        ]
+                    )
+                );
+
+
+            if(!id){
+
+                return;
+            }
+
+
+            const action=
+                normalizeText(
+                    column(
+                        row,
+                        [
+                            "Hành động"
+                        ]
+                    )
+                );
+
+
+            if(
+                action.includes(
+                    "khoi phuc"
+                )
+                ||
+                action===
+                "restore"
+            ){
+
+                map.set(
+                    id,
+                    false
+                );
+
+
+                return;
+            }
+
+
+            if(
+                !action
+                ||
+                action.includes(
+                    "xoa"
+                )
+                ||
+                action===
+                "delete"
+            ){
+
+                map.set(
+                    id,
+                    true
+                );
+
+            }
+
+        }
+    );
+
+
+    state.deletedIds=
+        new Set();
+
+
+    map.forEach(
+        function(
+            deleted,
+            id
+        ){
+
+            if(deleted){
+
+                state.deletedIds.add(
+                    id
+                );
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   WORK
+========================================================= */
+
+/* v1.7.1: giữ thêm mô tả bài để tính Ngũ giác chỉ số (Dụng bút / Thức thế / Khoả thúc) */
+function workDescription(row){
+    if(!row) return "";
+    const key=Object.keys(row).find(function(k){ return k.indexOf("mo ta")===0; });
+    return key?clean(row[key]):"";
+}
+function prepareWork(row){
+    const work=prepareWorkBase(row);
+    work.description=workDescription(row);
+    return work;
+}
+function prepareWorkBase(row){
+
+    const timestamp=
+        clean(
+            column(
+                row,
+                [
+                    "Dấu thời gian"
+                ]
+            )
+        );
+
+
+    return{
+
+        id:
+            submissionId(
+                row
+            ),
+
+        code:
+            normalizeCode(
+                column(
+                    row,
+                    [
+                        "Mã học viên"
+                    ]
+                )
+            ),
+
+        timestamp:
+            timestamp,
+
+        time:
+            timeValue(
+                timestamp
+            ),
+
+        score:
+            clean(
+                column(
+                    row,
+                    [
+                        "Điểm số",
+                        "Điểm",
+                        "Điểm giáo viên"
+                    ]
+                )
+            )
+
+    };
+
+}
+
+
+async function loadWorks(code){
+    /* v1.7: dữ liệu theo từng học viên */
+    if(state.worksCode!==String(code||"")){ state.works=null; state.worksPromise=null; state.worksCode=String(code||""); }
+
+    if(state.works){
+
+        return state.works;
+    }
+
+
+    if(state.worksPromise){
+
+        return state.worksPromise;
+    }
+
+
+    state.worksPromise=
+        (async function(){
+
+            let text="";
+
+
+            try{
+
+                text=
+                    await fetchText(
+                        CONFIG.worksCsv+"#code="+encodeURIComponent(String(code||"")),
+                        "works:"+String(code||"")
+                    );
+
+            }catch(error){}
+
+
+            if(!text){
+
+                text=
+                    await fetchText(
+                        CONFIG.fallbackCsv,
+                        "fallback"
+                    );
+
+            }
+
+
+            try{
+
+                const deleteText=
+                    await fetchText(
+                        CONFIG.deleteCsv,
+                        "delete"
+                    );
+
+
+                buildDeletedIds(
+                    csvObjects(
+                        deleteText
+                    )
+                );
+
+            }catch(error){
+
+                state.deletedIds=
+                    new Set();
+
+            }
+
+
+            if(state.worksCode!==String(code||"")) return [];
+            state.works=
+                csvObjects(
+                    text
+                )
+                .filter(
+                    function(row){
+
+                        return(
+                            !state.deletedIds.has(
+                                submissionId(
+                                    row
+                                )
+                            )
+                        );
+
+                    }
+                )
+                .map(
+                    prepareWork
+                )
+                .filter(
+                    function(item){
+
+                        return(
+                            item.code &&
+                            item.time>0
+                        );
+
+                    }
+                );
+
+
+            return state.works;
+
+        })()
+        .finally(
+            function(){
+
+                state.worksPromise=
+                    null;
+
+            }
+        );
+
+
+    return state.worksPromise;
+
+}
+
+
+/* =========================================================
+   SCORE
+========================================================= */
+
+function parseScore(value){
+
+    const RS=
+        getCore();
+
+
+    if(
+        RS &&
+        typeof RS.parseScore===
+        "function"
+    ){
+
+        const result=
+            RS.parseScore(
+                value
+            );
+
+
+        return Number.isFinite(
+            result
+        )
+        ?
+        result
+        :
+        null;
+
+    }
+
+
+    return numberValue(
+        value
+    );
+
+}
+
+
+function studentWorks(
+    code,
+    all
+){
+
+    const normalized=
+        normalizeCode(
+            code
+        );
+
+
+    return all
+    .filter(
+        function(item){
+
+            return(
+                item.code===
+                normalized
+            );
+
+        }
+    )
+    .sort(
+        function(a,b){
+
+            return a.time-b.time;
+
+        }
+    );
+
+}
+
+
+function gradedWorks(works){
+
+    return works
+    .map(
+        function(item){
+
+            return Object.assign(
+                {},
+                item,
+                {
+                    parsedScore:
+                        parseScore(
+                            item.score
+                        )
+                }
+            );
+
+        }
+    )
+    .filter(
+        function(item){
+
+            return(
+                item.parsedScore!==
+                null
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   TREND
+========================================================= */
+
+function calculateTrend(scores){
+
+    if(
+        scores.length<4
+    ){
+
+        return{
+
+            type:
+                "insufficient",
+
+            change:
+                null
+
+        };
+
+    }
+
+
+    const size=
+        Math.min(
+            CONFIG.trendWindow,
+            Math.floor(
+                scores.length/
+                2
+            )
+        );
+
+
+    const recent=
+        mean(
+            scores.slice(
+                -size
+            )
+        );
+
+
+    const previous=
+        mean(
+            scores.slice(
+                -size*2,
+                -size
+            )
+        );
+
+
+    const change=
+        recent-
+        previous;
+
+
+    return{
+
+        type:
+            change>=.35
+            ?
+            "up"
+            :
+            (
+                change<=-.35
+                ?
+                "down"
+                :
+                "stable"
+            ),
+
+        change:
+            change
+
+    };
+
+}
+
+
+/* =========================================================
+   STREAK
+========================================================= */
+
+function dayNumber(ms){
+
+    const date=
+        new Date(
+            ms
+        );
+
+
+    return Math.floor(
+        Date.UTC(
+
+            date.getFullYear(),
+
+            date.getMonth(),
+
+            date.getDate()
+
+        )
+        /
+        86400000
+    );
+
+}
+
+
+function longestStreak(works){
+
+    const days=
+        Array.from(
+            new Set(
+                works.map(
+                    function(item){
+
+                        return dayNumber(
+                            item.time
+                        );
+
+                    }
+                )
+            )
+        )
+        .sort(
+            function(a,b){
+
+                return a-b;
+
+            }
+        );
+
+
+    let best=0;
+
+    let current=0;
+
+    let previous=null;
+
+
+    days.forEach(
+        function(day){
+
+            if(
+                previous!==
+                null
+                &&
+                day-previous===
+                1
+            ){
+
+                current++;
+
+            }else{
+
+                current=1;
+
+            }
+
+
+            best=
+                Math.max(
+                    best,
+                    current
+                );
+
+
+            previous=
+                day;
+
+        }
+    );
+
+
+    return best;
+
+}
+
+
+/* =========================================================
+   RANK
+========================================================= */
+
+function rankLevel(rank){
+
+    for(
+        let i=
+            RANK_LEVELS.length-1;
+        i>=0;
+        i--
+    ){
+
+        if(
+            rank>=
+            RANK_LEVELS[i].min
+        ){
+
+            return RANK_LEVELS[i];
+
+        }
+
+    }
+
+
+    return RANK_LEVELS[0];
+
+}
+
+
+function nextRankLevel(rank){
+
+    return(
+        RANK_LEVELS.find(
+            function(level){
+
+                return(
+                    level.min>
+                    rank
+                );
+
+            }
+        )
+        ||
+        null
+    );
+
+}
+
+
+/* =========================================================
+   ASSETS
+========================================================= */
+
+function readHongNgoc(){
+
+    let balance=0;
+
+
+    document
+    .querySelectorAll(
+        "#profileGemGrid .profile-gem-card"
+    )
+    .forEach(
+        function(card){
+
+            const nameNode=
+                card.querySelector(
+                    ".profile-gem-name"
+                );
+
+
+            const valueNode=
+                card.querySelector(
+                    ".profile-gem-value"
+                );
+
+
+            const name=
+                normalizeText(
+                    nameNode
+                    ?
+                    nameNode.textContent
+                    :
+                    ""
+                );
+
+
+            if(
+                !name.includes(
+                    "hong ngoc"
+                )
+                &&
+                !name.includes(
+                    "hong thach"
+                )
+            ){
+
+                return;
+            }
+
+
+            const number=
+                numberValue(
+                    valueNode
+                    ?
+                    valueNode.textContent
+                    :
+                    ""
+                );
+
+
+            if(
+                number!==
+                null
+            ){
+
+                balance=
+                    number;
+
+            }
+
+        }
+    );
+
+
+    return balance;
+
+}
+
+
+function readOwnedItems(){
+
+    const list=[];
+
+
+    document
+    .querySelectorAll(
+        "#profileItemGrid .profile-item-name"
+    )
+    .forEach(
+        function(item){
+
+            const value=
+                clean(
+                    item.textContent
+                );
+
+
+            if(value){
+
+                list.push(
+                    value
+                );
+
+            }
+
+        }
+    );
+
+
+    return list;
+
+}
+
+
+/* =========================================================
+   RECOVERY PLAN
+========================================================= */
+
+function calculateRecoveryPlan(analysis){
+
+    if(
+        analysis.average===
+        null
+        ||
+        analysis.average>=7
+        ||
+        analysis.totalSubmissions<
+        CONFIG.scorePlanStart
+        ||
+        analysis.totalSubmissions>=100
+    ){
+
+        return null;
+    }
+
+
+    const remaining=
+        100-
+        analysis.totalSubmissions;
+
+
+    const requiredTotal=
+        700;
+
+
+    const requiredAverage=
+        (
+            requiredTotal-
+            analysis.scoreTotal
+        )
+        /
+        remaining;
+
+
+    const normal=
+        analysis.recent10Average===
+        null
+        ?
+        analysis.average
+        :
+        analysis.recent10Average;
+
+
+    let highScore=
+        Math.max(
+            8,
+            analysis.highest ||
+            8
+        );
+
+
+    highScore=
+        Math.min(
+            10,
+            highScore
+        );
+
+
+    if(
+        requiredAverage<=
+        normal
+    ){
+
+        return{
+
+            possible:true,
+
+            remaining:
+                remaining,
+
+            requiredAverage:
+                requiredAverage,
+
+            normalScore:
+                normal,
+
+            highScore:
+                highScore,
+
+            highNeeded:
+                0
+
+        };
+
+    }
+
+
+    const bestPossible=
+        analysis.scoreTotal+
+        remaining*
+        highScore;
+
+
+    if(
+        bestPossible<
+        requiredTotal
+    ){
+
+        return{
+
+            possible:false,
+
+            remaining:
+                remaining,
+
+            requiredAverage:
+                requiredAverage,
+
+            normalScore:
+                normal,
+
+            highScore:
+                highScore,
+
+            bestPossibleAverage:
+                bestPossible/
+                100
+
+        };
+
+    }
+
+
+    const denominator=
+        highScore-
+        normal;
+
+
+    if(
+        denominator<=0
+    ){
+
+        return{
+
+            possible:false,
+
+            remaining:
+                remaining,
+
+            requiredAverage:
+                requiredAverage,
+
+            normalScore:
+                normal,
+
+            highScore:
+                highScore
+
+        };
+
+    }
+
+
+    const needed=
+        Math.ceil(
+            (
+                requiredTotal-
+                analysis.scoreTotal-
+                remaining*
+                normal
+            )
+            /
+            denominator
+        );
+
+
+    return{
+
+        possible:true,
+
+        remaining:
+            remaining,
+
+        requiredAverage:
+            requiredAverage,
+
+        normalScore:
+            normal,
+
+        highScore:
+            highScore,
+
+        highNeeded:
+            Math.max(
+                0,
+                Math.min(
+                    remaining,
+                    needed
+                )
+            )
+
+    };
+
+}
+
+
+/* =========================================================
+   ANALYSIS
+========================================================= */
+
+function buildAnalysis(
+    code,
+    works
+){
+
+    const graded=
+        gradedWorks(
+            works
+        );
+
+
+    const scores=
+        graded.map(
+            function(item){
+
+                return item.parsedScore;
+
+            }
+        );
+
+
+    const scoreTotal=
+        scores.reduce(
+            function(
+                total,
+                value
+            ){
+
+                return total+value;
+
+            },
+            0
+        );
+
+
+    const recent5=
+        scores.slice(
+            -5
+        );
+
+
+    const recent10=
+        scores.slice(
+            -10
+        );
+
+
+    const rank=
+        works.length+
+        scoreTotal;
+
+
+    const analysis={
+
+        code:
+            code,
+
+        works:
+            works,
+
+        graded:
+            graded,
+
+        scores:
+            scores,
+
+        totalSubmissions:
+            works.length,
+
+        gradedSubmissions:
+            graded.length,
+
+        scoreTotal:
+            scoreTotal,
+
+        rank:
+            rank,
+
+        average:
+            scores.length
+            ?
+            mean(
+                scores
+            )
+            :
+            null,
+
+        latest:
+            scores.length
+            ?
+            scores[
+                scores.length-1
+            ]
+            :
+            null,
+
+        highest:
+            scores.length
+            ?
+            Math.max(
+                ...scores
+            )
+            :
+            null,
+
+        recent5Average:
+            recent5.length
+            ?
+            mean(
+                recent5
+            )
+            :
+            null,
+
+        recent10Average:
+            recent10.length
+            ?
+            mean(
+                recent10
+            )
+            :
+            null,
+
+        recent5Deviation:
+            standardDeviation(
+                recent5
+            ),
+
+        ratio7:
+            ratioAtLeast(
+                recent10,
+                7
+            ),
+
+        ratio8:
+            ratioAtLeast(
+                recent10,
+                8
+            ),
+
+        trend:
+            calculateTrend(
+                scores
+            ),
+
+        longestStreak:
+            longestStreak(
+                works
+            ),
+
+        currentRankLevel:
+            rankLevel(
+                rank
+            ),
+
+        nextRankLevel:
+            nextRankLevel(
+                rank
+            ),
+
+        hongNgoc:
+            readHongNgoc(),
+
+        ownedItems:
+            readOwnedItems(),
+
+        scoreRecoveryPlan:
+            null
+
+    };
+
+
+    analysis.scoreRecoveryPlan=
+        calculateRecoveryPlan(
+            analysis
+        );
+
+
+    return analysis;
+
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+function renderSummary(analysis){
+
+    el("insightLatest")
+    .textContent=
+        analysis.latest===
+        null
+        ?
+        CHAR.dash
+        :
+        formatNumber(
+            analysis.latest
+        );
+
+
+    el("insightHighest")
+    .textContent=
+        analysis.highest===
+        null
+        ?
+        CHAR.dash
+        :
+        formatNumber(
+            analysis.highest
+        );
+
+
+    el("insightGraded")
+    .textContent=
+        String(
+            analysis.gradedSubmissions
+        );
+
+
+    el("insightRank")
+    .textContent=
+        formatNumber(
+            analysis.rank
+        );
+
+}
+
+
+/* =========================================================
+   RANK DISPLAY
+========================================================= */
+
+function renderRank(analysis){
+
+    el("studentRankIcon")
+    .textContent=
+        UI.rank;
+
+
+    el("studentCurrentRankTitle")
+    .textContent=
+        clean(
+            analysis.currentRankLevel.name
+        );
+
+
+    const target=
+        el(
+            "studentRankNextText"
+        );
+
+
+    if(
+        !analysis.nextRankLevel
+    ){
+
+        target.textContent=
+            "Bạn đã đạt cấp Rank cao nhất hiện tại.";
+
+
+        return;
+    }
+
+
+    const remaining=
+        analysis.nextRankLevel.min-
+        analysis.rank;
+
+
+    let text=
+        "Còn "+
+        formatNumber(
+            remaining
+        )+
+        " Rank để mở khóa "+
+        CHAR.openQuote+
+        clean(
+            analysis.nextRankLevel.name
+        )+
+        CHAR.closeQuote+
+        ".";
+
+
+    if(
+        analysis.recent5Average!==null
+        &&
+        analysis.recent5Average>0
+    ){
+
+        const estimated=
+            Math.ceil(
+                remaining/
+                (
+                    1+
+                    analysis.recent5Average
+                )
+            );
+
+
+        text+=
+            " Theo phong độ gần đây, khoảng "+
+            estimated+
+            " bài nữa.";
+
+    }
+
+
+    target.textContent=
+        text;
+
+}
+
+
+/* =========================================================
+   TREND
+========================================================= */
+
+
+
+function renderTrend(analysis){
+
+    const box=
+        el(
+            "studentTrendBox"
+        );
+
+
+    const icon=
+        el(
+            "studentTrendIcon"
+        );
+
+
+    const name=
+        el(
+            "studentTrendName"
+        );
+
+
+    const detail=
+        el(
+            "studentTrendDetail"
+        );
+
+
+    box.className=
+        "insight-trend-box "+
+        analysis.trend.type;
+
+
+    if(
+        analysis.trend.type===
+        "up"
+    ){
+
+        icon.textContent=
+            UI.up;
+
+
+        name.textContent=
+            "Đang tiến bộ";
+
+
+        detail.textContent=
+            "Nhóm bài gần đây tăng khoảng "+
+            formatNumber(
+                Math.abs(
+                    analysis.trend.change
+                )
+            )+
+            " điểm.";
+
+
+        return;
+    }
+
+
+    if(
+        analysis.trend.type===
+        "down"
+    ){
+
+        icon.textContent=
+            UI.down;
+
+
+        name.textContent=
+            "Đang giảm";
+
+
+        detail.textContent=
+            "Nhóm bài gần đây giảm khoảng "+
+            formatNumber(
+                Math.abs(
+                    analysis.trend.change
+                )
+            )+
+            " điểm.";
+
+
+        return;
+    }
+
+
+    if(
+        analysis.trend.type===
+        "stable"
+    ){
+
+        icon.textContent=
+            UI.stable;
+
+
+        name.textContent=
+            "Ổn định";
+
+
+        detail.textContent=
+            "Các nhóm bài gần đây chưa có biến động lớn.";
+
+
+        return;
+    }
+
+
+    icon.textContent=
+        UI.neutral;
+
+
+    name.textContent=
+        "Chưa đủ dữ liệu";
+
+
+    detail.textContent=
+        "Hãy hoàn thành thêm một vài bài được chấm.";
+
+}
+
+
+/* =========================================================
+   GOALS
+========================================================= */
+
+function createGoal(
+    name,
+    current,
+    target,
+    detail,
+    priority
+){
+
+    return{
+
+        name:
+            name,
+
+        current:
+            current,
+
+        target:
+            target,
+
+        detail:
+            detail,
+
+        priority:
+            priority,
+
+        distance:
+            Math.max(
+                0,
+                (
+                    target-
+                    current
+                )
+                /
+                Math.max(
+                    target,
+                    1
+                )
+            ),
+
+        percent:
+            Math.min(
+                100,
+                Math.max(
+                    0,
+                    current/
+                    Math.max(
+                        target,
+                        1
+                    )*
+                    100
+                )
+            )
+
+    };
+
+}
+
+
+function buildGoals(analysis){
+
+    const list=[];
+
+
+    if(
+        analysis.nextRankLevel
+    ){
+
+        list.push(
+            createGoal(
+
+                analysis.nextRankLevel.name,
+
+                analysis.rank,
+
+                analysis.nextRankLevel.min,
+
+                "Còn "+
+                formatNumber(
+                    analysis.nextRankLevel.min-
+                    analysis.rank
+                )+
+                " Rank.",
+
+                15
+
+            )
+        );
+
+    }
+
+
+    if(
+        analysis.totalSubmissions<
+        100
+    ){
+
+        list.push(
+            createGoal(
+
+                "100 bài tập hợp lệ",
+
+                analysis.totalSubmissions,
+
+                100,
+
+                "Còn "+
+                (
+                    100-
+                    analysis.totalSubmissions
+                )+
+                " bài.",
+
+                10
+
+            )
+        );
+
+    }
+
+
+    const streak=
+        STREAK_RULES.find(
+            function(rule){
+
+                return(
+                    rule.target>
+                    analysis.longestStreak
+                );
+
+            }
+        );
+
+
+    if(streak){
+
+        list.push(
+            createGoal(
+
+                streak.name,
+
+                analysis.longestStreak,
+
+                streak.target,
+
+                "Còn "+
+                (
+                    streak.target-
+                    analysis.longestStreak
+                )+
+                " ngày liên tiếp.",
+
+                7
+
+            )
+        );
+
+    }
+
+
+    return list
+    .sort(
+        function(a,b){
+
+            return(
+                (
+                    a.distance-
+                    a.priority*.015
+                )
+                -
+                (
+                    b.distance-
+                    b.priority*.015
+                )
+            );
+
+        }
+    )
+    .slice(
+        0,
+        3
+    );
+
+}
+
+
+function renderGoals(analysis){
+
+    const root=
+        el(
+            "studentGoalGrid"
+        );
+
+
+    root.textContent=
+        "";
+
+
+    const goals=
+        buildGoals(
+            analysis
+        );
+
+
+    const labels=[
+
+        "Gần nhất",
+
+        "Tiếp theo",
+
+        "Mục tiêu dài hạn"
+
+    ];
+
+
+    goals.forEach(
+        function(
+            item,
+            index
+        ){
+
+            const card=
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className=
+                "insight-goal";
+
+
+            const badge=
+                document.createElement(
+                    "div"
+                );
+
+
+            badge.className=
+                "insight-goal-badge";
+
+
+            badge.textContent=
+                labels[index];
+
+
+            const name=
+                document.createElement(
+                    "div"
+                );
+
+
+            name.className=
+                "insight-goal-name";
+
+
+            name.textContent=
+                item.name;
+
+
+            const detail=
+                document.createElement(
+                    "div"
+                );
+
+
+            detail.className=
+                "insight-goal-detail";
+
+
+            detail.textContent=
+                item.detail;
+
+
+            const progress=
+                document.createElement(
+                    "div"
+                );
+
+
+            progress.className=
+                "insight-progress";
+
+
+            const bar=
+                document.createElement(
+                    "div"
+                );
+
+
+            bar.className=
+                "insight-progress-bar";
+
+
+            bar.style.width=
+                item.percent+
+                "%";
+
+
+            progress.appendChild(
+                bar
+            );
+
+
+            const caption=
+                document.createElement(
+                    "div"
+                );
+
+
+            caption.className=
+                "insight-progress-caption";
+
+
+            caption.textContent=
+                formatNumber(
+                    item.current
+                )+
+                " / "+
+                formatNumber(
+                    item.target
+                );
+
+
+            card.appendChild(
+                badge
+            );
+
+
+            card.appendChild(
+                name
+            );
+
+
+            card.appendChild(
+                detail
+            );
+
+
+            card.appendChild(
+                progress
+            );
+
+
+            card.appendChild(
+                caption
+            );
+
+
+            root.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SVG CHART
+========================================================= */
+
+const SVG_NS=
+    "http://www.w3.org/2000/svg";
+
+
+function svgNode(
+    tag,
+    attributes
+){
+
+    const item=
+        document.createElementNS(
+            SVG_NS,
+            tag
+        );
+
+
+    Object.keys(
+        attributes ||
+        {}
+    )
+    .forEach(
+        function(key){
+
+            item.setAttribute(
+                key,
+                attributes[key]
+            );
+
+        }
+    );
+
+
+    return item;
+
+}
+
+
+function svgText(
+    x,
+    y,
+    text,
+    options
+){
+
+    options=
+        options ||
+        {};
+
+
+    const item=
+        svgNode(
+            "text",
+            {
+                x:
+                    x,
+
+                y:
+                    y,
+
+                fill:
+                    options.fill ||
+                    "#78716c",
+
+                "font-size":
+                    options.size ||
+                    "10",
+
+                "font-family":
+                    "Arial, Helvetica, sans-serif",
+
+                "font-weight":
+                    options.weight ||
+                    "400",
+
+                "text-anchor":
+                    options.anchor ||
+                    "middle"
+            }
+        );
+
+
+    item.textContent=
+        text;
+
+
+    return item;
+
+}
+
+
+function drawChart(analysis){
+
+    const svg=
+        el(
+            "studentProgressChart"
+        );
+
+
+    const empty=
+        el(
+            "studentChartEmpty"
+        );
+
+
+    const wrap=
+        el(
+            "studentChartWrap"
+        );
+
+
+    svg.textContent=
+        "";
+
+
+    const items=
+        analysis.graded
+        .slice(
+            -CONFIG.chartLimit
+        );
+
+
+    if(
+        items.length<2
+    ){
+
+        wrap.classList.add(
+            "is-empty"
+        );
+
+
+        empty.classList.add(
+            "visible"
+        );
+
+
+        return;
+    }
+
+
+    wrap.classList.remove(
+        "is-empty"
+    );
+
+
+    empty.classList.remove(
+        "visible"
+    );
+
+
+    const WIDTH=760;
+
+    const HEIGHT=260;
+
+    const LEFT=44;
+
+    const RIGHT=20;
+
+    const TOP=18;
+
+    const BOTTOM=38;
+
+
+    const chartWidth=
+        WIDTH-
+        LEFT-
+        RIGHT;
+
+
+    const chartHeight=
+        HEIGHT-
+        TOP-
+        BOTTOM;
+
+
+    for(
+        let score=0;
+        score<=10;
+        score+=2
+    ){
+
+        const y=
+            TOP+
+            chartHeight-
+            score/10*
+            chartHeight;
+
+
+        svg.appendChild(
+            svgNode(
+                "line",
+                {
+                    x1:
+                        LEFT,
+
+                    y1:
+                        y,
+
+                    x2:
+                        LEFT+
+                        chartWidth,
+
+                    y2:
+                        y,
+
+                    stroke:
+                        "#e7e2dc",
+
+                    "stroke-width":
+                        "1"
+                }
+            )
+        );
+
+
+        svg.appendChild(
+            svgText(
+                LEFT-9,
+                y+3,
+                String(score),
+                {
+                    anchor:
+                        "end"
+                }
+            )
+        );
+
+    }
+
+
+    const points=
+        items.map(
+            function(
+                item,
+                index
+            ){
+
+                return{
+
+                    x:
+                        LEFT+
+                        index/
+                        (
+                            items.length-1
+                        )*
+                        chartWidth,
+
+                    y:
+                        TOP+
+                        chartHeight-
+                        Math.max(
+                            0,
+                            Math.min(
+                                10,
+                                item.parsedScore
+                            )
+                        )
+                        /
+                        10*
+                        chartHeight,
+
+                    score:
+                        item.parsedScore
+
+                };
+
+            }
+        );
+
+
+    const path=
+        points.map(
+            function(
+                point,
+                index
+            ){
+
+                return(
+                    (
+                        index
+                        ?
+                        "L "
+                        :
+                        "M "
+                    )
+                    +
+                    point.x+
+                    " "+
+                    point.y
+                );
+
+            }
+        )
+        .join(
+            " "
+        );
+
+
+    svg.appendChild(
+        svgNode(
+            "path",
+            {
+                d:
+                    path,
+
+                fill:
+                    "none",
+
+                stroke:
+                    "#b45309",
+
+                "stroke-width":
+                    "3",
+
+                "stroke-linecap":
+                    "round",
+
+                "stroke-linejoin":
+                    "round"
+            }
+        )
+    );
+
+
+    points.forEach(
+        function(point){
+
+            svg.appendChild(
+                svgNode(
+                    "circle",
+                    {
+                        cx:
+                            point.x,
+
+                        cy:
+                            point.y,
+
+                        r:
+                            4,
+
+                        fill:
+                            "#fff",
+
+                        stroke:
+                            "#b45309",
+
+                        "stroke-width":
+                            "2.5"
+                    }
+                )
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SESSION CONFIRM
+========================================================= */
+
+function confirmStudentSession(code){
+
+    if(
+        !code ||
+        code===
+        CONFIG.adminCode
+    ){
+
+        return;
+    }
+
+
+    try{
+
+        if(
+            window.OCDStudentSession &&
+            typeof window.OCDStudentSession.confirmStudent===
+            "function"
+        ){
+
+            window.OCDStudentSession.confirmStudent(
+                code,
+                "student-profile-page"
+            );
+
+        }
+
+    }catch(error){}
+
+}
+
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+function renderNote(analysis){
+
+    el("studentInsightNote")
+    .textContent=
+        "Phân tích được tạo từ "+
+        analysis.totalSubmissions+
+        " bài hợp lệ và "+
+        analysis.gradedSubmissions+
+        " bài đã có điểm.";
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderBase(analysis){
+    try{ if(window.OCDPentagon) window.OCDPentagon.render(analysis); }catch(e){}
+
+    state.currentAnalysis=
+        analysis;
+
+
+
+
+    renderSummary(
+        analysis
+    );
+
+
+    renderRank(
+        analysis
+    );
+
+
+    renderTrend(
+        analysis
+    );
+
+
+    renderGoals(
+        analysis
+    );
+
+
+    renderNote(
+        analysis
+    );
+
+
+    el("studentInsightLoading")
+    .classList.remove(
+        "visible"
+    );
+
+
+    el("studentInsightContent")
+    .classList.add(
+        "visible"
+    );
+
+
+    requestAnimationFrame(
+        function(){
+
+            drawChart(
+                analysis
+            );
+
+        }
+    );
+
+
+
+}
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function hideInsight(){
+    try{ if(window.OCDPentagon) window.OCDPentagon.hide(); }catch(e){}
+
+    const section=
+        el(
+            "studentInsightSection"
+        );
+
+
+    const loading=
+        el(
+            "studentInsightLoading"
+        );
+
+
+    const content=
+        el(
+            "studentInsightContent"
+        );
+
+
+    if(section){
+
+        section.classList.remove(
+            "visible"
+        );
+    }
+
+
+    if(loading){
+
+        loading.classList.remove(
+            "visible"
+        );
+    }
+
+
+    if(content){
+
+        content.classList.remove(
+            "visible"
+        );
+    }
+
+}
+
+
+function showLoading(){
+    try{ if(window.OCDPentagon) window.OCDPentagon.loading(el("rxStudentCode")&&el("rxStudentCode").value); }catch(e){}
+
+    el("studentInsightSection")
+    .classList.add(
+        "visible"
+    );
+
+
+    el("studentInsightLoading")
+    .classList.add(
+        "visible"
+    );
+
+
+    el("studentInsightContent")
+    .classList.remove(
+        "visible"
+    );
+
+}
+
+
+/* =========================================================
+   SUCCESS
+========================================================= */
+
+function profileReady(){ if(document.getElementById("studentProfileModule") && document.getElementById("studentProfileModule").classList.contains("card-only")) return false; /* v4.10: danh thiếp không phân tích */
+
+    const profile=
+        el(
+            "studentProfileModule"
+        );
+
+
+    const name=
+        el(
+            "studentProfileName"
+        );
+
+
+    if(
+        !profile ||
+        !name ||
+        !clean(
+            name.textContent
+        )
+    ){
+
+        return false;
+    }
+
+
+    return(
+        window
+        .getComputedStyle(
+            profile
+        )
+        .display!==
+        "none"
+    );
+
+}
+
+
+function searchSuccess(){
+
+    const message=
+        el(
+            "rxMessage"
+        );
+
+
+    if(!message){
+
+        return false;
+    }
+
+
+    return(
+
+        message.classList.contains(
+            "success"
+        )
+
+        ||
+
+        normalizeText(
+            message.textContent
+        )
+        .includes(
+            "thanh cong"
+        )
+
+    );
+
+}
+
+
+async function waitSuccess(
+    code,
+    token
+){
+
+    const start=
+        Date.now();
+
+
+    while(
+        Date.now()-
+        start<
+        CONFIG.successWait
+    ){
+
+        if(
+            token!==
+            state.token
+        ){
+
+            return false;
+        }
+
+
+        const input=
+            el(
+                "rxStudentCode"
+            );
+
+
+        if(
+            !input ||
+            normalizeCode(
+                input.value
+            )!==
+            code
+        ){
+
+            return false;
+        }
+
+
+        if(
+            profileReady()
+            &&
+            searchSuccess()
+        ){
+
+            return true;
+        }
+
+
+        await new Promise(
+            function(resolve){
+
+                setTimeout(
+                    resolve,
+                    120
+                );
+
+            }
+        );
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   ANALYSE
+========================================================= */
+
+async function analyse(){
+
+    const input=
+        el(
+            "rxStudentCode"
+        );
+
+
+    if(!input){
+
+        return;
+    }
+
+
+    const code=
+        normalizeCode(
+            input.value
+        );
+
+
+    if(
+        !code
+        ||
+        code===
+        CONFIG.adminCode
+    ){
+
+        hideInsight();
+
+
+        return;
+    }
+
+
+    const token=
+        ++state.token;
+
+
+    state.currentAnalysis=
+        null;
+
+
+
+
+    hideInsight();
+
+
+    const success=
+        await waitSuccess(
+            code,
+            token
+        );
+
+
+    if(
+        !success
+        ||
+        token!==
+        state.token
+    ){
+
+        return;
+    }
+
+
+    /*
+       Đây là điểm duy nhất xác minh
+       phiên đăng nhập học viên dùng chung (OCDStudentSession).
+    */
+
+    confirmStudentSession(
+        code
+    );
+
+
+    showLoading();
+
+
+    await new Promise(
+        function(resolve){
+
+            setTimeout(
+                resolve,
+                150
+            );
+
+        }
+    );
+
+
+    try{
+
+        if(
+            state.analysisCache.has(
+                code
+            )
+        ){
+
+            const cached=
+                state.analysisCache.get(
+                    code
+                );
+
+
+            cached.hongNgoc=
+                readHongNgoc();
+
+
+            cached.ownedItems=
+                readOwnedItems();
+
+
+            cached.scoreRecoveryPlan=
+                calculateRecoveryPlan(
+                    cached
+                );
+
+
+            renderBase(
+                cached
+            );
+
+
+            return;
+        }
+
+
+        const allWorks=
+            await loadWorks(code);
+
+
+        if(
+            token!==
+            state.token
+        ){
+
+            return;
+        }
+
+
+        const works=
+            studentWorks(
+                code,
+                allWorks
+            );
+
+
+        await new Promise(
+            function(resolve){
+
+                setTimeout(
+                    resolve,
+                    80
+                );
+
+            }
+        );
+
+
+        const analysis=
+            buildAnalysis(
+                code,
+                works
+            );
+
+
+        state.analysisCache.set(
+            code,
+            analysis
+        );
+
+
+        renderBase(
+            analysis
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "[Learning Insight v1.6]",
+            error
+        );
+
+
+        el("studentInsightLoading")
+        .textContent=
+            "Không tải được dữ liệu phân tích. Hồ sơ và Chợ phiên vẫn hoạt động bình thường.";
+        try{ if(window.OCDPentagon) window.OCDPentagon.fail(); }catch(e){}
+
+    }
+
+}
+
+
+/* =========================================================
+   SCHEDULE
+========================================================= */
+
+function scheduleAnalyse(){
+
+    if(state.scheduled){
+
+        return;
+    }
+
+
+    state.scheduled=
+        true;
+
+
+    requestAnimationFrame(
+        function(){
+
+            state.scheduled=
+                false;
+
+
+            analyse();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+function bindEvents(){
+
+    const input=
+        el(
+            "rxStudentCode"
+        );
+
+
+    const search=
+        el(
+            "rxSearchButton"
+        );
+
+
+    if(input){
+
+        input.addEventListener(
+            "input",
+            function(){
+
+                ++state.token;
+
+
+                state.currentAnalysis=
+                    null;
+
+
+
+
+                hideInsight();
+
+            }
+        );
+
+
+        input.addEventListener(
+            "keydown",
+            function(event){
+
+                if(
+                    event.key===
+                    "Enter"
+                ){
+
+                    setTimeout(
+                        scheduleAnalyse,
+                        0
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    if(search){
+
+        search.addEventListener(
+            "click",
+            function(){
+
+                setTimeout(
+                    scheduleAnalyse,
+                    0
+                );
+
+            }
+        );
+
+    }
+
+
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function start(){
+
+    getCore();
+
+
+    bindEvents();
+
+
+
+
+    hideInsight();
+
+}
+
+
+if(
+    document.readyState===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        start,
+        {
+            once:true
+        }
+    );
+
+}else{
+
+    start();
+}
+
+
+})();
+</script>
+
+
+</div>
+
+
+
