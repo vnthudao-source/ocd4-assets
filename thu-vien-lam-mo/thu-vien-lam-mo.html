@@ -1,0 +1,237 @@
+
+
+
+
+<div class="khung">
+
+
+<div class="tieu-de">
+
+
+<span style="
+font-size:14px;
+font-family:Arial,sans-serif;
+letter-spacing:-0.5px;
+line-height:1;
+display:inline-block;
+">
+*Tài liệu phục vụ lâm mô KHÔNG ĐƯỢC TỰ Ý sử dụng trong mục đích thương mại*
+</span>
+
+
+</div>
+
+
+
+
+<!-- ======================
+THƯ VIỆN
+====================== -->
+
+
+<div id="thu-vien">
+
+
+<input
+id="maHocVien"
+type="hidden"
+value=""
+autocomplete="off"
+>
+
+
+<div
+id="thong-tin-hoc-vien"
+hidden
+></div>
+
+
+<div
+class="thong-ke-mo-khoa"
+id="thong-ke-mo-khoa"
+>
+Đang tải dữ liệu...
+</div>
+
+
+
+
+<div class="tim-kiem">
+
+
+<input
+id="search"
+placeholder="Tìm theo nội dung, người viết, tác giả, chủ đề..."
+onkeydown="if(event.key==='Enter'){timKiem();}"
+>
+
+
+<button class="nut" onclick="timKiem()">
+Tìm kiếm
+</button>
+
+
+<button class="nut" onclick="xoaTimKiem()">
+Xóa
+</button>
+
+
+</div>
+
+
+
+
+<div class="bo-loc">
+
+
+<select id="locSoLuong" onchange="locDuLieu()">
+<option value="">Tất cả số lượng chữ</option>
+</select>
+
+
+<select id="locChuDe" onchange="locDuLieu()">
+<option value="">Tất cả chủ đề</option>
+</select>
+
+
+<select id="locDiem" onchange="locDuLieu()">
+<option value="">Tất cả mốc điểm kinh nghiệm</option>
+</select>
+
+
+</div>
+
+
+
+
+<div class="danh-sach" id="list">
+<div class="loading">Đang tải dữ liệu...</div>
+</div>
+
+
+<div id="phan-trang"></div>
+
+
+</div>
+
+
+
+
+<!-- ======================
+CHI TIẾT
+====================== -->
+
+
+<div id="chi-tiet">
+
+
+<button class="nut" onclick="quayLai()">
+← Quay lại
+</button>
+
+
+<h1 id="ten-noi-dung"></h1>
+
+
+<div class="vung-anh">
+
+
+<div class="o-me" id="grid"></div>
+
+
+<img
+class="anh-lon"
+id="anh-chinh"
+alt=""
+>
+
+
+</div>
+
+
+<div class="khu-vuc-nut">
+
+
+<button class="nut" onclick="batTatOMe()">
+Bật / Tắt ô Mễ
+</button>
+
+
+<button class="nut" onclick="taoBanIn()">
+Tạo bản in
+</button>
+
+
+<button class="nut nut-gui" onclick="guiBaiTap()">
+Gửi bài tập ngay
+</button>
+
+
+</div>
+
+
+
+
+<div class="thong-tin-chi-tiet">
+
+
+<h2>Thông tin lâm mô</h2>
+
+
+<p><b>Người viết:</b> <span id="ct-nguoi"></span></p>
+<p><b>Nội dung:</b> <span id="ct-noi-dung"></span></p>
+<p><b>Số lượng chữ:</b> <span id="ct-so-luong"></span></p>
+<p><b>Tác giả nội dung:</b> <span id="ct-tac-gia"></span></p>
+<p><b>Mô tả ngắn:</b> <span id="ct-mo-ta"></span></p>
+<p><b>Chủ đề:</b> <span id="ct-chu-de"></span></p>
+
+
+</div>
+
+
+<div class="video-box" id="video"></div>
+<dialog class="lm-contribution-dialog" id="lm-contribution-dialog" aria-label="Đóng góp video hướng dẫn">
+<button class="nut" onclick="closeContributionForm()">Đóng biểu mẫu</button>
+<div class="lm-modal-body"><form id="lm-video-native-form" class="lm-native-form">
+<h2>Đóng góp video hướng dẫn</h2><p id="lm-native-video-lesson"></p><p>Video được chấp thuận nhận <b>5 Hồng Ngọc</b> sau khi giáo viên xác minh người gửi.</p>
+<label>Mã học viên<input id="lm-native-video-code" required maxlength="40" autocomplete="username"></label>
+<label>Link YouTube, Facebook hoặc Google Drive<input id="lm-native-video-url" type="url" required maxlength="1500" placeholder="https://…"></label>
+<small>Dùng link video trực tiếp. Facebook cần cho phép nhúng; video Drive cần chia sẻ “Bất kỳ ai có đường liên kết” với quyền Người xem.</small>
+<label>Tiêu đề<input id="lm-native-video-title" required maxlength="150"></label>
+<label>Mô tả<textarea id="lm-native-video-description" rows="3" maxlength="1000"></textarea></label>
+<label><input id="lm-native-video-owns" type="checkbox" required> Tôi xác nhận quyền chia sẻ video này.</label>
+<button id="lm-native-video-send" type="submit" class="nut">Gửi video để duyệt</button><p id="lm-native-video-status" role="status" aria-live="polite"></p>
+</form></div>
+</dialog>
+
+
+<div class="khu-vuc-goi-y">
+<h2>Các bản lâm khác</h2>
+<div class="lm-slide-nav"><button class="nut" id="ds-dich-ban-prev" onclick="moveSlider('ds-dich-ban',-1)" aria-label="Các bản trước" hidden>←</button><button class="nut" id="ds-dich-ban-next" onclick="moveSlider('ds-dich-ban',1)" aria-label="Các bản tiếp theo" hidden>→</button></div>
+<div class="ds-goi-y" id="ds-dich-ban" tabindex="0" aria-label="Các bản lâm khác" onscroll="updateSliderControls('ds-dich-ban')"></div>
+</div>
+
+
+<div class="khu-vuc-goi-y">
+<h2>Gợi ý lâm mô cùng chủ đề</h2>
+<div class="lm-slide-nav"><button class="nut" id="ds-chu-de-prev" onclick="moveSlider('ds-chu-de',-1)" aria-label="Gợi ý trước" hidden>←</button><button class="nut" id="ds-chu-de-next" onclick="moveSlider('ds-chu-de',1)" aria-label="Gợi ý tiếp theo" hidden>→</button></div>
+<div class="ds-goi-y" id="ds-chu-de" tabindex="0" aria-label="Gợi ý cùng chủ đề" onscroll="updateSliderControls('ds-chu-de')"></div>
+</div>
+
+
+<section id="lm-showcase" class="khu-vuc-goi-y lm-showcase">
+<h2>Bản lâm của học viên</h2>
+<div class="lm-slide-nav"><button class="nut" id="lm-show-track-prev" onclick="moveSlider('lm-show-track',-1)" aria-label="Bản lâm trước" hidden>←</button><button class="nut" id="lm-show-track-next" onclick="moveSlider('lm-show-track',1)" aria-label="Bản lâm tiếp theo" hidden>→</button></div>
+<div class="ds-goi-y lm-show-track" id="lm-show-track" tabindex="0" aria-label="Bản lâm học viên" onscroll="updateSliderControls('lm-show-track')"><button id="lm-show-add" class="lm-show-add" onclick="openShowcaseForm('post')" aria-label="Khoe bản lâm" title="Khoe bản lâm">＋</button><div id="lm-show-posts" class="lm-show-posts"></div></div>
+<p id="lm-show-status" aria-live="polite" hidden></p>
+</section>
+<dialog id="lm-show-dialog" class="lm-contribution-dialog" aria-label="Khoe bản lâm">
+<div class="lm-show-header"><div class="lm-show-actions"><button class="nut" type="button" onclick="closeShowcaseDialog()">Đóng và cập nhật danh sách</button><button id="lm-native-show-send" class="nut" type="button" disabled>Khoe bản lâm</button></div><p id="lm-native-show-status" role="status" aria-live="polite"></p></div>
+<div class="lm-modal-body"><div class="lm-native-form"><h2>Khoe bản lâm</h2><p id="lm-native-show-lesson"></p><p id="lm-native-show-identity"></p><div id="lm-native-works" class="lm-native-grid"></div><button id="lm-native-show-retry" class="nut" type="button" hidden>Thử tải lại bài</button></div></div>
+</dialog>
+<dialog id="lm-show-image" class="lm-show-image"><button class="nut" onclick="document.getElementById('lm-show-image').close()">Đóng ảnh</button><img id="lm-show-image-src" alt="Bản lâm của học viên"></dialog>
+
+
+</div>
+
+</div>
