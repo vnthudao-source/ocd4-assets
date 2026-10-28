@@ -1,5 +1,21 @@
 # Các trang Thư Đạo trên Blogspot
 
+## Cách tải hiện tại (từ 29/10/2026): một file nén, không chặn trang
+
+Mã gốc mỗi trang vẫn nằm ở `pages/<slug>.html`. `tools/build-pages.cjs` đóng gói CSS, khung HTML và mọi script của trang (kể cả script/CSS của repo mà trang ghim theo commit) thành **một file** `dist/<slug>.min.js`. Trang Blogspot chỉ giữ khối tải `loaders/<slug>.html`: một câu mô tả bằng HTML thật (cho SEO) và một thẻ script tải file nén theo mã commit.
+
+Sửa một trang:
+1. Sửa `blogspot/pages/<slug>.html`.
+2. `node tools/build-pages.cjs <slug>` (đặt `ESBUILD_LIB` nếu esbuild không nằm trong node_modules), commit và push.
+3. `node tools/build-pages.cjs --loaders <mã-commit-vừa-push>`, commit khối tải mới.
+4. Trên Blogspot chỉ đổi `V='...'` thành mã commit mới.
+
+Script được chạy lần lượt như script toàn cục (giữ hàm cho onclick); sự kiện DOMContentLoaded/load đăng ký khi trang đã tải xong vẫn được gọi.
+
+Khôi phục: đổi `V` về mã commit cũ, hoặc dán lại mã nhúng cũ trong `embeds/`.
+
+## Cách cũ (document.write, thư mục releases/embeds) — chỉ còn để khôi phục
+
 Mã HTML gốc của hai trang trong đợt đầu được quản lý ở `pages/<slug>.html`. Tên slug trùng phần cuối URL Blogspot. `manifest.json` ghi tiêu đề, URL và ID trang.
 
 ## Sửa một trang và phát hành phiên bản mới
