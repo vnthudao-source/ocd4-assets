@@ -1,0 +1,549 @@
+<div id="student-ranking-page">
+
+<!-- =========================================================
+     BẢNG XẾP HẠNG HỌC VIÊN
+     PROFILE RANKING v4.3
+     REWARD CORE v3.6.0+
+
+     GIỮ NGUYÊN CƠ CHẾ v4.2
+
+     CÁ NHÂN
+     ---------------------------------------------------------
+     1. TOP RANK TỔNG
+        - Giữ nguyên experience từ XepHang.
+
+     2. TOP ĐIỂM TRUNG BÌNH
+        - Tổng điểm bài đã chấm / số bài đã chấm.
+
+     3. TOP BỀN BỈ
+        - Chuỗi ngày liên tục nộp bài dài nhất.
+
+     4. TOP NĂNG NỔ
+        - Tổng lượt bài đã nộp.
+
+     5. TOP PHÚ HÀO
+        - Số dư linh thạch hiện tại
+          quy đổi về Hoàng Ngọc.
+
+     THEO TỔ
+     ---------------------------------------------------------
+     - Vẫn có đủ 5 bộ lọc.
+     - KHÔNG hiển thị cột "Chỉ số đang xếp".
+     - Bộ lọc chỉ thay đổi thứ tự xếp hạng.
+
+     MỤC TIÊU TỐT NGHIỆP
+     ---------------------------------------------------------
+     - Điểm trung bình trên 7.
+     - Ít nhất 100 bài.
+     - Chỉ tiêu %: chưa tính.
+========================================================= -->
+
+
+<!-- =========================================================
+     ADMIN TEST
+========================================================= -->
+
+<script>
+window.RANKING_ADMIN_CONFIG = {
+
+    enabled: false,
+
+    code: "ADMIN",
+
+    name: "Admin Test",
+
+    group: "ADMIN",
+
+    course: "TEST",
+
+    rankingPoints: 999999,
+
+    submissions: 0,
+
+    baseGems: {
+        hoangNgoc: 0,
+        haiLamNgoc: 0,
+        thachAnhTim: 0,
+        lamBaoThach: 0,
+        lucThach: 0,
+        hongNgoc: 1000
+    }
+
+};
+</script>
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@v4.8.1/profile-ranking.css">
+
+<!-- v4.10.1: mã bảng xếp hạng tải từ GitHub (đọc tài sản + điểm rank từ tab SoDuHienTai, cần Code.gs v31) -->
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@cf1f04738cb64839876394e1f5804acd77e70ad2/profile-ranking.js"></script>
+<!-- =========================================================
+     HTML
+========================================================= -->
+
+<div id="student-ranking-app">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="ranking-header">
+
+        <h1 class="ranking-title">
+            BẢNG XẾP HẠNG HỌC VIÊN
+        </h1>
+
+        <p class="ranking-subtitle">
+            Theo dõi thành tích học tập, độ bền bỉ, mức độ năng nổ,
+            vật phẩm hồ sơ và tài sản linh thạch của học viên.
+        </p>
+
+    </header>
+
+
+    <!-- =====================================================
+         MỤC TIÊU TỐT NGHIỆP
+    ====================================================== -->
+
+    <section class="graduation-goal">
+
+        <div class="graduation-head">
+
+            <div class="graduation-icon">
+                🎓
+            </div>
+
+            <div>
+
+                <h2 class="graduation-title">
+                    MỤC TIÊU TỐT NGHIỆP KHÓA CƠ BẢN
+                </h2>
+
+                <p class="graduation-desc">
+                    Hãy duy trì chất lượng bài tập và tiến độ học tập để hướng tới các điều kiện xét tốt nghiệp khóa cơ bản.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="graduation-grid">
+
+
+            <!-- ĐIỂM TRUNG BÌNH -->
+
+            <div class="graduation-item graduation-item-primary">
+
+                <span class="graduation-value">
+                    Trên 7.0
+                </span>
+
+                <span class="graduation-label">
+                    Điểm trung bình
+                </span>
+
+                <span class="graduation-note">
+                    Chỉ tính các bài đã được giáo viên chấm điểm.
+                </span>
+
+            </div>
+
+
+            <!-- BÀI TẬP -->
+
+            <div class="graduation-item">
+
+                <span class="graduation-value">
+                    Ít nhất 100
+                </span>
+
+                <span class="graduation-label">
+                    Bài tập đã nộp
+                </span>
+
+                <span class="graduation-note">
+                    Tính theo tổng số lượt bài tập hợp lệ.
+                </span>
+
+            </div>
+
+
+            <!-- CHỈ TIÊU -->
+
+            <div class="graduation-item">
+
+                <span class="graduation-value">
+                    Chưa tính %
+                </span>
+
+                <span class="graduation-label">
+                    Chỉ tiêu % xét đầu ra
+                </span>
+
+                <span class="graduation-note">
+                    Hệ thống hiện chưa áp dụng tỷ lệ xét đầu ra.
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <section class="ranking-stats">
+
+        <div class="stat-card">
+
+            <span
+                class="stat-value"
+                id="totalStudents"
+            >
+                0
+            </span>
+
+            <span class="stat-label">
+                Học viên
+            </span>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span
+                class="stat-value"
+                id="totalTeams"
+            >
+                0
+            </span>
+
+            <span class="stat-label">
+                Tổ
+            </span>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span
+                class="stat-value"
+                id="totalSubmissions"
+            >
+                0
+            </span>
+
+            <span class="stat-label">
+                Lượt nộp
+            </span>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span
+                class="stat-value"
+                id="totalExperience"
+            >
+                0
+            </span>
+
+            <span class="stat-label">
+                Tổng Rank
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TEAM RANKING
+    ====================================================== -->
+
+    <section
+        id="teamRankingSection"
+        class="ranking-section open"
+    >
+
+        <button
+            type="button"
+            class="ranking-section-header"
+            data-section-toggle="teamRankingSection"
+        >
+
+            <div class="ranking-section-title-wrap">
+
+                <h2 class="ranking-section-title">
+                    XẾP HẠNG THEO TỔ
+                </h2>
+
+                <p class="ranking-section-subtitle">
+                    So sánh thành tích chung giữa các tổ theo nhiều tiêu chí.
+                </p>
+
+            </div>
+
+            <span class="ranking-section-arrow">
+                ▼
+            </span>
+
+        </button>
+
+
+        <div class="ranking-section-body">
+
+
+            <div class="ranking-toolbar">
+
+
+                <div class="ranking-toolbar-group ranking-mode-group">
+
+                    <span class="ranking-toolbar-label">
+                        Tiêu chí xếp hạng
+                    </span>
+
+                    <select id="teamRankingModeFilter">
+
+                        <option value="rank">
+                            Top rank tổng
+                        </option>
+
+                        <option value="average">
+                            Top điểm trung bình
+                        </option>
+
+                        <option value="streak">
+                            Top bền bỉ
+                        </option>
+
+                        <option value="active">
+                            Top năng nổ
+                        </option>
+
+                        <option value="wealth">
+                            Top phú hào
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="ranking-toolbar-group">
+
+                    <span class="ranking-toolbar-label">
+                        Khóa học
+                    </span>
+
+                    <select id="teamCourseFilter">
+
+                        <option value="">
+                            Tất cả khóa
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="applyTeamFilterBtn"
+                    class="ranking-button ranking-button-primary"
+                >
+                    ÁP DỤNG
+                </button>
+
+
+                <button
+                    type="button"
+                    id="clearTeamFilterBtn"
+                    class="ranking-button ranking-button-secondary"
+                >
+                    XÓA LỌC
+                </button>
+
+            </div>
+
+
+            <div
+                id="teamActiveFilterText"
+                class="active-filter-text"
+            >
+                Đang tải dữ liệu tổ...
+            </div>
+
+
+            <div id="teamRankingContent">
+
+                <div class="ranking-loading">
+                    Đang tải bảng xếp hạng tổ...
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         STUDENT RANKING
+    ====================================================== -->
+
+    <section
+        id="studentRankingSection"
+        class="ranking-section open"
+    >
+
+        <button
+            type="button"
+            class="ranking-section-header"
+            data-section-toggle="studentRankingSection"
+        >
+
+            <div class="ranking-section-title-wrap">
+
+                <h2 class="ranking-section-title">
+                    XẾP HẠNG HỌC VIÊN
+                </h2>
+
+                <p class="ranking-section-subtitle">
+                    Xếp hạng riêng theo Rank tổng, điểm trung bình, bền bỉ, năng nổ hoặc tài sản.
+                </p>
+
+            </div>
+
+            <span class="ranking-section-arrow">
+                ▼
+            </span>
+
+        </button>
+
+
+        <div class="ranking-section-body">
+
+
+            <div class="ranking-toolbar">
+
+
+                <div class="ranking-toolbar-group ranking-mode-group">
+
+                    <span class="ranking-toolbar-label">
+                        Tiêu chí xếp hạng
+                    </span>
+
+                    <select id="rankingModeFilter">
+
+                        <option value="rank">
+                            Top rank tổng
+                        </option>
+
+                        <option value="average">
+                            Top điểm trung bình cao nhất
+                        </option>
+
+                        <option value="streak">
+                            Top bền bỉ nhất
+                        </option>
+
+                        <option value="active">
+                            Top năng nổ nhất
+                        </option>
+
+                        <option value="wealth">
+                            Top phú hào
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="ranking-toolbar-group">
+
+                    <span class="ranking-toolbar-label">
+                        Tổ
+                    </span>
+
+                    <select id="groupFilter">
+
+                        <option value="">
+                            Tất cả tổ
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="ranking-toolbar-group">
+
+                    <span class="ranking-toolbar-label">
+                        Khóa học
+                    </span>
+
+                    <select id="courseFilter">
+
+                        <option value="">
+                            Tất cả khóa
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="applyFilterBtn"
+                    class="ranking-button ranking-button-primary"
+                >
+                    ÁP DỤNG
+                </button>
+
+
+                <button
+                    type="button"
+                    id="clearFilters"
+                    class="ranking-button ranking-button-secondary"
+                >
+                    XÓA LỌC
+                </button>
+
+            </div>
+
+
+            <div
+                id="activeFilterText"
+                class="active-filter-text"
+            >
+                Đang tải dữ liệu...
+            </div>
+
+
+            <div id="rankingContent">
+
+                <div class="ranking-loading">
+                    Đang tải bảng xếp hạng học viên...
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+</div>
