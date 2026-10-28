@@ -1,0 +1,77 @@
+/* Điểm danh lớp – thudao.com */
+#ddl{--red:#b8261c;--green:#1f7a3a;--ink:#2b2520;--muted:#7b6f63;--line:#e7ddcc;--bg:#faf6ee;max-width:760px;margin:0 auto;color:var(--ink);font-size:15px;line-height:1.5;padding-bottom:84px}
+#ddl *{box-sizing:border-box}
+#ddl button,#ddl input,#ddl select,#ddl textarea{font:inherit;margin:0}
+#ddl button{cursor:pointer}
+#ddl .dd-hide{display:none!important}
+#ddl .dd-head{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:16px 16px 12px;margin-bottom:10px}
+#ddl .dd-kicker{margin:0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--red);font-weight:700}
+#ddl .dd-title{margin:2px 0 4px;font-size:22px;line-height:1.25}
+#ddl .dd-clock{color:var(--muted);font-size:14px}
+#ddl .dd-clock b{color:var(--ink);font-variant-numeric:tabular-nums}
+#ddl .dd-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+#ddl .dd-stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+#ddl .dd-stat b{display:block;font-size:19px;line-height:1.2}
+#ddl .dd-stat span{font-size:12px;color:var(--muted)}
+#ddl .dd-stat.g b{color:var(--green)}
+#ddl .dd-stat.r b{color:var(--red)}
+#ddl .dd-tabs{position:sticky;top:0;z-index:5;display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;margin-bottom:10px}
+#ddl .dd-tabs button{flex:1;border:0;background:#fff;padding:11px 6px;font-weight:600;color:var(--ink)}
+#ddl .dd-tabs button+button{border-left:1px solid var(--line)}
+#ddl .dd-tabs button.on{background:var(--red);color:#fff}
+#ddl .dd-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+#ddl .dd-card h3{margin:0 0 8px;font-size:16px}
+#ddl .dd-in{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font-size:16px}
+#ddl textarea.dd-in{min-height:64px;resize:vertical}
+#ddl .dd-row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+#ddl .dd-btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:9px 14px;font-weight:600}
+#ddl .dd-btn.pri{background:var(--red);border-color:var(--red);color:#fff}
+#ddl .dd-btn.ok{background:var(--green);border-color:var(--green);color:#fff}
+#ddl .dd-btn.sm{padding:6px 10px;font-size:13px;font-weight:600}
+#ddl .dd-btn:disabled{opacity:.5;cursor:default}
+#ddl .dd-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+#ddl .dd-msg{font-size:14px;margin:6px 0 0;color:var(--muted)}
+#ddl .dd-msg.err{color:var(--red)}
+#ddl .dd-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+#ddl .dd-tools .dd-in{flex:1;min-width:150px}
+#ddl .dd-list{display:flex;flex-direction:column;gap:6px}
+#ddl .dd-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+#ddl .dd-item.sel{border-color:var(--red);box-shadow:0 0 0 1px var(--red) inset;background:#fffaf8}
+#ddl .dd-line{display:flex;align-items:center;gap:10px}
+#ddl .dd-line input[type=checkbox]{width:22px;height:22px;flex:none;accent-color:var(--red)}
+#ddl .dd-who{flex:1;min-width:0}
+#ddl .dd-name{font-weight:700;font-size:16px;display:block;overflow-wrap:anywhere}
+#ddl .dd-name.paid{color:var(--green)}
+#ddl .dd-name.unpaid{color:var(--red)}
+#ddl .dd-sub{font-size:13px;color:var(--muted)}
+#ddl .dd-today{display:inline-block;font-size:12px;background:#eef6f0;color:var(--green);border-radius:999px;padding:1px 8px;margin-left:4px}
+#ddl .dd-pill{flex:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12.5px;font-weight:600;background:#fff;white-space:nowrap}
+#ddl .dd-pill.paid{color:var(--green);border-color:#bfdcc8;background:#f1f8f3}
+#ddl .dd-pill.unpaid{color:var(--red);border-color:#e9c4bf;background:#fdf3f1}
+#ddl .dd-prog{height:4px;background:var(--bg);border-radius:4px;margin-top:6px;overflow:hidden}
+#ddl .dd-prog i{display:block;height:100%;background:var(--red)}
+#ddl .dd-prog.paid i{background:var(--green)}
+#ddl .dd-plan{margin-top:8px}
+#ddl .dd-plan textarea{min-height:56px;font-size:15px}
+#ddl .dd-bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.96);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+#ddl .dd-bar-in{max-width:760px;margin:0 auto;display:flex;gap:8px;align-items:center}
+#ddl .dd-bar-in span{flex:1;font-size:14px;color:var(--muted)}
+#ddl .dd-empty{color:var(--muted);text-align:center;padding:18px 8px}
+#ddl .dd-day{margin:14px 2px 6px;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+#ddl .dd-log{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:6px}
+#ddl .dd-log-h{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+#ddl .dd-log-h b{font-size:15px}
+#ddl .dd-log-h span{font-size:12.5px;color:var(--muted)}
+#ddl .dd-log-plan{margin-top:4px;font-size:14px;white-space:pre-wrap;color:#4d443c}
+#ddl .dd-log-plan.none{color:var(--muted);font-style:italic}
+#ddl .dd-link{border:0;background:none;color:var(--red);font-size:13px;font-weight:600;padding:0 4px}
+#ddl .dd-sec{margin:18px 2px 6px;font-size:14px;font-weight:700;color:var(--muted)}
+#ddl .dd-detail{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+#ddl .dd-detail label{display:block;font-size:12px;color:var(--muted);margin:6px 0 2px}
+#ddl .dd-mask{position:fixed;inset:0;z-index:50;background:rgba(30,20,10,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+#ddl .dd-modal{background:#fff;border-radius:16px;max-width:420px;width:100%;padding:18px 18px 14px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+#ddl .dd-modal h3{margin:0 0 6px;font-size:18px}
+#ddl .dd-modal p{margin:0 0 12px;color:#4d443c}
+#ddl .dd-modal .dd-actions{justify-content:flex-end}
+#ddl .dd-toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;border-radius:999px;padding:8px 16px;font-size:14px;max-width:90%;text-align:center}
+@media (max-width:520px){#ddl .dd-title{font-size:20px}#ddl .dd-row2{grid-template-columns:1fr}}
