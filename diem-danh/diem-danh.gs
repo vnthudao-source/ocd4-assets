@@ -1,12 +1,14 @@
 /**
- * ĐIỂM DANH LỚP · Thư Đạo · v1.0.0
+ * ĐIỂM DANH LỚP · Thư Đạo · v1.0.1
  * Lưu danh sách học viên, các buổi điểm danh (giờ Việt Nam) và giáo án vào Google Sheet.
  *
  * CÁCH CÀI (làm một lần):
- * 1. Tạo một Google Sheet mới, đặt tên tuỳ ý (ví dụ "Điểm danh lớp").
- * 2. Trong Sheet: Tiện ích mở rộng → Apps Script → xoá hết code mẫu → dán TOÀN BỘ file này.
+ * 1. Mở dự án Apps Script (tạo ở script.google.com hoặc từ trong một Google Sheet đều được).
+ * 2. Xoá hết code cũ → dán TOÀN BỘ file này.
  * 3. Đổi MAT_KHAU bên dưới thành mật khẩu riêng của thầy (ít nhất 6 ký tự), bấm Lưu.
- * 4. Chọn hàm setup ở thanh trên → Chạy → cấp quyền. Sheet sẽ tự có 2 tab HocVien và DiemDanh.
+ * 4. Chọn hàm setup ở thanh trên → Chạy → cấp quyền. Nếu dự án không gắn với Sheet nào,
+ *    script tự tạo bảng tính "Điểm danh lớp" trong Drive (xem link ở Nhật ký thực thi).
+ *    Muốn dùng một Sheet có sẵn: dán ID của Sheet đó vào SHEET_ID bên dưới.
  * 5. Triển khai → Triển khai mới → loại "Ứng dụng web"
  *      Thực thi với tư cách: Tôi · Người có quyền truy cập: Bất kỳ ai
  * 6. Sao chép URL kết thúc bằng /exec, dán vào API_URL trong khối tải trên trang Blogspot.
@@ -15,6 +17,7 @@
  */
 
 const MAT_KHAU = 'DOI_MAT_KHAU_O_DAY';   // mật khẩu nhập trên trang điểm danh
+const SHEET_ID = '';                    // để trống: tự dùng Sheet đang gắn, hoặc tự tạo Sheet mới
 const TZ = 'Asia/Ho_Chi_Minh';
 
 const TAB_HV = 'HocVien';
@@ -28,12 +31,29 @@ const THE = { 'Tháng': 4, '12 buổi': 12, '52 buổi': 52 };
 
 function setup() {
   hv_(); dd_();
-  Logger.log('Đã sẵn sàng: ' + SpreadsheetApp.getActiveSpreadsheet().getUrl());
+  Logger.log('Đã sẵn sàng. Bảng tính: ' + ss_().getUrl());
+}
+
+/* Bảng tính lưu dữ liệu: SHEET_ID → Sheet đang gắn với dự án → Sheet đã tự tạo trước đó → tạo mới */
+let SS_CACHE = null;
+function ss_() {
+  if (SS_CACHE) return SS_CACHE;
+  if (SHEET_ID) return (SS_CACHE = SpreadsheetApp.openById(SHEET_ID));
+  const active = SpreadsheetApp.getActiveSpreadsheet();
+  if (active) return (SS_CACHE = active);
+  const props = PropertiesService.getScriptProperties();
+  const saved = props.getProperty('DD_SHEET_ID');
+  if (saved) {
+    try { return (SS_CACHE = SpreadsheetApp.openById(saved)); } catch (e) { /* Sheet đã bị xoá: tạo lại */ }
+  }
+  const ss = SpreadsheetApp.create('Điểm danh lớp');
+  props.setProperty('DD_SHEET_ID', ss.getId());
+  return (SS_CACHE = ss);
 }
 
 /* ---------- Web App ---------- */
 function doGet() {
-  return out_({ ok: true, msg: 'Diem danh API v1.0.0' });
+  return out_({ ok: true, msg: 'Diem danh API v1.0.1' });
 }
 
 function doPost(e) {
@@ -76,10 +96,12 @@ function out_(o) {
 
 /* ---------- Sheet ---------- */
 function tab_(name, head) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = ss_();
   let sh = ss.getSheetByName(name);
   if (!sh) {
-    sh = ss.insertSheet(name);
+    const blank = ss.getSheets().length === 1 && ss.getSheets()[0].getLastRow() === 0 && ss.getSheets()[0].getName() !== name &&
+                  !ss.getSheetByName(name === TAB_HV ? TAB_DD : TAB_HV) ? ss.getSheets()[0] : null;
+    sh = blank ? blank.setName(name) : ss.insertSheet(name);
     sh.getRange(1, 1, 1, head.length).setValues([head]).setFontWeight('bold').setBackground('#f3ead9');
     sh.setFrozenRows(1);
     sh.getRange(2, 1, 2000, head.length).setNumberFormat('@');
