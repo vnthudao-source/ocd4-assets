@@ -923,6 +923,39 @@
 
 }
 
+
+/* v1.2.0: khu chấm bài */
+.gr-grader-entry{text-align:center;margin:10px 0 24px}
+.gr-link{border:0;background:none;color:var(--brown);text-decoration:underline;font-size:13px;cursor:pointer;padding:6px}
+.gr-grader-hint{font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 10px}
+.gr-grader-label{display:block;margin:12px 0 5px;font-size:12px;font-weight:900;color:var(--brown-dark)}
+.gr-grader-actions{display:flex;gap:8px;margin-top:14px}
+.gr-grader-actions .gr-btn{flex:1}
+.gr-btn-ghost{background:var(--paper2)!important;color:var(--brown-dark)!important}
+.gr-grader-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:8px}
+.gr-grader-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 12px}
+.gr-grader-tab{flex:1;min-width:90px;padding:9px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;font-weight:900;color:var(--brown-dark);cursor:pointer}
+.gr-grader-tab.on{background:var(--brown);border-color:var(--brown);color:#fff}
+.gr-grader-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.gr-grader-row .gr-btn{flex:0 0 auto;min-width:96px}
+.gr-grader-who{min-width:0;display:flex;flex-direction:column;gap:3px}
+.gr-grader-who strong{font-size:14px;color:var(--ink)}
+.gr-grader-who span{font-size:12px;color:var(--muted)}
+.gr-grader-meta{font-size:12.5px;color:var(--muted);margin:-4px 0 12px}
+.gr-grader-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.gr-grader-sum div{padding:10px;border-radius:12px;background:var(--paper2);text-align:center;display:flex;flex-direction:column;gap:2px}
+.gr-grader-sum span{font-size:11px;font-weight:900;color:var(--muted)}
+.gr-grader-sum strong{font-size:24px;color:var(--brown-dark)}
+.gr-grader-sum em{font-style:normal;font-size:11px;color:var(--muted)}
+.gr-grader-sum .total{background:var(--brown);}
+.gr-grader-sum .total span,.gr-grader-sum .total strong,.gr-grader-sum .total em{color:#fff}
+.gr-grader-item{padding:12px;margin:12px 0;border:1px solid var(--line);border-radius:14px;background:#fff}
+.gr-grader-qhead{font-size:11px;font-weight:900;letter-spacing:1px;color:var(--gold)}
+.gr-grader-prompt{font-size:14px;font-weight:700;margin:4px 0 8px;color:var(--ink)}
+.gr-grader-img{display:block;width:100%;max-height:420px;object-fit:contain;border-radius:10px;background:var(--paper2)}
+.gr-grader-note{font-size:12px;color:var(--muted);margin-top:6px}
+.gr-grader-score.bad{border-color:#c0392b;background:#fbe9e6}
+textarea.gr-input{resize:vertical;min-height:54px;font-family:inherit}
 </style>
 
 
@@ -947,7 +980,7 @@
     </p>
 
     <div class="gr-rule">
-        Lý thuyết 50% + Thực hành 50% - Đạt từ 7 điểm
+        Thang 10 · Lý thuyết 50% + Thực hành 50%
     </div>
 
 </section>
@@ -1019,6 +1052,17 @@
 
 </section>
 
+<section
+    class="gr-card gr-hidden"
+    id="grGraderPanel"
+>
+    <div id="grGraderContent"></div>
+</section>
+
+<div class="gr-grader-entry">
+    <button class="gr-link" type="button" onclick="return window.OCDGraduationResult.openGrader();">🖋 Khu chấm bài (giáo viên)</button>
+</div>
+
 
 <script>
 /* =========================================================
@@ -1037,7 +1081,11 @@ window.OCD_GRADUATION_RESULT_SETTINGS = {
     teacherName: "Thanh Phong - Bùi Khắc Sáng",
 
     /* true = bài đã chấm thì tự nộp thẻ vào trang Nộp bài tập (1 lần / Exam ID) */
-    autoSubmitCard: true
+    autoSubmitCard: true,
+
+    /* URL ứng dụng web Apps Script ChamThi.gs (khu chấm bài).
+       Để trống thì giáo viên dán URL ở khu chấm bài (lưu trên máy). */
+    graderApiUrl: ""
 
 };
 </script>
@@ -1680,6 +1728,8 @@ window.OCDAchievementCard={
 <script>
 /* =========================================================
    OCD GRADUATION RESULT
+   v1.2.0 (29/10/2026): khu chấm bài cho giáo viên (ChamThi.gs),
+   thang 10, thực hành 50% + lý thuyết 50%
    v1.1.0 (29/10/2026): thẻ thành tích (tải ảnh về máy, tự nộp
    vào Nộp bài tập khi đã chấm); bỏ dòng START / dòng gửi trùng
 ========================================================= */
@@ -1700,7 +1750,7 @@ window.OCDGraduationResult || {};
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_RESULT_V1.0",
+        "OCD_GRADUATION_RESULT_V1.2.0",
 
     spreadsheetId:
         "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
@@ -4255,6 +4305,1149 @@ function renderResult(){
 
 
 /* =========================================================
+   v1.2.0: KHU CHẤM BÀI (GIÁO VIÊN)
+   - Ghi điểm vào ChamThiTotNghiep qua Apps Script riêng ChamThi.gs
+   - Thang 10: Thực hành = trung bình điểm các câu thực hành,
+     Tổng = 50% lý thuyết + 50% thực hành
+   - Mở: link "Khu chấm bài" cuối trang, hoặc thêm #cham vào địa chỉ trang
+========================================================= */
+
+var GRADER_KEY=
+    "ocd_grader_v1";
+
+var GRADER={
+
+    url:"",
+
+    password:"",
+
+    examiner:"",
+
+    filter:"todo",
+
+    list:[],
+
+    current:null,
+
+    saving:false
+};
+
+
+function graderSettings(){
+
+    var s=
+        window.OCD_GRADUATION_RESULT_SETTINGS ||
+        {};
+
+    return {
+
+        url:
+            String(
+                s.graderApiUrl ||
+                ""
+            ).trim(),
+
+        teacherName:
+            s.teacherName ||
+            "Thanh Phong - Bùi Khắc Sáng"
+    };
+}
+
+
+function graderLoad(){
+
+    var saved={};
+
+    try{
+
+        saved=
+            JSON.parse(
+                localStorage.getItem(
+                    GRADER_KEY
+                ) ||
+                "{}"
+            ) ||
+            {};
+
+    }catch(error){}
+
+    GRADER.url=
+        graderSettings().url ||
+        saved.url ||
+        "";
+
+    GRADER.password=
+        saved.password ||
+        "";
+
+    GRADER.examiner=
+        saved.examiner ||
+        graderSettings().teacherName;
+}
+
+
+function graderSave(){
+
+    try{
+
+        localStorage.setItem(
+            GRADER_KEY,
+            JSON.stringify({
+
+                url:GRADER.url,
+
+                password:GRADER.password,
+
+                examiner:GRADER.examiner
+            })
+        );
+
+    }catch(error){}
+}
+
+
+async function graderPost(body){
+
+    var controller=
+        new AbortController();
+
+    var timer=
+        setTimeout(
+            function(){
+
+                controller.abort();
+            },
+            30000
+        );
+
+    try{
+
+        var response=
+            await fetch(
+                GRADER.url,
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":"text/plain;charset=utf-8"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            Object.assign(
+                                {
+                                    password:
+                                        GRADER.password
+                                },
+                                body
+                            )
+                        ),
+
+                    credentials:"omit",
+
+                    cache:"no-store",
+
+                    signal:
+                        controller.signal
+                }
+            );
+
+        return JSON.parse(
+            await response.text()
+        );
+
+    }catch(error){
+
+        return {
+
+            ok:false,
+
+            network:true,
+
+            error:
+                "Không kết nối được máy chủ chấm bài. Kiểm tra mạng hoặc URL ứng dụng."
+        };
+
+    }finally{
+
+        clearTimeout(
+            timer
+        );
+    }
+}
+
+
+function graderBox(){
+
+    return el(
+        "grGraderContent"
+    );
+}
+
+
+APP.openGrader=
+function(){
+
+    graderLoad();
+
+    var panel=
+        el(
+            "grGraderPanel"
+        );
+
+    panel.classList.remove(
+        "gr-hidden"
+    );
+
+    if(
+        GRADER.url &&
+        GRADER.password
+    ){
+
+        APP.graderEnter(
+            true
+        );
+
+    }else{
+
+        graderLoginView("");
+    }
+
+    try{
+
+        panel.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    }catch(error){}
+
+    return false;
+};
+
+
+function graderLoginView(message){
+
+    var showUrl=
+        !graderSettings().url;
+
+    graderBox().innerHTML=
+
+        '<h2 class="gr-card-title">Khu chấm bài (giáo viên)</h2>' +
+
+        '<p class="gr-grader-hint">Chấm phần thực hành theo thang 10. ' +
+        'Điểm thực hành = trung bình các câu thực hành; tổng điểm = 50% lý thuyết + 50% thực hành.</p>' +
+
+        (
+            showUrl
+                ?
+                '<label class="gr-grader-label">URL ứng dụng chấm bài (Apps Script ChamThi.gs)</label>' +
+                '<input class="gr-input" id="grGraderUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="' +
+                    escapeHtml(GRADER.url) +
+                '">'
+                :
+                ''
+        ) +
+
+        '<label class="gr-grader-label">Mật khẩu chấm bài</label>' +
+        '<input class="gr-input" id="grGraderPassword" type="password" autocomplete="current-password" value="' +
+            escapeHtml(GRADER.password) +
+        '">' +
+
+        '<label class="gr-grader-label">Người chấm</label>' +
+        '<input class="gr-input" id="grGraderExaminer" type="text" value="' +
+            escapeHtml(GRADER.examiner) +
+        '">' +
+
+        '<div class="gr-grader-actions">' +
+            '<button class="gr-btn" type="button" id="grGraderEnter" onclick="return window.OCDGraduationResult.graderEnter(false);">VÀO KHU CHẤM</button>' +
+        '</div>' +
+
+        '<div class="gr-message ' +
+            (
+                message
+                    ?
+                    'show error'
+                    :
+                    ''
+            ) +
+        '" id="grGraderMessage">' +
+            escapeHtml(message || "") +
+        '</div>';
+}
+
+
+APP.graderEnter=
+async function(silent){
+
+    if(!silent){
+
+        var urlInput=
+            el(
+                "grGraderUrl"
+            );
+
+        if(urlInput){
+
+            GRADER.url=
+                urlInput.value.trim();
+        }
+
+        GRADER.password=
+            el(
+                "grGraderPassword"
+            ).value;
+
+        GRADER.examiner=
+            el(
+                "grGraderExaminer"
+            ).value.trim() ||
+            graderSettings().teacherName;
+
+        if(
+            !/^https:\/\/script\.google(usercontent)?\.com\//.test(
+                GRADER.url
+            )
+        ){
+
+            graderLoginView(
+                "URL ứng dụng chấm bài chưa đúng (dạng https://script.google.com/macros/s/.../exec)."
+            );
+
+            return false;
+        }
+
+        var button=
+            el(
+                "grGraderEnter"
+            );
+
+        if(button){
+
+            button.disabled=
+                true;
+
+            button.textContent=
+                "ĐANG KIỂM TRA...";
+        }
+    }
+
+    var r=
+        await graderPost({
+            action:"ping"
+        });
+
+    if(
+        !r ||
+        !r.ok
+    ){
+
+        if(
+            r &&
+            r.auth===false
+        ){
+
+            GRADER.password=
+                "";
+
+            graderSave();
+        }
+
+        graderLoginView(
+            (r && r.error) ||
+            "Chưa vào được khu chấm bài."
+        );
+
+        return false;
+    }
+
+    graderSave();
+
+    await graderRefresh();
+
+    return false;
+};
+
+
+APP.graderLogout=
+function(){
+
+    GRADER.password=
+        "";
+
+    graderSave();
+
+    graderLoginView("");
+
+    return false;
+};
+
+
+async function graderRefresh(){
+
+    graderBox().innerHTML=
+        '<div class="gr-message show loading">Đang tải danh sách bài thi...</div>';
+
+    try{
+
+        var data=
+            await Promise.all([
+                loadExams(),
+                loadGradings()
+            ]);
+
+        STATE.exams=
+            data[0];
+
+        STATE.gradings=
+            data[1];
+
+        var map=
+            buildGradingMap(
+                STATE.gradings
+            );
+
+        GRADER.list=
+            STATE.exams.map(
+                function(exam){
+
+                    return {
+
+                        exam:
+                            exam,
+
+                        grading:
+                            map[
+                                normalizeCode(
+                                    exam.examId
+                                )
+                            ] ||
+                            null
+                    };
+                }
+            );
+
+        graderListView();
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        graderBox().innerHTML=
+            '<div class="gr-message show error">' +
+                escapeHtml(
+                    error &&
+                    error.message ||
+                    "Không tải được danh sách bài thi."
+                ) +
+            '</div>' +
+            '<div class="gr-grader-actions"><button class="gr-btn" type="button" onclick="return window.OCDGraduationResult.openGrader();">THỬ LẠI</button></div>';
+    }
+}
+
+
+APP.graderFilter=
+function(value){
+
+    GRADER.filter=
+        value;
+
+    graderListView();
+
+    return false;
+};
+
+
+function graderListView(){
+
+    var todo=
+        GRADER.list.filter(
+            function(m){
+
+                return !m.grading;
+            }
+        );
+
+    var shown=
+        GRADER.list.filter(
+            function(m){
+
+                if(GRADER.filter==="todo"){
+
+                    return !m.grading;
+                }
+
+                if(GRADER.filter==="done"){
+
+                    return !!m.grading;
+                }
+
+                return true;
+            }
+        );
+
+    var html=
+
+        '<h2 class="gr-card-title">Khu chấm bài (giáo viên)</h2>' +
+
+        '<div class="gr-grader-top">' +
+            '<span>Người chấm: <strong>' + escapeHtml(GRADER.examiner) + '</strong></span>' +
+            '<button class="gr-link" type="button" onclick="return window.OCDGraduationResult.graderLogout();">Thoát</button>' +
+        '</div>' +
+
+        '<div class="gr-grader-tabs">' +
+            [
+                ["todo","Chưa chấm ("+todo.length+")"],
+                ["done","Đã chấm ("+(GRADER.list.length-todo.length)+")"],
+                ["all","Tất cả ("+GRADER.list.length+")"]
+            ]
+            .map(
+                function(t){
+
+                    return '<button type="button" class="gr-grader-tab ' +
+                        (
+                            GRADER.filter===t[0]
+                                ?
+                                'on'
+                                :
+                                ''
+                        ) +
+                        '" onclick="return window.OCDGraduationResult.graderFilter(\'' + t[0] + '\');">' +
+                        t[1] +
+                    '</button>';
+                }
+            )
+            .join("") +
+        '</div>';
+
+    if(!shown.length){
+
+        html+=
+            '<div class="gr-message show success">' +
+                (
+                    GRADER.filter==="todo"
+                        ?
+                        'Không còn bài nào chờ chấm.'
+                        :
+                        'Chưa có bài nào.'
+                ) +
+            '</div>';
+    }
+
+    shown.forEach(
+        function(m){
+
+            var index=
+                GRADER.list.indexOf(m);
+
+            html+=
+                '<div class="gr-grader-row">' +
+                    '<div class="gr-grader-who">' +
+                        '<strong>' + escapeHtml(m.exam.studentName || m.exam.studentCode) + '</strong>' +
+                        '<span>' +
+                            escapeHtml(m.exam.studentCode) +
+                            ' · Tổ ' + escapeHtml(m.exam.group || "-") +
+                            ' · Khoá ' + escapeHtml(m.exam.course || "-") +
+                            ' · LT ' + escapeHtml(scoreDisplay(m.exam.theoryScore)) +
+                            (
+                                m.grading
+                                    ?
+                                    ' · TH ' + escapeHtml(scoreDisplay(m.grading.practicalScore))
+                                    :
+                                    ''
+                            ) +
+                        '</span>' +
+                    '</div>' +
+                    '<button class="gr-btn ' +
+                        (
+                            m.grading
+                                ?
+                                'gr-btn-ghost'
+                                :
+                                ''
+                        ) +
+                        '" type="button" onclick="return window.OCDGraduationResult.graderOpen(' + index + ');">' +
+                        (
+                            m.grading
+                                ?
+                                'CHẤM LẠI'
+                                :
+                                'CHẤM'
+                        ) +
+                    '</button>' +
+                '</div>';
+        }
+    );
+
+    graderBox().innerHTML=
+        html;
+}
+
+
+function practicalOf(exam){
+
+    try{
+
+        var data=
+            JSON.parse(
+                exam.practicalRaw ||
+                "[]"
+            );
+
+        return Array.isArray(data)
+            ?
+            data
+            :
+            [];
+
+    }catch(error){
+
+        return [];
+    }
+}
+
+
+APP.graderOpen=
+function(index){
+
+    var m=
+        GRADER.list[
+            Number(index)
+        ];
+
+    if(!m){
+
+        return false;
+    }
+
+    GRADER.current=
+        m;
+
+    var exam=
+        m.exam;
+
+    var items=
+        practicalOf(
+            exam
+        );
+
+    var old={};
+
+    if(m.grading){
+
+        parseGradingData(
+            m.grading.gradingRaw
+        )
+        .forEach(
+            function(it){
+
+                old[
+                    String(
+                        it.questionId ||
+                        it.q
+                    )
+                ]=
+                    it;
+            }
+        );
+    }
+
+    var html=
+
+        '<div class="gr-grader-top">' +
+            '<button class="gr-link" type="button" onclick="return window.OCDGraduationResult.graderBack();">← Danh sách</button>' +
+            '<span>' + escapeHtml(exam.examId) + '</span>' +
+        '</div>' +
+
+        '<h2 class="gr-card-title">' + escapeHtml(exam.studentName || exam.studentCode) + '</h2>' +
+
+        '<div class="gr-grader-meta">' +
+            escapeHtml(exam.studentCode) +
+            ' · Tổ ' + escapeHtml(exam.group || "-") +
+            ' · Khoá ' + escapeHtml(exam.course || "-") +
+            ' · Nộp: ' + escapeHtml(exam.submittedAt || "-") +
+            ' (' + escapeHtml(exam.submitReason || "-") + ')' +
+        '</div>' +
+
+        '<div class="gr-grader-sum">' +
+            '<div><span>Lý thuyết (tự chấm)</span><strong>' +
+                escapeHtml(scoreDisplay(exam.theoryScore)) +
+            '</strong><em>' +
+                escapeHtml(String(exam.theoryCorrect)) + '/' + escapeHtml(String(exam.theoryAnswered || exam.theoryCorrect + exam.theoryWrong)) + ' câu đúng' +
+            '</em></div>' +
+            '<div><span>Thực hành (TB)</span><strong id="grGraderPractical">-</strong><em>' + items.length + ' câu</em></div>' +
+            '<div class="total"><span>Tổng 50/50</span><strong id="grGraderTotal">-</strong><em id="grGraderRank"></em></div>' +
+        '</div>';
+
+    if(!items.length){
+
+        html+=
+            '<div class="gr-message show error">Bài thi này không có dữ liệu thực hành để chấm.</div>';
+    }
+
+    items.forEach(
+        function(it,i){
+
+            var q=
+                String(
+                    it.q ||
+                    it.questionId ||
+                    (i+1)
+                );
+
+            var prev=
+                old[q] ||
+                {};
+
+            var img=
+                imageUrl(
+                    it.file
+                );
+
+            html+=
+                '<article class="gr-grader-item">' +
+                    '<div class="gr-grader-qhead">CÂU ' + escapeHtml(q) + '</div>' +
+                    '<div class="gr-grader-prompt">' + escapeHtml(it.prompt || "") + '</div>' +
+                    (
+                        img
+                            ?
+                            '<a href="' + escapeHtml(img.replace(/sz=w\d+/,"sz=w1600")) + '" target="_blank" rel="noopener">' +
+                                '<img class="gr-grader-img" loading="lazy" alt="Bài câu ' + escapeHtml(q) + '" src="' + escapeHtml(img) + '">' +
+                            '</a>'
+                            :
+                            '<div class="gr-no-image">Không có ảnh</div>'
+                    ) +
+                    '<div class="gr-grader-note">' +
+                        escapeHtml(it.note || "") +
+                        ' · Nộp: ' + escapeHtml(it.submittedAt || "-") +
+                        ' · Điểm cũ: ' + escapeHtml(scoreDisplay(it.originalScore)) +
+                    '</div>' +
+                    '<label class="gr-grader-label">Điểm câu ' + escapeHtml(q) + ' (0–10)</label>' +
+                    '<input class="gr-input gr-grader-score" data-q="' + escapeHtml(q) + '" type="number" inputmode="decimal" min="0" max="10" step="0.25" value="' +
+                        escapeHtml(
+                            prev.examScore===undefined ||
+                            prev.examScore===null
+                                ?
+                                ""
+                                :
+                                String(prev.examScore)
+                        ) +
+                    '" oninput="window.OCDGraduationResult.graderCalc();">' +
+                    '<label class="gr-grader-label">Nhận xét</label>' +
+                    '<textarea class="gr-input gr-grader-comment" data-q="' + escapeHtml(q) + '" rows="2">' +
+                        escapeHtml(prev.examinerComment || "") +
+                    '</textarea>' +
+                '</article>';
+        }
+    );
+
+    html+=
+        '<div class="gr-grader-actions">' +
+            '<button class="gr-btn" type="button" id="grGraderSave" onclick="return window.OCDGraduationResult.graderSubmit();" ' +
+                (
+                    items.length
+                        ?
+                        ''
+                        :
+                        'disabled'
+                ) +
+            '>LƯU ĐIỂM</button>' +
+        '</div>' +
+        '<div class="gr-message" id="grGraderMessage"></div>';
+
+    graderBox().innerHTML=
+        html;
+
+    APP.graderCalc();
+
+    try{
+
+        el(
+            "grGraderPanel"
+        ).scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    }catch(error){}
+
+    return false;
+};
+
+
+APP.graderBack=
+function(){
+
+    GRADER.current=
+        null;
+
+    graderListView();
+
+    return false;
+};
+
+
+function graderScores(){
+
+    var out=[];
+
+    var ok=true;
+
+    Array.prototype.forEach.call(
+        document.querySelectorAll(
+            "#grGraderContent .gr-grader-score"
+        ),
+        function(input){
+
+            var raw=
+                String(
+                    input.value
+                )
+                .replace(",",".")
+                .trim();
+
+            var n=
+                raw===""
+                    ?
+                    NaN
+                    :
+                    Number(raw);
+
+            var valid=
+                Number.isFinite(n) &&
+                n>=0 &&
+                n<=10;
+
+            input.classList.toggle(
+                "bad",
+                raw!=="" &&
+                !valid
+            );
+
+            if(!valid){
+
+                ok=false;
+            }
+
+            var comment=
+                document.querySelector(
+                    '#grGraderContent .gr-grader-comment[data-q="' + input.getAttribute("data-q") + '"]'
+                );
+
+            out.push({
+
+                q:
+                    Number(
+                        input.getAttribute("data-q")
+                    ),
+
+                examScore:
+                    valid
+                        ?
+                        Math.round(n*4)/4
+                        :
+                        null,
+
+                examinerComment:
+                    comment
+                        ?
+                        comment.value.trim()
+                        :
+                        ""
+            });
+        }
+    );
+
+    return {
+        ok:ok && out.length>0,
+        items:out
+    };
+}
+
+
+APP.graderCalc=
+function(){
+
+    var s=
+        graderScores();
+
+    var theory=
+        GRADER.current
+            ?
+            parseNumber(
+                GRADER.current.exam.theoryScore
+            )
+            :
+            null;
+
+    var p=
+        el(
+            "grGraderPractical"
+        );
+
+    var t=
+        el(
+            "grGraderTotal"
+        );
+
+    var rank=
+        el(
+            "grGraderRank"
+        );
+
+    if(!p){
+
+        return;
+    }
+
+    if(!s.ok){
+
+        p.textContent="-";
+
+        t.textContent="-";
+
+        rank.textContent="Nhập đủ điểm các câu";
+
+        return;
+    }
+
+    var practical=
+        round2(
+            s.items.reduce(
+                function(sum,it){
+
+                    return sum+it.examScore;
+                },
+                0
+            ) /
+            s.items.length
+        );
+
+    p.textContent=
+        scoreDisplay(
+            practical
+        );
+
+    if(theory===null){
+
+        t.textContent="-";
+
+        return;
+    }
+
+    var total=
+        round2(
+            theory*CONFIG.theoryWeight +
+            practical*CONFIG.practicalWeight
+        );
+
+    t.textContent=
+        scoreDisplay(
+            total
+        );
+
+    rank.textContent=
+        total>=8
+            ?
+            "Giỏi"
+            :
+            (
+                total>=5
+                    ?
+                    "Khá"
+                    :
+                    "Trung bình"
+            );
+};
+
+
+APP.graderSubmit=
+async function(){
+
+    if(
+        GRADER.saving ||
+        !GRADER.current
+    ){
+
+        return false;
+    }
+
+    var s=
+        graderScores();
+
+    var msg=
+        el(
+            "grGraderMessage"
+        );
+
+    if(!s.ok){
+
+        msg.className="gr-message show error";
+
+        msg.textContent=
+            "Vui lòng nhập điểm từ 0 đến 10 cho tất cả các câu thực hành.";
+
+        return false;
+    }
+
+    var button=
+        el(
+            "grGraderSave"
+        );
+
+    GRADER.saving=
+        true;
+
+    button.disabled=
+        true;
+
+    button.textContent=
+        "ĐANG LƯU...";
+
+    msg.className="gr-message show loading";
+
+    msg.textContent=
+        "Đang ghi điểm vào ChamThiTotNghiep...";
+
+    var exam=
+        GRADER.current.exam;
+
+    var r=
+        await graderPost({
+
+            action:"grade",
+
+            examId:
+                exam.examId,
+
+            examiner:
+                GRADER.examiner,
+
+            items:
+                s.items
+        });
+
+    GRADER.saving=
+        false;
+
+    if(
+        !r ||
+        !r.ok
+    ){
+
+        button.disabled=
+            false;
+
+        button.textContent=
+            "LƯU ĐIỂM";
+
+        msg.className="gr-message show error";
+
+        msg.textContent=
+            (r && r.error) ||
+            "Chưa lưu được điểm.";
+
+        if(
+            r &&
+            r.auth===false
+        ){
+
+            GRADER.password=
+                "";
+
+            graderSave();
+        }
+
+        return false;
+    }
+
+    msg.className="gr-message show success";
+
+    msg.textContent=
+        "Đã lưu: thực hành " +
+        scoreDisplay(r.practicalScore) +
+        ", tổng " +
+        scoreDisplay(r.finalScore) +
+        (
+            r.regraded
+                ?
+                " (chấm lại)."
+                :
+                "."
+        ) +
+        " Đang mở kết quả và thẻ thành tích...";
+
+    /* Mở kết quả của học viên: thẻ thành tích tự nộp vào Nộp bài tập */
+    await sleep(1500);
+
+    try{
+
+        var gradings=
+            await loadGradings();
+
+        STATE.gradings=
+            gradings;
+
+        var map=
+            buildGradingMap(
+                gradings
+            );
+
+        var grading=
+            map[
+                normalizeCode(
+                    exam.examId
+                )
+            ] ||
+            null;
+
+        GRADER.list.forEach(
+            function(m){
+
+                m.grading=
+                    map[
+                        normalizeCode(
+                            m.exam.examId
+                        )
+                    ] ||
+                    null;
+            }
+        );
+
+        graderListView();
+
+        openMatch({
+
+            exam:
+                exam,
+
+            grading:
+                grading
+        });
+
+        if(!grading){
+
+            setMessage(
+                "Đã lưu điểm. Google cần thêm ít phút để hiện kết quả – hãy tra cứu lại sau.",
+                "success"
+            );
+        }
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+    }
+
+    return false;
+};
+
+
+
+/* =========================================================
    INIT
 ========================================================= */
 
@@ -4279,6 +5472,19 @@ function init(){
 
     }catch(error){}
 
+
+    if(
+        /(^|[#&?])cham(=1)?\b/i.test(
+            location.hash +
+            location.search
+        )
+    ){
+
+        setTimeout(
+            APP.openGrader,
+            0
+        );
+    }
 
     console.log(
         CONFIG.version +
