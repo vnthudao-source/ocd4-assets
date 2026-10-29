@@ -1083,6 +1083,10 @@ window.OCD_GRADUATION_RESULT_SETTINGS = {
     /* true = bài đã chấm thì tự nộp thẻ vào trang Nộp bài tập (1 lần / Exam ID) */
     autoSubmitCard: true,
 
+    /* "rank" = hiện XẾP LOẠI (Giỏi / Khá / Trung bình) – thi giữa kỳ
+       "pass" = hiện ĐẠT / CHƯA ĐẠT TỐT NGHIỆP (từ 7 điểm) – thi tốt nghiệp */
+    resultMode: "rank",
+
     /* URL ứng dụng web Apps Script ChamThi.gs (khu chấm bài).
        Để trống thì giáo viên dán URL ở khu chấm bài (lưu trên máy). */
     graderApiUrl: ""
@@ -1728,6 +1732,7 @@ window.OCDAchievementCard={
 <script>
 /* =========================================================
    OCD GRADUATION RESULT
+   v1.3.0 (29/10/2026): thi giữa kỳ hiện XẾP LOẠI thay cho ĐẠT TỐT NGHIỆP
    v1.2.0 (29/10/2026): khu chấm bài cho giáo viên (ChamThi.gs),
    thang 10, thực hành 50% + lý thuyết 50%
    v1.1.0 (29/10/2026): thẻ thành tích (tải ảnh về máy, tự nộp
@@ -1750,7 +1755,7 @@ window.OCDGraduationResult || {};
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_RESULT_V1.2.0",
+        "OCD_GRADUATION_RESULT_V1.3.0",
 
     spreadsheetId:
         "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
@@ -3541,6 +3546,45 @@ function infoBox(
    50% LT + 50% TH
 ========================================================= */
 
+function resultMode(){
+
+    var s=
+        window.OCD_GRADUATION_RESULT_SETTINGS ||
+        {};
+
+    return s.resultMode==="pass"
+        ?
+        "pass"
+        :
+        "rank";
+}
+
+
+function rankOfScore(score){
+
+    var n=
+        Number(score);
+
+    if(n>=8){
+
+        return {
+            label:"GIỎI"
+        };
+    }
+
+    if(n>=5){
+
+        return {
+            label:"KHÁ"
+        };
+    }
+
+    return {
+        label:"TRUNG BÌNH"
+    };
+}
+
+
 function calculateFinalScore(
     exam,
     grading
@@ -3847,9 +3891,26 @@ function renderResult(){
     }
 
 
+    /*
+       v1.3.0: resultMode "rank" (thi giữa kỳ) -> hiện XẾP LOẠI
+       Giỏi (>= 8) · Khá (5 – dưới 8) · Trung bình (< 5);
+       "pass" (thi tốt nghiệp) -> ĐẠT / CHƯA ĐẠT TỐT NGHIỆP.
+    */
+    var rankMode=
+        resultMode()==="rank";
+
+    var rank=
+        rankOfScore(
+            finalScore
+        );
+
     var passed=
-        finalScore>=
-        CONFIG.passScore;
+        rankMode
+            ?
+            true
+            :
+            finalScore>=
+            CONFIG.passScore;
 
 
     html+=
@@ -3881,27 +3942,34 @@ function renderResult(){
             '</div>' +
 
             '<div class="gr-result-label">' +
-                'ĐIỂM TỐT NGHIỆP' +
+                (
+                    rankMode
+                        ?
+                        'TỔNG ĐIỂM TRUNG BÌNH'
+                        :
+                        'ĐIỂM TỐT NGHIỆP'
+                ) +
             '</div>' +
-
             '<div class="gr-final-score">' +
                 escapeHtml(
                     finalScore.toFixed(2)
                 ) +
             '</div>' +
-
             '<div class="gr-final-status">' +
-
                 (
-                    passed
+                    rankMode
                         ?
-                        'ĐẠT TỐT NGHIỆP'
+                        'XẾP LOẠI: ' + rank.label
                         :
-                        'CHƯA ĐẠT TỐT NGHIỆP'
+                        (
+                            passed
+                                ?
+                                'ĐẠT TỐT NGHIỆP'
+                                :
+                                'CHƯA ĐẠT TỐT NGHIỆP'
+                        )
                 ) +
-
             '</div>' +
-
         '</div>';
 
 
@@ -3956,7 +4024,13 @@ function renderResult(){
                 '</div>' +
 
                 '<div class="gr-score-label">' +
-                    'ĐIỂM TỐT NGHIỆP' +
+                    (
+                        rankMode
+                            ?
+                            'TỔNG ĐIỂM TB'
+                            :
+                            'ĐIỂM TỐT NGHIỆP'
+                    ) +
                 '</div>' +
 
             '</div>' +
@@ -3987,11 +4061,15 @@ function renderResult(){
             '</strong>' +
 
             '<br>' +
-
-            'Điều kiện tốt nghiệp: điểm tổng từ ' +
-            CONFIG.passScore.toFixed(2) +
-            ' trở lên.' +
-
+            (
+                rankMode
+                    ?
+                    'Xếp loại: Giỏi từ 8 điểm · Khá từ 5 đến dưới 8 · Trung bình dưới 5.'
+                    :
+                    'Điều kiện tốt nghiệp: điểm tổng từ ' +
+                    CONFIG.passScore.toFixed(2) +
+                    ' trở lên.'
+            ) +
         '</div>';
 
 

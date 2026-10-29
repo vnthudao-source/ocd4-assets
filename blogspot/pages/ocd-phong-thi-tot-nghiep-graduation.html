@@ -29,7 +29,14 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
     */
     exemptCourses: ["3"],
 
-    exemptCodes: ["TEST001"]
+    exemptCodes: ["TEST001"],
+
+    /*
+       TÀI KHOẢN KIỂM THỬ: thi KHÔNG GIỚI HẠN số lần, mỗi lần một đề mới.
+       Bài vẫn gửi vào BaiThiTotNghiep như bài thật (để thử chấm, kết quả,
+       thẻ thành tích). Bỏ mã khỏi danh sách khi không cần thử nữa.
+    */
+    unlimitedCodes: ["TEST001"]
 
 };
 </script>
@@ -1516,7 +1523,10 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
 <script>
 /* =========================================================
    OCD GRADUATION EXAM
-   v2.7.0 - 20 THEORY + 10 IMAGE + 2 PRACTICAL
+   v2.7.1 - 20 THEORY + 10 IMAGE + 2 PRACTICAL
+
+   v2.7.1 (29/10/2026): tài khoản kiểm thử (unlimitedCodes, TEST001)
+   thi không giới hạn số lần, mỗi lần đề mới, bài vẫn gửi như thật.
 
    v2.7.0 (29/10/2026):
    - Câu 1-20: trắc nghiệm chữ (ngân hàng 35 câu)
@@ -1595,6 +1605,9 @@ var EXEMPT_COURSES =
 var EXEMPT_CODES =
     (GLOBAL_SETTINGS.exemptCodes || []).map(function(v){ return String(v).trim().toUpperCase(); });
 
+var UNLIMITED_CODES =
+    (GLOBAL_SETTINGS.unlimitedCodes || []).map(function(v){ return String(v).trim().toUpperCase(); });
+
 
 /* =========================================================
    CONFIG
@@ -1603,7 +1616,7 @@ var EXEMPT_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.7.0_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.7.1_20_10_2",
 
     durationMs:
         60*60*1000,
@@ -1641,6 +1654,9 @@ var CONFIG={
 
     exemptCodes:
         EXEMPT_CODES,
+
+    unlimitedCodes:
+        UNLIMITED_CODES,
 
     minAverageExclusive:
         5,
@@ -2515,7 +2531,10 @@ function buildTheoryPaper(
 
     if(
         isAdmin ||
-        CONFIG.trialMode
+        CONFIG.trialMode ||
+        isUnlimited(
+            studentCode
+        )
     ){
 
         seedSource+=
@@ -5009,6 +5028,17 @@ function friendlyError(error){
    v2.6.0: TÀI KHOẢN BẢO MẬT (OCDAuth – icon Minh Hồng)
 ========================================================= */
 
+/* v2.7.1: tài khoản kiểm thử thi không giới hạn */
+function isUnlimited(code){
+
+    return CONFIG.unlimitedCodes.indexOf(
+        normalizeCode(
+            code
+        )
+    )!==-1;
+}
+
+
 /* v2.7.0: được dự thi đợt này dù chưa đạt tiêu chuẩn */
 function isExempt(identity){
 
@@ -5484,11 +5514,27 @@ async function(){
         STATE.removedCount=
             deleteResult.removed;
 
+        STATE.student.unlimited=
+            !CONFIG.trialMode &&
+            isUnlimited(
+                identity.code
+            );
+
+        /* Tài khoản kiểm thử: không khoá vì bài cũ, không ép làm tiếp phiên cũ */
+        if(STATE.student.unlimited){
+
+            history={
+                done:null,
+                start:null
+            };
+        }
+
         STATE.previousExam=
             history.done;
 
         STATE.remoteStart=
             history.start;
+
 
 
         if(CONFIG.trialMode){
@@ -5552,6 +5598,13 @@ async function(){
                     "success"
                     :
                     "error"
+            );
+
+        }else if(STATE.student.unlimited){
+
+            setLookupMessage(
+                "TÀI KHOẢN KIỂM THỬ: được thi không giới hạn số lần, mỗi lần một đề mới. Bài vẫn được gửi vào hệ thống như bài thật.",
+                "success"
             );
 
         }else if(history.done){
@@ -6466,6 +6519,14 @@ async function(){
             await findPreviousExam(
                 STATE.student.code
             );
+
+        if(STATE.student.unlimited){
+
+            history={
+                done:null,
+                start:null
+            };
+        }
 
         if(history.done){
 
@@ -10406,7 +10467,14 @@ function renderResult(){
         normalizeCode(
             r.studentCode
         )===
-        CONFIG.adminCode;
+        CONFIG.adminCode ||
+        (
+            !CONFIG.trialMode &&
+            isUnlimited(
+                r.studentCode
+            )
+        );
+
 
 
     var html=
@@ -10569,7 +10637,7 @@ function renderResult(){
                             ?
                             'Bạn có thể xóa phiên thi thử để luyện lại với một đề trắc nghiệm khác.'
                             :
-                            'Chức năng kiểm thử nội bộ. Nút này chỉ xóa phiên trên thiết bị, không xóa dữ liệu đã gửi lên Google Form.'
+                            'Tài khoản kiểm thử: bấm để thi lại với đề mới. Bài đã gửi vẫn giữ trong BaiThiTotNghiep.'
                     ) +
 
                 '</div>' +
@@ -10584,7 +10652,7 @@ function renderResult(){
                             ?
                             'LÀM LẠI BÀI THI THỬ'
                             :
-                            'XÓA PHIÊN TEST ĐỂ THI LẠI'
+                            'THI LẠI (TÀI KHOẢN KIỂM THỬ)'
                     ) +
 
                 '</button>' +
@@ -10735,16 +10803,24 @@ function renderRemoteStatus(){
 APP.resetTestSession=
 function(){
 
+    var tester=
+        STATE.student &&
+        (
+            (
+                STATE.student.isAdmin &&
+                normalizeCode(
+                    STATE.student.code
+                )===
+                CONFIG.adminCode
+            ) ||
+            isUnlimited(
+                STATE.student.code
+            )
+        );
+
     if(
         !CONFIG.trialMode &&
-        (
-            !STATE.student ||
-            !STATE.student.isAdmin ||
-            normalizeCode(
-                STATE.student.code
-            )!==
-            CONFIG.adminCode
-        )
+        !tester
     ){
 
         alert(
@@ -10759,7 +10835,7 @@ function(){
             ?
             "Làm lại bài thi thử?\n\nPhiên thi thử hiện tại trên thiết bị sẽ bị xóa và hệ thống sẽ tạo một đề trắc nghiệm mới."
             :
-            "Xóa phiên TEST trên thiết bị này?\n\nDữ liệu đã gửi vào Google Form sẽ không bị xóa.";
+            "Thi lại với đề mới?\n\nBài đã gửi vẫn giữ trong hệ thống.";
 
     if(
         !window.confirm(
@@ -10844,7 +10920,7 @@ function(){
             ?
             "Đã xóa phiên thi thử. Hãy nhập lại mã học viên để bắt đầu một đề mới."
             :
-            "Đã xóa phiên kiểm thử trên thiết bị.",
+            "Đã xoá phiên kiểm thử trên thiết bị. Nhập lại mã để thi lượt mới.",
 
         "success"
     );
