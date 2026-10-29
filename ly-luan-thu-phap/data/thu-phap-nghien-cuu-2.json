@@ -356,7 +356,7 @@
     },
     {
      "t": "p",
-     "x": "Tác giả phân biệt: có những chỗ giao là bắt buộc (như chữ 十, 文), nhưng giao do đường dẫn kéo lê qua nét chính thì nên tránh. “Chạm” là khi hai bộ phận dính vào nhau, hoặc nét cuối quét chạm vào nét khác. Giảm những chỗ thừa này, chữ sẽ thông thoáng, khởi và dừng rõ ràng. Nhiều kiệt tác xưa đạt được cái thần “bút đứt mà ý liền”, nghĩa là không cần nối bằng mực mà mạch vẫn chảy."
+     "x": "Tác giả phân biệt: có những chỗ giao là bắt buộc (như chữ “thập”, chữ “văn”), nhưng giao do đường dẫn kéo lê qua nét chính thì nên tránh. “Chạm” là khi hai bộ phận dính vào nhau, hoặc nét cuối quét chạm vào nét khác. Giảm những chỗ thừa này, chữ sẽ thông thoáng, khởi và dừng rõ ràng. Nhiều kiệt tác xưa đạt được cái thần “bút đứt mà ý liền”, nghĩa là không cần nối bằng mực mà mạch vẫn chảy."
     },
     {
      "t": "p",
@@ -1149,6 +1149,355 @@
       "Giải thích thuyết “ngũ dưỡng”. Điều nào bạn thấy mình hay bỏ qua nhất khi luyện chữ?",
       "Nhận xét “có thứ tưởng là bút pháp, thực ra do cây bút tạo ra” gợi ý gì cho việc chọn bút khi lâm mẫu?",
       "“Vào được và ra được” khi lâm cổ nghĩa là gì?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c07",
+   "no": "Bài 7",
+   "title": "Bàn về mặc pháp",
+   "titleZh": "论墨法",
+   "author": "Hồng Phi Mô",
+   "pages": "57–59",
+   "summary": "Bài viết ngắn tổng hợp lời người xưa về cách chọn mực, mài mực, dùng nước và nghiên, rồi bàn về hiệu quả nghệ thuật của mực đậm nhạt, khô nhuận trong thư pháp.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Người ta thường nói thư pháp là nghệ thuật của **bút mực**, nhưng trong thực tế giảng dạy, phần “mực” hay bị xem nhẹ: học trò chỉ lo cầm bút đúng, còn mực thì đổ từ chai ra là xong. Bài viết ngắn của Hồng Phi Mô nhắc rằng **mặc pháp** (phép dùng mực) có vị trí ngang hàng với bút pháp. Bài giảng này sắp xếp các ý của bài thành bốn chủ đề: chất liệu, cách chuẩn bị, sắc thái mực và cách dùng mực trong khi viết."
+    },
+    {
+     "t": "h",
+     "x": "1. Chất liệu: các loại mực và tiêu chí chọn mực"
+    },
+    {
+     "t": "p",
+     "x": "Theo truyền thuyết, mực được chế từ rất sớm; chữ “mặc” (mực) gồm phần “hắc” (đen) và “thổ” (đất), gợi rằng mực làm từ muội khói, cùng loại với đất. Mực thỏi truyền thống chia thành mấy loại chính: **du yên** (muội dầu, đen bóng), **tùng yên** (muội thông, đen sâu nhưng ít bóng), và một số loại pha chế khác, ngoài ra còn mực chu sa màu đỏ. Theo tác giả, viết chữ nên dùng mực du yên; tùng yên đen mà không bóng, hợp vẽ tranh hơn."
+    },
+    {
+     "t": "p",
+     "x": "Để thử mực, có thể nhớ khẩu quyết tám chữ: **chất tế, giao khinh, sắc hắc, thanh thanh** — chất mịn, keo nhẹ, màu đen (đen ánh tím là hảo hạng), tiếng trong (mài nghe êm, gõ nghe trong). Keo nặng thì mực dính, đi bút rít và để lâu dễ nứt; chất thô thì mực sạn, làm tổn lông bút."
+    },
+    {
+     "t": "h",
+     "x": "2. Chuẩn bị: “tam sinh” của nghiên, nước và mực"
+    },
+    {
+     "t": "p",
+     "x": "Thư gia đời Nguyên **Khang Lý Quỳ Quỳ** (Khang Lý Tử Sơn) có thuyết “cửu sinh” về đồ dùng, trong đó ba điều liên quan trực tiếp đến mực: **sinh nghiên, sinh thủy, sinh mặc**. Chữ “sinh” ở đây là “tươi, mới”."
+    },
+    {
+     "t": "p",
+     "x": "**Nghiên tươi**: nghiên phải sạch, không để mực qua đêm, dùng thì mới cho nước. Nghiên nên rộng để chứa đủ mực khi viết lớn. Sách «Hàn lâm yếu quyết» nói ao rộng mặt mịn, mỗi tối rửa một lần, thì nước mực hòa đều."
+    },
+    {
+     "t": "p",
+     "x": "**Nước tươi**: dùng nước mới lấy, không dùng nước trà (làm hỏng sắc mực) hay nước nóng (làm thỏi mực nứt)."
+    },
+    {
+     "t": "p",
+     "x": "**Mực tươi**: mài lúc cần dùng, mài nhiều để lâu thì đặc quánh; không dùng mực cách đêm. Khi mài, thân ngồi ngay, “ấn nặng đẩy nhẹ”, đi vòng đều. Có người khuyên cố ý mài đặc hơn một chút, rồi khi viết chấm nước vào bút để điều chỉnh."
+    },
+    {
+     "t": "p",
+     "x": "Ngày nay nhiều người dùng mực nước đóng chai. Mực chai tiện, nhưng các nguyên tắc trên vẫn áp dụng được: đổ vừa đủ dùng, đừng để mực cũ khô trong nghiên rồi pha thêm, và nên thử mài mực thỏi để hiểu sự khác biệt về độ trong, độ bóng của nét."
+    },
+    {
+     "t": "h",
+     "x": "3. Sắc thái: đậm, nhạt và phong cách"
+    },
+    {
+     "t": "p",
+     "x": "Tô Đông Pha ví mực đẹp như con ngươi của trẻ nhỏ: đen tuyền mà sáng, long lanh có thần. Đó là mục tiêu: mực phải đen, có ánh, và nét phải “sống”. Đồng thời phải giữ chừng mực. Âu Dương Tuân đời Đường cảnh báo hai cực:"
+    },
+    {
+     "t": "quote",
+     "zh": "墨淡则伤神彩，绝浓必滞锋毫。",
+     "hv": "Mặc đạm tắc thương thần thái, tuyệt nùng tất trệ phong hào.",
+     "vi": "Mực nhạt thì tổn hại thần thái, mực quá đặc thì ắt làm đầu bút bị trì trệ.",
+     "src": "Âu Dương Tuân, «Bát quyết»"
+    },
+    {
+     "t": "p",
+     "x": "Nhưng đậm nhạt cũng có thể trở thành dấu ấn phong cách. Thời Thanh có cặp thư gia nổi tiếng: **Lưu Dung** (Lưu Thạch Am) thích mực đậm, chữ đầy đặn có sức nặng; **Vương Văn Trị** (Vương Mộng Lâu) chuộng mực nhạt, chữ thanh thoát có phong thần. Người đương thời gọi là “tể tướng mực đậm, thám hoa mực nhạt”. Hai lối dùng mực đi kèm với hai quan niệm thẩm mỹ: một bên chú trọng “phách lực”, một bên chú trọng “phong thần”."
+    },
+    {
+     "t": "p",
+     "x": "Tác giả còn nhắc đến những tác phẩm dùng mực đậm nhạt xen kẽ trong cùng một bức, và các thư gia đương đại (kể cả trong triển lãm thư pháp Nhật Bản) thử nghiệm mực khô ướt đậm nhạt để tạo chiều sâu không gian, học từ quan niệm “mực chia năm sắc” của hội họa. Đây là hướng sáng tạo, nhưng người mới học nên trước tiên làm chủ một tông mực ổn định."
+    },
+    {
+     "t": "h",
+     "x": "4. Trong khi viết: khô nhuận và cách chấm mực"
+    },
+    {
+     "t": "p",
+     "x": "Với hành thư và thảo thư, độ ẩm của bút thay đổi liên tục trong một hàng chữ: vừa chấm mực thì nhuận, viết dần thì khô. Khương Quỳ coi sự xen kẽ này là một nguồn biểu cảm:"
+    },
+    {
+     "t": "quote",
+     "zh": "行草要燥润相杂，以润取妍，以燥取险。",
+     "hv": "Hành thảo yếu táo nhuận tương tạp, dĩ nhuận thủ nghiên, dĩ táo thủ hiểm.",
+     "vi": "Hành thư, thảo thư cần khô và nhuận xen lẫn: lấy nhuận để có vẻ đẹp tươi, lấy khô để có thế hiểm.",
+     "src": "Khương Quỳ, «Tục thư phổ»"
+    },
+    {
+     "t": "p",
+     "x": "Nhưng nhuận không phải là ướt sũng: mực quá nhiều thì lông bút không giữ nổi, mực lan ra ngoài nét thành đốm, người xưa gọi đùa là “mặc trư” (con heo mực). Khô cũng không phải là khô kiệt. Câu “tích mặc như kim” (tiếc mực như vàng) không có nghĩa là dè sẻn mực, mà là đừng hạ bút bừa bãi, phải nghĩ kỹ trước khi viết."
+    },
+    {
+     "t": "p",
+     "x": "Chu Tinh Liên đời Thanh có một đoạn tổng kết rất tinh về cách chấm mực: đậm thì phải sống, nhạt thì phải tươi; muốn vậy nghiên phải rộng. Khi chấm, mở bút ra, chấm vào ao nghiên như cây sào chống xuống nước, để mực vào từ đầu ngòi."
+    },
+    {
+     "t": "quote",
+     "zh": "用墨之法，浓欲其活，淡欲其华。",
+     "hv": "Dụng mặc chi pháp, nùng dục kỳ hoạt, đạm dục kỳ hoa.",
+     "vi": "Phép dùng mực: đậm thì muốn nó sống động, nhạt thì muốn nó tươi sáng.",
+     "src": "Chu Tinh Liên, «Lâm trì quản kiến»"
+    },
+    {
+     "t": "p",
+     "x": "Một chi tiết thú vị khác: Đổng Kỳ Xương nhận xét ở chữ Tô Thức, cuối mỗi nét ba thấp thoáng vệt mực tụ lại như hạt kê, hạt ngọc, đá khắc không truyền được. Bao Thế Thần thì kể khi viết trên giấy thục (giấy đã hồ), mực khô dần từ hai mép vào giữa, để lại một đường mảnh như sợi tóc sáng lấp lánh. Những quan sát này nhắc người học rằng mặc tích thật mang nhiều thông tin mà bản khắc đá không có, nên khi có thể, hãy xem bản in mặc tích chất lượng cao."
+    },
+    {
+     "t": "p",
+     "x": "Bài tập gợi ý: viết cùng một chữ với ba độ đậm (đậm, vừa, nhạt) và ba lượng mực trên bút (no, vừa, gần khô), quan sát kết quả trên cùng loại giấy. Ghi lại tổ hợp nào hợp với lối chữ mình đang học."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Mặc pháp",
+       "zh": "墨法",
+       "vi": "Phép dùng mực: chọn, mài, chấm và điều tiết mực khi viết."
+      },
+      {
+       "hv": "Du yên / Tùng yên",
+       "zh": "油烟 / 松烟",
+       "vi": "Mực làm từ muội dầu (bóng) và muội gỗ thông (đen sâu, ít bóng)."
+      },
+      {
+       "hv": "Tam sinh",
+       "zh": "三生",
+       "vi": "Nghiên tươi, nước tươi, mực tươi (theo Khang Lý Quỳ Quỳ)."
+      },
+      {
+       "hv": "Túc mặc",
+       "zh": "宿墨",
+       "vi": "Mực để qua đêm; thường tránh khi viết chữ."
+      },
+      {
+       "hv": "Táo nhuận",
+       "zh": "燥润",
+       "vi": "Khô và ướt của nét mực; xen kẽ tạo nhịp cho hành thảo."
+      },
+      {
+       "hv": "Trướng mặc",
+       "zh": "涨墨",
+       "vi": "Mực lan ra ngoài nét do quá ướt."
+      },
+      {
+       "hv": "Mặc phân ngũ sắc",
+       "zh": "墨分五色",
+       "vi": "Quan niệm hội họa: mực đen chia nhiều sắc độ đậm nhạt."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Khang Lý Quỳ Quỳ",
+       "zh": "康里巎巎",
+       "years": "1295–1345, đời Nguyên",
+       "note": "Thư gia, tác giả thuyết “cửu sinh”."
+      },
+      {
+       "name": "Lưu Dung",
+       "zh": "刘墉",
+       "years": "1719–1804, đời Thanh",
+       "note": "“Tể tướng mực đậm”."
+      },
+      {
+       "name": "Vương Văn Trị",
+       "zh": "王文治",
+       "years": "1730–1802, đời Thanh",
+       "note": "“Thám hoa mực nhạt”."
+      },
+      {
+       "name": "Chu Tinh Liên",
+       "zh": "周星莲",
+       "years": "thế kỷ XIX, đời Thanh",
+       "note": "Tác giả «Lâm trì quản kiến»."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Tám chữ “chất tế, giao khinh, sắc hắc, thanh thanh” dùng để làm gì?",
+      "“Tam sinh” gồm những gì? Hãy áp dụng chúng cho việc dùng mực chai ngày nay.",
+      "Phân tích lời cảnh báo của Âu Dương Tuân về mực quá nhạt và quá đặc.",
+      "Vì sao Khương Quỳ đề cao việc xen kẽ khô nhuận trong hành thảo?",
+      "“Tích mặc như kim” thực ra có nghĩa là gì?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c08",
+   "no": "Bài 8",
+   "title": "Nghiên Đoan Khê danh tiếng",
+   "titleZh": "端溪名砚",
+   "author": "Lưu Diễn Lương",
+   "pages": "60–72",
+   "summary": "Giới thiệu nghiên Đoan (Quảng Đông): lịch sử từ đời Đường, sự phát triển kiểu dáng qua các triều, các hố đá nổi tiếng, những “thạch phẩm” như mắt đá, thanh hoa, tiêu diệp bạch, và quy trình làm nghiên.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Trong “văn phòng tứ bảo”, nghiên là vật bền nhất: bút mòn, mực hết, giấy cũ, nhưng nghiên có thể truyền qua nhiều đời. **Nghiên Đoan** (Đoan nghiên), làm từ đá vùng Đoan Châu, nay là Triệu Khánh, tỉnh Quảng Đông, được xếp đầu trong bốn loại nghiên danh tiếng của Trung Hoa (cùng nghiên Hấp, nghiên Thao Hà, nghiên Trừng Nê). Tác giả Lưu Diễn Lương là người trong nghề nghiên ở Triệu Khánh; bài của ông kết hợp tư liệu cổ với hiểu biết thực tế. Bài giảng này giúp người học hiểu vì sao người xưa quý nghiên Đoan đến vậy và cần biết gì khi chọn một chiếc nghiên."
+    },
+    {
+     "t": "h",
+     "x": "1. Nguồn gốc và danh tiếng"
+    },
+    {
+     "t": "p",
+     "x": "Phần đông cho rằng nghiên Đoan xuất hiện từ đời Đường; tương truyền Tô Thức nói đá Đoan Khê bắt đầu dùng từ niên hiệu Vũ Đức (618–626). Một chiếc nghiên Đoan đời Đường được khai quật ở Quảng Châu năm 1965 là chứng cứ vật chất. Vì sao lại là đời Đường? Đó là thời thư pháp lên đỉnh cao với một loạt danh gia, kinh tế phồn thịnh, nhu cầu về đồ dùng tốt tăng lên."
+    },
+    {
+     "t": "p",
+     "x": "Danh tiếng của nghiên Đoan dựa trên hai phẩm chất cốt lõi mà người xưa tóm gọn: **phát mặc** (mài ra mực nhanh, mịn) và **bất tổn hào** (không làm hư lông bút). Ngoài ra còn huyền thoại “hà khí nghiên mặc”: hà hơi vào mặt nghiên cũng đủ ẩm để mài mực. Nhà thơ Lý Hạ đời Đường có câu thơ nổi tiếng ca ngợi thợ đá Đoan Châu:"
+    },
+    {
+     "t": "quote",
+     "zh": "端州石工巧如神，踏天磨刀割紫云。",
+     "hv": "Đoan Châu thạch công xảo như thần, đạp thiên ma đao cát tử vân.",
+     "vi": "Thợ đá Đoan Châu khéo như thần, đạp trời mài dao cắt mây tía.",
+     "src": "Lý Hạ, «Dương sinh thanh hoa tử thạch nghiên ca»"
+    },
+    {
+     "t": "p",
+     "x": "“Mây tía” chính là màu tím đặc trưng của đá Đoan. Tác giả cũng dẫn một đoạn tương truyền của Liễu Công Quyền xếp hạng các loại nghiên, trong đó có ý rằng nghiên Đoan hơn cả. Người xưa còn khắc **nghiên minh** (lời minh khắc ở lưng hoặc cạnh nghiên); một chiếc nghiên Đoan đời Tống khai quật ở Quảng Đông năm 1956 có lời minh được cho là của Tô Thức. Câu chuyện Bao Chửng làm quan ở Đoan Châu mà khi về không mang theo một chiếc nghiên nào cũng thường được nhắc đến như một biểu tượng thanh liêm, cho thấy nghiên Đoan quý tới mức trở thành phép thử nhân cách."
+    },
+    {
+     "t": "h",
+     "x": "2. Kiểu dáng qua các triều"
+    },
+    {
+     "t": "p",
+     "x": "Theo tác giả, nghiên Đoan đi từ đồ thuần dụng đến đồ vừa dùng vừa thưởng ngoạn:"
+    },
+    {
+     "t": "p",
+     "x": "**Đầu Đường**: hoàn toàn thực dụng, mặt nghiên không trang trí, hình vuông hoặc chữ nhật, đáy có chân. Nhưng người ta đã chú ý chất đá và vân đá. **Giữa Đường**: bắt đầu khắc hoa văn đơn giản, thường là đồ án phỏng cổ, đôi khi có sơn thủy, hoa chim. **Đời Tống**: coi trọng cả chất đá lẫn nghệ thuật chạm khắc; nhiều kiểu dáng có tên như nghiên Thái sử, nghiên Lan Đình, nghiên chữ Phượng. **Đời Minh**: kế thừa và mở rộng, đề tài phong phú (rồng mây, tùng hạc, trúc, đào tiên), đường nét tinh tế. Thời Minh còn có loại **bình bản** (tấm đá mài phẳng, không khắc, chỉ để ngắm vân đá) và loại **thiên nhiên nghiên** (giữ nguyên hình dạng tự nhiên của viên đá), bắt nguồn từ quan niệm của Tô Thức là được đá thì không đẽo gọt. **Đời Thanh**: theo tác giả là từ cực thịnh chuyển sang suy, chủ yếu phỏng cổ, ít sáng tạo."
+    },
+    {
+     "t": "p",
+     "x": "Với người học thư pháp, điều cần nhớ là: nghiên chạm trổ cầu kỳ không nhất thiết dùng tốt hơn. Phần quan trọng là **mặt mài** (nghiên đường) và **ao chứa mực** (nghiên trì); trang trí chỉ ở viền và lưng."
+    },
+    {
+     "t": "h",
+     "x": "3. Hố đá: vì sao Lão Khanh quý nhất"
+    },
+    {
+     "t": "p",
+     "x": "Đá nghiên Đoan được khai thác ở bờ nam sông Tây Giang, phía đông hẻm Linh Dương, quanh núi Phủ Kha (còn gọi Lạn Kha sơn) và dọc suối Đoan Khê. Mỗi hố (khanh, nham) cho loại đá khác nhau. Nổi tiếng nhất là **Thủy Nham**, từ thời Khang Hi đời Thanh được gọi là **Lão Khanh**: từ cuối Đường đá ở đây đã thành cống phẩm, khai thác có quan giám sát nên còn gọi là “Hoàng nham”. Ngoài ra có Ma Tử khanh, Khanh Tử nham, Tuyên Đức nham, Triêu Thiên nham, Tống khanh, Mai Hoa khanh… với tên gọi gắn với người phát hiện, niên hiệu khai mở hay đặc điểm của đá."
+    },
+    {
+     "t": "p",
+     "x": "Điều làm Lão Khanh đặc biệt là đá nằm ngập nước quanh năm. Việc khai thác cực kỳ gian khổ: lối vào hẹp chỉ đủ một người bò, phải xếp hàng dài người chuyền nước ra ngoài suốt nhiều tuần mới cạn đủ để đục đá, và mùa mưa thì phải đóng hố. Tác giả dẫn ghi chép đời Thanh về một đợt khai thác chỉ được khoảng ba tháng. Chính sự “ngâm nước” lâu đời được cho là làm đá Lão Khanh ẩm mịn, “mài không tiếng, chứa nước không hao”."
+    },
+    {
+     "t": "p",
+     "x": "Người dùng nghiên ngày nay không cần nghiên Lão Khanh mới viết được chữ đẹp. Nhưng hiểu tiêu chí của người xưa giúp ta đánh giá một chiếc nghiên bình thường: mặt đá mịn đều, mài mực nhanh mà không rít, mực mịn không lợn cợn, rửa sạch không đọng mực, không làm xơ đầu bút."
+    },
+    {
+     "t": "h",
+     "x": "4. Thạch phẩm: đọc vân đá"
+    },
+    {
+     "t": "p",
+     "x": "“Thạch phẩm” là những vân, đốm tự nhiên trên đá, vừa có giá trị thẩm mỹ vừa là dấu hiệu chất lượng. Theo tác giả, thạch phẩm và chất đá gắn chặt với nhau: nơi có những vân quý thì đá thường mịn, chắc. Một số thạch phẩm chính:"
+    },
+    {
+     "t": "p",
+     "x": "**Ngư não đống** (óc cá đông): mảng trắng mịn như óc cá bị đông, như mây trắng sắp tan; rất hiếm, thợ thường giữ ở mặt mài. **Thanh hoa**: những chấm xanh li ti, phải ngâm nước mới thấy rõ, được coi là tinh hoa của đá; chấm nhỏ như bụi là quý nhất. **Tiêu diệp bạch** (trắng lá chuối non): mảng trắng ngà mịn như lá chuối mới nở. **Thiên thanh**: màu xanh nhạt thuần khiết như trời thu vừa tạnh. **Hỏa nại** (vết lửa): mảng tím đỏ pha đen như bị lửa sém, có các biến thể “phấn son” và “đuôi ngựa”; dạng đặc tròn màu gan heo gọi là **trư can đống**. **Kim tinh điểm**: đốm vàng lấp lánh như sao, đặc trưng của đá Tống khanh. **Kim ngân tuyến** và **băng văn**: đường vân vàng, trắng và vân như thác nước, chỉ có ở Thủy Nham."
+    },
+    {
+     "t": "p",
+     "x": "Quý nhất là **thạch nhãn** (mắt đá): những nhân đá tròn có nhiều vòng màu xanh lục, tâm sẫm, trông như mắt chim thú. Mắt đá được đặt tên theo hình (mắt sáo, mắt vẹt, mắt phượng, mắt mèo) và phân loại theo “tính”: mắt sống, mắt lệ, mắt chết, mắt mờ… Mắt đá không giúp mài mực, nhưng là điểm nhấn tự nhiên mà thợ chạm thường lấy làm trung tâm bố cục (ví dụ làm mặt trăng, mắt rồng). Ở đây có một bài học thẩm mỹ: người thợ “nhân tài thi nghệ, nhân thạch cấu đồ”, tức tùy chất liệu mà thiết kế, không áp đặt mẫu sẵn. Điều này cũng gần với tinh thần của thư pháp: tùy giấy, tùy bút, tùy chữ mà bố cục."
+    },
+    {
+     "t": "h",
+     "x": "5. Từ khối đá đến chiếc nghiên"
+    },
+    {
+     "t": "p",
+     "x": "Quy trình làm nghiên gồm các bước chính: **khai thác** (thủ công, theo mạch đá, vì đá Đoan không chịu được rung chấn mạnh); **chọn liệu** (bỏ phần nứt, tì vết, giữ “thịt đá”, phân hạng); **làm phôi**; **chạm khắc** (thiết kế theo đề tài, ý tưởng, kết hợp thực dụng và thưởng ngoạn); **làm hộp** (thường bằng gỗ quý, vừa chống bụi vừa bảo vệ); và **mài bóng** qua nhiều lượt, cuối cùng là ngâm dầu, thử mực."
+    },
+    {
+     "t": "p",
+     "x": "Lời khuyên dùng nghiên rút ra từ bài này và bài 7: rửa nghiên sau mỗi buổi, không để mực khô qua đêm; đậy nắp hoặc cho vào hộp; tránh va đập và nhiệt độ đột ngột. Một chiếc nghiên được giữ gìn tốt sẽ đi cùng người viết hàng chục năm."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Đoan nghiên",
+       "zh": "端砚",
+       "vi": "Nghiên làm từ đá vùng Đoan Châu (Triệu Khánh, Quảng Đông)."
+      },
+      {
+       "hv": "Phát mặc",
+       "zh": "发墨",
+       "vi": "Khả năng mài ra mực nhanh và mịn của mặt đá."
+      },
+      {
+       "hv": "Nghiên đường / nghiên trì",
+       "zh": "砚堂 / 砚池",
+       "vi": "Mặt mài mực và ao chứa mực của nghiên."
+      },
+      {
+       "hv": "Nghiên minh",
+       "zh": "砚铭",
+       "vi": "Lời minh khắc trên nghiên."
+      },
+      {
+       "hv": "Lão Khanh",
+       "zh": "老坑",
+       "vi": "Hố đá Thủy Nham, loại đá Đoan quý nhất."
+      },
+      {
+       "hv": "Thạch phẩm",
+       "zh": "石品",
+       "vi": "Vân, đốm tự nhiên trên đá, dùng để đánh giá vẻ đẹp và chất lượng."
+      },
+      {
+       "hv": "Thạch nhãn",
+       "zh": "石眼",
+       "vi": "Nhân đá tròn nhiều vòng màu như mắt chim; quý hiếm."
+      },
+      {
+       "hv": "Thanh hoa",
+       "zh": "青花",
+       "vi": "Chấm xanh li ti trong đá, ngâm nước mới thấy rõ."
+      },
+      {
+       "hv": "Tiêu diệp bạch",
+       "zh": "蕉叶白",
+       "vi": "Mảng trắng mịn như lá chuối non."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Hai phẩm chất cốt lõi nào làm nên danh tiếng của nghiên Đoan?",
+      "Tóm tắt sự thay đổi kiểu dáng nghiên Đoan từ đời Đường đến đời Thanh.",
+      "Vì sao đá Lão Khanh khó khai thác, và điều đó liên quan gì đến chất đá?",
+      "Thạch nhãn có ích gì cho việc mài mực không? Vì sao nó vẫn được quý?",
+      "Khi mua một chiếc nghiên bình thường để luyện chữ, bạn sẽ kiểm tra những điểm nào?"
      ]
     }
    ]

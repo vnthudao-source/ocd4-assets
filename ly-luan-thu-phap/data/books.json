@@ -63,7 +63,7 @@
      "title": "Bàn về cầm bút và vận bút",
      "titleZh": "关于笔的执使",
      "author": "Hoàng Ỷ",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c06",
@@ -165,7 +165,7 @@
      "title": "Bàn về mặc pháp",
      "titleZh": "论墨法",
      "author": "Hồng Phi Mô",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c08",
@@ -173,7 +173,7 @@
      "title": "Nghiên Đoan Khê danh tiếng",
      "titleZh": "端溪名砚",
      "author": "Lưu Diễn Lương",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c09",
