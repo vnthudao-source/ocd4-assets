@@ -1052,6 +1052,10 @@ async function loadOwnWorks(code,force){
                 c,
                 items
             );
+            /* v1.8.1: bài mới của chính mình hiện ngay trong "Tác phẩm mới nhất" */
+            if(mergeOwnIntoLatest(c) && state.works.length){
+                renderLatest();
+            }
             return items;
         })()
         .finally(
@@ -1080,9 +1084,6 @@ async function refreshOwnWorks(force){
             );
         renderOwnWorks();
         updateSubmitAvailability();
-        if(mergeOwnIntoLatest()){
-            renderLatest();
-        }
     }catch(error){
         console.warn(
             "[Student Work] Own works:",
@@ -1222,11 +1223,14 @@ function applyLatestText(text,deleteText){
 }
 /* v1.8.1: bài của học viên đang xem (đọc trực tiếp qua Apps Script) mà danh sách công khai (CSV xuất bản,
    Google cập nhật chậm ~5 phút) chưa có -> chèn vào "Tác phẩm mới nhất" để người vừa nộp thấy ngay. */
-function mergeOwnIntoLatest(){
-    if(!state.currentStudent){
-        return false;
+function mergeOwnIntoLatest(code){
+    /* ownWorksMap chỉ chứa bài của chính người đang xem (tải sau khi nhận diện qua Minh Hồng / tài khoản) */
+    let own=[];
+    if(code){
+        own=state.ownWorksMap.get(normalizeCode(code)) || [];
+    }else{
+        state.ownWorksMap.forEach(function(items){ own=own.concat(items || []); });
     }
-    const own=state.ownWorksMap.get(normalizeCode(state.currentStudent.code));
     if(!own || !own.length){
         return false;
     }
