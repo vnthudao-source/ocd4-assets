@@ -12,13 +12,24 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
        false = THI CHÍNH THỨC
        true  = THI THỬ
     */
-    trialMode: true,
+    trialMode: false,
 
     /*
        true = THI CHÍNH THỨC chỉ nhận tài khoản đã bảo mật
               và đang đăng nhập đúng mã (icon Minh Hồng).
     */
-    requireSecureAccount: true
+    requireSecureAccount: true,
+
+    /*
+       ĐỢT THI NÀY: được dự thi dù chưa đạt điểm TB / số bài nộp
+       (vẫn chỉ thi 1 lần, vẫn cần ít nhất 1 bài nộp trước khi thi).
+       exemptCourses: khoá (cột Khóa trong XepHang)
+       exemptCodes  : mã học viên (không cần tài khoản bảo mật)
+       Hết đợt: để [] cho cả hai.
+    */
+    exemptCourses: ["3"],
+
+    exemptCodes: ["TEST001"]
 
 };
 </script>
@@ -1227,6 +1238,19 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
     }
 
 }
+
+/* v2.7.0: câu hỏi hình ảnh */
+.image-q-main{margin:4px 0 14px;text-align:center}
+.image-q-main img{max-width:100%;max-height:260px;border-radius:10px;border:1px solid #e4d8c8}
+.image-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:6px 0 14px}
+.image-option{position:relative;display:block;padding:6px;border:2px solid #e4d8c8;border-radius:12px;background:#fff;cursor:pointer;text-align:center}
+.image-option img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain;background:#faf6ef;border-radius:8px}
+.image-option .image-letter{display:inline-block;margin-top:6px;font-weight:bold;font-size:14px;color:#5a3d30}
+.image-option.selected{border-color:#397153;box-shadow:0 0 0 3px rgba(57,113,83,.18)}
+.image-option.selected .image-letter{color:#397153}
+.practical-live-box{margin:10px 0 12px;padding:12px 13px;border-radius:10px;background:#fff7e8;border:1px solid #ecd6ad;font-size:14px;line-height:1.6;color:#4e4436}
+.practical-live-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.practical-live-actions .exam-btn{flex:1;min-width:150px;text-align:center;text-decoration:none}
 </style>
 
 
@@ -1245,12 +1269,12 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
     </h1>
 
     <p>
-        Hệ thống thi lý thuyết và lựa chọn các bài thực hành
-        tốt nhất từ lịch sử bài tập của học viên.
+        Thi trắc nghiệm lý thuyết, nhận diện hình ảnh và
+        thực hành: chọn bài tâm đắc nhất, sáng tác tại chỗ một tác phẩm mới.
     </p>
 
     <div class="exam-test">
-        20 câu lý thuyết + 5 câu thực hành
+        20 câu lý thuyết + 10 câu hình ảnh + 2 câu thực hành
     </div>
 
 </section>
@@ -1492,7 +1516,16 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
 <script>
 /* =========================================================
    OCD GRADUATION EXAM
-   v2.6.0 - 20 THEORY + 5 PRACTICAL
+   v2.7.0 - 20 THEORY + 10 IMAGE + 2 PRACTICAL
+
+   v2.7.0 (29/10/2026):
+   - Câu 1-20: trắc nghiệm chữ (ngân hàng 35 câu)
+   - Câu 21-30: chọn hình ảnh, ngân hàng ảnh Phòng luyện công
+     (NganHangAnh), mỗi chủ đề 1 câu; tính chung điểm trắc nghiệm
+   - Câu 31: bài tâm đắc nhất (bài nộp trước khi thi)
+   - Câu 32: sáng tác tại chỗ, đăng trang Nộp bài, tải lại để chọn
+   - Thi chính thức; đợt này cho khoá 3 + TEST001 dự thi
+
 
    v2.6.0 (29/10/2026):
    - Không gửi kết quả 2 lần; chỉ báo "đã ghi nhận" khi
@@ -1556,6 +1589,12 @@ var IS_TRIAL_MODE =
 var REQUIRE_SECURE_ACCOUNT =
     GLOBAL_SETTINGS.requireSecureAccount !== false;
 
+var EXEMPT_COURSES =
+    (GLOBAL_SETTINGS.exemptCourses || []).map(function(v){ return String(v).trim(); });
+
+var EXEMPT_CODES =
+    (GLOBAL_SETTINGS.exemptCodes || []).map(function(v){ return String(v).trim().toUpperCase(); });
+
 
 /* =========================================================
    CONFIG
@@ -1564,16 +1603,44 @@ var REQUIRE_SECURE_ACCOUNT =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.6.0_20_5",
+        "OCD_GRADUATION_EXAM_V2.7.0_20_10_2",
 
     durationMs:
         60*60*1000,
 
-    theoryCount:
+    /*
+       v2.7.0: phần trắc nghiệm = 20 câu chữ + 10 câu hình ảnh
+       (lấy từ ngân hàng ảnh Phòng luyện công, mỗi chủ đề 1 câu)
+    */
+    theoryTextCount:
         20,
 
+    imageCount:
+        10,
+
+    theoryCount:
+        30,
+
     practicalCount:
-        5,
+        2,
+
+    imageBankCsv:
+        "https://docs.google.com/spreadsheets/d/" +
+        "1AzGqq0yCi4Qvhw14K8SX2Nx5pGRvFcFYJp0ob9EaPgg" +
+        "/export?format=csv&gid=460940917",
+
+    nopBaiUrl:
+        "https://www.thudao.com/p/nop-bai.html",
+
+    /* Câu 32: chỉ nhận bài nộp SAU lúc bắt đầu thi (cho lệch đồng hồ 2 phút) */
+    liveToleranceMs:
+        2*60*1000,
+
+    exemptCourses:
+        EXEMPT_COURSES,
+
+    exemptCodes:
+        EXEMPT_CODES,
 
     minAverageExclusive:
         5,
@@ -1593,7 +1660,7 @@ var CONFIG={
 
     /* Thực hành cần ít nhất 5 bài nộp để chọn */
     minPracticalSubmissions:
-        5,
+        1,
 
     /* Xác nhận bài đã vào BaiThiTotNghiep: số lần đọc lại, cách nhau */
     verifyTries:
@@ -1632,6 +1699,9 @@ var CONFIG={
     timeout:
         15000,
 
+    appsScriptUrl:
+        "https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec",
+
     /*
        QUAN TRỌNG:
        Dùng prefix MỚI cho bản 20 + 5.
@@ -1641,15 +1711,15 @@ var CONFIG={
     storagePrefix:
         IS_TRIAL_MODE
             ?
-            "OCD_GRADUATION_TRIAL_V25_20_5_"
+            "OCD_GRADUATION_TRIAL_V27_30_2_"
             :
-            "OCD_GRADUATION_EXAM_V25_20_5_",
+            "OCD_GRADUATION_EXAM_V27_30_2_",
 
     lastCodeKey:
         "OCD_GRADUATION_EXAM_LAST_CODE",
 
     theoryBankVersion:
-        "OCD_THEORY_BANK_35_V1",
+        "OCD_THEORY_BANK_35_V1+PLC_IMG",
 
     formAction:
         "https://docs.google.com/forms/d/e/" +
@@ -2138,34 +2208,35 @@ var THEORY_BANK=[
 
 /* =========================================================
    PRACTICAL QUESTIONS
-   21 -> 25
+   31 -> 32
 ========================================================= */
 
 var PRACTICAL_QUESTIONS=[
 
     {
-        id:21,
-        text:"Nộp bài cơ bản công nét lộ phong."
+        id:31,
+
+        mode:"history",
+
+        text:"Nộp lên một bài tâm đắc nhất từ đầu khoá tới giờ.",
+
+        help:
+            "Chọn một bài bạn đã nộp TRƯỚC khi bắt đầu thi."
     },
 
     {
-        id:22,
-        text:"Nộp bài Thận Độc."
-    },
+        id:32,
 
-    {
-        id:23,
-        text:"Nộp bài Vạn Sự Như Ý."
-    },
+        mode:"live",
 
-    {
-        id:24,
-        text:"Nộp bài viết theo chiều dọc."
-    },
+        text:"Tại chỗ sáng tác một tác phẩm mới, chụp lại ảnh và đăng lên trang Nộp bài.",
 
-    {
-        id:25,
-        text:"Nộp một bài viết dài."
+        help:
+            "B1: Tại chỗ sáng tác một tác phẩm mới, chụp lại ảnh và đăng lên trang Nộp bài. " +
+            "Tiêu chí: sử dụng các kỹ thuật thư pháp đã học, bài viết khoảng 20 chữ trở lên, " +
+            "gồm cả Đại tự – Tiểu tự, chủ đề “Nhập cổ xuất tân”, phong cách viết tự do. " +
+            "B2: Quay lại phòng thi, bấm TẢI LẠI DANH SÁCH BÀI NỘP rồi chọn bài vừa đăng " +
+            "(chỉ nhận bài nộp sau lúc bắt đầu thi)."
     }
 
 ];
@@ -2204,6 +2275,12 @@ var STATE={
     remoteSubmitting:false,
 
     remoteStart:null,
+
+    imageBank:null,
+
+    imageBankTask:null,
+
+    submissionsRefreshing:false,
 
     verifying:false,
 
@@ -2462,31 +2539,341 @@ function buildTheoryPaper(
         )
         .slice(
             0,
-            CONFIG.theoryCount
+            CONFIG.theoryTextCount
         );
 
         /*
        v2.6.0: đề lưu trong máy KHÔNG kèm đáp án đúng.
        Chấm điểm bằng khóa băm trong ngân hàng (isCorrectChoice).
     */
-    return selected.map(
-        function(source,index){
+    var textQuestions=
+        selected.map(
+            function(source,index){
+
+                return {
+
+                    id:
+                        index+1,
+
+                    bankId:
+                        source.bankId,
+
+                    text:
+                        source.text,
+
+                    options:
+                        shuffleWithRandom(
+                            source.options,
+                            random
+                        )
+                };
+            }
+        );
+
+    return textQuestions.concat(
+        buildImagePaper(
+            random,
+            CONFIG.theoryTextCount
+        )
+    );
+}
+
+
+/* =========================================================
+   v2.7.0: 10 CÂU HÌNH ẢNH – NGÂN HÀNG ẢNH PHÒNG LUYỆN CÔNG
+   (NganHangAnh: mỗi chủ đề 1 câu, xáo thứ tự câu và ảnh)
+========================================================= */
+
+function loadImageBank(){
+
+    if(
+        STATE.imageBank &&
+        STATE.imageBank.length
+    ){
+
+        return Promise.resolve(
+            STATE.imageBank
+        );
+    }
+
+    if(STATE.imageBankTask){
+
+        return STATE.imageBankTask;
+    }
+
+    STATE.imageBankTask=
+        (async function(){
+
+            var rows=
+                parseCSV(
+                    await fetchTextRetry(
+                        CONFIG.imageBankCsv
+                    )
+                );
+
+            var heads=
+                (rows.shift() || [])
+                .map(
+                    function(h){
+
+                        return String(h || "").trim();
+                    }
+                );
+
+            var at=
+                function(name){
+
+                    return heads.indexOf(
+                        name
+                    );
+                };
+
+            if(
+                heads[0]!=="QuestionID" ||
+                at("Prompt")<0 ||
+                at("CorrectOption")<0
+            ){
+
+                throw new Error(
+                    "Sai nguồn ngân hàng câu hỏi hình ảnh."
+                );
+            }
+
+            var list=[];
+
+            rows.forEach(
+                function(r){
+
+                    var get=
+                        function(name){
+
+                            return String(
+                                r[at(name)] || ""
+                            )
+                            .trim();
+                        };
+
+                    var item={
+
+                        id:
+                            get("QuestionID"),
+
+                        prompt:
+                            get("Prompt"),
+
+                        image:
+                            get("QuestionImageURL"),
+
+                        topic:
+                            get("Topic") ||
+                            get("QuestionID").replace(/_\d+$/,""),
+
+                        correct:
+                            get("CorrectOption").toUpperCase(),
+
+                        status:
+                            (get("Status") || "ACTIVE").toUpperCase(),
+
+                        options:
+                            ["A","B","C","D"].map(
+                                function(k){
+
+                                    return {
+
+                                        letter:k,
+
+                                        label:get("Option"+k),
+
+                                        img:get("Image"+k+"URL")
+                                    };
+                                }
+                            )
+                    };
+
+                    if(
+                        item.id &&
+                        item.prompt &&
+                        item.status==="ACTIVE" &&
+                        /^[ABCD]$/.test(item.correct) &&
+                        item.options.every(
+                            function(o){
+
+                                return !!o.img;
+                            }
+                        )
+                    ){
+
+                        list.push(
+                            item
+                        );
+                    }
+                }
+            );
+
+            if(
+                list.length<
+                CONFIG.imageCount
+            ){
+
+                throw new Error(
+                    "Ngân hàng câu hỏi hình ảnh chưa đủ " +
+                    CONFIG.imageCount +
+                    " câu ACTIVE."
+                );
+            }
+
+            STATE.imageBank=
+                list;
+
+            return list;
+        })();
+
+    return STATE.imageBankTask
+    .finally(
+        function(){
+
+            STATE.imageBankTask=
+                null;
+        }
+    );
+}
+
+
+function imageKey(
+    questionId,
+    letter
+){
+
+    return hashString(
+        "OCD-I|" +
+        questionId +
+        "|" +
+        letter
+    )
+    .toString(36);
+}
+
+
+function buildImagePaper(
+    random,
+    offset
+){
+
+    var bank=
+        STATE.imageBank || [];
+
+    if(!bank.length){
+
+        return [];
+    }
+
+    var groups={};
+
+    var topics=[];
+
+    bank.forEach(
+        function(item){
+
+            if(!groups[item.topic]){
+
+                groups[item.topic]=[];
+
+                topics.push(
+                    item.topic
+                );
+            }
+
+            groups[item.topic].push(
+                item
+            );
+        }
+    );
+
+    var picked;
+
+    if(
+        topics.length>=
+        CONFIG.imageCount
+    ){
+
+        /* mỗi chủ đề 1 câu */
+        picked=
+            shuffleWithRandom(
+                topics,
+                random
+            )
+            .slice(
+                0,
+                CONFIG.imageCount
+            )
+            .map(
+                function(topic){
+
+                    return shuffleWithRandom(
+                        groups[topic],
+                        random
+                    )[0];
+                }
+            );
+
+    }else{
+
+        picked=
+            shuffleWithRandom(
+                bank,
+                random
+            )
+            .slice(
+                0,
+                CONFIG.imageCount
+            );
+    }
+
+    return picked.map(
+        function(item,index){
 
             return {
 
                 id:
-                    index+1,
+                    offset+index+1,
+
+                type:
+                    "image",
 
                 bankId:
-                    source.bankId,
+                    item.id,
+
+                topic:
+                    item.topic,
 
                 text:
-                    source.text,
+                    item.prompt,
+
+                image:
+                    item.image,
+
+                /* không lưu đáp án; chỉ lưu khoá băm */
+                k:
+                    imageKey(
+                        item.id,
+                        item.correct
+                    ),
 
                 options:
                     shuffleWithRandom(
-                        source.options,
+                        item.options,
                         random
+                    )
+                    .map(
+                        function(o){
+
+                            return {
+
+                                letter:o.letter,
+
+                                img:o.img
+                            };
+                        }
                     )
             };
         }
@@ -2546,6 +2933,24 @@ function questionIsCorrect(
 
         return false;
     }
+
+    if(q.type==="image"){
+
+        var chosen=
+            q.options[
+                Number(answer)
+            ];
+
+        return (
+            !!chosen &&
+            imageKey(
+                q.bankId,
+                chosen.letter
+            )===
+            q.k
+        );
+    }
+
 
     return isCorrectChoice(
         q.bankId,
@@ -3704,17 +4109,158 @@ function detectSubmissionColumns(headers){
    LOAD STUDENT SUBMISSIONS
 ========================================================= */
 
+/*
+   v2.7.0: đọc bài nộp qua Apps Script (dữ liệu mới ngay, lọc sẵn theo mã)
+   – cùng cách Reward Core đang dùng; lỗi thì quay về CSV công khai
+   (CSV công khai có thể chậm vài phút so với Sheet).
+*/
+async function fetchSubmissionsFromApi(code){
+
+    var key=
+        "students:Form Responses 1!";
+
+    var controller=
+        typeof AbortController!=="undefined"
+            ?
+            new AbortController()
+            :
+            null;
+
+    var timer=
+        controller
+            ?
+            setTimeout(
+                function(){
+
+                    controller.abort();
+                },
+                CONFIG.timeout
+            )
+            :
+            null;
+
+    try{
+
+        var response=
+            await fetch(
+                CONFIG.appsScriptUrl +
+                "?multi=" +
+                encodeURIComponent(key) +
+                "&code=" +
+                encodeURIComponent(code) +
+                "&v=449&_=" +
+                Date.now(),
+                {
+                    cache:"no-store",
+
+                    credentials:"omit",
+
+                    signal:
+                        controller
+                            ?
+                            controller.signal
+                            :
+                            undefined
+                }
+            );
+
+        var json=
+            JSON.parse(
+                await response.text()
+            );
+
+        if(
+            !json ||
+            !json.ok ||
+            !json.sheets ||
+            !Array.isArray(
+                json.sheets[key]
+            ) ||
+            !json.sheets[key].length
+        ){
+
+            throw new Error(
+                json && json.error ||
+                "Apps Script không trả bài nộp."
+            );
+        }
+
+        var rows=
+            json.sheets[key]
+            .map(
+                function(row){
+
+                    return (row || []).map(
+                        function(v){
+
+                            return v===null || v===undefined
+                                ?
+                                ""
+                                :
+                                String(v);
+                        }
+                    );
+                }
+            );
+
+        if(
+            detectSubmissionColumns(
+                rows[0]
+            ).code<0
+        ){
+
+            throw new Error(
+                "Apps Script trả sai cấu trúc bài nộp."
+            );
+        }
+
+        return rows;
+
+    }finally{
+
+        if(timer){
+
+            clearTimeout(
+                timer
+            );
+        }
+    }
+}
+
+
 async function loadStudentSubmissions(code){
 
-    var text=
-        await fetchTextRetry(
-            submissionCsvUrl()
+    var rows=null;
+
+    try{
+
+        rows=
+            await fetchSubmissionsFromApi(
+                code
+            );
+
+        STATE.lastSubmissionSource=
+            "api";
+
+    }catch(error){
+
+        console.warn(
+            "[Graduation] Apps Script bài nộp:",
+            error &&
+            error.message ||
+            error
         );
 
-    var rows=
-        parseCSV(
-            text
-        );
+        rows=
+            parseCSV(
+                await fetchTextRetry(
+                    submissionCsvUrl()
+                )
+            );
+
+        STATE.lastSubmissionSource=
+            "csv";
+    }
 
     if(rows.length<2){
 
@@ -4463,10 +5009,48 @@ function friendlyError(error){
    v2.6.0: TÀI KHOẢN BẢO MẬT (OCDAuth – icon Minh Hồng)
 ========================================================= */
 
+/* v2.7.0: được dự thi đợt này dù chưa đạt tiêu chuẩn */
+function isExempt(identity){
+
+    if(!identity){
+
+        return false;
+    }
+
+    return (
+        CONFIG.exemptCodes.indexOf(
+            normalizeCode(
+                identity.code
+            )
+        )!==-1 ||
+        CONFIG.exemptCourses.indexOf(
+            String(
+                identity.course || ""
+            )
+            .trim()
+        )!==-1
+    );
+}
+
+
 async function checkAccount(code){
 
     var au=
         window.OCDAuth;
+
+    /* Tài khoản kiểm thử (exemptCodes) không cần bảo mật */
+    if(
+        CONFIG.exemptCodes.indexOf(
+            normalizeCode(
+                code
+            )
+        )!==-1
+    ){
+
+        return {
+            ok:true
+        };
+    }
 
     var again=
         function(){
@@ -4915,14 +5499,26 @@ async function(){
 
         }else{
 
+            STATE.student.exempt=
+                isExempt(
+                    identity
+                );
+
             STATE.eligible=
                 (
-                    metrics.averageScore >
-                    CONFIG.minAverageExclusive
-                ) &&
-                (
-                    metrics.submissionCount >
-                    CONFIG.minSubmissionExclusive
+                    STATE.student.exempt
+                        ?
+                        metrics.submissionCount>=
+                        CONFIG.minPracticalSubmissions
+                        :
+                        (
+                            metrics.averageScore >
+                            CONFIG.minAverageExclusive
+                        ) &&
+                        (
+                            metrics.submissionCount >
+                            CONFIG.minSubmissionExclusive
+                        )
                 ) &&
                 !history.done;
         }
@@ -5264,6 +5860,13 @@ function renderCandidate(){
                 "Tài khoản kiểm thử không bị giới hạn số lần thi.<br>" +
                 "<strong>Bài của ADMIN chỉ chạy thử trên máy, không gửi vào BaiThiTotNghiep.</strong>";
 
+        }else if(s.exempt){
+
+            status.innerHTML=
+                "<strong>ĐƯỢC THAM GIA KỲ THI ĐỢT NÀY</strong><br>" +
+                "Học viên thuộc danh sách dự thi đợt này (không xét điểm trung bình và số bài nộp). " +
+                "Mỗi học viên chỉ thi một lần.";
+
         }else{
 
             status.innerHTML=
@@ -5279,6 +5882,18 @@ function renderCandidate(){
 
     status.className=
         "exam-eligibility fail";
+
+    if(s.exempt){
+
+        status.innerHTML=
+            "<strong>CHƯA CÓ BÀI NỘP</strong><br>" +
+            "Câu 31 cần chọn một bài đã nộp trước khi thi. Hãy nộp ít nhất 1 bài trên trang Nộp bài rồi tra cứu lại.";
+
+        start.disabled=
+            true;
+
+        return;
+    }
 
     status.innerHTML=
         "<strong>CHƯA ĐỦ ĐIỀU KIỆN DỰ THI</strong><br>" +
@@ -5461,7 +6076,7 @@ function ensureTheoryPaper(){
     }
 
     /*
-       Chỉ chấp nhận đề đủ 20 câu.
+       Chỉ chấp nhận đề đủ số câu trắc nghiệm.
        Nếu phiên nào sai số lượng sẽ tạo lại đề.
     */
 
@@ -5471,6 +6086,15 @@ function ensureTheoryPaper(){
         ) &&
         STATE.session.theoryQuestions.length===
         CONFIG.theoryCount
+    ){
+
+        return;
+    }
+
+    /* v2.7.0: chưa tải được ngân hàng ảnh thì chưa dựng lại đề */
+    if(
+        !STATE.imageBank ||
+        !STATE.imageBank.length
     ){
 
         return;
@@ -5671,6 +6295,34 @@ function startTimeFromRemote(info){
 }
 
 
+async function ensureImageBank(){
+
+    try{
+
+        await loadImageBank();
+
+        return true;
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        setLookupMessage(
+            "Chưa tải được 10 câu hỏi hình ảnh từ Phòng luyện công. Đề thi chưa được mở – vui lòng kiểm tra mạng rồi bấm lại. (" +
+            friendlyError(
+                error
+            ) +
+            ")",
+            "error"
+        );
+
+        return false;
+    }
+}
+
+
 function lockAsFinished(existing){
 
     STATE.previousExam=
@@ -5758,6 +6410,13 @@ async function(){
             return false;
         }
 
+        if(
+            !(await ensureImageBank())
+        ){
+
+            return false;
+        }
+
         STATE.session=
             createSession(
                 Date.now()
@@ -5839,6 +6498,13 @@ async function(){
             return false;
         }
 
+
+        if(
+            !(await ensureImageBank())
+        ){
+
+            return false;
+        }
 
         /*
            Đã bắt đầu ở thiết bị khác: làm tiếp đúng phiên đó,
@@ -6503,36 +7169,102 @@ function renderTheory(){
             '<div>' +
 
                 '<div class="exam-question-number">' +
-
                     'CÂU ' +
                     q.id +
-
+                    (
+                        q.type==="image"
+                            ?
+                            ' · CÂU HỎI HÌNH ẢNH'
+                            :
+                            ''
+                    ) +
                 '</div>' +
-
                 '<h2 class="exam-question-title">' +
-
                     escapeHtml(
                         q.text
                     ) +
-
                 '</h2>' +
-
             '</div>' +
-
             '<div class="exam-progress">' +
-
                 theoryCount() +
                 '/' +
                 CONFIG.theoryCount +
-
             '</div>' +
+        '</div>';
 
-        '</div>' +
+    if(q.type==="image"){
 
-        '<div class="theory-options">';
+        if(q.image){
 
+            html+=
+                '<div class="image-q-main">' +
+                    '<img loading="lazy" alt="Ảnh câu hỏi" src="' +
+                        escapeHtml(
+                            q.image
+                        ) +
+                    '">' +
+                '</div>';
+        }
 
-    q.options.forEach(
+        html+=
+            '<div class="image-options">';
+
+        q.options.forEach(
+            function(option,index){
+
+                html+=
+                    '<button ' +
+                        'type="button" ' +
+                        'class="image-option ' +
+                        (
+                            Number(selected)===index &&
+                            selected!==undefined
+                                ?
+                                "selected"
+                                :
+                                ""
+                        ) +
+                        '" ' +
+                        'onclick="return window.OCDGraduationExam.answerTheory(' +
+                            q.id +
+                            ',' +
+                            index +
+                        ');">' +
+                        '<img loading="lazy" alt="Ảnh ' +
+                            String.fromCharCode(65+index) +
+                        '" src="' +
+                            escapeHtml(
+                                option.img
+                            ) +
+                        '">' +
+                        '<span class="image-letter">' +
+                            'Ảnh ' +
+                            String.fromCharCode(
+                                65+index
+                            ) +
+                        '</span>' +
+                    '</button>';
+            }
+        );
+
+        html+=
+            '</div>' +
+            '<div class="theory-options" style="display:none">';
+
+    }else{
+
+        html+=
+            '<div class="theory-options">';
+    }
+
+    (
+        q.type==="image"
+            ?
+            []
+            :
+            q.options
+    )
+    .forEach(
         function(option,index){
 
             html+=
@@ -6920,6 +7652,146 @@ function usedSubmissionMap(){
 }
 
 
+/*
+   v2.7.0: câu 31 = bài nộp TRƯỚC lúc bắt đầu thi,
+           câu 32 = bài nộp SAU lúc bắt đầu thi (sáng tác tại chỗ)
+*/
+function practicalAllowed(
+    q,
+    item
+){
+
+    var start=
+        STATE.session &&
+        Number(
+            STATE.session.startedAt
+        );
+
+    if(
+        !q ||
+        !start
+    ){
+
+        return true;
+    }
+
+    var t=
+        Number(
+            item.timestampSort
+        );
+
+    var known=
+        Number.isFinite(t) &&
+        t>1000000000000;
+
+    if(q.mode==="live"){
+
+        return (
+            known &&
+            t>=start-CONFIG.liveToleranceMs
+        );
+    }
+
+    if(q.mode==="history"){
+
+        return (
+            !known ||
+            t<start-CONFIG.liveToleranceMs
+        );
+    }
+
+    return true;
+}
+
+
+/* Tải lại bài nộp (lấy cả bài vừa đăng trên trang Nộp bài) */
+APP.refreshSubmissions=
+async function(){
+
+    if(
+        !STATE.student ||
+        STATE.submissionsRefreshing
+    ){
+
+        return false;
+    }
+
+    STATE.submissionsRefreshing=
+        true;
+
+    STATE.refreshNote=
+        "";
+
+    renderPractical();
+
+    try{
+
+        var fresh=
+            await loadStudentSubmissions(
+                STATE.student.code,
+                true
+            );
+
+        STATE.deleteRows=
+            null;
+
+        var deleteResult=
+            await applyDeleteLog(
+                STATE.student.code,
+                fresh
+            );
+
+        STATE.validSubmissions=
+            deleteResult.valid;
+
+        var liveCount=
+            deleteResult.valid.filter(
+                function(item){
+
+                    return practicalAllowed(
+                        PRACTICAL_QUESTIONS[1],
+                        item
+                    );
+                }
+            ).length;
+
+        STATE.refreshNote=
+            "Đã tải lại lúc " +
+            formatDateTime(Date.now()).slice(11) +
+            ": có " +
+            liveCount +
+            " bài nộp sau lúc bắt đầu thi." +
+            (
+                STATE.lastSubmissionSource==="csv"
+                    ?
+                    " (Bài vừa đăng có thể mất vài phút mới hiện – bấm tải lại sau ít phút.)"
+                    :
+                    ""
+            );
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        STATE.refreshNote=
+            friendlyError(
+                error
+            );
+
+    }finally{
+
+        STATE.submissionsRefreshing=
+            false;
+
+        renderPractical();
+    }
+
+    return false;
+};
+
+
 function practicalSortRank(
     item,
     currentQuestionId,
@@ -7098,19 +7970,57 @@ function renderPractical(){
         '</div>';
 
 
-    html+=
+    if(q.mode==="live"){
 
-        '<div class="practical-help">' +
+        html+=
+            '<div class="practical-live-box">' +
+                escapeHtml(
+                    q.help
+                ) +
+                '<div class="practical-live-actions">' +
+                    '<a class="exam-btn gold" target="_blank" rel="noopener" href="' +
+                        escapeHtml(
+                            CONFIG.nopBaiUrl
+                        ) +
+                    '">MỞ TRANG NỘP BÀI</a>' +
+                    '<button class="exam-btn" type="button" id="examRefreshSubmissions" ' +
+                        (
+                            STATE.submissionsRefreshing
+                                ?
+                                'disabled '
+                                :
+                                ''
+                        ) +
+                        'onclick="return window.OCDGraduationExam.refreshSubmissions();">' +
+                        (
+                            STATE.submissionsRefreshing
+                                ?
+                                'ĐANG TẢI...'
+                                :
+                                'TẢI LẠI DANH SÁCH BÀI NỘP'
+                        ) +
+                    '</button>' +
+                '</div>' +
+                '<div id="examRefreshNote" class="exam-muted" style="font-size:12px;margin-top:6px;">' +
+                    escapeHtml(
+                        STATE.refreshNote ||
+                        ""
+                    ) +
+                '</div>' +
+            '</div>';
 
-            'Chọn một bài trong lịch sử bài tập đã nộp. ' +
+    }else{
 
-            'Sau khi chọn, hệ thống sẽ tự ghi nhận và chuyển sang câu thực hành tiếp theo. ' +
-
-            'Một bài chỉ được sử dụng cho một câu. ' +
-
-            'Điểm cũ chỉ dùng để tham khảo.' +
-
-        '</div>';
+        html+=
+            '<div class="practical-help">' +
+                escapeHtml(
+                    q.help ||
+                    ""
+                ) +
+                ' Một bài chỉ được sử dụng cho một câu. ' +
+                'Điểm cũ chỉ dùng để tham khảo.' +
+            '</div>';
+    }
 
 
     if(answer){
@@ -7316,6 +8226,15 @@ function renderSubmissionList(){
         .filter(
             function(item){
 
+                return practicalAllowed(
+                    q,
+                    item
+                );
+            }
+        )
+        .filter(
+            function(item){
+
                 if(!search){
 
                     return true;
@@ -7384,12 +8303,16 @@ function renderSubmissionList(){
             }
 
             return (
-                a.timestampSort -
-                b.timestampSort
+                q.mode==="live"
+                    ?
+                    b.timestampSort -
+                    a.timestampSort
+                    :
+                    a.timestampSort -
+                    b.timestampSort
             );
         }
     );
-
 
     STATE.practicalRenderMap={};
 
@@ -7442,9 +8365,9 @@ function renderSubmissionList(){
             '<div class="exam-message show error">' +
 
                 (
-                    CONFIG.trialMode
+                    q.mode==="live"
                         ?
-                        'Không tìm thấy bài đã nộp. Chế độ thi thử vẫn cho phép vào phòng thi, nhưng phần thực hành cần có bài trong lịch sử để lựa chọn.'
+                        'Chưa có bài nộp nào sau lúc bắt đầu thi. Hãy đăng tác phẩm vừa sáng tác lên trang Nộp bài, rồi bấm TẢI LẠI DANH SÁCH BÀI NỘP.'
                         :
                         'Không tìm thấy bài phù hợp.'
                 ) +
@@ -7745,6 +8668,33 @@ function(
 
         alert(
             "Không tìm thấy dữ liệu bài được chọn. Vui lòng thử lại."
+        );
+
+        return false;
+    }
+
+    var targetQuestion=
+        PRACTICAL_QUESTIONS.find(
+            function(x){
+
+                return Number(x.id)===Number(questionId);
+            }
+        );
+
+    if(
+        targetQuestion &&
+        !practicalAllowed(
+            targetQuestion,
+            item
+        )
+    ){
+
+        alert(
+            targetQuestion.mode==="live"
+                ?
+                "Câu " + targetQuestion.id + " chỉ nhận bài nộp sau lúc bắt đầu thi."
+                :
+                "Câu " + targetQuestion.id + " chỉ nhận bài đã nộp trước lúc bắt đầu thi."
         );
 
         return false;
@@ -8117,7 +9067,7 @@ function renderReview(){
 
                 '<div class="review-label">' +
 
-                    'Lý thuyết' +
+                    'Trắc nghiệm' +
 
                 '</div>' +
 
@@ -8174,7 +9124,7 @@ function renderReview(){
 
             html+=
 
-                '<strong>Lý thuyết chưa hoàn thành:</strong> ' +
+                '<strong>Trắc nghiệm chưa hoàn thành:</strong> ' +
 
                 missingTheoryList
                 .map(
@@ -8403,8 +9353,8 @@ function gradeTheory(){
             answered,
 
         /*
-           20 câu vẫn quy về thang điểm 10.
-           Mỗi câu đúng = 0.5 điểm.
+           30 câu trắc nghiệm (20 chữ + 10 hình ảnh)
+           quy về thang điểm 10.
         */
         score:
             Math.round(
@@ -8913,7 +9863,9 @@ function formPayload(){
         " | BANK=" +
         CONFIG.theoryBankVersion +
         " | THEORY=" +
-        CONFIG.theoryCount +
+        CONFIG.theoryTextCount +
+        " | IMAGE=" +
+        CONFIG.imageCount +
         " | PRACTICAL=" +
         CONFIG.practicalCount;
 
@@ -9530,7 +10482,7 @@ function renderResult(){
 
                 '<div class="result-label">' +
 
-                    'Điểm lý thuyết /10' +
+                    'Điểm trắc nghiệm /10' +
 
                 '</div>' +
 
@@ -9566,7 +10518,7 @@ function renderResult(){
 
                 '<div class="result-label">' +
 
-                    'Lý thuyết' +
+                    'Trắc nghiệm' +
 
                 '</div>' +
 
@@ -9615,7 +10567,7 @@ function renderResult(){
                     (
                         CONFIG.trialMode
                             ?
-                            'Bạn có thể xóa phiên thi thử để luyện lại với một bộ 20 câu lý thuyết khác.'
+                            'Bạn có thể xóa phiên thi thử để luyện lại với một đề trắc nghiệm khác.'
                             :
                             'Chức năng kiểm thử nội bộ. Nút này chỉ xóa phiên trên thiết bị, không xóa dữ liệu đã gửi lên Google Form.'
                     ) +
@@ -9805,7 +10757,7 @@ function(){
     var message=
         CONFIG.trialMode
             ?
-            "Làm lại bài thi thử?\n\nPhiên thi thử hiện tại trên thiết bị sẽ bị xóa và hệ thống sẽ tạo một bộ 20 câu lý thuyết mới."
+            "Làm lại bài thi thử?\n\nPhiên thi thử hiện tại trên thiết bị sẽ bị xóa và hệ thống sẽ tạo một đề trắc nghiệm mới."
             :
             "Xóa phiên TEST trên thiết bị này?\n\nDữ liệu đã gửi vào Google Form sẽ không bị xóa.";
 
@@ -9890,7 +10842,7 @@ function(){
 
         CONFIG.trialMode
             ?
-            "Đã xóa phiên thi thử. Hãy nhập lại mã học viên để bắt đầu một đề 20 câu mới."
+            "Đã xóa phiên thi thử. Hãy nhập lại mã học viên để bắt đầu một đề mới."
             :
             "Đã xóa phiên kiểm thử trên thiết bị.",
 
@@ -9953,7 +10905,7 @@ function updatePageMode(){
     if(test){
 
         test.textContent=
-            "THI THỬ BAO GỒM 20 câu lý thuyết + 5 câu thực hành";
+            "THI THỬ BAO GỒM 20 câu lý thuyết + 10 câu hình ảnh + 2 câu thực hành";
     }
 }
 
