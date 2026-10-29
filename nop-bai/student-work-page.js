@@ -4476,7 +4476,7 @@ function createWorkCard(
                 size:"md",
                 background:info,
                 profile:account ? (account.profile || account) : null,
-                code:account ? "" : item.code
+                code:item.code
             })
         );
     }else{

@@ -1,5 +1,7 @@
 /* =========================================================
-   OCD · THẺ HỌC VIÊN (dùng chung) · v1.0.0
+   OCD · THẺ HỌC VIÊN (dùng chung) · v1.1.0
+   v1.1.0: tải hồ sơ theo chế độ danh sách công khai (như Bảng xếp hạng) để học viên đã bảo mật vẫn hiện đủ avatar/khung/nền/thuốc;
+           thử lại khi mạng lỗi; thẻ luôn tự tải theo mã nếu trang không có sẵn hồ sơ; hiệu ứng không đè lên menu trang.
    Vẽ thống nhất ở mọi trang: avatar, khung avatar, nền hồ sơ, hiệu ứng thuốc đa nhiệm (của Reward Core).
    Dữ liệu lấy từ StudentRewardSystem.getStudentRewardProfile (tải sẵn trong theme), mỗi mã học viên tải một lần.
    API:
@@ -19,7 +21,7 @@ if(window.OCDIdentity){
 }
 
 const CSS=
-    ".ocdid{position:relative;display:flex;align-items:center;gap:10px;min-width:0;border-radius:14px}"
+    ".ocdid{position:relative;isolation:isolate;display:flex;align-items:center;gap:10px;min-width:0;border-radius:14px}"
     +".ocdid.ocdid-has-bg{padding:6px 10px 6px 6px}"
     +".ocdid-bg{background-size:cover!important;background-position:center!important}"
     +".ocdid-av{position:relative;flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:var(--ocdid-s,48px);height:var(--ocdid-s,48px)}"
@@ -246,6 +248,30 @@ async function publicLook(code){
 }
 
 
+/* Danh sách công khai (giống Bảng xếp hạng): chỉ dùng để vẽ avatar / khung / nền / thuốc, không hiện túi đồ.
+   Lỗi mạng tạm thời thì thử lại tối đa 2 lần; hồ sơ bảo mật (STUDENT_PROTECTED) thì không thử lại. */
+const PUBLIC_ACCESS={publicList:true,ocdAuthBulk:true};
+async function loadWithRetry(R,key){
+    let last=null;
+    for(let i=0;i<3;i++){
+        try{
+            return await R.getStudentRewardProfile(key,undefined,false,PUBLIC_ACCESS);
+        }catch(error){
+            if(error && error.code === "STUDENT_PROTECTED"){
+                throw error;
+            }
+            last=error;
+            await new Promise(function(r){ setTimeout(r,1200*(i+1)); });
+        }
+    }
+    throw last;
+}
+
+function hasLook(p){
+    return Boolean(p && (p.avatar || p.frame || p.background || p.multitask));
+}
+
+
 /* Hồ sơ đã chuẩn hoá, mỗi mã học viên tải một lần cho cả trang */
 function profile(code){
 
@@ -271,7 +297,7 @@ function profile(code){
                 }else{
                     const R=await waitForCore();
                     if(R){
-                        raw=await R.getStudentRewardProfile(key);
+                        raw=await loadWithRetry(R,key);
                     }
                 }
 
@@ -330,6 +356,13 @@ function paint(card,data){
     }
 
     const p=(data && ("multitask" in data) && ("background" in data)) ? data : normalize(data);
+
+    /* Hồ sơ rỗng (trang chưa có dữ liệu / tải lỗi) không được xoá thẻ đã vẽ đầy đủ */
+    if(!hasLook(p) && card.__ocdidHas){
+        return card;
+    }
+
+    card.__ocdidHas=hasLook(p);
 
     const face=card.querySelector(".ocdid-face");
     const av=card.querySelector(".ocdid-av");
@@ -489,11 +522,14 @@ function create(options){
 
     card.append(av,txt);
 
-    if(o.profile){
+    const given=o.profile ? normalize(o.profile) : null;
 
-        paint(card,o.profile);
+    if(given){
+        paint(card,given);
+    }
 
-    }else if(o.code){
+    /* Hồ sơ trang đưa vào không có avatar/khung/nền/thuốc -> vẫn tự tải theo mã */
+    if(o.code && !hasLook(given)){
 
         profile(o.code).then(
             function(p){
@@ -507,7 +543,7 @@ function create(options){
 
 
 window.OCDIdentity={
-    version:"1.0.0",
+    version:"1.1.0",
     create:create,
     paint:paint,
     profile:profile,
