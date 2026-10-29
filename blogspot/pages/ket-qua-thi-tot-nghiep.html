@@ -1093,7 +1093,11 @@ window.OCD_GRADUATION_RESULT_SETTINGS = {
 
     /* URL ứng dụng web Apps Script ChamThi.gs (khu chấm bài).
        Để trống thì giáo viên dán URL ở khu chấm bài (lưu trên máy). */
-    graderApiUrl: "https://script.google.com/macros/s/AKfycbx4VqQ3Ud6yu2gyDyGuQsoTthTwCX3P3e_FpNqx8Q0EF5hq9KPFYh5FQBxnRKLr9axh/exec"
+    graderApiUrl: "https://script.google.com/macros/s/AKfycbx4VqQ3Ud6yu2gyDyGuQsoTthTwCX3P3e_FpNqx8Q0EF5hq9KPFYh5FQBxnRKLr9axh/exec",
+
+    /* Nộp thẻ thành tích qua ChamThi.gs (v1.1.0+): không bị giới hạn 2 bài/ngày,
+       không cần học viên đăng nhập. Để "" thì nộp qua trang Nộp bài như cũ. */
+    cardUploadUrl: "https://script.google.com/macros/s/AKfycbx4VqQ3Ud6yu2gyDyGuQsoTthTwCX3P3e_FpNqx8Q0EF5hq9KPFYh5FQBxnRKLr9axh/exec"
 
 };
 </script>
@@ -1133,7 +1137,9 @@ function settings(){
         roundName: s.roundName || "đợt thi giữa kỳ của toàn khoá",
         teacherTitle: s.teacherTitle || "Giáo viên chủ nhiệm",
         teacherName: s.teacherName || "Thanh Phong - Bùi Khắc Sáng",
-        autoSubmit: s.autoSubmitCard !== false
+        autoSubmit: s.autoSubmitCard !== false,
+        /* Apps Script ChamThi.gs v1.1.0+: nộp thẻ không qua giới hạn 2 bài/ngày của trang Nộp bài */
+        cardUploadUrl: String(s.cardUploadUrl || "").trim()
     };
 }
 
@@ -1598,7 +1604,22 @@ async function alreadyInNopBai(data){
         return null;
     }
 }
+async function submitViaChamThi(data,dataUrl,url){
+    var ac=new AbortController(), timer=setTimeout(function(){ ac.abort(); },120000);
+    try{
+        var res=await fetch(url,{method:"POST",
+            body:JSON.stringify({action:"cardUpload",examId:data.examId,code:data.code,note:cardNote(data),data:dataUrl}),
+            headers:{"Content-Type":"text/plain;charset=utf-8"},credentials:"omit",cache:"no-store",signal:ac.signal});
+        return JSON.parse(await res.text()) || {ok:false};
+    }catch(e){
+        return {ok:false,network:true,error:"Không kết nối được máy chủ."};
+    }finally{
+        clearTimeout(timer);
+    }
+}
 async function submitToNopBai(data,dataUrl){
+    var viaUrl=settings().cardUploadUrl;
+    if(viaUrl){ return submitViaChamThi(data,dataUrl,viaUrl); }
     var A=window.OCDAuth;
     var payload={
         token: A && A.token ? (A.token()||"") : "",
@@ -1726,7 +1747,8 @@ async function mount(container,data){
         say("Thẻ thành tích đã được nộp vào trang Nộp bài tập.","ok");
         return;
     }
-    var exists=await alreadyInNopBai(data);
+    /* qua ChamThi.gs: máy chủ tự kiểm tra trùng theo Exam ID */
+    var exists=cfg.cardUploadUrl ? false : await alreadyInNopBai(data);
     if(exists===true){
         markSubmitted(data.examId);
         say("Thẻ thành tích đã có trong trang Nộp bài tập.","ok");
@@ -1749,7 +1771,7 @@ async function mount(container,data){
     }
     if(r && r.ok){
         markSubmitted(data.examId);
-        say("✅ Đã nộp thẻ thành tích vào trang Nộp bài tập"+(r.time?" lúc "+r.time:"")+".","ok");
+        say(r.dup ? "Thẻ thành tích đã có trong trang Nộp bài tập." : "✅ Đã nộp thẻ thành tích vào trang Nộp bài tập"+(r.time?" lúc "+r.time:"")+".","ok");
         return;
     }
     var err=(r && r.error) || "Chưa nộp được thẻ thành tích.";
@@ -1774,6 +1796,7 @@ window.OCDAchievementCard={
 <script>
 /* =========================================================
    OCD GRADUATION RESULT
+   v1.5.0 (29/10/2026): thẻ thành tích nộp qua ChamThi.gs (không bị giới hạn 2 bài/ngày)
    v1.4.1 (29/10/2026): gắn URL Apps Script chấm bài (ChamThi.gs); không nộp thẻ 2 lần khi thẻ vẽ lại
    v1.4.0 (29/10/2026): điểm thi làm tròn đến số nguyên (từ 0,5 lên, dưới 0,5 xuống),
    ghi chú "làm tròn từ ..." bên cạnh; xếp loại theo điểm đã làm tròn
@@ -1800,7 +1823,7 @@ window.OCDGraduationResult || {};
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_RESULT_V1.4.1",
+        "OCD_GRADUATION_RESULT_V1.5.0",
 
     spreadsheetId:
         "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",

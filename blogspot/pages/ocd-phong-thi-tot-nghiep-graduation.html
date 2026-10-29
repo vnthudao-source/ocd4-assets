@@ -36,7 +36,13 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
        Bài vẫn gửi vào BaiThiTotNghiep như bài thật (để thử chấm, kết quả,
        thẻ thành tích). Bỏ mã khỏi danh sách khi không cần thử nữa.
     */
-    unlimitedCodes: ["TEST001"]
+    unlimitedCodes: ["TEST001"],
+
+    /*
+       Apps Script ChamThi.gs (v1.1.0+): câu 32 tải ảnh thẳng lên, không qua
+       trang Nộp bài (không bị giới hạn 2 bài/ngày, không tính vào bài luyện tập).
+    */
+    examUploadUrl: "https://script.google.com/macros/s/AKfycbx4VqQ3Ud6yu2gyDyGuQsoTthTwCX3P3e_FpNqx8Q0EF5hq9KPFYh5FQBxnRKLr9axh/exec"
 
 };
 </script>
@@ -1258,6 +1264,17 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
 .practical-live-box{margin:10px 0 12px;padding:12px 13px;border-radius:10px;background:#fff7e8;border:1px solid #ecd6ad;font-size:14px;line-height:1.6;color:#4e4436}
 .practical-live-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .practical-live-actions .exam-btn{flex:1;min-width:150px;text-align:center;text-decoration:none}
+
+/* v2.8.0: câu 32 tải ảnh trực tiếp */
+.exam-upload-pick{display:flex;align-items:center;justify-content:center;min-height:52px;margin:12px 0 8px;padding:10px;border:2px dashed #d9b77a;border-radius:12px;background:#fffdf8;color:#7c592a;font-weight:900;font-size:14px;cursor:pointer;text-align:center}
+.exam-upload-pick input{display:none}
+.exam-upload-preview{display:block;width:100%;max-height:360px;object-fit:contain;margin:6px 0 10px;border-radius:10px;background:#f2ede7}
+.exam-upload-preview.small{max-height:180px}
+.exam-upload-msg{margin-top:8px;font-size:13px;line-height:1.5}
+.exam-upload-msg.ok{color:#2f6b45;font-weight:700}
+.exam-upload-msg.err{color:#963b3b;font-weight:700}
+.exam-upload-alt{margin-top:12px;font-size:13px}
+.exam-upload-alt summary{cursor:pointer;color:#765344;margin-bottom:8px}
 </style>
 
 
@@ -1523,7 +1540,11 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
 <script>
 /* =========================================================
    OCD GRADUATION EXAM
-   v2.7.2 - 20 THEORY + 10 IMAGE + 2 PRACTICAL
+   v2.8.0 - 20 THEORY + 10 IMAGE + 2 PRACTICAL
+
+   v2.8.0 (29/10/2026): câu 32 chụp/chọn ảnh và tải THẲNG lên bài thi
+   (Apps Script ChamThi.gs examUpload), không qua trang Nộp bài nên không
+   bị giới hạn 2 bài/ngày; vẫn giữ cách chọn bài đã đăng làm phương án phụ.
 
    v2.7.2 (29/10/2026): điểm trắc nghiệm hiện số nguyên + ghi chú làm tròn.
 
@@ -1618,7 +1639,7 @@ var UNLIMITED_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.7.2_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.8.0_20_10_2",
 
     durationMs:
         60*60*1000,
@@ -1646,6 +1667,19 @@ var CONFIG={
 
     nopBaiUrl:
         "https://www.thudao.com/p/nop-bai.html",
+
+    examUploadUrl:
+        String(
+            GLOBAL_SETTINGS.examUploadUrl ||
+            ""
+        ).trim(),
+
+    /* ảnh câu 32: thu nhỏ trên máy trước khi gửi */
+    uploadMaxSide:
+        2000,
+
+    uploadQuality:
+        0.86,
 
     /* Câu 32: chỉ nhận bài nộp SAU lúc bắt đầu thi (cho lệch đồng hồ 2 phút) */
     liveToleranceMs:
@@ -2250,11 +2284,11 @@ var PRACTICAL_QUESTIONS=[
         text:"Tại chỗ sáng tác một tác phẩm mới, chụp lại ảnh và đăng lên trang Nộp bài.",
 
         help:
-            "B1: Tại chỗ sáng tác một tác phẩm mới, chụp lại ảnh và đăng lên trang Nộp bài. " +
+            "B1: Tại chỗ sáng tác một tác phẩm mới. " +
             "Tiêu chí: sử dụng các kỹ thuật thư pháp đã học, bài viết khoảng 20 chữ trở lên, " +
             "gồm cả Đại tự – Tiểu tự, chủ đề “Nhập cổ xuất tân”, phong cách viết tự do. " +
-            "B2: Quay lại phòng thi, bấm TẢI LẠI DANH SÁCH BÀI NỘP rồi chọn bài vừa đăng " +
-            "(chỉ nhận bài nộp sau lúc bắt đầu thi)."
+            "B2: Bấm CHỤP / CHỌN ẢNH TÁC PHẨM rồi bấm TẢI ẢNH LÊN BÀI THI – ảnh được nộp thẳng vào bài thi, " +
+            "không cần qua trang Nộp bài và không tính vào giới hạn 2 bài/ngày."
     }
 
 ];
@@ -2299,6 +2333,8 @@ var STATE={
     imageBankTask:null,
 
     submissionsRefreshing:false,
+
+    upload:null,
 
     verifying:false,
 
@@ -7855,6 +7891,476 @@ async function(){
 };
 
 
+/* =========================================================
+   v2.8.0: CÂU 32 – TẢI ẢNH THẲNG LÊN BÀI THI (Apps Script ChamThi.gs)
+========================================================= */
+
+function readFileAsDataUrl(file){
+
+    return new Promise(
+        function(resolve,reject){
+
+            var r=
+                new FileReader();
+
+            r.onload=
+                function(){
+
+                    resolve(
+                        r.result
+                    );
+                };
+
+            r.onerror=
+                reject;
+
+            r.readAsDataURL(
+                file
+            );
+        }
+    );
+}
+
+
+function loadImageFrom(url){
+
+    return new Promise(
+        function(resolve,reject){
+
+            var img=
+                new Image();
+
+            img.onload=
+                function(){
+
+                    resolve(
+                        img
+                    );
+                };
+
+            img.onerror=
+                reject;
+
+            img.src=
+                url;
+        }
+    );
+}
+
+
+/* Thu nhỏ ảnh (cạnh dài tối đa 2000px, JPEG) giống trang Nộp bài */
+async function prepareUploadImage(file){
+
+    var raw=
+        await readFileAsDataUrl(
+            file
+        );
+
+    try{
+
+        var img=
+            await loadImageFrom(
+                raw
+            );
+
+        var w=
+            img.naturalWidth;
+
+        var h=
+            img.naturalHeight;
+
+        if(
+            !w ||
+            !h
+        ){
+
+            return raw;
+        }
+
+        var k=
+            Math.min(
+                1,
+                CONFIG.uploadMaxSide /
+                Math.max(w,h)
+            );
+
+        var canvas=
+            document.createElement(
+                "canvas"
+            );
+
+        canvas.width=
+            Math.round(w*k);
+
+        canvas.height=
+            Math.round(h*k);
+
+        var ctx=
+            canvas.getContext(
+                "2d"
+            );
+
+        ctx.fillStyle=
+            "#fff";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.drawImage(
+            img,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        return canvas.toDataURL(
+            "image/jpeg",
+            CONFIG.uploadQuality
+        );
+
+    }catch(error){
+
+        /* trình duyệt không đọc được (vd HEIC) -> gửi ảnh gốc */
+        return raw;
+    }
+}
+
+
+APP.pickUpload=
+async function(input){
+
+    var file=
+        input &&
+        input.files &&
+        input.files[0];
+
+    if(!file){
+
+        return false;
+    }
+
+    STATE.upload=
+        Object.assign(
+            {},
+            STATE.upload ||
+            {},
+            {
+                data:null,
+                preview:"",
+                message:"Đang chuẩn bị ảnh...",
+                kind:""
+            }
+        );
+
+    renderPractical();
+
+    try{
+
+        var data=
+            await prepareUploadImage(
+                file
+            );
+
+        STATE.upload.data=
+            data;
+
+        STATE.upload.preview=
+            data;
+
+        STATE.upload.message=
+            "Ảnh đã sẵn sàng. Bấm TẢI ẢNH LÊN BÀI THI.";
+
+        STATE.upload.kind=
+            "";
+
+    }catch(error){
+
+        STATE.upload.message=
+            "Không đọc được ảnh, vui lòng chọn ảnh khác.";
+
+        STATE.upload.kind=
+            "err";
+    }
+
+    renderPractical();
+
+    return false;
+};
+
+
+APP.noteUpload=
+function(value){
+
+    STATE.upload=
+        STATE.upload ||
+        {};
+
+    STATE.upload.note=
+        String(
+            value ||
+            ""
+        );
+};
+
+
+async function postExamUpload(payload){
+
+    var controller=
+        new AbortController();
+
+    var timer=
+        setTimeout(
+            function(){
+
+                controller.abort();
+            },
+            120000
+        );
+
+    try{
+
+        var response=
+            await fetch(
+                CONFIG.examUploadUrl,
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":"text/plain;charset=utf-8"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            payload
+                        ),
+
+                    credentials:"omit",
+
+                    cache:"no-store",
+
+                    signal:
+                        controller.signal
+                }
+            );
+
+        return JSON.parse(
+            await response.text()
+        );
+
+    }catch(error){
+
+        return {
+
+            ok:false,
+
+            network:true,
+
+            error:
+                error &&
+                error.name==="AbortError"
+                    ?
+                    "Tải ảnh quá lâu, vui lòng kiểm tra mạng rồi bấm lại (ảnh trùng sẽ không bị lưu hai lần)."
+                    :
+                    "Không kết nối được máy chủ, vui lòng kiểm tra mạng rồi bấm lại."
+        };
+
+    }finally{
+
+        clearTimeout(
+            timer
+        );
+    }
+}
+
+
+APP.sendUpload=
+async function(questionId){
+
+    var up=
+        STATE.upload ||
+        {};
+
+    if(
+        !STATE.session ||
+        sessionStatus(
+            STATE.session
+        )==="submitted" ||
+        !up.data ||
+        up.busy
+    ){
+
+        return false;
+    }
+
+    var question=
+        PRACTICAL_QUESTIONS.find(
+            function(q){
+
+                return Number(q.id)===Number(questionId);
+            }
+        );
+
+    var note=
+        String(
+            up.note ||
+            ""
+        ).trim() ||
+        "Sáng tác tại chỗ – Nhập cổ xuất tân";
+
+    var local=
+        CONFIG.trialMode ||
+        isAdminSession() ||
+        !CONFIG.examUploadUrl;
+
+    up.busy=
+        true;
+
+    up.message=
+        local
+            ?
+            ""
+            :
+            "Đang tải ảnh lên bài thi...";
+
+    up.kind=
+        "";
+
+    renderPractical();
+
+    var result;
+
+    if(local){
+
+        /* Thi thử / ADMIN: không tải lên máy chủ */
+        result={
+            ok:true,
+            fileId:"LOCAL-" + Date.now(),
+            url:"",
+            uploadedAt:formatDateTime(Date.now())
+        };
+
+    }else{
+
+        result=
+            await postExamUpload({
+
+                action:"examUpload",
+
+                examId:
+                    STATE.session.examId,
+
+                code:
+                    STATE.session.student.code,
+
+                q:
+                    Number(questionId),
+
+                note:
+                    note,
+
+                data:
+                    up.data
+            });
+    }
+
+    up.busy=
+        false;
+
+    if(
+        !result ||
+        !result.ok
+    ){
+
+        up.message=
+            (result && result.error) ||
+            "Chưa tải được ảnh, vui lòng thử lại.";
+
+        up.kind=
+            "err";
+
+        renderPractical();
+
+        return false;
+    }
+
+    practicalAnswers()[
+        String(
+            questionId
+        )
+    ]={
+
+        questionId:
+            Number(questionId),
+
+        prompt:
+            question
+                ?
+                question.text
+                :
+                "",
+
+        submissionId:
+            "EXAMIMG|" +
+            result.fileId,
+
+        file:
+            result.url ||
+            "",
+
+        note:
+            note +
+            (
+                local
+                    ?
+                    " (ảnh thử – không tải lên)"
+                    :
+                    ""
+            ),
+
+        submittedAt:
+            result.uploadedAt ||
+            formatDateTime(Date.now()),
+
+        originalScore:
+            null,
+
+        source:
+            "exam-upload"
+    };
+
+    saveSession();
+
+    STATE.upload={
+        message:
+            local
+                ?
+                "Đã ghi nhận ảnh (thi thử / kiểm thử, không tải lên máy chủ)."
+                :
+                (
+                    result.reused
+                        ?
+                        "Ảnh này đã có trong bài thi, đã chọn lại cho câu " + questionId + "."
+                        :
+                        "✅ Đã tải ảnh lên bài thi và chọn cho câu " + questionId + "."
+                ),
+        kind:"ok",
+        /* giữ mô tả học viên đã gõ cho lần tải sau */
+        note:
+            up.note ||
+            ""
+    };
+
+    renderPractical();
+
+    return false;
+};
+
+
 function practicalSortRank(
     item,
     currentQuestionId,
@@ -8035,18 +8541,75 @@ function renderPractical(){
 
     if(q.mode==="live"){
 
+        var up=
+            STATE.upload ||
+            {};
+
         html+=
             '<div class="practical-live-box">' +
                 escapeHtml(
                     q.help
                 ) +
-                '<div class="practical-live-actions">' +
-                    '<a class="exam-btn gold" target="_blank" rel="noopener" href="' +
-                        escapeHtml(
-                            CONFIG.nopBaiUrl
+                '<label class="exam-upload-pick">' +
+                    '<input type="file" accept="image/*" id="examUploadFile" onchange="window.OCDGraduationExam.pickUpload(this);">' +
+                    '<span>' +
+                        (
+                            up.preview
+                                ?
+                                'CHỌN ẢNH KHÁC'
+                                :
+                                '📷 CHỤP / CHỌN ẢNH TÁC PHẨM'
                         ) +
-                    '">MỞ TRANG NỘP BÀI</a>' +
-                    '<button class="exam-btn" type="button" id="examRefreshSubmissions" ' +
+                    '</span>' +
+                '</label>' +
+                (
+                    up.preview
+                        ?
+                        '<img class="exam-upload-preview" alt="Ảnh tác phẩm" src="' + up.preview + '">'
+                        :
+                        ''
+                ) +
+                '<input class="exam-input" id="examUploadNote" type="text" maxlength="200" ' +
+                    'placeholder="Mô tả ngắn (không bắt buộc), ví dụ: Nhập cổ xuất tân" value="' +
+                    escapeHtml(
+                        up.note ||
+                        ""
+                    ) +
+                '" oninput="window.OCDGraduationExam.noteUpload(this.value);">' +
+                '<div class="practical-live-actions">' +
+                    '<button class="exam-btn gold" type="button" id="examUploadButton" ' +
+                        (
+                            !up.data ||
+                            up.busy
+                                ?
+                                'disabled '
+                                :
+                                ''
+                        ) +
+                        'onclick="return window.OCDGraduationExam.sendUpload(' + q.id + ');">' +
+                        (
+                            up.busy
+                                ?
+                                'ĐANG TẢI LÊN...'
+                                :
+                                'TẢI ẢNH LÊN BÀI THI'
+                        ) +
+                    '</button>' +
+                '</div>' +
+                '<div id="examUploadMessage" class="exam-upload-msg ' +
+                    escapeHtml(
+                        up.kind ||
+                        ""
+                    ) +
+                '">' +
+                    escapeHtml(
+                        up.message ||
+                        ""
+                    ) +
+                '</div>' +
+                '<details class="exam-upload-alt">' +
+                    '<summary>Hoặc chọn bài đã đăng trên trang Nộp bài sau lúc bắt đầu thi</summary>' +
+                    '<button class="exam-btn secondary" type="button" id="examRefreshSubmissions" ' +
                         (
                             STATE.submissionsRefreshing
                                 ?
@@ -8063,13 +8626,13 @@ function renderPractical(){
                                 'TẢI LẠI DANH SÁCH BÀI NỘP'
                         ) +
                     '</button>' +
-                '</div>' +
-                '<div id="examRefreshNote" class="exam-muted" style="font-size:12px;margin-top:6px;">' +
-                    escapeHtml(
-                        STATE.refreshNote ||
-                        ""
-                    ) +
-                '</div>' +
+                    '<div id="examRefreshNote" class="exam-muted" style="font-size:12px;margin-top:6px;">' +
+                        escapeHtml(
+                            STATE.refreshNote ||
+                            ""
+                        ) +
+                    '</div>' +
+                '</details>' +
             '</div>';
 
     }else{
@@ -8101,8 +8664,20 @@ function renderPractical(){
 
                 '</div>' +
 
+                (
+                    answer.file
+                        ?
+                        '<img class="exam-upload-preview small" alt="Bài đã chọn" src="' +
+                            escapeHtml(
+                                imageUrl(
+                                    answer.file
+                                )
+                            ) +
+                        '">'
+                        :
+                        ''
+                ) +
                 '<div class="practical-selected-text">' +
-
                     escapeHtml(
                         answer.note ||
                         "Bài đã chọn"
