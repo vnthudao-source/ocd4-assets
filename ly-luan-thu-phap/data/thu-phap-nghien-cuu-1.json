@@ -1225,6 +1225,247 @@
      ]
     }
    ]
+  },
+  {
+   "id": "c06",
+   "no": "Bài 6",
+   "title": "Thần lực của Hoài Tố – thử giải bài «Quan Hoài Tố thảo thư ca»",
+   "titleZh": "怀素的神力——《观怀素草书歌》试解",
+   "author": "Triệu Nhất Tân",
+   "pages": "66–74",
+   "summary": "Bài viết đọc lại bài ca «Xem chữ thảo của Hoài Tố» của thiền sư thi nhân Quán Hưu đời Ngũ Đại. Tác giả cho rằng cái “điên” của Hoài Tố thực chất là sự tinh cần, và từ đó giải mã những hình ảnh trong thơ thành các đặc điểm về dụng bút, kết thể và bố cục của cuồng thảo.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Hoài Tố (725–785) là nhà sư đời Đường, cùng Trương Húc được gọi chung là “Điên Trương Cuồng Tố”, hai đỉnh cao của cuồng thảo. Khi ông còn sống đã có nhiều thi nhân làm thơ tặng, như Trương Vị, Nhậm Hoa, Đậu Ký, Đới Thúc Luân. Bài viết này chọn một bài thơ ra đời muộn hơn, của **Quán Hưu** (832–912), người họ Khương ở Lan Khê (Chiết Giang). Ông là nhà sư giỏi thơ, giỏi vẽ, viết chữ thảo cũng có tiếng (đương thời gọi là “thể họ Khương”), được Tiền Lưu nước Ngô Việt trọng đãi, sau vào đất Thục được Vương Kiến ban hiệu Thiền Nguyệt đại sư, và có «Thiền Nguyệt tập» truyền lại. Cuối bài thơ, Quán Hưu tự nói rằng những người làm thơ tặng Hoài Tố trước ông đều chưa nói được đến **thần lực** của Hoài Tố. Bài thơ chính là câu trả lời của một nhà thảo thư dành cho một nhà thảo thư khác."
+    },
+    {
+     "t": "h",
+     "x": "Nguyên văn và bản dịch bài ca"
+    },
+    {
+     "t": "p",
+     "x": "Bài ca là thơ cổ thể, chủ yếu bảy chữ, xen câu dài ngắn và chữ “hề” theo lối Sở từ. Dưới đây chia làm sáu đoạn để dễ theo dõi. Có vài câu mà các bản lưu truyền có chữ hiếm hoặc khác nhau, bài giảng chỉ dịch nghĩa, không ghi nguyên văn."
+    },
+    {
+     "t": "quote",
+     "zh": "张颠颠后颠非颠，直至怀素之颠始是颠。师不谭经不说禅，筋力唯于草书朽。颠狂却恐是神仙，有神助兮人莫及。铁石画兮墨须入，金尊竹叶数斗余，半斜半倾山衲湿。",
+     "hv": "Trương điên điên hậu điên phi điên, trực chí Hoài Tố chi điên thuỷ thị điên. Sư bất đàm kinh bất thuyết thiền, cân lực duy ư thảo thư hủ. Điên cuồng khước khủng thị thần tiên, hữu thần trợ hề nhân mạc cập. Thiết thạch hoạ hề mặc tu nhập, kim tôn trúc diệp sổ đẩu dư, bán tà bán khuynh sơn nạp thấp.",
+     "vi": "Sau cái điên của Trương Điên, điên ấy chưa phải điên; phải đến cái điên của Hoài Tố mới thật là điên. Thầy chẳng giảng kinh, chẳng nói thiền, gân sức chỉ mòn vào chữ thảo. Điên cuồng mà e rằng là thần tiên, có thần giúp nên người chẳng ai theo kịp. Nét như vạch vào sắt đá, mực phải thấm sâu vào; chén vàng rượu Trúc Diệp uống mấy đấu, nửa nghiêng nửa đổ, ướt cả áo nạp nhà sư núi.",
+     "src": "Quán Hưu, «Quan Hoài Tố thảo thư ca» (đoạn 1)"
+    },
+    {
+     "t": "quote",
+     "zh": "醉来把笔猛如虎，粉壁素屏不问主。乱拏乱抹无规矩，罗刹石上坐伍子胥，蒯通八字立对汉高祖。势崩腾兮不可止，天机暗转锋铓里。闪电光边霹雳飞。",
+     "hv": "Tuý lai bả bút mãnh như hổ, phấn bích tố bình bất vấn chủ. Loạn noa loạn mạt vô quy củ, La Sát thạch thượng toạ Ngũ Tử Tư, Khoái Thông bát tự lập đối Hán Cao Tổ. Thế băng đằng hề bất khả chỉ, thiên cơ ám chuyển phong mang lý. Thiểm điện quang biên tích lịch phi.",
+     "vi": "Say rồi cầm bút, mạnh như hổ, vách trắng bình phong lụa chẳng cần hỏi chủ nhà. Quơ quào bôi xoá chẳng theo khuôn phép: như Ngũ Tử Tư ngồi trên đá La Sát, như Khoái Thông đứng chân chữ bát đối mặt Hán Cao Tổ. Thế bút ào lên như núi lở, không gì ngăn nổi; cơ trời ngầm xoay trong mũi bút. Bên ánh chớp loé, sấm sét bay.",
+     "src": "Quán Hưu, «Quan Hoài Tố thảo thư ca» (đoạn 2)"
+    },
+    {
+     "t": "quote",
+     "vi": "(Tiếp) Như con rồng chết trong thân cây bách cổ. Làm lòng người kinh hãi, mắt trợn ngược; làm người giậm chân, thần trí như phát cuồng.",
+     "src": "Quán Hưu, «Quan Hoài Tố thảo thư ca» (hai câu có chữ hiếm, chỉ dịch nghĩa)"
+    },
+    {
+     "t": "quote",
+     "zh": "乍如沙场大战后，断枪橛箭皆狼藉。又似深山怪石上，古病松枝挂铁锡。月兔笔，天灶墨，斜凿黄金侧锉玉，珊瑚枝长大朿朿。天马骄狞不可勒，东却西，南又北，倒还起，断复续。忽如鄂公喝住单雄信，秦王肩上搭着枣木槊。",
+     "hv": "Sạ như sa trường đại chiến hậu, đoạn thương quyết tiễn giai lang tạ. Hựu tự thâm sơn quái thạch thượng, cổ bệnh tùng chi quải thiết tích. Nguyệt thố bút, thiên táo mặc, tà tạc hoàng kim trắc toả ngọc, san hô chi trường đại thứ thứ. Thiên mã kiêu nanh bất khả lặc, đông khước tây, nam hựu bắc, đảo hoàn khởi, đoạn phục tục. Hốt như Ngạc Công hát trú Thiện Hùng Tín, Tần Vương kiên thượng tháp trước tảo mộc sóc.",
+     "vi": "Chợt như chiến trường sau trận đánh lớn, giáo gãy tên cụt nằm ngổn ngang. Lại như trên đá lạ trong núi sâu, cành tùng già bệnh treo cây tích trượng bằng sắt. Bút lông thỏ cung trăng, mực từ bếp trời; như đục xiên vàng ròng, giũa nghiêng ngọc quý; cành san hô dài, gai góc tua tủa. Ngựa trời kiêu dữ không ghìm cương nổi: sang đông rồi lại sang tây, về nam rồi lại về bắc, ngã xuống lại đứng lên, đứt rồi lại nối. Bỗng như Ngạc Công quát dừng Thiện Hùng Tín, khi ngọn sóc cán gỗ táo đã kề trên vai Tần Vương.",
+     "src": "Quán Hưu, «Quan Hoài Tố thảo thư ca» (đoạn 3)"
+    },
+    {
+     "t": "quote",
+     "zh": "怀素师，怀素师，若不是星辰降瑞，即必是河岳孕灵。固宜须冷笑逸少，争得不心醉伯英。天台古杉一千尺，崖崩岸折何峥嵘。或细微，仙衣半拆金线垂；或妍媚，桃花半红公子醉。",
+     "hv": "Hoài Tố sư, Hoài Tố sư, nhược bất thị tinh thần giáng thuỵ, tức tất thị hà nhạc dựng linh. Cố nghi tu lãnh tiếu Dật Thiếu, tranh đắc bất tâm tuý Bá Anh. Thiên Thai cổ sam nhất thiên xích, nhai băng ngạn chiết hà tranh vanh. Hoặc tế vi, tiên y bán sách kim tuyến thuỳ; hoặc nghiên mị, đào hoa bán hồng công tử tuý.",
+     "vi": "Thầy Hoài Tố ơi, thầy Hoài Tố ơi! Nếu chẳng phải sao trời giáng điềm lành, thì ắt là sông núi hun đúc khí thiêng. Hẳn nên cười nhạt với Dật Thiếu, sao lại chẳng say lòng với Bá Anh. Như cây sam cổ nghìn thước trên núi Thiên Thai, như vách lở bờ gãy, cao chót vót biết bao. Có lúc mảnh mai, như áo tiên rách nửa buông sợi chỉ vàng; có lúc xinh tươi, như hoa đào nửa hồng, chàng công tử say.",
+     "src": "Quán Hưu, «Quan Hoài Tố thảo thư ca» (đoạn 4)"
+    },
+    {
+     "t": "quote",
+     "zh": "我恐山为墨兮磨海水，天与笔兮书大地，乃能略展狂僧意。常恨与师不相识，一见此书空叹息。伊昔张谓任华叶季良，数子赠歌岂虚饰，所不足者浑未曾道著其神力。",
+     "hv": "Ngã khủng sơn vi mặc hề ma hải thuỷ, thiên dữ bút hề thư đại địa, nãi năng lược triển cuồng tăng ý. Thường hận dữ sư bất tương thức, nhất kiến thử thư không thán tức. Y tích Trương Vị, Nhậm Hoa, Diệp Quý Lương, sổ tử tặng ca khởi hư sức, sở bất túc giả hồn vị tằng đạo trước kỳ thần lực.",
+     "vi": "Ta e rằng phải lấy núi làm thỏi mực mài với nước biển, trời trao cho cây bút mà viết lên mặt đất, mới mong bày tỏ được đôi phần ý của nhà sư cuồng. Thường giận không được quen biết thầy, mỗi lần thấy chữ này chỉ biết thở dài. Xưa kia Trương Vị, Nhậm Hoa, Diệp Quý Lương, mấy vị tặng thơ đâu phải tô vẽ hão; chỗ còn thiếu là chưa hề nói tới thần lực của thầy.",
+     "src": "Quán Hưu, «Quan Hoài Tố thảo thư ca» (đoạn 5)"
+    },
+    {
+     "t": "quote",
+     "zh": "锥画沙兮印印泥，世人世人争得测。知师雄名在世间，明月清风有何极。",
+     "hv": "Chuỳ hoạ sa hề ấn ấn nê, thế nhân thế nhân tranh đắc trắc. Tri sư hùng danh tại thế gian, minh nguyệt thanh phong hữu hà cực.",
+     "vi": "(Trước đó là hai câu ví chữ của thầy như cầu đá không lửa nào thiêu nổi, như ngọc quý không đất nào ăn mòn.) Như dùi vạch trên cát, như ấn đóng vào bùn; người đời ơi, người đời làm sao đo lường được. Biết rằng danh lớn của thầy còn mãi ở thế gian, như trăng sáng gió trong, nào có bao giờ cùng tận.",
+     "src": "Quán Hưu, «Quan Hoài Tố thảo thư ca» (đoạn 6)"
+    },
+    {
+     "t": "h",
+     "x": "Cái “điên” thật là sự tinh cần"
+    },
+    {
+     "t": "p",
+     "x": "Chỗ đáng giá nhất trong cách đọc của Triệu Nhất Tân là ông không coi “điên” là tính cách bẩm sinh hay ân huệ của thần linh. Câu mở đầu nghe như hạ thấp Trương Húc, nhưng thật ra dùng giọng phủ định để nâng cả hai thầy trò lên. Truyền thuyết kể Hoài Tố học thảo với Ổ Đồng, học trò của Trương Húc, nên chữ “điên” còn ngầm chỉ dòng truyền thừa: trò giỏi hơn thầy. Câu then chốt, theo ông, là “chẳng giảng kinh, chẳng nói thiền, gân sức chỉ mòn vào chữ thảo”. Cái điên của Hoài Tố trước hết là sự **dồn trọn đời người vào một việc**. Các giai thoại đi kèm đều nói đúng điều đó: ông sơn bàn sơn và tấm ván để tập viết, viết rồi xoá, xoá rồi viết đến thủng cả bàn; bút cùn chất thành một nấm mồ bút (*bút trủng*)."
+    },
+    {
+     "t": "p",
+     "x": "Từ đó tác giả nêu chuỗi nhân quả **tinh cần → thần lực**. Xét theo quá trình học, “chân điên” là tinh cần. Xét theo kết quả, “chân điên” là thần lực. Ông cho rằng nhận thức ấy của một nhà sư nghệ sĩ là lời phản bác mạnh mẽ với quan niệm “thiên tài định sẵn” hay “nghệ thuật huyền bí”. Với người học hôm nay, đây là cách đọc lành mạnh nhất về những “thánh thảo” trong lịch sử. Sự phóng túng trên giấy là phần nổi của một khối luyện tập khổng lồ."
+    },
+    {
+     "t": "h",
+     "x": "Say mà tỉnh: cảm hứng và tinh thần"
+    },
+    {
+     "t": "p",
+     "x": "Đoạn hai của bài thơ tả Hoài Tố khi hứng đến: uống rượu Trúc Diệp, say rồi cầm bút, vách nhà ai, bình phong của ai cũng viết. Hai điển tích được dùng để nói về **khí thế** của chữ. Ngũ Tử Tư là người nước Sở, cha bị giết, ông chạy sang Ngô báo thù, sau vì can gián mà bị ép chết. Hình ảnh ông ngồi trên đá dữ gợi nỗi oán phẫn ngút trời. Khoái Thông từng xui Hàn Tín phản Hán. Khi bị bắt đến trước Hán Cao Tổ, ông vẫn đứng dạng chân chữ bát mà biện bạch, ngạo nghễ không chịu khuất. Theo tác giả, cả hai hình ảnh nói lên thể thế ngạo nghễ, nhìn xuống tất cả của nét chữ."
+    },
+    {
+     "t": "p",
+     "x": "Điều tác giả nhấn mạnh là: say như mê, như cuồng, nhưng **tinh thần không hề buông lỏng**, trái lại còn hưng phấn hơn. “Mạnh như hổ” là hình tướng của tinh thần khi hứng phát. Viết bất kể là vách hay bình phong là sự vội vàng của người đang có linh cảm, cần ghi lại ngay. Chén rượu chỉ là chất xúc tác, ý của người say đâu ở rượu. Sức sáng tạo bùng lên được là vì đã được tích tụ bằng một sự chuyên cần gấp bội người thường."
+    },
+    {
+     "t": "h",
+     "x": "Giải mã hình ảnh thành kỹ pháp: nhanh và sáp, động và tĩnh"
+    },
+    {
+     "t": "p",
+     "x": "Phần thú vị nhất là cách tác giả đọc từng câu thơ như một nhận xét kỹ thuật. “Thế ào lên không ngăn nổi” là chữ một hơi liền mạch, viết xong mà thế vẫn chưa hết. Nhưng “cơ trời ngầm xoay trong mũi bút” cho thấy không phải bút nào cũng lộ phong. Chỗ chuyển bút tinh vi và tròn, ngòi vẫn đi giữa nét, tức là **trung phong**. “Bên ánh chớp sấm sét bay” nói về tốc độ cực nhanh, chữ **tiệp** (nhanh). Còn hình ảnh rồng chết trong thân bách cổ lại gợi sự cứng cỏi, nặng chắc, nhanh mà có ngừng gập, chữ **sáp**. Người xưa bàn về chỗ diệu của vận bút chỉ lấy hai chữ *tiệp* và *sáp*, mà Hoài Tố có đủ cả hai, điều rất khó."
+    },
+    {
+     "t": "p",
+     "x": "Tác giả cũng chỉ ra sự thống nhất **động – tĩnh**. Hình ảnh “chiến trường sau trận đại chiến” là cái tĩnh sau cái động tột độ. Giáo gãy tên cụt là những nét ngắn, chấm vụn đặt chắc chắn (tĩnh) nhưng xếp so le biến hoá (động). Cành tùng treo tích trượng là những nét dài ngang dọc chống đỡ nhau (tĩnh) mà uốn lượn như rồng sắp bay (động). Ông dẫn hai lời bình người xưa để xác nhận:"
+    },
+    {
+     "t": "quote",
+     "zh": "藏真书如散僧入圣，虽狂怪怒张，而求其点画波发，有不合于轨范者，盖鲜。",
+     "hv": "Tàng Chân thư như tán tăng nhập thánh, tuy cuồng quái nộ trương, nhi cầu kỳ điểm hoạch ba phát, hữu bất hợp ư quỹ phạm giả, cái tiển.",
+     "vi": "Chữ của Tàng Chân (Hoài Tố) như vị tăng tản mạn mà vào được bậc thánh; tuy cuồng quái, căng phồng giận dữ, nhưng tìm trong các nét chấm, nét gạch, nét sóng, nét hất xem có chỗ nào không hợp khuôn phép thì hiếm lắm.",
+     "src": "Văn Trưng Minh (đời Minh)"
+    },
+    {
+     "t": "p",
+     "x": "Vua Càn Long đời Thanh cũng nhận xét rằng trong cái hào mại của thảo thư Hoài Tố có một khí chất thuần hậu, trầm tĩnh, và đó là chỗ “thần” của ông. Về chất nét, tác giả quy về hai chữ **sấu ngạnh** (gầy cứng), hợp với thẩm mỹ đời Đường mà Đỗ Phủ đã tóm lại:"
+    },
+    {
+     "t": "quote",
+     "zh": "书贵瘦硬方通神。",
+     "hv": "Thư quý sấu ngạnh phương thông thần.",
+     "vi": "Chữ quý ở chỗ gầy mà cứng, có thế mới thông được đến thần.",
+     "src": "Đỗ Phủ, «Lý Triều bát phân tiểu triện ca»"
+    },
+    {
+     "t": "p",
+     "x": "Câu “đục xiên vàng ròng, giũa nghiêng ngọc quý” được tác giả đọc là cách Quán Hưu nắm được bí quyết dụng bút của Hoài Tố: **nghịch phong thủ thế**, đưa ngòi ngược chiều để lấy thế. Nét bút như mũi đục, lưỡi giũa ăn vào vật cứng. Hình ảnh cành san hô gai góc và ngựa trời không ghìm nổi nói về kết thể: chỗ dày gió không lọt, chỗ thưa ngựa chạy được, khối trắng lớn nhỏ tương phản mạnh, vừa nghiêm vừa phóng. Cuối cùng, chuỗi “đông rồi tây, nam rồi bắc, ngã rồi đứng, đứt rồi nối” cùng điển tích đời Đường mô tả **bố cục**. Trong trận đánh, Thiện Hùng Tín đâm ngọn sóc vào vai Lý Thế Dân (Tần Vương), Uất Trì Kính Đức (Ngạc Công) quát một tiếng làm Thiện khựng lại, Tần Vương nhân đó nghiêng mình tránh. Mỗi chữ của Hoài Tố cũng nghiêng ngả hiểm hóc, nhìn riêng thì như mất trọng tâm, nhưng trên dưới trái phải có hô ứng, có mượn nhường, nên cả thiên vẫn vững và hài hoà."
+    },
+    {
+     "t": "h",
+     "x": "Đánh giá và bài học"
+    },
+    {
+     "t": "p",
+     "x": "Về câu “cười nhạt với Dật Thiếu (Vương Hi Chi), say lòng với Bá Anh (Trương Chi)”, tác giả khuyên đừng hiểu theo nghĩa đen là Hoài Tố hơn Vương Hi Chi. Nên hiểu “Dật Thiếu” và “Bá Anh” như hai mốc thẩm định. Đặt cạnh những lời bình đương thời cho rằng Hoài Tố có thể tranh hơn thua với Trương Chi, thì Quán Hưu chưa hề tâng bốc quá đáng. Phần cuối bài thơ gồm cây sam nghìn thước, vách lở bờ gãy, áo tiên rách buông chỉ vàng, hoa đào nửa hồng. Tác giả đọc lần lượt các hình ảnh ấy là nét thẳng dài già dặn, nét nghiêng tản mạn hùng tráng, những sợi *du ty* thanh mảnh nối chữ, và những chỗ đốn bút đầy đặn. Hình ảnh kết “dùi vạch cát, ấn đóng bùn” là hai ẩn dụ kinh điển cho nét bút trung phong, tàng phong. Như vậy, dù chữ cuồng đến đâu thì gốc vẫn là bút pháp chuẩn mực."
+    },
+    {
+     "t": "p",
+     "x": "Đọc bài thơ theo cách này, học viên rút ra được ba điều. Thứ nhất, *điên* là thành quả của *cần*, đừng bắt chước cái điên khi chưa có cái cần. Thứ hai, cuồng thảo vẫn phải có đủ tiệp và sáp, trung phong và nghịch thế; tốc độ không thay được sức nặng của nét. Thứ ba, cái hiểm của từng chữ phải được cân bằng bằng hô ứng của toàn thiên. Đó cũng là bài “vi nhi bất phạm” của Tôn Quá Đình mà ta đã học ở bài trước, nay được đẩy tới mức cao nhất. Nếu có dịp, hãy đối chiếu bài thơ với bản «Tự tự thiếp» và «Thiên tự văn» của Hoài Tố để tự kiểm chứng từng hình ảnh."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Cuồng thảo",
+       "zh": "狂草",
+       "vi": "Thảo thư phóng túng, liền mạch, biến hoá cực độ, tiêu biểu là Trương Húc và Hoài Tố."
+      },
+      {
+       "hv": "Thần lực",
+       "zh": "神力",
+       "vi": "Sức như thần trong nét bút; theo bài viết, đó là thành quả của tinh cần."
+      },
+      {
+       "hv": "Tiệp – sáp",
+       "zh": "捷涩",
+       "vi": "Nhanh và có lực cản; hai yếu tố vận bút mà thảo thư giỏi phải có đủ."
+      },
+      {
+       "hv": "Nghịch phong thủ thế",
+       "zh": "逆锋取势",
+       "vi": "Đưa ngòi ngược chiều để tạo thế; như “đục xiên, giũa nghiêng”."
+      },
+      {
+       "hv": "Sấu ngạnh",
+       "zh": "瘦硬",
+       "vi": "Gầy mà cứng, một chuẩn thẩm mỹ nét bút đời Đường."
+      },
+      {
+       "hv": "Chuỳ hoạ sa",
+       "zh": "锥画沙",
+       "vi": "Dùi vạch trên cát; ẩn dụ cho nét trung phong, tàng phong, sắc mà tròn."
+      },
+      {
+       "hv": "Ấn ấn nê",
+       "zh": "印印泥",
+       "vi": "Ấn đóng vào bùn; ẩn dụ cho nét chắc, ngấm, không trôi trượt."
+      },
+      {
+       "hv": "Du ty",
+       "zh": "游丝",
+       "vi": "Sợi tơ mảnh nối giữa các nét, các chữ trong thảo thư."
+      },
+      {
+       "hv": "Bút trủng",
+       "zh": "笔冢",
+       "vi": "Nấm mồ bút; giai thoại Hoài Tố chôn bút cùn thành gò."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Hoài Tố",
+       "zh": "怀素",
+       "years": "725–785, đời Đường",
+       "note": "Nhà sư, bậc thầy cuồng thảo, tác giả «Tự tự thiếp», «Thiên tự văn»; tự là Tàng Chân."
+      },
+      {
+       "name": "Quán Hưu",
+       "zh": "贯休",
+       "years": "832–912, cuối Đường – Ngũ Đại",
+       "note": "Thiền sư, thi nhân, hoạ sĩ, thảo thư gia; hiệu Thiền Nguyệt đại sư; tác giả bài ca."
+      },
+      {
+       "name": "Trương Húc",
+       "zh": "张旭",
+       "years": "khoảng 675–750, đời Đường",
+       "note": "“Trương điên”, bậc tiền bối cuồng thảo; Hoài Tố học qua học trò của ông."
+      },
+      {
+       "name": "Ổ Đồng",
+       "zh": "邬彤",
+       "years": "đời Đường",
+       "note": "Học trò Trương Húc, tương truyền là thầy dạy thảo cho Hoài Tố."
+      },
+      {
+       "name": "Trương Vị, Nhậm Hoa",
+       "zh": "张谓、任华",
+       "years": "thế kỷ VIII, đời Đường",
+       "note": "Những thi nhân từng làm ca tặng Hoài Tố, được Quán Hưu nhắc đến."
+      },
+      {
+       "name": "Uất Trì Kính Đức",
+       "zh": "尉迟敬德",
+       "years": "585–658, đời Đường",
+       "note": "Ngạc Công, danh tướng của Lý Thế Dân; nhân vật trong điển tích quát dừng Thiện Hùng Tín."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Theo tác giả, “chân điên” của Hoài Tố có hai tầng nghĩa nào? Vì sao cách hiểu này có ý nghĩa với người học?",
+      "Hai điển tích Ngũ Tử Tư và Khoái Thông nói lên đặc điểm gì của chữ Hoài Tố?",
+      "Giải thích hai chữ “tiệp” và “sáp”. Câu thơ nào trong bài ca ứng với mỗi chữ?",
+      "Điển tích Ngạc Công quát dừng Thiện Hùng Tín được dùng để mô tả đặc điểm bố cục nào?",
+      "Liên hệ “vi nhi bất phạm” (Bài 4) với cách Hoài Tố cân bằng chữ nghiêng hiểm trong toàn thiên."
+     ]
+    }
+   ]
   }
  ]
 }
