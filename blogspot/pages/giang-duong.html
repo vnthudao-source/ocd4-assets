@@ -1520,8 +1520,17 @@
 }
 
 #lectureHallPage .gd-lammo-heart:disabled{
-    opacity:.7;
-    cursor:wait;
+    opacity:1;
+    cursor:progress;
+}
+
+#lectureHallPage .gd-lammo-heart:disabled span{
+    animation:gdHeartBeat .9s ease-in-out infinite;
+}
+
+@keyframes gdHeartBeat{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.25)}
 }
 
 .gd-lammo-info{
@@ -2243,6 +2252,7 @@
 /* =========================================================
    GIẢNG ĐƯỜNG OCD
    LECTURE HALL v1.7.0
+   v1.10.1 (29/10/2026): thả tim bản lâm đọc kết quả ngay (không chờ hỏi lại), nút không mờ khi đang gửi
    v1.10.0 (29/10/2026): nút "Phòng làm bài kiểm tra giữa kỳ" chỉ mở 20:00–22:00 Thứ Sáu 30/10/2026 (TEST001 vào mọi lúc)
    + TRANSITIONAL IDENTITY
    + MINH HỒNG CONTEXT
@@ -6875,6 +6885,65 @@ function readLamMoHeartState(post,code){
 }
 
 
+/* Gửi tim, đọc kết quả ngay; null = không đọc được (dùng cách cũ) */
+async function lamMoPostFast(fields){
+
+    if(
+        typeof fetch !== "function" ||
+        typeof URLSearchParams !== "function"
+    ){
+        return null;
+    }
+
+    const ac=
+        typeof AbortController === "function"
+        ?
+        new AbortController()
+        :
+        null;
+
+    const timer=
+        ac
+        ?
+        setTimeout(function(){ ac.abort(); },25000)
+        :
+        null;
+
+    try{
+
+        const res=
+            await fetch(
+                LAMMO.api,
+                {
+                    method:"POST",
+                    body:new URLSearchParams(fields),
+                    credentials:"omit",
+                    cache:"no-store",
+                    redirect:"follow",
+                    signal:ac ? ac.signal : undefined
+                }
+            );
+
+        const data=
+            JSON.parse(
+                await res.text()
+            );
+
+        return data && typeof data === "object" ? data : null;
+
+    }catch(error){
+
+        return null;
+
+    }finally{
+
+        if(timer){
+            clearTimeout(timer);
+        }
+    }
+}
+
+
 async function toggleLamMoHeart(post,button){
 
     if(
@@ -6976,16 +7045,37 @@ async function toggleLamMoHeart(post,button){
 
     try{
 
-        form.submit();
-
         let confirmed=null,
             lastError="";
 
-        for(let attempt=0;attempt<8;attempt++){
+        /* v1.10.1: đọc luôn kết quả Apps Script (doPost trả JSON), không phải chờ rồi hỏi lại */
+        const fast=
+            await lamMoPostFast(fields);
+
+        if(
+            fast &&
+            fast.ok === true &&
+            typeof fast.active === "boolean"
+        ){
+            confirmed=fast;
+        }else if(
+            fast &&
+            fast.ok === false
+        ){
+            throw new Error(
+                fast.message ||
+                "Chưa thả được tim."
+            );
+        }else{
+            /* dự phòng: gửi kiểu cũ rồi hỏi lại trạng thái */
+            form.submit();
+        }
+
+        for(let attempt=0;!confirmed && attempt<10;attempt++){
 
             await new Promise(
                 function(resolve){
-                    setTimeout(resolve,1500);
+                    setTimeout(resolve,attempt === 0 ? 800 : 1200);
                 }
             );
 
