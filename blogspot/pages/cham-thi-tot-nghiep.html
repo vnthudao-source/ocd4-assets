@@ -1,0 +1,6689 @@
+<div id="graduationGradingPage">
+
+<style>
+/* =========================================================
+   OCD - CHẤM THI TỐT NGHIỆP
+   v1.4 PASSCODE + ADVANCED FILTER
+
+   - Passcode 835847
+   - Session login
+   - Lọc Exam ID
+   - Lọc mã học viên
+   - Lọc họ tên
+   - Lọc ngày / tháng / năm
+   - Có thể kết hợp bộ lọc
+   - Google Form Verified
+========================================================= */
+
+#graduationGradingPage{
+    --paper:#fffdf8;
+    --paper2:#f7f1e7;
+    --ink:#302923;
+    --muted:#786f66;
+    --line:#e3d7c7;
+
+    --brown:#765344;
+    --brown-dark:#51372d;
+    --gold:#aa7a35;
+
+    --green:#397153;
+    --green-soft:#eaf5ee;
+
+    --red:#963b3b;
+    --red-soft:#faeaea;
+
+    --orange:#a66d25;
+    --orange-soft:#fff1d7;
+
+    --blue:#406f8a;
+    --blue-soft:#edf5f9;
+
+    max-width:1180px;
+    margin:24px auto 60px;
+    padding:0 12px;
+
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--ink);
+    line-height:1.6;
+}
+
+#graduationGradingPage *{
+    box-sizing:border-box;
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.gg-login-wrap{
+    max-width:520px;
+    margin:60px auto;
+
+    padding:0 8px;
+}
+
+.gg-login-card{
+    padding:28px;
+
+    border:1px solid #dec792;
+    border-radius:20px;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(181,135,69,.13),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #fff8ea,
+            #fffdf9
+        );
+
+    box-shadow:
+        0 14px 40px
+        rgba(55,40,28,.10);
+}
+
+.gg-login-icon{
+    display:flex;
+
+    width:62px;
+    height:62px;
+
+    margin:0 auto 13px;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#f3e7d4;
+
+    color:var(--brown-dark);
+
+    font-size:26px;
+    font-weight:900;
+}
+
+.gg-login-title{
+    margin:0;
+
+    font-family:Georgia,serif;
+    font-size:27px;
+
+    color:var(--brown-dark);
+
+    text-align:center;
+}
+
+.gg-login-desc{
+    max-width:390px;
+
+    margin:8px auto 18px;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    text-align:center;
+}
+
+.gg-login-row{
+    display:flex;
+    gap:9px;
+}
+
+.gg-login-input{
+    width:100%;
+    min-height:49px;
+
+    padding:10px 14px;
+
+    border:1px solid #d8c8b5;
+    border-radius:11px;
+
+    background:#fff;
+
+    color:var(--ink);
+
+    font-size:18px;
+    font-weight:900;
+
+    letter-spacing:.14em;
+
+    text-align:center;
+
+    outline:none;
+}
+
+.gg-login-input:focus{
+    border-color:#ad824d;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(173,130,77,.12);
+}
+
+.gg-login-message{
+    display:none;
+
+    margin-top:12px;
+    padding:10px 12px;
+
+    border-radius:9px;
+
+    background:var(--red-soft);
+
+    color:#873838;
+
+    font-size:13px;
+    font-weight:800;
+
+    text-align:center;
+}
+
+.gg-login-message.show{
+    display:block;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.gg-hero{
+    position:relative;
+
+    padding:36px 24px;
+
+    border:1px solid #dec792;
+    border-radius:22px;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(181,135,69,.17),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 90%,
+            rgba(118,83,68,.10),
+            transparent 34%
+        ),
+        linear-gradient(
+            135deg,
+            #fff7e8,
+            #fffdf8
+        );
+
+    text-align:center;
+
+    box-shadow:
+        0 12px 35px
+        rgba(55,40,28,.08);
+}
+
+.gg-hero-badge{
+    display:inline-flex;
+
+    padding:6px 13px;
+    margin-bottom:10px;
+
+    border:1px solid #dec58f;
+    border-radius:999px;
+
+    background:#fff8e6;
+
+    color:#7c592a;
+
+    font-size:12px;
+    font-weight:900;
+}
+
+.gg-hero h1{
+    margin:0;
+
+    font-family:Georgia,serif;
+    font-size:34px;
+
+    color:var(--brown-dark);
+}
+
+.gg-hero p{
+    max-width:760px;
+
+    margin:10px auto 0;
+
+    color:var(--muted);
+}
+
+.gg-logout{
+    position:absolute;
+
+    top:15px;
+    right:15px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.gg-card{
+    margin-top:18px;
+    padding:22px;
+
+    border:1px solid var(--line);
+    border-radius:18px;
+
+    background:#fff;
+
+    box-shadow:
+        0 8px 25px
+        rgba(55,40,28,.055);
+}
+
+.gg-title{
+    margin:0 0 14px;
+
+    font-family:Georgia,serif;
+    font-size:21px;
+
+    color:var(--brown-dark);
+}
+
+
+/* =========================================================
+   SEARCH / FILTER
+========================================================= */
+
+.gg-filter-grid{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,2fr)
+        minmax(180px,.8fr);
+
+    gap:10px;
+}
+
+.gg-filter-label{
+    display:block;
+
+    margin-bottom:5px;
+
+    color:var(--brown-dark);
+
+    font-size:11px;
+    font-weight:900;
+}
+
+.gg-search-actions{
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:11px;
+}
+
+.gg-filter-help{
+    margin-top:9px;
+
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.gg-input,
+.gg-textarea{
+    width:100%;
+
+    padding:11px 13px;
+
+    border:1px solid #d9cbb8;
+    border-radius:11px;
+
+    background:#fff;
+
+    color:var(--ink);
+
+    font-size:14px;
+    outline:none;
+}
+
+.gg-input{
+    min-height:47px;
+}
+
+.gg-textarea{
+    min-height:92px;
+    resize:vertical;
+}
+
+.gg-input:focus,
+.gg-textarea:focus{
+    border-color:#ad824d;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(173,130,77,.12);
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.gg-btn{
+    min-height:44px;
+
+    padding:9px 16px;
+
+    border:0;
+    border-radius:10px;
+
+    background:var(--brown);
+
+    color:#fff;
+
+    font-size:13px;
+    font-weight:900;
+
+    cursor:pointer !important;
+    pointer-events:auto !important;
+}
+
+.gg-btn.green{
+    background:var(--green);
+}
+
+.gg-btn.gold{
+    background:var(--gold);
+}
+
+.gg-btn.red{
+    background:var(--red);
+}
+
+.gg-btn.blue{
+    background:var(--blue);
+}
+
+.gg-btn.secondary{
+    border:1px solid #d7c8b6;
+
+    background:#fff;
+
+    color:var(--brown-dark);
+}
+
+.gg-btn.small{
+    min-height:36px;
+
+    padding:7px 11px;
+
+    font-size:11px;
+}
+
+.gg-btn:disabled{
+    opacity:.45;
+
+    cursor:not-allowed !important;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.gg-message{
+    display:none;
+
+    margin-top:12px;
+    padding:11px 13px;
+
+    border-radius:10px;
+
+    font-size:13px;
+    font-weight:700;
+}
+
+.gg-message.show{
+    display:block;
+}
+
+.gg-message.loading{
+    background:#f4eee5;
+    color:#765d43;
+}
+
+.gg-message.success{
+    background:var(--green-soft);
+    color:#326646;
+}
+
+.gg-message.error{
+    background:var(--red-soft);
+    color:#873838;
+}
+
+
+/* =========================================================
+   FILTER SUMMARY
+========================================================= */
+
+.gg-filter-summary{
+    display:none;
+
+    margin-top:12px;
+    padding:10px 12px;
+
+    border:1px solid #e1d4c3;
+    border-radius:10px;
+
+    background:#fffaf2;
+
+    color:#705b48;
+
+    font-size:12px;
+}
+
+.gg-filter-summary.show{
+    display:block;
+}
+
+
+/* =========================================================
+   EXAM LIST
+========================================================= */
+
+.gg-exam-list{
+    display:grid;
+
+    gap:10px;
+
+    margin-top:14px;
+}
+
+.gg-exam-item{
+    display:grid;
+
+    grid-template-columns:1fr auto;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:13px;
+
+    border:1px solid var(--line);
+    border-radius:12px;
+
+    background:var(--paper);
+}
+
+.gg-exam-name{
+    font-weight:900;
+    color:var(--brown-dark);
+}
+
+.gg-exam-code{
+    margin-left:5px;
+
+    color:#8b704f;
+
+    font-size:11px;
+    font-weight:800;
+}
+
+.gg-exam-meta{
+    margin-top:4px;
+
+    color:var(--muted);
+    font-size:12px;
+}
+
+.gg-exam-date{
+    display:inline-block;
+
+    margin-top:5px;
+    padding:3px 7px;
+
+    border-radius:999px;
+
+    background:#f2e9dc;
+
+    color:#73583c;
+
+    font-size:10px;
+    font-weight:900;
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.gg-info-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    gap:10px;
+}
+
+.gg-info{
+    padding:12px;
+
+    border:1px solid var(--line);
+    border-radius:12px;
+
+    background:var(--paper);
+}
+
+.gg-info-label{
+    color:var(--muted);
+
+    font-size:10px;
+    font-weight:900;
+
+    text-transform:uppercase;
+}
+
+.gg-info-value{
+    margin-top:4px;
+
+    color:var(--brown-dark);
+
+    font-size:15px;
+    font-weight:900;
+
+    overflow-wrap:anywhere;
+}
+
+
+/* =========================================================
+   THEORY SUMMARY
+========================================================= */
+
+.gg-score-summary{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.gg-score-box{
+    padding:13px;
+
+    border:1px solid var(--line);
+    border-radius:12px;
+
+    background:#fffaf2;
+
+    text-align:center;
+}
+
+.gg-score-value{
+    color:var(--brown-dark);
+
+    font-size:24px;
+    font-weight:900;
+}
+
+.gg-score-label{
+    color:var(--muted);
+    font-size:11px;
+}
+
+
+/* =========================================================
+   PRACTICAL NAV
+========================================================= */
+
+.gg-practical-nav{
+    margin-top:18px;
+    padding:13px;
+
+    border:1px solid #e2d5c5;
+    border-radius:13px;
+
+    background:#fffaf2;
+}
+
+.gg-nav-head{
+    display:flex;
+
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+}
+
+.gg-nav-title{
+    color:var(--brown-dark);
+
+    font-size:13px;
+    font-weight:900;
+}
+
+.gg-nav-status{
+    color:var(--muted);
+
+    font-size:12px;
+    font-weight:800;
+}
+
+.gg-qgrid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:7px;
+
+    margin-top:10px;
+}
+
+.gg-qbtn{
+    min-height:40px;
+
+    border:1px solid #ddd1c2;
+    border-radius:9px;
+
+    background:#fff;
+
+    color:#684e3c;
+
+    font-weight:900;
+
+    cursor:pointer;
+}
+
+.gg-qbtn.graded{
+    border-color:#afd0ba;
+
+    background:#e8f3eb;
+
+    color:#356647;
+}
+
+.gg-qbtn.current{
+    border-color:var(--brown);
+
+    background:var(--brown);
+
+    color:#fff;
+}
+
+
+/* =========================================================
+   PRACTICAL
+========================================================= */
+
+.gg-practical-wrap{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1.15fr)
+        minmax(300px,.85fr);
+
+    gap:18px;
+
+    margin-top:18px;
+}
+
+.gg-question-number{
+    color:#9c7137;
+
+    font-size:12px;
+    font-weight:900;
+}
+
+.gg-question-title{
+    margin:4px 0 13px;
+
+    font-family:Georgia,serif;
+    font-size:22px;
+
+    color:var(--brown-dark);
+}
+
+.gg-image-wrap{
+    overflow:hidden;
+
+    width:100%;
+    min-height:280px;
+
+    border:1px solid var(--line);
+    border-radius:14px;
+
+    background:#f2ede7;
+}
+
+.gg-image{
+    display:block;
+
+    width:100%;
+    max-height:680px;
+
+    object-fit:contain;
+
+    background:#f2ede7;
+}
+
+.gg-no-image{
+    display:flex;
+
+    min-height:280px;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:30px;
+
+    color:var(--muted);
+
+    text-align:center;
+}
+
+
+/* =========================================================
+   SUBMISSION META
+========================================================= */
+
+.gg-submission-meta{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:9px;
+
+    margin-top:12px;
+}
+
+.gg-meta{
+    padding:10px;
+
+    border-radius:10px;
+
+    background:var(--paper2);
+}
+
+.gg-meta-label{
+    color:var(--muted);
+
+    font-size:10px;
+    font-weight:900;
+
+    text-transform:uppercase;
+}
+
+.gg-meta-value{
+    margin-top:3px;
+
+    color:var(--brown-dark);
+
+    font-size:13px;
+    font-weight:800;
+
+    overflow-wrap:anywhere;
+}
+
+
+/* =========================================================
+   GRADING
+========================================================= */
+
+.gg-grading-panel{
+    padding:16px;
+
+    border:1px solid var(--line);
+    border-radius:14px;
+
+    background:#fffdf8;
+}
+
+.gg-old-score{
+    padding:13px;
+
+    border-radius:11px;
+
+    background:#f5eddf;
+
+    color:#755724;
+}
+
+.gg-old-score-number{
+    font-size:26px;
+    font-weight:900;
+}
+
+.gg-field{
+    margin-top:13px;
+}
+
+.gg-field-label{
+    display:block;
+
+    margin-bottom:5px;
+
+    color:var(--brown-dark);
+
+    font-size:12px;
+    font-weight:900;
+}
+
+.gg-grade-input{
+    width:100%;
+    min-height:48px;
+
+    padding:10px 13px;
+
+    border:1px solid #d6c7b5;
+    border-radius:11px;
+
+    background:#fff;
+
+    font-size:19px;
+    font-weight:900;
+
+    text-align:center;
+
+    outline:none;
+}
+
+.gg-grade-actions{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:8px;
+
+    margin-top:12px;
+}
+
+.gg-saved{
+    margin-top:12px;
+    padding:9px 11px;
+
+    border-radius:9px;
+
+    background:var(--green-soft);
+
+    color:#326646;
+
+    font-size:12px;
+    font-weight:900;
+}
+
+
+/* =========================================================
+   FINAL
+========================================================= */
+
+.gg-final{
+    margin-top:18px;
+    padding:17px;
+
+    border:1px solid #d7c291;
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8e9,
+            #fffdf9
+        );
+}
+
+.gg-final-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:10px;
+}
+
+.gg-final-box{
+    padding:13px;
+
+    border:1px solid #e2d4bb;
+    border-radius:11px;
+
+    background:rgba(255,255,255,.78);
+
+    text-align:center;
+}
+
+.gg-final-number{
+    color:var(--brown-dark);
+
+    font-size:26px;
+    font-weight:900;
+}
+
+.gg-final-label{
+    color:var(--muted);
+    font-size:11px;
+}
+
+.gg-final-submit{
+    margin-top:16px;
+    padding-top:16px;
+
+    border-top:1px dashed var(--line);
+}
+
+
+/* =========================================================
+   LOCK
+========================================================= */
+
+.gg-locked-banner{
+    margin-top:14px;
+    padding:14px;
+
+    border-radius:11px;
+
+    background:#f3eee7;
+
+    color:#625348;
+
+    font-weight:800;
+}
+
+
+/* =========================================================
+   REMOTE STATUS
+========================================================= */
+
+.gg-remote{
+    margin-top:14px;
+    padding:14px;
+
+    border-radius:11px;
+
+    font-size:13px;
+}
+
+.gg-remote.sent{
+    background:var(--green-soft);
+
+    color:#316446;
+}
+
+.gg-remote.sending{
+    background:var(--blue-soft);
+
+    color:#345e75;
+}
+
+.gg-remote.pending{
+    background:var(--orange-soft);
+
+    color:#76511c;
+}
+
+.gg-remote.error{
+    background:var(--red-soft);
+
+    color:#873838;
+}
+
+.gg-remote-actions{
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:11px;
+}
+
+
+/* =========================================================
+   HIDDEN
+========================================================= */
+
+.gg-hidden{
+    display:none !important;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:800px){
+
+    .gg-filter-grid{
+        grid-template-columns:1fr;
+    }
+
+    .gg-info-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+    .gg-score-summary{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+    .gg-practical-wrap{
+        grid-template-columns:1fr;
+    }
+
+    .gg-final-grid{
+        grid-template-columns:1fr;
+    }
+
+    .gg-logout{
+        position:static;
+
+        margin-top:14px;
+    }
+}
+
+@media(max-width:480px){
+
+    #graduationGradingPage{
+        padding-left:8px;
+        padding-right:8px;
+    }
+
+    .gg-login-wrap{
+        margin-top:28px;
+    }
+
+    .gg-login-card{
+        padding:20px 15px;
+    }
+
+    .gg-login-row{
+        display:grid;
+    }
+
+    .gg-hero{
+        padding:26px 15px;
+    }
+
+    .gg-hero h1{
+        font-size:26px;
+    }
+
+    .gg-card{
+        padding:15px;
+    }
+
+    .gg-info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .gg-remote-actions,
+    .gg-search-actions{
+        display:grid;
+    }
+
+    .gg-exam-item{
+        grid-template-columns:1fr;
+    }
+}
+
+</style>
+
+
+<!-- =========================================================
+     LOGIN
+========================================================= -->
+
+<section
+    class="gg-login-wrap"
+    id="ggLoginPanel"
+>
+
+    <div class="gg-login-card">
+
+        <div class="gg-login-icon">
+            🔒
+        </div>
+
+        <h1 class="gg-login-title">
+            Khu vực chấm thi
+        </h1>
+
+        <div class="gg-login-desc">
+            Đây là khu vực dành cho giáo viên.
+            Vui lòng nhập mã truy cập để tiếp tục.
+        </div>
+
+        <div class="gg-login-row">
+
+            <input
+                class="gg-login-input"
+                id="ggPasscode"
+                type="password"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="••••••"
+                maxlength="6"
+                onkeydown="
+                    if(event.key==='Enter'){
+                        event.preventDefault();
+                        return window.OCDGraduationGrading.login();
+                    }
+                "
+            >
+
+            <button
+                class="gg-btn gold"
+                type="button"
+                onclick="return window.OCDGraduationGrading.login();"
+            >
+                ĐĂNG NHẬP
+            </button>
+
+        </div>
+
+        <div
+            class="gg-login-message"
+            id="ggLoginMessage"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     PROTECTED APP
+========================================================= -->
+
+<div
+    class="gg-hidden"
+    id="ggProtectedApp"
+>
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="gg-hero">
+
+    <div class="gg-hero-badge">
+        HỆ THỐNG GVCN
+    </div>
+
+    <h1>
+        Chấm thi tốt nghiệp
+    </h1>
+
+    <p>
+        Tra cứu, lọc bài thi, chấm phần thực hành
+        và gửi kết quả chính thức vào hệ thống tốt nghiệp.
+    </p>
+
+    <button
+        class="gg-btn secondary small gg-logout"
+        type="button"
+        onclick="return window.OCDGraduationGrading.logout();"
+    >
+        ĐĂNG XUẤT
+    </button>
+
+</section>
+
+
+<!-- =========================================================
+     LOOKUP
+========================================================= -->
+
+<section class="gg-card">
+
+    <h2 class="gg-title">
+        Tra cứu & lọc bài thi
+    </h2>
+
+
+    <div class="gg-filter-grid">
+
+        <div>
+
+            <label
+                class="gg-filter-label"
+                for="ggLookupInput"
+            >
+                EXAM ID / MÃ HỌC VIÊN / HỌ TÊN
+            </label>
+
+            <input
+                class="gg-input"
+                id="ggLookupInput"
+                type="text"
+                autocomplete="off"
+                placeholder="Ví dụ: OCD-EXAM..., D401, Nguyễn Văn A"
+                onkeydown="
+                    if(event.key==='Enter'){
+                        event.preventDefault();
+                        return window.OCDGraduationGrading.lookup();
+                    }
+                "
+            >
+
+        </div>
+
+
+        <div>
+
+            <label
+                class="gg-filter-label"
+                for="ggDateFilter"
+            >
+                NGÀY THI
+            </label>
+
+            <input
+                class="gg-input"
+                id="ggDateFilter"
+                type="date"
+            >
+
+        </div>
+
+    </div>
+
+
+    <div class="gg-search-actions">
+
+        <button
+            class="gg-btn"
+            id="ggLookupButton"
+            type="button"
+            onclick="return window.OCDGraduationGrading.lookup();"
+        >
+            TRA CỨU
+        </button>
+
+        <button
+            class="gg-btn secondary"
+            type="button"
+            onclick="return window.OCDGraduationGrading.clearFilters();"
+        >
+            XÓA BỘ LỌC
+        </button>
+
+    </div>
+
+
+    <div class="gg-filter-help">
+        Có thể tìm riêng theo tên/mã/Exam ID, riêng theo ngày,
+        hoặc kết hợp cả hai điều kiện.
+    </div>
+
+
+    <div
+        class="gg-filter-summary"
+        id="ggFilterSummary"
+    ></div>
+
+
+    <div
+        class="gg-message"
+        id="ggMessage"
+    ></div>
+
+
+    <div
+        class="gg-exam-list gg-hidden"
+        id="ggExamList"
+    ></div>
+
+</section>
+
+
+<!-- =========================================================
+     GRADING
+========================================================= -->
+
+<section
+    class="gg-card gg-hidden"
+    id="ggGradingPanel"
+>
+
+    <h2 class="gg-title">
+        Hồ sơ bài thi
+    </h2>
+
+    <div
+        class="gg-info-grid"
+        id="ggStudentInfo"
+    ></div>
+
+    <div
+        class="gg-score-summary"
+        id="ggTheorySummary"
+    ></div>
+
+
+    <div class="gg-practical-nav">
+
+        <div class="gg-nav-head">
+
+            <div class="gg-nav-title">
+                CHỌN CÂU THỰC HÀNH
+            </div>
+
+            <div
+                class="gg-nav-status"
+                id="ggPracticalStatus"
+            ></div>
+
+        </div>
+
+        <div
+            class="gg-qgrid"
+            id="ggQuestionNav"
+        ></div>
+
+    </div>
+
+
+    <div id="ggPracticalContent"></div>
+
+    <div
+        class="gg-final"
+        id="ggFinalSummary"
+    ></div>
+
+</section>
+
+
+</div>
+<!-- END PROTECTED APP -->
+
+
+<!-- =========================================================
+     HIDDEN IFRAME
+========================================================= -->
+
+<iframe
+    id="ggHiddenFormFrame"
+    name="ggHiddenFormFrame"
+    style="
+        display:none;
+        width:0;
+        height:0;
+        border:0;
+    "
+></iframe>
+
+
+<script>
+/* =========================================================
+   OCD GRADUATION GRADING
+   v1.4 PASSCODE + ADVANCED FILTER
+========================================================= */
+
+window.OCDGraduationGrading =
+window.OCDGraduationGrading || {};
+
+
+(function(APP){
+
+"use strict";
+
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+var CONFIG={
+
+    version:
+        "OCD_GRADUATION_GRADING_V1.4",
+
+    passcode:
+        "835847",
+
+    authSessionKey:
+        "OCD_GRADUATION_GRADING_AUTH_V14",
+
+    spreadsheetId:
+        "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
+
+    examSheet:
+        "BaiThiTotNghiep",
+
+    gradingSheet:
+        "ChamThiTotNghiep",
+
+    timeout:
+        15000,
+
+    verifyDelay:
+        1500,
+
+    verifyAttempts:
+        8,
+
+    storagePrefix:
+        "OCD_GRADUATION_GRADING_V14_",
+
+    lastLookupKey:
+        "OCD_GRADUATION_GRADING_LAST_LOOKUP",
+
+    lastDateKey:
+        "OCD_GRADUATION_GRADING_LAST_DATE",
+
+    examinerKey:
+        "OCD_GRADUATION_GRADING_EXAMINER",
+
+
+    /* =====================================================
+       GOOGLE FORM
+    ===================================================== */
+
+    formAction:
+        "https://docs.google.com/forms/d/e/" +
+        "1FAIpQLSdQ0U3FE6YmBLl58zYIGE0bQETxquwlLFQZkMmrSKmrKLAV7w/" +
+        "formResponse",
+
+
+    formEntries:{
+
+        examId:
+            "entry.300398796",
+
+        studentCode:
+            "entry.630965694",
+
+        studentName:
+            "entry.2078670620",
+
+        group:
+            "entry.485868457",
+
+        course:
+            "entry.6979931",
+
+        theoryScore:
+            "entry.769860916",
+
+        practicalScore:
+            "entry.1409581903",
+
+        practicalGraded:
+            "entry.1184379468",
+
+        gradingData:
+            "entry.847321243",
+
+        examiner:
+            "entry.1561539253",
+
+        gradedAt:
+            "entry.1341313335",
+
+        version:
+            "entry.1627789074"
+    }
+
+};
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+var STATE={
+
+    authenticated:false,
+
+    allExams:[],
+
+    exams:[],
+
+    examMap:{},
+
+    exam:null,
+
+    practical:[],
+
+    currentIndex:0,
+
+    record:null,
+
+    sending:false,
+
+    verifying:false
+
+};
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+function el(id){
+
+    return document.getElementById(id);
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+function showLoginMessage(text){
+
+    var box=
+        el(
+            "ggLoginMessage"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    box.textContent=
+        text;
+
+
+    box.classList.add(
+        "show"
+    );
+}
+
+
+function clearLoginMessage(){
+
+    var box=
+        el(
+            "ggLoginMessage"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    box.textContent=
+        "";
+
+
+    box.classList.remove(
+        "show"
+    );
+}
+
+
+function openProtectedApp(){
+
+    STATE.authenticated=
+        true;
+
+
+    el(
+        "ggLoginPanel"
+    )
+    .classList
+    .add(
+        "gg-hidden"
+    );
+
+
+    el(
+        "ggProtectedApp"
+    )
+    .classList
+    .remove(
+        "gg-hidden"
+    );
+}
+
+
+function openLogin(){
+
+    STATE.authenticated=
+        false;
+
+
+    el(
+        "ggProtectedApp"
+    )
+    .classList
+    .add(
+        "gg-hidden"
+    );
+
+
+    el(
+        "ggLoginPanel"
+    )
+    .classList
+    .remove(
+        "gg-hidden"
+    );
+
+
+    var input=
+        el(
+            "ggPasscode"
+        );
+
+
+    if(input){
+
+        input.value=
+            "";
+
+
+        setTimeout(
+            function(){
+
+                try{
+
+                    input.focus();
+
+                }catch(error){}
+
+            },
+            80
+        );
+    }
+}
+
+
+APP.login=
+function(){
+
+    var input=
+        el(
+            "ggPasscode"
+        );
+
+
+    var code=
+        String(
+            input
+                ?
+                input.value
+                :
+                ""
+        )
+        .trim();
+
+
+    if(
+        code!==
+        CONFIG.passcode
+    ){
+
+        showLoginMessage(
+            "Mã truy cập không đúng."
+        );
+
+
+        if(input){
+
+            input.value=
+                "";
+
+
+            input.focus();
+        }
+
+
+        return false;
+    }
+
+
+    clearLoginMessage();
+
+
+    try{
+
+        sessionStorage.setItem(
+            CONFIG.authSessionKey,
+            "1"
+        );
+
+    }catch(error){}
+
+
+    openProtectedApp();
+
+
+    restoreSearchFilters();
+
+
+    return false;
+};
+
+
+APP.logout=
+function(){
+
+    if(
+        !window.confirm(
+            "Đăng xuất khỏi khu vực chấm thi?"
+        )
+    ){
+
+        return false;
+    }
+
+
+    try{
+
+        sessionStorage.removeItem(
+            CONFIG.authSessionKey
+        );
+
+    }catch(error){}
+
+
+    STATE.authenticated=
+        false;
+
+
+    STATE.exam=
+        null;
+
+
+    STATE.exams=
+        [];
+
+
+    STATE.examMap=
+        {};
+
+
+    STATE.practical=
+        [];
+
+
+    el(
+        "ggGradingPanel"
+    )
+    .classList
+    .add(
+        "gg-hidden"
+    );
+
+
+    el(
+        "ggExamList"
+    )
+    .classList
+    .add(
+        "gg-hidden"
+    );
+
+
+    openLogin();
+
+
+    return false;
+};
+
+
+function checkAuthentication(){
+
+    var authenticated=
+        false;
+
+
+    try{
+
+        authenticated=
+            sessionStorage.getItem(
+                CONFIG.authSessionKey
+            )===
+            "1";
+
+    }catch(error){}
+
+
+    if(authenticated){
+
+        openProtectedApp();
+
+        return true;
+    }
+
+
+    openLogin();
+
+
+    return false;
+}
+
+
+/* =========================================================
+   NORMALIZE
+========================================================= */
+
+function normalizeText(value){
+
+    return String(
+        value===undefined ||
+        value===null
+            ?
+            ""
+            :
+            value
+    )
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/đ/g,"d")
+    .replace(/\s+/g," ");
+}
+
+
+function normalizeCode(value){
+
+    return String(
+        value===undefined ||
+        value===null
+            ?
+            ""
+            :
+            value
+    )
+    .trim()
+    .toUpperCase();
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHtml(value){
+
+    return String(
+        value===undefined ||
+        value===null
+            ?
+            ""
+            :
+            value
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
+
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+function parseNumber(value){
+
+    var str=
+        String(
+            value===undefined ||
+            value===null
+                ?
+                ""
+                :
+                value
+        )
+        .trim()
+        .replace(
+            ",",
+            "."
+        );
+
+
+    if(str===""){
+
+        return null;
+    }
+
+
+    var number=
+        Number(str);
+
+
+    return Number.isFinite(number)
+        ?
+        number
+        :
+        null;
+}
+
+
+function round2(value){
+
+    return Math.round(
+        Number(value)*100
+    )/100;
+}
+
+
+/* =========================================================
+   TIME
+========================================================= */
+
+function sleep(ms){
+
+    return new Promise(
+        function(resolve){
+
+            setTimeout(
+                resolve,
+                ms
+            );
+        }
+    );
+}
+
+
+function formatDateTime(value){
+
+    var date=
+        value instanceof Date
+            ?
+            value
+            :
+            new Date(value);
+
+
+    if(
+        isNaN(
+            date.getTime()
+        )
+    ){
+
+        date=
+            new Date();
+    }
+
+
+    function pad(n){
+
+        return String(n)
+        .padStart(
+            2,
+            "0"
+        );
+    }
+
+
+    return (
+        pad(date.getDate()) +
+        "/" +
+        pad(date.getMonth()+1) +
+        "/" +
+        date.getFullYear() +
+        " " +
+        pad(date.getHours()) +
+        ":" +
+        pad(date.getMinutes()) +
+        ":" +
+        pad(date.getSeconds())
+    );
+}
+
+
+/* =========================================================
+   DATE FILTER
+
+   Trả về YYYY-MM-DD
+========================================================= */
+
+function dateKeyFromValue(value){
+
+    var raw=
+        String(
+            value || ""
+        )
+        .trim();
+
+
+    if(!raw){
+
+        return "";
+    }
+
+
+    /*
+       dd/mm/yyyy
+       dd-mm-yyyy
+    */
+
+    var vn=
+        raw.match(
+            /(?:^|\D)(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\D|$)/
+        );
+
+
+    if(vn){
+
+        return (
+            String(vn[3]) +
+            "-" +
+            String(vn[2])
+            .padStart(
+                2,
+                "0"
+            ) +
+            "-" +
+            String(vn[1])
+            .padStart(
+                2,
+                "0"
+            )
+        );
+    }
+
+
+    /*
+       yyyy-mm-dd
+    */
+
+    var iso=
+        raw.match(
+            /(\d{4})-(\d{1,2})-(\d{1,2})/
+        );
+
+
+    if(iso){
+
+        return (
+            String(iso[1]) +
+            "-" +
+            String(iso[2])
+            .padStart(
+                2,
+                "0"
+            ) +
+            "-" +
+            String(iso[3])
+            .padStart(
+                2,
+                "0"
+            )
+        );
+    }
+
+
+    var date=
+        new Date(
+            raw
+        );
+
+
+    if(
+        !isNaN(
+            date.getTime()
+        )
+    ){
+
+        return (
+            date.getFullYear() +
+            "-" +
+            String(
+                date.getMonth()+1
+            )
+            .padStart(
+                2,
+                "0"
+            ) +
+            "-" +
+            String(
+                date.getDate()
+            )
+            .padStart(
+                2,
+                "0"
+            )
+        );
+    }
+
+
+    return "";
+}
+
+
+function examDateKey(exam){
+
+    /*
+       Ưu tiên ngày nộp bài thi.
+       Nếu không có thì lấy Dấu thời gian.
+       Cuối cùng lấy thời gian bắt đầu.
+    */
+
+    return (
+        dateKeyFromValue(
+            exam.submittedAt
+        ) ||
+        dateKeyFromValue(
+            exam.timestamp
+        ) ||
+        dateKeyFromValue(
+            exam.startedAt
+        )
+    );
+}
+
+
+function prettyDateKey(value){
+
+    var match=
+        String(
+            value || ""
+        )
+        .match(
+            /^(\d{4})-(\d{2})-(\d{2})$/
+        );
+
+
+    if(!match){
+
+        return value || "";
+    }
+
+
+    return (
+        match[3] +
+        "/" +
+        match[2] +
+        "/" +
+        match[1]
+    );
+}
+
+
+/* =========================================================
+   SORT DATE
+========================================================= */
+
+function parseSortTime(value){
+
+    var raw=
+        String(
+            value || ""
+        )
+        .trim();
+
+
+    if(!raw){
+
+        return 0;
+    }
+
+
+    var vn=
+        raw.match(
+            /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/
+        );
+
+
+    if(vn){
+
+        return new Date(
+            Number(vn[3]),
+            Number(vn[2])-1,
+            Number(vn[1]),
+            Number(vn[4] || 0),
+            Number(vn[5] || 0),
+            Number(vn[6] || 0)
+        )
+        .getTime();
+    }
+
+
+    var direct=
+        new Date(
+            raw
+        );
+
+
+    if(
+        !isNaN(
+            direct.getTime()
+        )
+    ){
+
+        return direct.getTime();
+    }
+
+
+    return 0;
+}
+
+
+function examSortTime(exam){
+
+    return (
+        parseSortTime(
+            exam.submittedAt
+        ) ||
+        parseSortTime(
+            exam.timestamp
+        ) ||
+        parseSortTime(
+            exam.startedAt
+        ) ||
+        0
+    );
+}
+
+
+/* =========================================================
+   CSV
+========================================================= */
+
+function parseCSV(text){
+
+    var rows=[];
+    var row=[];
+    var field="";
+    var quoted=false;
+
+
+    text=
+        String(text || "")
+        .replace(/^\uFEFF/,"");
+
+
+    for(
+        var i=0;
+        i<text.length;
+        i++
+    ){
+
+        var c=
+            text[i];
+
+
+        if(c==='"'){
+
+            if(
+                quoted &&
+                text[i+1]==='"'
+            ){
+
+                field+='"';
+
+                i++;
+
+            }else{
+
+                quoted=
+                    !quoted;
+            }
+
+        }else if(
+            c==="," &&
+            !quoted
+        ){
+
+            row.push(field);
+
+            field="";
+
+        }else if(
+            (
+                c==="\n" ||
+                c==="\r"
+            ) &&
+            !quoted
+        ){
+
+            if(
+                c==="\r" &&
+                text[i+1]==="\n"
+            ){
+
+                i++;
+            }
+
+
+            row.push(field);
+
+
+            if(
+                row.some(
+                    function(v){
+
+                        return (
+                            String(v)
+                            .trim()!==""
+                        );
+                    }
+                )
+            ){
+
+                rows.push(row);
+            }
+
+
+            row=[];
+            field="";
+
+        }else{
+
+            field+=c;
+        }
+    }
+
+
+    row.push(field);
+
+
+    if(
+        row.some(
+            function(v){
+
+                return (
+                    String(v)
+                    .trim()!==""
+                );
+            }
+        )
+    ){
+
+        rows.push(row);
+    }
+
+
+    return rows;
+}
+
+
+/* =========================================================
+   SHEET URL
+========================================================= */
+
+function sheetUrl(sheetName){
+
+    return (
+        "https://docs.google.com/spreadsheets/d/" +
+        CONFIG.spreadsheetId +
+        "/gviz/tq?tqx=out:csv&sheet=" +
+        encodeURIComponent(
+            sheetName
+        ) +
+        "&_=" +
+        Date.now()
+    );
+}
+
+
+/* =========================================================
+   FETCH
+========================================================= */
+
+function fetchWithTimeout(url){
+
+    var controller=
+        typeof AbortController!=="undefined"
+            ?
+            new AbortController()
+            :
+            null;
+
+
+    var timer=
+        controller
+            ?
+            setTimeout(
+                function(){
+
+                    controller.abort();
+
+                },
+                CONFIG.timeout
+            )
+            :
+            null;
+
+
+    return fetch(
+        url,
+        {
+            cache:"no-store",
+
+            signal:
+                controller
+                    ?
+                    controller.signal
+                    :
+                    undefined
+        }
+    )
+
+    .then(
+        function(response){
+
+            if(!response.ok){
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+            }
+
+
+            return response.text();
+        }
+    )
+
+    .finally(
+        function(){
+
+            if(timer){
+
+                clearTimeout(
+                    timer
+                );
+            }
+        }
+    );
+}
+
+
+async function fetchRetry(url){
+
+    var error=null;
+
+
+    for(
+        var i=0;
+        i<2;
+        i++
+    ){
+
+        try{
+
+            return await fetchWithTimeout(
+                url
+            );
+
+        }catch(e){
+
+            error=e;
+
+
+            if(i===0){
+
+                await sleep(
+                    400
+                );
+            }
+        }
+    }
+
+
+    throw error;
+}
+
+
+/* =========================================================
+   COLUMN
+========================================================= */
+
+function findColumn(
+    headers,
+    aliases
+){
+
+    var normalized=
+        headers.map(
+            normalizeText
+        );
+
+
+    for(
+        var i=0;
+        i<aliases.length;
+        i++
+    ){
+
+        var wanted=
+            normalizeText(
+                aliases[i]
+            );
+
+
+        var index=
+            normalized.indexOf(
+                wanted
+            );
+
+
+        if(index!==-1){
+
+            return index;
+        }
+    }
+
+
+    for(
+        var a=0;
+        a<aliases.length;
+        a++
+    ){
+
+        var partial=
+            normalizeText(
+                aliases[a]
+            );
+
+
+        for(
+            var h=0;
+            h<normalized.length;
+            h++
+        ){
+
+            if(
+                partial &&
+                normalized[h]
+                .indexOf(
+                    partial
+                )!==-1
+            ){
+
+                return h;
+            }
+        }
+    }
+
+
+    return -1;
+}
+
+
+function valueAt(
+    row,
+    index
+){
+
+    if(
+        index<0 ||
+        !row ||
+        index>=row.length
+    ){
+
+        return "";
+    }
+
+
+    return String(
+        row[index] || ""
+    )
+    .trim();
+}
+
+
+/* =========================================================
+   DRIVE IMAGE
+========================================================= */
+
+function driveIdFromUrl(value){
+
+    var str=
+        String(
+            value || ""
+        )
+        .trim();
+
+
+    var patterns=[
+
+        /\/file\/d\/([a-zA-Z0-9_-]+)/,
+
+        /[?&]id=([a-zA-Z0-9_-]+)/,
+
+        /\/d\/([a-zA-Z0-9_-]+)/
+    ];
+
+
+    for(
+        var i=0;
+        i<patterns.length;
+        i++
+    ){
+
+        var match=
+            str.match(
+                patterns[i]
+            );
+
+
+        if(match){
+
+            return match[1];
+        }
+    }
+
+
+    if(
+        /^[a-zA-Z0-9_-]{20,}$/
+        .test(str)
+    ){
+
+        return str;
+    }
+
+
+    return "";
+}
+
+
+function imageUrl(value){
+
+    var RS=
+        window.StudentRewardSystem;
+
+
+    if(
+        RS &&
+        typeof RS.convertDriveImageUrl===
+        "function"
+    ){
+
+        try{
+
+            return RS.convertDriveImageUrl(
+                value,
+                900
+            );
+
+        }catch(error){}
+    }
+
+
+    var id=
+        driveIdFromUrl(
+            value
+        );
+
+
+    if(id){
+
+        return (
+            "https://drive.google.com/thumbnail?id=" +
+            encodeURIComponent(id) +
+            "&sz=w900"
+        );
+    }
+
+
+    return String(
+        value || ""
+    );
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function setMessage(
+    text,
+    type
+){
+
+    var box=
+        el(
+            "ggMessage"
+        );
+
+
+    box.className=
+        "gg-message show " +
+        (
+            type ||
+            "loading"
+        );
+
+
+    box.textContent=
+        text;
+}
+
+
+function hideMessage(){
+
+    var box=
+        el(
+            "ggMessage"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    box.className=
+        "gg-message";
+
+
+    box.textContent=
+        "";
+}
+
+
+/* =========================================================
+   FILTER SUMMARY
+========================================================= */
+
+function renderFilterSummary(
+    query,
+    dateFilter,
+    count
+){
+
+    var box=
+        el(
+            "ggFilterSummary"
+        );
+
+
+    if(!box){
+
+        return;
+    }
+
+
+    var pieces=[];
+
+
+    if(query){
+
+        pieces.push(
+            'Từ khóa: "' +
+            query +
+            '"'
+        );
+    }
+
+
+    if(dateFilter){
+
+        pieces.push(
+            "Ngày thi: " +
+            prettyDateKey(
+                dateFilter
+            )
+        );
+    }
+
+
+    if(!pieces.length){
+
+        box.classList.remove(
+            "show"
+        );
+
+
+        box.textContent=
+            "";
+
+
+        return;
+    }
+
+
+    box.textContent=
+        pieces.join(
+            " • "
+        ) +
+        " • Kết quả: " +
+        count +
+        " bài thi";
+
+
+    box.classList.add(
+        "show"
+    );
+}
+
+
+/* =========================================================
+   LOAD EXAM DATA
+========================================================= */
+
+async function loadExamRows(){
+
+    var text=
+        await fetchRetry(
+            sheetUrl(
+                CONFIG.examSheet
+            )
+        );
+
+
+    var rows=
+        parseCSV(
+            text
+        );
+
+
+    if(
+        !rows ||
+        rows.length<2
+    ){
+
+        throw new Error(
+            "BaiThiTotNghiep chưa có dữ liệu."
+        );
+    }
+
+
+    var headers=
+        rows[0];
+
+
+    var cols={
+
+        timestamp:
+            findColumn(
+                headers,
+                ["Dấu thời gian"]
+            ),
+
+        examId:
+            findColumn(
+                headers,
+                [
+                    "Exam ID",
+                    "ExamID"
+                ]
+            ),
+
+        code:
+            findColumn(
+                headers,
+                ["Mã học viên"]
+            ),
+
+        name:
+            findColumn(
+                headers,
+                ["Họ và tên"]
+            ),
+
+        group:
+            findColumn(
+                headers,
+                ["Tổ"]
+            ),
+
+        course:
+            findColumn(
+                headers,
+                [
+                    "Khoá",
+                    "Khóa"
+                ]
+            ),
+
+        startedAt:
+            findColumn(
+                headers,
+                ["Thời gian bắt đầu"]
+            ),
+
+        submittedAt:
+            findColumn(
+                headers,
+                ["Thời gian nộp"]
+            ),
+
+        submitReason:
+            findColumn(
+                headers,
+                ["Hình thức nộp"]
+            ),
+
+        theoryAnswered:
+            findColumn(
+                headers,
+                ["Số câu lý thuyết đã làm"]
+            ),
+
+        theoryCorrect:
+            findColumn(
+                headers,
+                ["Số câu lý thuyết đúng"]
+            ),
+
+        theoryWrong:
+            findColumn(
+                headers,
+                ["Số câu lý thuyết sai"]
+            ),
+
+        theoryScore:
+            findColumn(
+                headers,
+                ["Điểm lý thuyết"]
+            ),
+
+        practicalAnswered:
+            findColumn(
+                headers,
+                ["Số câu thực hành đã chọn"]
+            ),
+
+        practicalData:
+            findColumn(
+                headers,
+                ["PracticalData"]
+            )
+    };
+
+
+    if(
+        cols.examId<0 ||
+        cols.code<0 ||
+        cols.practicalData<0
+    ){
+
+        throw new Error(
+            "Không nhận diện được cấu trúc BaiThiTotNghiep."
+        );
+    }
+
+
+    var result=[];
+
+
+    for(
+        var i=1;
+        i<rows.length;
+        i++
+    ){
+
+        var row=
+            rows[i];
+
+
+        var examId=
+            valueAt(
+                row,
+                cols.examId
+            );
+
+
+        if(!examId){
+
+            continue;
+        }
+
+
+        result.push({
+
+            timestamp:
+                valueAt(
+                    row,
+                    cols.timestamp
+                ),
+
+            examId:
+                examId,
+
+            studentCode:
+                normalizeCode(
+                    valueAt(
+                        row,
+                        cols.code
+                    )
+                ),
+
+            studentName:
+                valueAt(
+                    row,
+                    cols.name
+                ),
+
+            group:
+                valueAt(
+                    row,
+                    cols.group
+                ),
+
+            course:
+                valueAt(
+                    row,
+                    cols.course
+                ),
+
+            startedAt:
+                valueAt(
+                    row,
+                    cols.startedAt
+                ),
+
+            submittedAt:
+                valueAt(
+                    row,
+                    cols.submittedAt
+                ),
+
+            submitReason:
+                valueAt(
+                    row,
+                    cols.submitReason
+                ),
+
+            theoryAnswered:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.theoryAnswered
+                    )
+                ) || 0,
+
+            theoryCorrect:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.theoryCorrect
+                    )
+                ) || 0,
+
+            theoryWrong:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.theoryWrong
+                    )
+                ) || 0,
+
+            theoryScore:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.theoryScore
+                    )
+                ) || 0,
+
+            practicalAnswered:
+                parseNumber(
+                    valueAt(
+                        row,
+                        cols.practicalAnswered
+                    )
+                ) || 0,
+
+            practicalRaw:
+                valueAt(
+                    row,
+                    cols.practicalData
+                )
+        });
+    }
+
+
+    return result;
+}
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function matchesSearch(
+    exam,
+    query
+){
+
+    if(!query){
+
+        return true;
+    }
+
+
+    var wanted=
+        normalizeText(
+            query
+        );
+
+
+    var haystack=
+        normalizeText(
+
+            (
+                exam.examId ||
+                ""
+            ) +
+
+            " " +
+
+            (
+                exam.studentCode ||
+                ""
+            ) +
+
+            " " +
+
+            (
+                exam.studentName ||
+                ""
+            )
+
+        );
+
+
+    return (
+        haystack.indexOf(
+            wanted
+        )!==-1
+    );
+}
+
+
+function matchesDate(
+    exam,
+    dateFilter
+){
+
+    if(!dateFilter){
+
+        return true;
+    }
+
+
+    return (
+        examDateKey(
+            exam
+        )===
+        dateFilter
+    );
+}
+
+
+/* =========================================================
+   LOOKUP
+========================================================= */
+
+APP.lookup=
+async function(){
+
+    if(!STATE.authenticated){
+
+        openLogin();
+
+        return false;
+    }
+
+
+    var input=
+        el(
+            "ggLookupInput"
+        );
+
+
+    var dateInput=
+        el(
+            "ggDateFilter"
+        );
+
+
+    var button=
+        el(
+            "ggLookupButton"
+        );
+
+
+    var query=
+        String(
+            input
+                ?
+                input.value
+                :
+                ""
+        )
+        .trim();
+
+
+    var dateFilter=
+        String(
+            dateInput
+                ?
+                dateInput.value
+                :
+                ""
+        )
+        .trim();
+
+
+    if(
+        !query &&
+        !dateFilter
+    ){
+
+        setMessage(
+            "Vui lòng nhập Exam ID, mã học viên, họ tên hoặc chọn ngày thi.",
+            "error"
+        );
+
+
+        renderFilterSummary(
+            "",
+            "",
+            0
+        );
+
+
+        return false;
+    }
+
+
+    button.disabled=
+        true;
+
+
+    button.textContent=
+        "ĐANG TRA CỨU...";
+
+
+    setMessage(
+        "Đang đọc và lọc dữ liệu bài thi...",
+        "loading"
+    );
+
+
+    el(
+        "ggGradingPanel"
+    )
+    .classList
+    .add(
+        "gg-hidden"
+    );
+
+
+    el(
+        "ggExamList"
+    )
+    .classList
+    .add(
+        "gg-hidden"
+    );
+
+
+    try{
+
+        localStorage.setItem(
+            CONFIG.lastLookupKey,
+            query
+        );
+
+
+        localStorage.setItem(
+            CONFIG.lastDateKey,
+            dateFilter
+        );
+
+    }catch(error){}
+
+
+    try{
+
+        var rows=
+            await loadExamRows();
+
+
+        STATE.allExams=
+            rows;
+
+
+        STATE.exams=
+            rows
+            .filter(
+                function(exam){
+
+                    return (
+                        matchesSearch(
+                            exam,
+                            query
+                        ) &&
+                        matchesDate(
+                            exam,
+                            dateFilter
+                        )
+                    );
+                }
+            )
+            .sort(
+                function(a,b){
+
+                    return (
+                        examSortTime(b) -
+                        examSortTime(a)
+                    );
+                }
+            );
+
+
+        renderFilterSummary(
+            query,
+            dateFilter,
+            STATE.exams.length
+        );
+
+
+        if(
+            !STATE.exams.length
+        ){
+
+            throw new Error(
+                dateFilter
+                    ?
+                    "Không tìm thấy bài thi phù hợp với bộ lọc đã chọn."
+                    :
+                    "Không tìm thấy bài thi."
+            );
+        }
+
+
+        /*
+           Chỉ tự mở trực tiếp nếu kết quả chính xác 1 bài.
+        */
+
+        if(
+            STATE.exams.length===1
+        ){
+
+            loadExam(
+                STATE.exams[0]
+            );
+
+
+            setMessage(
+                "Đã tìm thấy và tải bài thi.",
+                "success"
+            );
+
+        }else{
+
+            renderExamList();
+
+
+            setMessage(
+                "Tìm thấy " +
+                STATE.exams.length +
+                " bài thi phù hợp.",
+                "success"
+            );
+        }
+
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+
+        setMessage(
+            error &&
+            error.message
+                ?
+                error.message
+                :
+                "Không thể tải bài thi.",
+            "error"
+        );
+
+
+    }finally{
+
+        button.disabled=
+            false;
+
+
+        button.textContent=
+            "TRA CỨU";
+    }
+
+
+    return false;
+};
+
+
+/* =========================================================
+   CLEAR FILTER
+========================================================= */
+
+APP.clearFilters=
+function(){
+
+    var input=
+        el(
+            "ggLookupInput"
+        );
+
+
+    var date=
+        el(
+            "ggDateFilter"
+        );
+
+
+    if(input){
+
+        input.value=
+            "";
+    }
+
+
+    if(date){
+
+        date.value=
+            "";
+    }
+
+
+    try{
+
+        localStorage.removeItem(
+            CONFIG.lastLookupKey
+        );
+
+
+        localStorage.removeItem(
+            CONFIG.lastDateKey
+        );
+
+    }catch(error){}
+
+
+    STATE.exams=
+        [];
+
+
+    STATE.examMap=
+        {};
+
+
+    el(
+        "ggExamList"
+    )
+    .classList
+    .add(
+        "gg-hidden"
+    );
+
+
+    el(
+        "ggGradingPanel"
+    )
+    .classList
+    .add(
+        "gg-hidden"
+    );
+
+
+    renderFilterSummary(
+        "",
+        "",
+        0
+    );
+
+
+    hideMessage();
+
+
+    return false;
+};
+
+
+/* =========================================================
+   EXAM LIST
+========================================================= */
+
+function renderExamList(){
+
+    var box=
+        el(
+            "ggExamList"
+        );
+
+
+    STATE.examMap={};
+
+
+    var html="";
+
+
+    STATE.exams
+    .forEach(
+        function(exam,index){
+
+            STATE.examMap[
+                String(
+                    index
+                )
+            ]=
+                exam;
+
+
+            var dateKey=
+                examDateKey(
+                    exam
+                );
+
+
+            html+=
+
+                '<div class="gg-exam-item">' +
+
+                    '<div>' +
+
+                        '<div class="gg-exam-name">' +
+
+                            escapeHtml(
+                                exam.studentName ||
+                                exam.studentCode
+                            ) +
+
+                            '<span class="gg-exam-code">' +
+
+                                escapeHtml(
+                                    exam.studentCode
+                                ) +
+
+                            '</span>' +
+
+                        '</div>' +
+
+                        '<div class="gg-exam-meta">' +
+
+                            escapeHtml(
+                                exam.examId
+                            ) +
+
+                            '<br>' +
+
+                            'Nộp: ' +
+
+                            escapeHtml(
+                                exam.submittedAt ||
+                                exam.timestamp ||
+                                "-"
+                            ) +
+
+                        '</div>' +
+
+                        (
+                            dateKey
+                                ?
+                                '<div class="gg-exam-date">' +
+                                    'NGÀY THI ' +
+                                    escapeHtml(
+                                        prettyDateKey(
+                                            dateKey
+                                        )
+                                    ) +
+                                '</div>'
+                                :
+                                ''
+                        ) +
+
+                    '</div>' +
+
+                    '<button ' +
+                        'class="gg-btn" ' +
+                        'type="button" ' +
+                        'onclick="return window.OCDGraduationGrading.selectExam(' +
+                            index +
+                        ');">' +
+
+                        'CHẤM BÀI' +
+
+                    '</button>' +
+
+                '</div>';
+        }
+    );
+
+
+    box.innerHTML=
+        html;
+
+
+    box.classList.remove(
+        "gg-hidden"
+    );
+}
+
+
+APP.selectExam=
+function(index){
+
+    var exam=
+        STATE.examMap[
+            String(
+                index
+            )
+        ];
+
+
+    if(exam){
+
+        loadExam(
+            exam
+        );
+
+
+        setMessage(
+            "Đã mở bài thi của " +
+            (
+                exam.studentName ||
+                exam.studentCode
+            ) +
+            ".",
+            "success"
+        );
+    }
+
+
+    return false;
+};
+
+
+/* =========================================================
+   PRACTICAL JSON
+========================================================= */
+
+function parsePracticalData(raw){
+
+    try{
+
+        var data=
+            JSON.parse(
+                raw || "[]"
+            );
+
+
+        if(
+            !Array.isArray(data)
+        ){
+
+            return [];
+        }
+
+
+        return data
+        .filter(
+            function(item){
+
+                return (
+                    item &&
+                    typeof item===
+                    "object"
+                );
+            }
+        )
+        .sort(
+            function(a,b){
+
+                return (
+                    Number(
+                        a.q || 0
+                    ) -
+                    Number(
+                        b.q || 0
+                    )
+                );
+            }
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "PracticalData:",
+            error
+        );
+
+
+        return [];
+    }
+}
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+function storageKey(){
+
+    return STATE.exam
+        ?
+        CONFIG.storagePrefix +
+        STATE.exam.examId
+        :
+        "";
+}
+
+
+function createRecord(){
+
+    var examiner="";
+
+
+    try{
+
+        examiner=
+            localStorage.getItem(
+                CONFIG.examinerKey
+            ) ||
+            "";
+
+    }catch(error){}
+
+
+    return {
+
+        version:
+            CONFIG.version,
+
+        examId:
+            STATE.exam.examId,
+
+        status:
+            "active",
+
+        examiner:
+            examiner,
+
+        grades:{},
+
+        finalResult:null,
+
+        remoteSave:{
+
+            status:
+                "not_sent",
+
+            attempts:
+                0,
+
+            verifiedAt:
+                null,
+
+            remoteRow:
+                null,
+
+            error:
+                ""
+        },
+
+        savedAt:
+            Date.now()
+    };
+}
+
+
+function loadRecord(){
+
+    try{
+
+        var raw=
+            localStorage.getItem(
+                storageKey()
+            );
+
+
+        if(!raw){
+
+            return createRecord();
+        }
+
+
+        var record=
+            JSON.parse(
+                raw
+            );
+
+
+        record.grades=
+            record.grades ||
+            {};
+
+
+        record.remoteSave=
+            record.remoteSave ||
+            {
+                status:"not_sent",
+                attempts:0,
+                verifiedAt:null,
+                remoteRow:null,
+                error:""
+            };
+
+
+        return record;
+
+
+    }catch(error){
+
+        return createRecord();
+    }
+}
+
+
+function saveRecord(){
+
+    if(
+        !STATE.record ||
+        !storageKey()
+    ){
+
+        return;
+    }
+
+
+    STATE.record.savedAt=
+        Date.now();
+
+
+    try{
+
+        localStorage.setItem(
+            storageKey(),
+            JSON.stringify(
+                STATE.record
+            )
+        );
+
+    }catch(error){}
+}
+
+
+function isLocked(){
+
+    return !!(
+        STATE.record &&
+        STATE.record.status===
+        "submitted"
+    );
+}
+
+
+/* =========================================================
+   LOAD EXAM
+========================================================= */
+
+function loadExam(exam){
+
+    STATE.exam=
+        exam;
+
+
+    STATE.practical=
+        parsePracticalData(
+            exam.practicalRaw
+        );
+
+
+    STATE.currentIndex=
+        0;
+
+
+    STATE.record=
+        loadRecord();
+
+
+    el(
+        "ggExamList"
+    )
+    .classList
+    .add(
+        "gg-hidden"
+    );
+
+
+    el(
+        "ggGradingPanel"
+    )
+    .classList
+    .remove(
+        "gg-hidden"
+    );
+
+
+    renderAll();
+
+
+    if(
+        isLocked() &&
+        STATE.record.finalResult &&
+        STATE.record.remoteSave.status!=="sent"
+    ){
+
+        setTimeout(
+            function(){
+
+                verifyRemote(
+                    false
+                );
+
+            },
+            500
+        );
+    }
+}
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
+function infoBox(
+    label,
+    value
+){
+
+    return (
+
+        '<div class="gg-info">' +
+
+            '<div class="gg-info-label">' +
+                escapeHtml(
+                    label
+                ) +
+            '</div>' +
+
+            '<div class="gg-info-value">' +
+                escapeHtml(
+                    value ||
+                    "-"
+                ) +
+            '</div>' +
+
+        '</div>'
+    );
+}
+
+
+function renderInfo(){
+
+    var exam=
+        STATE.exam;
+
+
+    el(
+        "ggStudentInfo"
+    )
+    .innerHTML=
+
+        infoBox(
+            "Học viên",
+            exam.studentName
+        ) +
+
+        infoBox(
+            "Mã học viên",
+            exam.studentCode
+        ) +
+
+        infoBox(
+            "Tổ",
+            exam.group
+        ) +
+
+        infoBox(
+            "Khóa",
+            exam.course
+        ) +
+
+        infoBox(
+            "Exam ID",
+            exam.examId
+        ) +
+
+        infoBox(
+            "Ngày thi",
+            prettyDateKey(
+                examDateKey(
+                    exam
+                )
+            ) ||
+            "-"
+        ) +
+
+        infoBox(
+            "Bắt đầu",
+            exam.startedAt
+        ) +
+
+        infoBox(
+            "Nộp bài",
+            exam.submittedAt
+        );
+}
+
+
+/* =========================================================
+   THEORY
+========================================================= */
+
+function scoreBox(
+    label,
+    value
+){
+
+    return (
+
+        '<div class="gg-score-box">' +
+
+            '<div class="gg-score-value">' +
+                escapeHtml(
+                    value
+                ) +
+            '</div>' +
+
+            '<div class="gg-score-label">' +
+                escapeHtml(
+                    label
+                ) +
+            '</div>' +
+
+        '</div>'
+    );
+}
+
+
+function renderTheory(){
+
+    var exam=
+        STATE.exam;
+
+
+    el(
+        "ggTheorySummary"
+    )
+    .innerHTML=
+
+        scoreBox(
+            "Điểm lý thuyết",
+            exam.theoryScore +
+            "/10"
+        ) +
+
+        scoreBox(
+            "Câu đúng",
+            exam.theoryCorrect
+        ) +
+
+        scoreBox(
+            "Câu sai",
+            exam.theoryWrong
+        ) +
+
+        scoreBox(
+            "Thực hành đã chọn",
+            exam.practicalAnswered
+        );
+}
+
+
+/* =========================================================
+   GRADES
+========================================================= */
+
+function gradeFor(questionId){
+
+    var key=
+        String(
+            questionId
+        );
+
+
+    if(
+        !STATE.record.grades[key]
+    ){
+
+        STATE.record.grades[key]={
+
+            examScore:null,
+
+            comment:"",
+
+            usedOldScore:false,
+
+            gradedAt:null
+        };
+    }
+
+
+    return STATE.record.grades[key];
+}
+
+
+function isGraded(questionId){
+
+    var grade=
+        STATE.record.grades[
+            String(
+                questionId
+            )
+        ];
+
+
+    return !!(
+        grade &&
+        grade.examScore!==null &&
+        grade.examScore!==undefined &&
+        Number.isFinite(
+            Number(
+                grade.examScore
+            )
+        )
+    );
+}
+
+
+function gradedCount(){
+
+    return STATE.practical
+    .filter(
+        function(item){
+
+            return isGraded(
+                item.q
+            );
+        }
+    )
+    .length;
+}
+
+
+/* =========================================================
+   NAV
+========================================================= */
+
+function renderNav(){
+
+    var html="";
+
+
+    STATE.practical
+    .forEach(
+        function(item,index){
+
+            html+=
+
+                '<button ' +
+
+                    'class="gg-qbtn ' +
+
+                    (
+                        isGraded(
+                            item.q
+                        )
+                            ?
+                            'graded '
+                            :
+                            ''
+                    ) +
+
+                    (
+                        index===
+                        STATE.currentIndex
+                            ?
+                            'current'
+                            :
+                            ''
+                    ) +
+
+                    '" ' +
+
+                    'type="button" ' +
+
+                    'onclick="return window.OCDGraduationGrading.goQuestion(' +
+                        index +
+                    ');">' +
+
+                    escapeHtml(
+                        item.q
+                    ) +
+
+                '</button>';
+        }
+    );
+
+
+    el(
+        "ggQuestionNav"
+    )
+    .innerHTML=
+        html;
+
+
+    el(
+        "ggPracticalStatus"
+    )
+    .textContent=
+        "Đã chấm " +
+        gradedCount() +
+        "/" +
+        STATE.practical.length +
+        " câu";
+}
+
+
+APP.goQuestion=
+function(index){
+
+    index=
+        Number(
+            index
+        );
+
+
+    if(
+        index<0 ||
+        index>=
+        STATE.practical.length
+    ){
+
+        return false;
+    }
+
+
+    if(
+        !isLocked() &&
+        !saveCurrentInputs()
+    ){
+
+        return false;
+    }
+
+
+    STATE.currentIndex=
+        index;
+
+
+    renderAll();
+
+
+    return false;
+};
+
+
+/* =========================================================
+   PRACTICAL
+========================================================= */
+
+function renderPractical(){
+
+    var box=
+        el(
+            "ggPracticalContent"
+        );
+
+
+    if(
+        !STATE.practical.length
+    ){
+
+        box.innerHTML=
+
+            '<div class="gg-message show error">' +
+                'Không đọc được PracticalData.' +
+            '</div>';
+
+
+        return;
+    }
+
+
+    var item=
+        STATE.practical[
+            STATE.currentIndex
+        ];
+
+
+    var grade=
+        gradeFor(
+            item.q
+        );
+
+
+    var oldScore=
+        parseNumber(
+            item.originalScore
+        );
+
+
+    var locked=
+        isLocked();
+
+
+    var img=
+        imageUrl(
+            item.file
+        );
+
+
+    var html=
+
+        '<div class="gg-practical-wrap">' +
+
+        '<div>' +
+
+            '<div class="gg-question-number">' +
+                'CÂU ' +
+                escapeHtml(
+                    item.q
+                ) +
+            '</div>' +
+
+            '<h3 class="gg-question-title">' +
+                escapeHtml(
+                    item.prompt ||
+                    "Bài thực hành"
+                ) +
+            '</h3>';
+
+
+    if(img){
+
+        html+=
+
+            '<div class="gg-image-wrap">' +
+
+                '<img ' +
+                    'class="gg-image" ' +
+                    'loading="lazy" ' +
+                    'src="' +
+                        escapeHtml(
+                            img
+                        ) +
+                    '" ' +
+                    'alt="Bài thực hành">' +
+
+            '</div>';
+
+    }else{
+
+        html+=
+
+            '<div class="gg-image-wrap">' +
+
+                '<div class="gg-no-image">' +
+                    'Không có ảnh xem trước.' +
+                '</div>' +
+
+            '</div>';
+    }
+
+
+    html+=
+
+        '<div class="gg-submission-meta">' +
+
+            '<div class="gg-meta">' +
+
+                '<div class="gg-meta-label">' +
+                    'Mô tả bài tập' +
+                '</div>' +
+
+                '<div class="gg-meta-value">' +
+                    escapeHtml(
+                        item.note ||
+                        "-"
+                    ) +
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="gg-meta">' +
+
+                '<div class="gg-meta-label">' +
+                    'Ngày nộp gốc' +
+                '</div>' +
+
+                '<div class="gg-meta-value">' +
+                    escapeHtml(
+                        item.submittedAt ||
+                        "-"
+                    ) +
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="gg-meta">' +
+
+                '<div class="gg-meta-label">' +
+                    'Submission ID' +
+                '</div>' +
+
+                '<div class="gg-meta-value">' +
+                    escapeHtml(
+                        item.submissionId ||
+                        "-"
+                    ) +
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="gg-meta">' +
+
+                '<div class="gg-meta-label">' +
+                    'File gốc' +
+                '</div>' +
+
+                '<div class="gg-meta-value">' +
+
+                    (
+                        item.file
+                            ?
+                            '<a href="' +
+                                escapeHtml(
+                                    item.file
+                                ) +
+                            '" target="_blank" rel="noopener">' +
+                                'MỞ FILE GỐC' +
+                            '</a>'
+                            :
+                            '-'
+                    ) +
+
+                '</div>' +
+
+            '</div>' +
+
+        '</div>' +
+
+        '</div>';
+
+
+    /* =====================================================
+       PANEL CHẤM
+    ===================================================== */
+
+    html+=
+
+        '<div class="gg-grading-panel">' +
+
+            '<h3 class="gg-title">' +
+                'Chấm điểm câu ' +
+                escapeHtml(
+                    item.q
+                ) +
+            '</h3>' +
+
+            '<div class="gg-old-score">' +
+
+                '<div style="font-size:11px;font-weight:900;">' +
+                    'ĐIỂM BÀI LUYỆN TẬP CŨ' +
+                '</div>' +
+
+                '<div class="gg-old-score-number">' +
+
+                    (
+                        oldScore===null
+                            ?
+                            'Chưa có'
+                            :
+                            escapeHtml(
+                                oldScore
+                            )
+                    ) +
+
+                '</div>' +
+
+                '<div style="font-size:11px;margin-top:3px;">' +
+                    'Chỉ dùng để tham khảo. Điểm luyện tập gốc không bị thay đổi.' +
+                '</div>' +
+
+            '</div>';
+
+
+    if(
+        oldScore!==null &&
+        !locked
+    ){
+
+        html+=
+
+            '<button ' +
+                'class="gg-btn gold" ' +
+                'style="width:100%;margin-top:12px;" ' +
+                'type="button" ' +
+                'onclick="return window.OCDGraduationGrading.useOldScore();">' +
+
+                'DÙNG ĐIỂM CŨ: ' +
+                escapeHtml(
+                    oldScore
+                ) +
+
+            '</button>';
+    }
+
+
+    html+=
+
+        '<div class="gg-field">' +
+
+            '<label class="gg-field-label">' +
+                'ĐIỂM THI TỐT NGHIỆP' +
+            '</label>' +
+
+            '<input ' +
+                'class="gg-grade-input" ' +
+                'id="ggExamScore" ' +
+                'type="number" ' +
+                'min="0" ' +
+                'max="10" ' +
+                'step="0.1" ' +
+
+                (
+                    locked
+                        ?
+                        'disabled '
+                        :
+                        ''
+                ) +
+
+                'value="' +
+
+                    (
+                        grade.examScore===null ||
+                        grade.examScore===undefined
+                            ?
+                            ""
+                            :
+                            escapeHtml(
+                                grade.examScore
+                            )
+                    ) +
+
+                '">' +
+
+        '</div>' +
+
+        '<div class="gg-field">' +
+
+            '<label class="gg-field-label">' +
+                'NHẬN XÉT CỦA GVCN' +
+            '</label>' +
+
+            '<textarea ' +
+                'class="gg-textarea" ' +
+                'id="ggExamComment" ' +
+
+                (
+                    locked
+                        ?
+                        'disabled '
+                        :
+                        ''
+                ) +
+
+                'placeholder="Nhập nhận xét...">' +
+
+                escapeHtml(
+                    grade.comment ||
+                    ""
+                ) +
+
+            '</textarea>' +
+
+        '</div>';
+
+
+    if(!locked){
+
+        html+=
+
+            '<div class="gg-grade-actions">' +
+
+                '<button ' +
+                    'class="gg-btn green" ' +
+                    'type="button" ' +
+                    'onclick="return window.OCDGraduationGrading.saveCurrent();">' +
+
+                    'LƯU ĐIỂM' +
+
+                '</button>' +
+
+                '<button ' +
+                    'class="gg-btn" ' +
+                    'type="button" ' +
+                    'onclick="return window.OCDGraduationGrading.saveAndNext();">' +
+
+                    'LƯU & CÂU TIẾP' +
+
+                '</button>' +
+
+            '</div>';
+    }
+
+
+    if(
+        isGraded(
+            item.q
+        )
+    ){
+
+        html+=
+
+            '<div class="gg-saved">' +
+
+                'ĐÃ CHẤM - Điểm: ' +
+                escapeHtml(
+                    grade.examScore
+                ) +
+
+            '</div>';
+    }
+
+
+    html+=
+
+        '</div>' +
+
+        '</div>';
+
+
+    box.innerHTML=
+        html;
+}
+
+
+/* =========================================================
+   USE OLD SCORE
+========================================================= */
+
+APP.useOldScore=
+function(){
+
+    if(
+        isLocked()
+    ){
+
+        return false;
+    }
+
+
+    var item=
+        STATE.practical[
+            STATE.currentIndex
+        ];
+
+
+    var oldScore=
+        parseNumber(
+            item.originalScore
+        );
+
+
+    if(
+        oldScore===null
+    ){
+
+        return false;
+    }
+
+
+    el(
+        "ggExamScore"
+    )
+    .value=
+        oldScore;
+
+
+    gradeFor(
+        item.q
+    )
+    .usedOldScore=
+        true;
+
+
+    return false;
+};
+
+
+/* =========================================================
+   SAVE CURRENT
+========================================================= */
+
+function saveCurrentInputs(){
+
+    if(
+        isLocked()
+    ){
+
+        return true;
+    }
+
+
+    var item=
+        STATE.practical[
+            STATE.currentIndex
+        ];
+
+
+    if(!item){
+
+        return true;
+    }
+
+
+    var input=
+        el(
+            "ggExamScore"
+        );
+
+
+    if(!input){
+
+        return true;
+    }
+
+
+    var raw=
+        String(
+            input.value ||
+            ""
+        )
+        .trim();
+
+
+    var grade=
+        gradeFor(
+            item.q
+        );
+
+
+    var comment=
+        el(
+            "ggExamComment"
+        );
+
+
+    grade.comment=
+        comment
+            ?
+            String(
+                comment.value ||
+                ""
+            )
+            .trim()
+            :
+            "";
+
+
+    if(raw===""){
+
+        grade.examScore=
+            null;
+
+
+        saveRecord();
+
+
+        return true;
+    }
+
+
+    var score=
+        Number(
+            raw.replace(
+                ",",
+                "."
+            )
+        );
+
+
+    if(
+        !Number.isFinite(
+            score
+        ) ||
+        score<0 ||
+        score>10
+    ){
+
+        alert(
+            "Điểm phải nằm trong khoảng từ 0 đến 10."
+        );
+
+
+        return false;
+    }
+
+
+    grade.examScore=
+        round2(
+            score
+        );
+
+
+    grade.gradedAt=
+        Date.now();
+
+
+    var oldScore=
+        parseNumber(
+            item.originalScore
+        );
+
+
+    grade.usedOldScore=
+        (
+            oldScore!==null &&
+            Number(
+                oldScore
+            )===
+            Number(
+                grade.examScore
+            )
+        );
+
+
+    saveRecord();
+
+
+    return true;
+}
+
+
+APP.saveCurrent=
+function(){
+
+    if(
+        !saveCurrentInputs()
+    ){
+
+        return false;
+    }
+
+
+    renderAll();
+
+
+    return false;
+};
+
+
+APP.saveAndNext=
+function(){
+
+    if(
+        !saveCurrentInputs()
+    ){
+
+        return false;
+    }
+
+
+    if(
+        STATE.currentIndex<
+        STATE.practical.length-1
+    ){
+
+        STATE.currentIndex++;
+    }
+
+
+    renderAll();
+
+
+    return false;
+};
+
+
+/* =========================================================
+   PRACTICAL AVERAGE
+========================================================= */
+
+function practicalAverage(){
+
+    var values=[];
+
+
+    STATE.practical
+    .forEach(
+        function(item){
+
+            var grade=
+                STATE.record.grades[
+                    String(
+                        item.q
+                    )
+                ];
+
+
+            if(
+                grade &&
+                grade.examScore!==null &&
+                grade.examScore!==undefined
+            ){
+
+                var number=
+                    Number(
+                        grade.examScore
+                    );
+
+
+                if(
+                    Number.isFinite(
+                        number
+                    )
+                ){
+
+                    values.push(
+                        number
+                    );
+                }
+            }
+        }
+    );
+
+
+    if(
+        !values.length
+    ){
+
+        return null;
+    }
+
+
+    var total=
+        values.reduce(
+            function(sum,value){
+
+                return (
+                    sum+
+                    value
+                );
+
+            },
+            0
+        );
+
+
+    return round2(
+        total /
+        values.length
+    );
+}
+
+
+/* =========================================================
+   GRADING JSON
+========================================================= */
+
+function buildGradingData(){
+
+    return STATE.practical
+    .map(
+        function(item){
+
+            var grade=
+                gradeFor(
+                    item.q
+                );
+
+
+            return {
+
+                questionId:
+                    item.q,
+
+                prompt:
+                    item.prompt ||
+                    "",
+
+                submissionId:
+                    item.submissionId ||
+                    "",
+
+                note:
+                    item.note ||
+                    "",
+
+                file:
+                    item.file ||
+                    "",
+
+                submittedAt:
+                    item.submittedAt ||
+                    "",
+
+                originalScore:
+                    item.originalScore===
+                    undefined
+                        ?
+                        null
+                        :
+                        item.originalScore,
+
+                examScore:
+                    grade.examScore,
+
+                examinerComment:
+                    grade.comment ||
+                    "",
+
+                usedOldScore:
+                    !!grade.usedOldScore,
+
+                gradedAt:
+                    grade.gradedAt ||
+                    null
+            };
+        }
+    );
+}
+
+
+/* =========================================================
+   BUILD RESULT
+========================================================= */
+
+function buildFinalResult(){
+
+    var now=
+        Date.now();
+
+
+    return {
+
+        examId:
+            STATE.exam.examId,
+
+        studentCode:
+            STATE.exam.studentCode,
+
+        studentName:
+            STATE.exam.studentName,
+
+        group:
+            STATE.exam.group,
+
+        course:
+            STATE.exam.course,
+
+        theoryScore:
+            STATE.exam.theoryScore,
+
+        practicalScore:
+            practicalAverage(),
+
+        practicalGraded:
+            gradedCount(),
+
+        examiner:
+            STATE.record.examiner,
+
+        gradedAt:
+            now,
+
+        gradedAtText:
+            formatDateTime(
+                now
+            ),
+
+        gradingData:
+            buildGradingData(),
+
+        version:
+            CONFIG.version
+    };
+}
+
+
+/* =========================================================
+   FINAL PANEL
+========================================================= */
+
+function renderFinal(){
+
+    var average=
+        practicalAverage();
+
+
+    var complete=
+        (
+            STATE.practical.length>0 &&
+            gradedCount()===
+            STATE.practical.length
+        );
+
+
+    var locked=
+        isLocked();
+
+
+    var html=
+
+        '<div class="gg-final-grid">' +
+
+            '<div class="gg-final-box">' +
+
+                '<div class="gg-final-number">' +
+                    escapeHtml(
+                        STATE.exam.theoryScore
+                    ) +
+                '</div>' +
+
+                '<div class="gg-final-label">' +
+                    'Điểm lý thuyết /10' +
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="gg-final-box">' +
+
+                '<div class="gg-final-number">' +
+
+                    (
+                        average===null
+                            ?
+                            "-"
+                            :
+                            escapeHtml(
+                                average
+                            )
+                    ) +
+
+                '</div>' +
+
+                '<div class="gg-final-label">' +
+                    'Điểm thực hành /10' +
+                '</div>' +
+
+            '</div>' +
+
+            '<div class="gg-final-box">' +
+
+                '<div class="gg-final-number">' +
+                    gradedCount() +
+                    '/' +
+                    STATE.practical.length +
+                '</div>' +
+
+                '<div class="gg-final-label">' +
+                    'Câu đã chấm' +
+                '</div>' +
+
+            '</div>' +
+
+        '</div>';
+
+
+    if(locked){
+
+        html+=
+
+            '<div class="gg-locked-banner">' +
+
+                '<strong>BẢN CHẤM ĐÃ KHÓA</strong>' +
+
+                '<br>' +
+
+                'Người chấm: ' +
+                escapeHtml(
+                    STATE.record.examiner ||
+                    "-"
+                ) +
+
+            '</div>' +
+
+            '<div id="ggRemoteStatus"></div>' +
+
+            '<div class="gg-final-submit">' +
+
+                '<button ' +
+                    'class="gg-btn secondary" ' +
+                    'type="button" ' +
+                    'onclick="return window.OCDGraduationGrading.resetTestGrade();">' +
+
+                    'XÓA BẢN CHẤM TEST TRÊN THIẾT BỊ' +
+
+                '</button>' +
+
+            '</div>';
+
+
+        el(
+            "ggFinalSummary"
+        )
+        .innerHTML=
+            html;
+
+
+        renderRemoteStatus();
+
+
+        return;
+    }
+
+
+    if(!complete){
+
+        html+=
+
+            '<div class="gg-message show loading" style="margin-top:14px;">' +
+
+                'Còn ' +
+                (
+                    STATE.practical.length -
+                    gradedCount()
+                ) +
+                ' câu chưa chấm.' +
+
+            '</div>';
+    }
+
+
+    html+=
+
+        '<div class="gg-final-submit">' +
+
+            '<div class="gg-field">' +
+
+                '<label class="gg-field-label">' +
+                    'NGƯỜI CHẤM' +
+                '</label>' +
+
+                '<input ' +
+                    'class="gg-input" ' +
+                    'id="ggExaminer" ' +
+                    'type="text" ' +
+                    'placeholder="Nhập tên giáo viên chấm" ' +
+                    'value="' +
+                        escapeHtml(
+                            STATE.record.examiner ||
+                            ""
+                        ) +
+                '">' +
+
+            '</div>' +
+
+            '<button ' +
+                'class="gg-btn red" ' +
+                'style="width:100%;margin-top:12px;" ' +
+                'type="button" ' +
+
+                (
+                    complete
+                        ?
+                        ""
+                        :
+                        "disabled "
+                ) +
+
+                'onclick="return window.OCDGraduationGrading.finalizeGrading();">' +
+
+                'HOÀN TẤT VÀ GỬI KẾT QUẢ CHẤM' +
+
+            '</button>' +
+
+        '</div>';
+
+
+    el(
+        "ggFinalSummary"
+    )
+    .innerHTML=
+        html;
+}
+
+
+/* =========================================================
+   FINALIZE
+========================================================= */
+
+APP.finalizeGrading=
+function(){
+
+    if(
+        isLocked()
+    ){
+
+        return false;
+    }
+
+
+    if(
+        !saveCurrentInputs()
+    ){
+
+        return false;
+    }
+
+
+    if(
+        gradedCount()!==
+        STATE.practical.length
+    ){
+
+        alert(
+            "Bạn chưa chấm đủ tất cả câu thực hành."
+        );
+
+
+        return false;
+    }
+
+
+    var examinerInput=
+        el(
+            "ggExaminer"
+        );
+
+
+    var examiner=
+        examinerInput
+            ?
+            String(
+                examinerInput.value ||
+                ""
+            )
+            .trim()
+            :
+            "";
+
+
+    if(!examiner){
+
+        alert(
+            "Vui lòng nhập tên người chấm."
+        );
+
+
+        return false;
+    }
+
+
+    if(
+        !window.confirm(
+            "Xác nhận hoàn tất chấm thi?\n\nBản chấm sẽ bị khóa và gửi vào ChamThiTotNghiep."
+        )
+    ){
+
+        return false;
+    }
+
+
+    STATE.record.examiner=
+        examiner;
+
+
+    try{
+
+        localStorage.setItem(
+            CONFIG.examinerKey,
+            examiner
+        );
+
+    }catch(error){}
+
+
+    STATE.record.finalResult=
+        buildFinalResult();
+
+
+    STATE.record.status=
+        "submitted";
+
+
+    STATE.record.remoteSave.status=
+        "pending";
+
+
+    STATE.record.remoteSave.error=
+        "";
+
+
+    saveRecord();
+
+
+    renderAll();
+
+
+    submitAndVerify();
+
+
+    return false;
+};
+
+
+/* =========================================================
+   PAYLOAD
+========================================================= */
+
+function formPayload(){
+
+    var result=
+        STATE.record &&
+        STATE.record.finalResult;
+
+
+    if(!result){
+
+        return null;
+    }
+
+
+    var payload={};
+
+
+    payload[
+        CONFIG.formEntries.examId
+    ]=
+        result.examId;
+
+
+    payload[
+        CONFIG.formEntries.studentCode
+    ]=
+        result.studentCode;
+
+
+    payload[
+        CONFIG.formEntries.studentName
+    ]=
+        result.studentName;
+
+
+    payload[
+        CONFIG.formEntries.group
+    ]=
+        result.group ||
+        "";
+
+
+    payload[
+        CONFIG.formEntries.course
+    ]=
+        result.course ||
+        "";
+
+
+    payload[
+        CONFIG.formEntries.theoryScore
+    ]=
+        result.theoryScore;
+
+
+    payload[
+        CONFIG.formEntries.practicalScore
+    ]=
+        result.practicalScore;
+
+
+    payload[
+        CONFIG.formEntries.practicalGraded
+    ]=
+        result.practicalGraded;
+
+
+    payload[
+        CONFIG.formEntries.gradingData
+    ]=
+        JSON.stringify(
+            result.gradingData
+        );
+
+
+    payload[
+        CONFIG.formEntries.examiner
+    ]=
+        result.examiner;
+
+
+    payload[
+        CONFIG.formEntries.gradedAt
+    ]=
+        result.gradedAtText;
+
+
+    payload[
+        CONFIG.formEntries.version
+    ]=
+        result.version;
+
+
+    return payload;
+}
+
+
+/* =========================================================
+   POST GOOGLE FORM
+========================================================= */
+
+function postGoogleForm(){
+
+    return new Promise(
+        function(resolve,reject){
+
+            var payload=
+                formPayload();
+
+
+            if(!payload){
+
+                reject(
+                    new Error(
+                        "Không có dữ liệu để gửi."
+                    )
+                );
+
+
+                return;
+            }
+
+
+            var form=
+                document.createElement(
+                    "form"
+                );
+
+
+            form.method=
+                "POST";
+
+
+            form.action=
+                CONFIG.formAction;
+
+
+            form.target=
+                "ggHiddenFormFrame";
+
+
+            form.acceptCharset=
+                "UTF-8";
+
+
+            form.style.display=
+                "none";
+
+
+            function addField(
+                name,
+                value
+            ){
+
+                var input=
+                    document.createElement(
+                        "input"
+                    );
+
+
+                input.type=
+                    "hidden";
+
+
+                input.name=
+                    name;
+
+
+                input.value=
+                    String(
+                        value===undefined ||
+                        value===null
+                            ?
+                            ""
+                            :
+                            value
+                    );
+
+
+                form.appendChild(
+                    input
+                );
+            }
+
+
+            Object.keys(
+                payload
+            )
+            .forEach(
+                function(name){
+
+                    addField(
+                        name,
+                        payload[name]
+                    );
+                }
+            );
+
+
+            addField(
+                "fvv",
+                "1"
+            );
+
+
+            addField(
+                "pageHistory",
+                "0"
+            );
+
+
+            document.body
+            .appendChild(
+                form
+            );
+
+
+            try{
+
+                HTMLFormElement
+                .prototype
+                .submit
+                .call(
+                    form
+                );
+
+
+                setTimeout(
+                    function(){
+
+                        try{
+
+                            form.remove();
+
+                        }catch(error){}
+
+
+                        resolve();
+
+                    },
+                    900
+                );
+
+
+            }catch(formError){
+
+                console.warn(
+                    "Hidden form POST lỗi, thử fetch fallback:",
+                    formError
+                );
+
+
+                try{
+
+                    form.remove();
+
+                }catch(error){}
+
+
+                var body=
+                    new URLSearchParams();
+
+
+                Object.keys(
+                    payload
+                )
+                .forEach(
+                    function(name){
+
+                        body.append(
+                            name,
+                            String(
+                                payload[name]===
+                                undefined ||
+                                payload[name]===
+                                null
+                                    ?
+                                    ""
+                                    :
+                                    payload[name]
+                            )
+                        );
+                    }
+                );
+
+
+                body.append(
+                    "fvv",
+                    "1"
+                );
+
+
+                body.append(
+                    "pageHistory",
+                    "0"
+                );
+
+
+                fetch(
+                    CONFIG.formAction,
+                    {
+                        method:
+                            "POST",
+
+                        mode:
+                            "no-cors",
+
+                        cache:
+                            "no-store",
+
+                        headers:{
+                            "Content-Type":
+                                "application/x-www-form-urlencoded;charset=UTF-8"
+                        },
+
+                        body:
+                            body.toString()
+                    }
+                )
+
+                .then(
+                    function(){
+
+                        resolve();
+                    }
+                )
+
+                .catch(
+                    function(fetchError){
+
+                        reject(
+                            fetchError
+                        );
+                    }
+                );
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   VERIFY CHAMTHITOTNGHIEP
+========================================================= */
+
+async function findRemoteResult(){
+
+    var result=
+        STATE.record &&
+        STATE.record.finalResult;
+
+
+    if(!result){
+
+        return null;
+    }
+
+
+    var text=
+        await fetchRetry(
+            sheetUrl(
+                CONFIG.gradingSheet
+            )
+        );
+
+
+    var rows=
+        parseCSV(
+            text
+        );
+
+
+    if(
+        !rows ||
+        rows.length<2
+    ){
+
+        return null;
+    }
+
+
+    var headers=
+        rows[0];
+
+
+    var cols={
+
+        examId:
+            findColumn(
+                headers,
+                [
+                    "Exam ID",
+                    "ExamID"
+                ]
+            ),
+
+        code:
+            findColumn(
+                headers,
+                ["Mã học viên"]
+            ),
+
+        practicalScore:
+            findColumn(
+                headers,
+                ["Điểm thực hành"]
+            ),
+
+        examiner:
+            findColumn(
+                headers,
+                ["Người chấm"]
+            ),
+
+        gradedAt:
+            findColumn(
+                headers,
+                ["Thời gian chấm"]
+            ),
+
+        version:
+            findColumn(
+                headers,
+                ["Phiên bản hệ thống"]
+            )
+    };
+
+
+    if(
+        cols.examId<0
+    ){
+
+        throw new Error(
+            "Không tìm thấy cột Exam ID trong ChamThiTotNghiep."
+        );
+    }
+
+
+    for(
+        var i=rows.length-1;
+        i>=1;
+        i--
+    ){
+
+        var row=
+            rows[i];
+
+
+        if(
+            normalizeCode(
+                valueAt(
+                    row,
+                    cols.examId
+                )
+            )!==
+            normalizeCode(
+                result.examId
+            )
+        ){
+
+            continue;
+        }
+
+
+        var code=
+            valueAt(
+                row,
+                cols.code
+            );
+
+
+        if(
+            cols.code>=0 &&
+            code &&
+            normalizeCode(
+                code
+            )!==
+            normalizeCode(
+                result.studentCode
+            )
+        ){
+
+            continue;
+        }
+
+
+        var remoteScore=
+            parseNumber(
+                valueAt(
+                    row,
+                    cols.practicalScore
+                )
+            );
+
+
+        if(
+            remoteScore!==null &&
+            Math.abs(
+                remoteScore -
+                Number(
+                    result.practicalScore
+                )
+            ) >
+            0.001
+        ){
+
+            continue;
+        }
+
+
+        return {
+
+            rowNumber:
+                i+1,
+
+            examId:
+                valueAt(
+                    row,
+                    cols.examId
+                ),
+
+            studentCode:
+                code,
+
+            practicalScore:
+                remoteScore,
+
+            examiner:
+                valueAt(
+                    row,
+                    cols.examiner
+                ),
+
+            gradedAt:
+                valueAt(
+                    row,
+                    cols.gradedAt
+                ),
+
+            version:
+                valueAt(
+                    row,
+                    cols.version
+                )
+        };
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   VERIFY
+========================================================= */
+
+async function verifyRemote(showAlert){
+
+    if(
+        STATE.verifying ||
+        !STATE.record ||
+        !STATE.record.finalResult
+    ){
+
+        return false;
+    }
+
+
+    STATE.verifying=
+        true;
+
+
+    try{
+
+        var found=
+            await findRemoteResult();
+
+
+        if(found){
+
+            STATE.record.remoteSave.status=
+                "sent";
+
+
+            STATE.record.remoteSave.verifiedAt=
+                Date.now();
+
+
+            STATE.record.remoteSave.remoteRow=
+                found.rowNumber;
+
+
+            STATE.record.remoteSave.error=
+                "";
+
+
+            saveRecord();
+
+
+            renderRemoteStatus();
+
+
+            if(showAlert){
+
+                alert(
+                    "Đã xác nhận dữ liệu thực sự tồn tại trong ChamThiTotNghiep."
+                );
+            }
+
+
+            return true;
+        }
+
+
+        STATE.record.remoteSave.status=
+            "pending";
+
+
+        STATE.record.remoteSave.error=
+            "Chưa tìm thấy Exam ID này trong ChamThiTotNghiep.";
+
+
+        saveRecord();
+
+
+        renderRemoteStatus();
+
+
+        if(showAlert){
+
+            alert(
+                "Chưa tìm thấy bản chấm trong ChamThiTotNghiep."
+            );
+        }
+
+
+        return false;
+
+
+    }catch(error){
+
+        console.error(
+            "Verify:",
+            error
+        );
+
+
+        STATE.record.remoteSave.status=
+            "pending";
+
+
+        STATE.record.remoteSave.error=
+            error.message ||
+            "Không thể kiểm tra Sheet.";
+
+
+        saveRecord();
+
+
+        renderRemoteStatus();
+
+
+        return false;
+
+
+    }finally{
+
+        STATE.verifying=
+            false;
+    }
+}
+
+
+/* =========================================================
+   SUBMIT + VERIFY
+========================================================= */
+
+async function submitAndVerify(){
+
+    if(
+        STATE.sending ||
+        !STATE.record ||
+        !STATE.record.finalResult
+    ){
+
+        return;
+    }
+
+
+    STATE.sending=
+        true;
+
+
+    try{
+
+        var existing=
+            await findRemoteResult();
+
+
+        if(existing){
+
+            STATE.record.remoteSave.status=
+                "sent";
+
+
+            STATE.record.remoteSave.verifiedAt=
+                Date.now();
+
+
+            STATE.record.remoteSave.remoteRow=
+                existing.rowNumber;
+
+
+            STATE.record.remoteSave.error=
+                "";
+
+
+            saveRecord();
+
+
+            renderRemoteStatus();
+
+
+            return;
+        }
+
+
+        STATE.record.remoteSave.status=
+            "sending";
+
+
+        STATE.record.remoteSave.attempts=
+            Number(
+                STATE.record.remoteSave.attempts ||
+                0
+            ) + 1;
+
+
+        STATE.record.remoteSave.error=
+            "";
+
+
+        saveRecord();
+
+
+        renderRemoteStatus();
+
+
+        await postGoogleForm();
+
+
+        STATE.record.remoteSave.status=
+            "pending";
+
+
+        STATE.record.remoteSave.error=
+            "Đã gửi Form. Đang chờ Google ghi dữ liệu vào Sheet...";
+
+
+        saveRecord();
+
+
+        renderRemoteStatus();
+
+
+        for(
+            var i=0;
+            i<CONFIG.verifyAttempts;
+            i++
+        ){
+
+            await sleep(
+                CONFIG.verifyDelay
+            );
+
+
+            var found=
+                await findRemoteResult();
+
+
+            if(found){
+
+                STATE.record.remoteSave.status=
+                    "sent";
+
+
+                STATE.record.remoteSave.verifiedAt=
+                    Date.now();
+
+
+                STATE.record.remoteSave.remoteRow=
+                    found.rowNumber;
+
+
+                STATE.record.remoteSave.error=
+                    "";
+
+
+                saveRecord();
+
+
+                renderRemoteStatus();
+
+
+                return;
+            }
+        }
+
+
+        STATE.record.remoteSave.status=
+            "pending";
+
+
+        STATE.record.remoteSave.error=
+            "Đã POST Google Form nhưng chưa tìm thấy dòng tương ứng trong ChamThiTotNghiep.";
+
+
+        saveRecord();
+
+
+        renderRemoteStatus();
+
+
+    }catch(error){
+
+        console.error(
+            "Submit:",
+            error
+        );
+
+
+        STATE.record.remoteSave.status=
+            "pending";
+
+
+        STATE.record.remoteSave.error=
+            error &&
+            error.message
+                ?
+                error.message
+                :
+                "Không thể gửi kết quả.";
+
+
+        saveRecord();
+
+
+        renderRemoteStatus();
+
+
+    }finally{
+
+        STATE.sending=
+            false;
+    }
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function renderRemoteStatus(){
+
+    var box=
+        el(
+            "ggRemoteStatus"
+        );
+
+
+    if(
+        !box ||
+        !STATE.record
+    ){
+
+        return;
+    }
+
+
+    var remote=
+        STATE.record.remoteSave;
+
+
+    if(
+        remote.status===
+        "sent"
+    ){
+
+        box.innerHTML=
+
+            '<div class="gg-remote sent">' +
+
+                '<strong>ĐÃ GHI THÀNH CÔNG VÀO CHAMTHITOTNGHIEP</strong>' +
+
+                '<br>' +
+
+                'Exam ID: ' +
+                escapeHtml(
+                    STATE.exam.examId
+                ) +
+
+                (
+                    remote.remoteRow
+                        ?
+                        '<br>Dòng trong Sheet: ' +
+                        escapeHtml(
+                            remote.remoteRow
+                        )
+                        :
+                        ''
+                ) +
+
+                '<br>' +
+
+                'Trạng thái này chỉ xuất hiện sau khi hệ thống đọc lại Sheet ' +
+                'và tìm thấy bản chấm thực tế.' +
+
+            '</div>';
+
+
+        return;
+    }
+
+
+    if(
+        remote.status===
+        "sending"
+    ){
+
+        box.innerHTML=
+
+            '<div class="gg-remote sending">' +
+
+                '<strong>ĐANG GỬI GOOGLE FORM...</strong>' +
+
+                '<br>' +
+
+                'Hệ thống sẽ kiểm tra lại ChamThiTotNghiep ngay sau khi gửi.' +
+
+            '</div>';
+
+
+        return;
+    }
+
+
+    box.innerHTML=
+
+        '<div class="gg-remote pending">' +
+
+            '<strong>CHƯA XÁC NHẬN GHI VÀO SHEET</strong>' +
+
+            '<br>' +
+
+            escapeHtml(
+                remote.error ||
+                "Đang chờ xác nhận."
+            ) +
+
+            '<br>' +
+
+            'Số lần gửi: ' +
+            escapeHtml(
+                remote.attempts ||
+                0
+            ) +
+
+            '<div class="gg-remote-actions">' +
+
+                '<button ' +
+                    'class="gg-btn blue" ' +
+                    'type="button" ' +
+                    'onclick="return window.OCDGraduationGrading.checkRemote();">' +
+
+                    'KIỂM TRA LẠI SHEET' +
+
+                '</button>' +
+
+                '<button ' +
+                    'class="gg-btn gold" ' +
+                    'type="button" ' +
+                    'onclick="return window.OCDGraduationGrading.retrySend();">' +
+
+                    'GỬI LẠI KẾT QUẢ' +
+
+                '</button>' +
+
+            '</div>' +
+
+        '</div>';
+}
+
+
+APP.checkRemote=
+function(){
+
+    verifyRemote(
+        true
+    );
+
+
+    return false;
+};
+
+
+APP.retrySend=
+function(){
+
+    if(
+        !STATE.sending
+    ){
+
+        submitAndVerify();
+    }
+
+
+    return false;
+};
+
+
+/* =========================================================
+   RESET TEST
+========================================================= */
+
+APP.resetTestGrade=
+function(){
+
+    if(
+        !STATE.exam ||
+        !window.confirm(
+            "Xóa bản chấm TEST đang lưu trên thiết bị?\n\nDòng đã gửi lên Google Sheet sẽ không bị xóa."
+        )
+    ){
+
+        return false;
+    }
+
+
+    try{
+
+        localStorage.removeItem(
+            storageKey()
+        );
+
+    }catch(error){}
+
+
+    STATE.record=
+        createRecord();
+
+
+    STATE.currentIndex=
+        0;
+
+
+    renderAll();
+
+
+    return false;
+};
+
+
+/* =========================================================
+   RENDER ALL
+========================================================= */
+
+function renderAll(){
+
+    renderInfo();
+
+    renderTheory();
+
+    renderNav();
+
+    renderPractical();
+
+    renderFinal();
+}
+
+
+/* =========================================================
+   NETWORK BACK
+========================================================= */
+
+window.addEventListener(
+    "online",
+    function(){
+
+        if(
+            isLocked() &&
+            STATE.record &&
+            STATE.record.remoteSave.status!=="sent"
+        ){
+
+            verifyRemote(
+                false
+            );
+        }
+    }
+);
+
+
+/* =========================================================
+   RESTORE FILTER
+========================================================= */
+
+function restoreSearchFilters(){
+
+    try{
+
+        var last=
+            localStorage.getItem(
+                CONFIG.lastLookupKey
+            );
+
+
+        var lastDate=
+            localStorage.getItem(
+                CONFIG.lastDateKey
+            );
+
+
+        if(
+            last &&
+            el(
+                "ggLookupInput"
+            )
+        ){
+
+            el(
+                "ggLookupInput"
+            )
+            .value=
+                last;
+        }
+
+
+        if(
+            lastDate &&
+            el(
+                "ggDateFilter"
+            )
+        ){
+
+            el(
+                "ggDateFilter"
+            )
+            .value=
+                lastDate;
+        }
+
+    }catch(error){}
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+function init(){
+
+    var authenticated=
+        checkAuthentication();
+
+
+    if(authenticated){
+
+        restoreSearchFilters();
+    }
+
+
+    console.log(
+        CONFIG.version +
+        " READY"
+    );
+}
+
+
+if(
+    document.readyState===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        init
+    );
+
+}else{
+
+    init();
+}
+
+
+})(window.OCDGraduationGrading);
+
+</script>
+
+</div>
