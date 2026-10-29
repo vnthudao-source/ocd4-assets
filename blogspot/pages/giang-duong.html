@@ -915,6 +915,28 @@
 }
 
 
+/* v1.10.0: nút phòng kiểm tra giữa kỳ theo khung giờ */
+.gd-exam-status{
+    margin:5px 0 0;
+    color:#8a5a2b;
+    font-size:11px;
+    font-weight:800;
+    line-height:1.45;
+}
+
+.gd-exam-status.is-open{
+    color:#2f6b45;
+}
+
+.gd-graduation-button.is-locked{
+    background:#d9cdbb;
+    color:#7a6a58 !important;
+    box-shadow:none;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
+
 /* =========================================================
    PRIVACY
 ========================================================= */
@@ -2035,23 +2057,29 @@
         <div>
 
             <div class="gd-graduation-label">
-                KỲ THI TỐT NGHIỆP
+                KIỂM TRA GIỮA KỲ · KHOÁ D3
             </div>
 
             <h3 class="gd-graduation-title">
-                Phòng Thi Tốt Nghiệp
+                Phòng làm bài kiểm tra giữa kỳ
             </h3>
 
             <p class="gd-graduation-desc">
-                Khu vực dành cho học viên đủ điều kiện tham gia
-                kỳ thi tốt nghiệp OCD.
+                Mở cho mọi học viên từ 20:00 đến 22:00
+                Thứ Sáu 30/10/2026.
             </p>
+
+            <p
+                class="gd-exam-status"
+                id="gdExamStatus"
+            ></p>
 
         </div>
 
 
         <a
-            class="gd-graduation-button"
+            class="gd-graduation-button gd-exam-button"
+            id="gdExamButton"
             href="https://www.thudao.com/p/ocd-phong-thi-tot-nghiep-graduation.html"
         >
             VÀO PHÒNG THI
@@ -2215,6 +2243,7 @@
 /* =========================================================
    GIẢNG ĐƯỜNG OCD
    LECTURE HALL v1.7.0
+   v1.10.0 (29/10/2026): nút "Phòng làm bài kiểm tra giữa kỳ" chỉ mở 20:00–22:00 Thứ Sáu 30/10/2026 (TEST001 vào mọi lúc)
    + TRANSITIONAL IDENTITY
    + MINH HỒNG CONTEXT
 
@@ -2265,6 +2294,16 @@ const CONFIG={
 
     graduationExamUrl:
         "https://www.thudao.com/p/ocd-phong-thi-tot-nghiep-graduation.html",
+
+
+    /* v1.10.0: phòng kiểm tra giữa kỳ chỉ mở trong khung giờ (giờ Việt Nam);
+       tài khoản kiểm thử vào được mọi lúc */
+    midtermExam:{
+        start:"2026-10-30T20:00:00+07:00",
+        end:"2026-10-30T22:00:00+07:00",
+        testCodes:["TEST001"],
+        resultUrl:"https://www.thudao.com/p/ket-qua-thi-tot-nghiep.html"
+    },
 
 
     practiceRoomUrl:
@@ -2765,6 +2804,14 @@ function initUI(){
         graduationButton.href=
             CONFIG.graduationExamUrl;
     }
+
+
+    updateMidtermButton();
+
+    setInterval(
+        updateMidtermButton,
+        30000
+    );
 
 
     const practiceButton=
@@ -7161,6 +7208,190 @@ function isMemberCode(code){
 }
 
 
+/* =========================================================
+   v1.10.0: PHÒNG KIỂM TRA GIỮA KỲ – MỞ THEO KHUNG GIỜ
+========================================================= */
+
+function midtermTwo(n){
+
+    return (n<10 ? "0" : "") + n;
+}
+
+
+function midtermCountdown(ms){
+
+    const minutes=
+        Math.max(
+            1,
+            Math.ceil(ms/60000)
+        );
+
+    const days=
+        Math.floor(minutes/1440);
+
+    const hours=
+        Math.floor((minutes%1440)/60);
+
+    const mins=
+        minutes%60;
+
+    return (
+        (days ? days + " ngày " : "") +
+        (hours ? hours + " giờ " : "") +
+        (!days ? mins + " phút" : "")
+    ).trim();
+}
+
+
+function updateMidtermButton(){
+
+    const button=
+        el("gdExamButton");
+
+    const status=
+        el("gdExamStatus");
+
+    const exam=
+        CONFIG.midtermExam ||
+        {};
+
+    if(!button){
+        return;
+    }
+
+    const start=
+        Date.parse(exam.start || "");
+
+    const end=
+        Date.parse(exam.end || "");
+
+    const now=
+        Date.now();
+
+    let code="";
+
+    try{
+        code=
+            sessionStudentCode();
+    }catch(error){}
+
+    const tester=
+        (exam.testCodes || [])
+        .map(normalizeCode)
+        .indexOf(
+            normalizeCode(code || "")
+        ) >= 0 &&
+        Boolean(code);
+
+    function setButton(text,href,locked){
+
+        button.textContent=
+            text;
+
+        if(locked){
+
+            button.classList.add("is-locked");
+            button.setAttribute("aria-disabled","true");
+            button.removeAttribute("href");
+            button.tabIndex=-1;
+
+        }else{
+
+            button.classList.remove("is-locked");
+            button.removeAttribute("aria-disabled");
+            button.href=href;
+            button.removeAttribute("tabindex");
+        }
+    }
+
+    function setStatus(text,open){
+
+        if(!status){
+            return;
+        }
+
+        status.textContent=
+            text;
+
+        status.classList.toggle(
+            "is-open",
+            Boolean(open)
+        );
+    }
+
+    if(
+        !isFinite(start) ||
+        !isFinite(end)
+    ){
+
+        setButton("VÀO PHÒNG THI",CONFIG.graduationExamUrl,false);
+        setStatus("",false);
+        return;
+    }
+
+    if(tester){
+
+        setButton("VÀO PHÒNG THI",CONFIG.graduationExamUrl,false);
+        setStatus("Tài khoản kiểm thử – vào được mọi lúc.",true);
+        return;
+    }
+
+    if(now<start){
+
+        const d=
+            new Date(start + 7*3600*1000);
+
+        setButton(
+            "MỞ LÚC " +
+            midtermTwo(d.getUTCHours()) +
+            ":" +
+            midtermTwo(d.getUTCMinutes()),
+            "",
+            true
+        );
+
+        setStatus(
+            "Phòng thi mở sau " +
+            midtermCountdown(start-now) +
+            ".",
+            false
+        );
+
+        return;
+    }
+
+    if(now<=end){
+
+        const d=
+            new Date(end + 7*3600*1000);
+
+        setButton("VÀO PHÒNG THI",CONFIG.graduationExamUrl,false);
+
+        setStatus(
+            "Đang mở – nhận lượt vào thi đến " +
+            midtermTwo(d.getUTCHours()) +
+            ":" +
+            midtermTwo(d.getUTCMinutes()) +
+            ".",
+            true
+        );
+
+        return;
+    }
+
+    setButton(
+        "XEM KẾT QUẢ",
+        exam.resultUrl || CONFIG.graduationExamUrl,
+        false
+    );
+
+    setStatus(
+        "Đã hết giờ vào thi.",
+        false
+    );
+}
+
+
 function sessionStudentCode(){
 
     try{
@@ -7758,6 +7989,7 @@ function start(){
             window.addEventListener(
                 name,
                 function(){
+                    try{ updateMidtermButton(); }catch(error){}
                     if(!sessionStudentCode()){
                         autoState.code="";
                         return;

@@ -45,7 +45,15 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
     examUploadUrl: "https://script.google.com/macros/s/AKfycbx4VqQ3Ud6yu2gyDyGuQsoTthTwCX3P3e_FpNqx8Q0EF5hq9KPFYh5FQBxnRKLr9axh/exec",
 
     /* Trang Kết quả thi tốt nghiệp (nút "Xem kết quả thi") */
-    resultPageUrl: "https://www.thudao.com/p/ket-qua-thi-tot-nghiep.html"
+    resultPageUrl: "https://www.thudao.com/p/ket-qua-thi-tot-nghiep.html",
+
+    /*
+       Khung giờ được BẮT ĐẦU bài thi (giờ Việt Nam). Ngoài khung giờ chỉ tài khoản
+       trong unlimitedCodes (TEST001) và ADMIN vào được. Bài đã bắt đầu trong khung giờ
+       vẫn làm tiếp bình thường dù quá 22:00. Để trống "" = không giới hạn giờ.
+    */
+    examWindowStart: "2026-10-30T20:00:00+07:00",
+    examWindowEnd: "2026-10-30T22:00:00+07:00"
 
 };
 </script>
@@ -1658,7 +1666,7 @@ var UNLIMITED_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.8.2_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.9.0_20_10_2",
 
     durationMs:
         60*60*1000,
@@ -1686,6 +1694,18 @@ var CONFIG={
 
     nopBaiUrl:
         "https://www.thudao.com/p/nop-bai.html",
+
+    examWindowStart:
+        String(
+            GLOBAL_SETTINGS.examWindowStart ||
+            ""
+        ).trim(),
+
+    examWindowEnd:
+        String(
+            GLOBAL_SETTINGS.examWindowEnd ||
+            ""
+        ).trim(),
 
     resultPageUrl:
         String(
@@ -6670,6 +6690,25 @@ async function(){
         }
 
 
+        /* Khung giờ thi: chỉ chặn lượt BẮT ĐẦU MỚI (làm tiếp phiên cũ vẫn được) */
+        var windowCheck=
+            examWindowState(
+                STATE.student
+            );
+
+        if(
+            windowCheck.state!=="open"
+        ){
+
+            setLookupMessage(
+                windowCheck.message,
+                "warning"
+            );
+
+            return false;
+        }
+
+
         /* Bắt đầu mới: ghi lượt START trước khi mở đề */
         if(startButton){
 
@@ -11138,6 +11177,151 @@ function roundedScoreHtml(value){
                     String(Math.round(n*100)/100).replace(".",",") +
                 ')</span>'
         )
+    );
+}
+
+
+/* Khung giờ được bắt đầu bài thi chính thức */
+function examWindowState(student){
+
+    var start=
+        Date.parse(
+            CONFIG.examWindowStart ||
+            ""
+        );
+
+    var end=
+        Date.parse(
+            CONFIG.examWindowEnd ||
+            ""
+        );
+
+    if(
+        !isFinite(start) ||
+        !isFinite(end) ||
+        (
+            student &&
+            (
+                student.isAdmin ||
+                student.unlimited ||
+                isUnlimited(
+                    student.code
+                )
+            )
+        )
+    ){
+
+        return {
+            state:"open",
+            message:""
+        };
+    }
+
+    var label=
+        windowLabel(
+            start,
+            end
+        );
+
+    var now=
+        Date.now();
+
+    if(
+        now<start
+    ){
+
+        return {
+            state:"before",
+            message:
+                "Phòng thi chưa mở. Thời gian vào thi: " +
+                label +
+                ". Vui lòng quay lại đúng giờ."
+        };
+    }
+
+    if(
+        now>end
+    ){
+
+        return {
+            state:"after",
+            message:
+                "Đã hết giờ vào thi (" +
+                label +
+                "). Bạn có thể xem kết quả tại trang Kết quả thi."
+        };
+    }
+
+    return {
+        state:"open",
+        message:""
+    };
+}
+
+
+function windowLabel(start,end){
+
+    /* hiển thị theo giờ Việt Nam, không phụ thuộc múi giờ của máy */
+    function vn(ms){
+
+        var d=
+            new Date(
+                ms +
+                7*3600*1000
+            );
+
+        function two(n){
+
+            return (
+                n<10
+                    ?
+                    "0"
+                    :
+                    ""
+            ) +
+            n;
+        }
+
+        return {
+            time:
+                two(d.getUTCHours()) +
+                ":" +
+                two(d.getUTCMinutes()),
+            date:
+                two(d.getUTCDate()) +
+                "/" +
+                two(d.getUTCMonth()+1) +
+                "/" +
+                d.getUTCFullYear(),
+            day:
+                [
+                    "Chủ Nhật",
+                    "Thứ Hai",
+                    "Thứ Ba",
+                    "Thứ Tư",
+                    "Thứ Năm",
+                    "Thứ Sáu",
+                    "Thứ Bảy"
+                ][
+                    d.getUTCDay()
+                ]
+        };
+    }
+
+    var a=
+        vn(start);
+
+    var b=
+        vn(end);
+
+    return (
+        a.time +
+        "–" +
+        b.time +
+        " " +
+        a.day +
+        " " +
+        a.date
     );
 }
 

@@ -1182,13 +1182,68 @@ function bigImageUrl(value,size){
     var s=String(value).trim();
     return /^https:\/\//i.test(s) ? s : "";
 }
-function loadImage(url){
+/* v1.6.0: ảnh avatar / khung / nền cho canvas.
+   Ảnh Drive dạng thumbnail không cho canvas đọc -> thử lh3.googleusercontent (cho đọc chéo),
+   không được thì nhờ ChamThi.gs (imageProxy) gửi ảnh về dạng base64. */
+function imageCandidates(value,size){
+    if(!value){ return []; }
+    var id=driveId(value);
+    if(id){
+        return [
+            "https://lh3.googleusercontent.com/d/"+encodeURIComponent(id)+"=w"+(size||1080),
+            "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(size||1080)
+        ];
+    }
+    var s=String(value).trim();
+    return /^https:\/\//i.test(s) ? [s] : [];
+}
+async function loadFirstImage(urls,timeout){
+    for(var i=0;i<urls.length;i++){
+        var img=await loadImage(urls[i],timeout);
+        if(img){ return img; }
+    }
+    return null;
+}
+async function proxyImages(ids){
+    var url=settings().cardUploadUrl;
+    if(!url || !ids.length){ return {}; }
+    var ac=new AbortController(), timer=setTimeout(function(){ ac.abort(); },25000);
+    try{
+        var res=await fetch(url,{method:"POST",
+            body:JSON.stringify({action:"imageProxy",ids:ids}),
+            headers:{"Content-Type":"text/plain;charset=utf-8"},credentials:"omit",cache:"no-store",signal:ac.signal});
+        var j=JSON.parse(await res.text());
+        return (j && j.ok && j.images) ? j.images : {};
+    }catch(e){
+        return {};
+    }finally{
+        clearTimeout(timer);
+    }
+}
+async function loadLookImages(look){
+    var specs=[[look.background,1080],[look.avatar,400],[look.frame,400]];
+    var imgs=await Promise.all(specs.map(function(sp){ return loadFirstImage(imageCandidates(sp[0],sp[1]),8000); }));
+    var need=[];
+    specs.forEach(function(sp,i){
+        var id=driveId(sp[0]);
+        if(!imgs[i] && id && need.indexOf(id)<0){ need.push(id); }
+    });
+    if(need.length){
+        var got=await proxyImages(need);
+        await Promise.all(specs.map(async function(sp,i){
+            var id=driveId(sp[0]);
+            if(!imgs[i] && id && got[id]){ imgs[i]=await loadImage(got[id],8000); }
+        }));
+    }
+    return imgs;
+}
+function loadImage(url,timeout){
     return new Promise(function(resolve){
         if(!url){ resolve(null); return; }
         var img=new Image();
         var done=false;
-        var timer=setTimeout(function(){ if(!done){ done=true; resolve(null); } },12000);
-        img.crossOrigin="anonymous";
+        var timer=setTimeout(function(){ if(!done){ done=true; resolve(null); } },timeout||12000);
+        if(!/^data:/i.test(url)){ img.crossOrigin="anonymous"; }
         img.onload=function(){ if(done){ return; } done=true; clearTimeout(timer); resolve(img); };
         img.onerror=function(){ if(done){ return; } done=true; clearTimeout(timer); resolve(null); };
         img.src=url;
@@ -1407,11 +1462,7 @@ async function draw(data){
     var cfg=settings();
     await ensureFonts();
     var look=data.profile || {};
-    var imgs=await Promise.all([
-        loadImage(bigImageUrl(look.background,1080)),
-        loadImage(bigImageUrl(look.avatar,400)),
-        loadImage(bigImageUrl(look.frame,400))
-    ]);
+    var imgs=data.noImages ? [null,null,null] : await loadLookImages(look);
 
     var canvas=document.createElement("canvas");
     canvas.width=W;
@@ -1466,7 +1517,8 @@ async function draw(data){
     ctx.fillStyle="#6b5a48";
     ctx.font="600 34px "+FONT_SANS;
     ctx.textAlign="center";
-    var meta=["Tổ "+(data.group||"-"),"Khoá "+(data.course||"-"),"Mã "+data.code].join("   ·   ");
+    /* v1.6.0: không in mã học viên lên thẻ (giữ bí mật) */
+    var meta=["Tổ "+(data.group||"-"),"Khoá "+(data.course||"-")].join("   ·   ");
     ctx.fillText(meta,cx,nameY+64);
 
     /* Điểm */
@@ -1567,9 +1619,11 @@ async function draw(data){
     ctx.font="400 24px "+FONT_SANS;
     if(data.gradedAt){ ctx.fillText("Ngày chấm: "+String(data.gradedAt).split(" ")[0],px+70,py+ph-150); }
     ctx.fillText("thudao.com",px+70,py+ph-112);
-    if(data.examId){
+    /* v1.6.0: không in Exam ID (có chứa mã học viên); chỉ in số hiệu bài thi theo giờ bắt đầu */
+    var serial=String(data.examId||"").match(/(\d{14})$/);
+    if(serial){
         ctx.font="400 19px "+FONT_SANS;
-        ctx.fillText(data.examId,px+70,py+ph-78);
+        ctx.fillText("Số hiệu: "+serial[1],px+70,py+ph-78);
     }
     return canvas;
 }
@@ -1603,6 +1657,10 @@ async function alreadyInNopBai(data){
     }catch(e){
         return null;
     }
+}
+function fileSlug(text){
+    return String(text||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D")
+        .replace(/[^A-Za-z0-9]+/g,"_").replace(/^_+|_+$/g,"").slice(0,40) || "hoc_vien";
 }
 async function submitViaChamThi(data,dataUrl,url){
     var ac=new AbortController(), timer=setTimeout(function(){ ac.abort(); },120000);
@@ -1704,7 +1762,7 @@ async function mount(container,data){
     var blob=await toBlob(canvas,"image/png");
     if(!blob){
         /* ảnh nền/avatar không cho đọc chéo -> vẽ lại không dùng ảnh ngoài */
-        data.profile={multitask:!!(profile&&profile.multitask)};
+        data.noImages=true;
         canvas=await draw(data);
         blob=await toBlob(canvas,"image/png");
     }
@@ -1718,7 +1776,7 @@ async function mount(container,data){
     img.src=url;
     stage.replaceWith(img);
 
-    var fileName="ThanhTich_"+data.code+".png";
+    var fileName="ThanhTich_"+fileSlug(data.name||"hoc-vien")+".png";
     var save=h("button","ocdcard-btn gold","TẢI ẢNH VỀ MÁY");
     save.type="button";
     save.onclick=async function(){
@@ -1797,6 +1855,7 @@ window.OCDAchievementCard={
 /* =========================================================
    OCD GRADUATION RESULT
    v1.5.0 (29/10/2026): thẻ thành tích nộp qua ChamThi.gs (không bị giới hạn 2 bài/ngày)
+   v1.6.0 (29/10/2026): thẻ thành tích vẽ đủ avatar / khung / nền (ảnh qua lh3 hoặc ChamThi.gs imageProxy), bỏ mã học viên trên thẻ
    v1.5.1 (29/10/2026): mở trang với ?ma=MÃ (nút từ phòng thi) sẽ tự điền mã và tra cứu
    v1.4.1 (29/10/2026): gắn URL Apps Script chấm bài (ChamThi.gs); không nộp thẻ 2 lần khi thẻ vẽ lại
    v1.4.0 (29/10/2026): điểm thi làm tròn đến số nguyên (từ 0,5 lên, dưới 0,5 xuống),
@@ -1824,7 +1883,7 @@ window.OCDGraduationResult || {};
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_RESULT_V1.5.1",
+        "OCD_GRADUATION_RESULT_V1.6.0",
 
     spreadsheetId:
         "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",

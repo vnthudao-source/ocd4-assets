@@ -6485,6 +6485,265 @@ if(
 </script>
 
 
+
+<!--=========================================================
+     v1.7 (29/10/2026): GIẤY CHỨNG NHẬN / THẺ THÀNH TÍCH
+     - Nút "Giấy chứng nhận" trên card hồ sơ khi học viên đã có thẻ thành tích
+       (hoặc có bài thi đã chấm nhưng chưa mở trang Kết quả để nhận thẻ).
+     - Danh sách đọc từ Apps Script ChamThi.gs (v1.2.0+, lệnh certificates);
+       tải ảnh về máy qua lệnh imageProxy.
+=========================================================-->
+<style>
+#profileCertPanel .cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:10px}
+#profileCertPanel .cert-item{display:flex;flex-direction:column;gap:7px;padding:9px;border:1px solid #f3d38a;border-radius:14px;background:#fffdf6}
+#profileCertPanel .cert-thumb{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:10px;background:#f4ead6;cursor:zoom-in}
+#profileCertPanel .cert-name{font-size:12px;font-weight:900;color:#78350f;line-height:1.35}
+#profileCertPanel .cert-date{font-size:11px;color:#8a7a68}
+#profileCertPanel .cert-actions{display:flex;gap:6px}
+#profileCertPanel .cert-btn{flex:1;padding:8px 6px;border:1px solid #d97706;border-radius:10px;background:#fff;color:#92400e;font-size:11px;font-weight:900;cursor:pointer;text-align:center;text-decoration:none}
+#profileCertPanel .cert-btn.gold{background:#d97706;color:#fff}
+#profileCertPanel .cert-btn[disabled]{opacity:.6;cursor:wait}
+#profileCertPanel .cert-pending{margin-top:10px;padding:10px 12px;border:1px dashed #d97706;border-radius:12px;background:#fff7e6;font-size:12px;line-height:1.55;color:#78350f}
+#profileCertPanel .cert-pending a{color:#b45309;font-weight:900}
+#profileCertPanel .cert-msg{margin-top:8px;font-size:12px;color:#8a7a68}
+.cert-viewer{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(20,12,6,.86)}
+.cert-viewer img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.cert-viewer button{position:absolute;top:12px;right:12px;width:40px;height:40px;border:0;border-radius:50%;background:#fff;color:#3a2418;font-size:20px;font-weight:900;cursor:pointer}
+</style>
+
+<script>
+(function(){
+"use strict";
+
+var CERT_CONFIG={
+    /* Apps Script ChamThi.gs (cùng URL với trang thi / trang kết quả) */
+    apiUrl:"https://script.google.com/macros/s/AKfycbx4VqQ3Ud6yu2gyDyGuQsoTthTwCX3P3e_FpNqx8Q0EF5hq9KPFYh5FQBxnRKLr9axh/exec",
+    resultUrl:"https://www.thudao.com/p/ket-qua-thi-tot-nghiep.html"
+};
+
+var C={code:"",seq:0,data:null};
+
+function $(id){ return document.getElementById(id); }
+
+function norm(v){
+    return String(v||"").replace(/[​-‍﻿]/g,"").replace(/\s+/g,"").toUpperCase();
+}
+
+function esc(v){
+    return String(v==null?"":v).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; });
+}
+
+function thumb(id,w){
+    return "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(w||600);
+}
+
+async function api(body,ms){
+    var ac=new AbortController(), t=setTimeout(function(){ ac.abort(); },ms||20000);
+    try{
+        var res=await fetch(CERT_CONFIG.apiUrl,{method:"POST",body:JSON.stringify(body),
+            headers:{"Content-Type":"text/plain;charset=utf-8"},credentials:"omit",cache:"no-store",signal:ac.signal});
+        return JSON.parse(await res.text())||{ok:false};
+    }catch(e){
+        return {ok:false,network:true};
+    }finally{
+        clearTimeout(t);
+    }
+}
+
+function ensureUi(){
+    var bar=document.querySelector("#studentProfileModule .student-profile-actions");
+    if(!bar){ return false; }
+    if(!$("profileCertButton")){
+        var b=document.createElement("button");
+        b.type="button";
+        b.id="profileCertButton";
+        b.className="student-profile-action";
+        b.style.display="none";
+        b.innerHTML='<span aria-hidden="true">🎖</span><span>Giấy chứng nhận</span><span class="student-profile-action-number" id="profileCertTotal">0</span>';
+        b.addEventListener("click",togglePanel);
+        bar.appendChild(b);
+        /* bấm nút khác trên card -> đóng mục giấy chứng nhận */
+        bar.addEventListener("click",function(ev){
+            var t=ev.target.closest(".student-profile-action");
+            if(t && t.id!=="profileCertButton"){ closePanel(); }
+        },true);
+    }
+    if(!$("profileCertPanel")){
+        var p=document.createElement("div");
+        p.id="profileCertPanel";
+        p.className="rx-expand-panel";
+        var anchor=$("profileLookPanel")||$("profileItemPanel")||$("studentProfileModule");
+        anchor.insertAdjacentElement("afterend",p);
+    }
+    return true;
+}
+
+function closePanel(){
+    var p=$("profileCertPanel"), b=$("profileCertButton");
+    if(p){ p.classList.remove("visible"); }
+    if(b){ b.classList.remove("active"); }
+}
+
+function togglePanel(){
+    var p=$("profileCertPanel"), b=$("profileCertButton");
+    if(!p||!b){ return; }
+    var open=!p.classList.contains("visible");
+    document.querySelectorAll("#rewardExchangeApp .rx-expand-panel.visible").forEach(function(x){ if(x!==p){ x.classList.remove("visible"); } });
+    document.querySelectorAll("#studentProfileModule .student-profile-action.active").forEach(function(x){ if(x!==b){ x.classList.remove("active"); } });
+    if(open){
+        render();
+        p.classList.add("visible");
+        b.classList.add("active");
+    }else{
+        closePanel();
+    }
+}
+
+function fmtDate(t){
+    var m=String(t||"").match(/^(\d{1,2}\/\d{1,2}\/\d{4})/);
+    return m ? m[1] : String(t||"");
+}
+
+function render(){
+    var p=$("profileCertPanel");
+    var d=C.data;
+    if(!p||!d){ return; }
+    var html='<div class="rx-panel-title">Giấy chứng nhận &amp; thẻ thành tích</div>';
+    if(d.items.length){
+        html+='<div class="cert-grid">'+d.items.map(function(it,i){
+            return '<div class="cert-item">'+
+                '<img class="cert-thumb" loading="lazy" alt="'+esc(it.title)+'" src="'+esc(thumb(it.fileId,600))+'" data-cert-view="'+i+'">'+
+                '<div class="cert-name">'+esc(it.title)+'</div>'+
+                '<div class="cert-date">'+(it.type==="certificate"?"Giấy chứng nhận":"Thẻ thành tích")+(it.time?" · "+esc(fmtDate(it.time)):"")+'</div>'+
+                '<div class="cert-actions">'+
+                    '<button type="button" class="cert-btn" data-cert-view="'+i+'">XEM</button>'+
+                    '<button type="button" class="cert-btn gold" data-cert-save="'+i+'">TẢI VỀ</button>'+
+                '</div>'+
+            '</div>';
+        }).join("")+'</div>';
+    }
+    if(d.pending.length){
+        html+='<div class="cert-pending">🎓 Có '+d.pending.length+' bài kiểm tra đã được chấm nhưng thẻ thành tích chưa được tạo. '+
+            '<a href="'+esc(CERT_CONFIG.resultUrl+"?ma="+encodeURIComponent(C.code))+'">Mở trang Kết quả thi</a> để nhận thẻ – thẻ sẽ tự xuất hiện ở đây.</div>';
+    }
+    html+='<div class="cert-msg" id="profileCertMsg">Trên iPhone: bấm TẢI VỀ rồi chọn “Lưu hình ảnh”.</div>';
+    p.innerHTML=html;
+}
+
+function view(i){
+    var it=C.data && C.data.items[i];
+    if(!it){ return; }
+    var v=document.createElement("div");
+    v.className="cert-viewer";
+    v.innerHTML='<img alt="'+esc(it.title)+'" src="'+esc(thumb(it.fileId,1600))+'"><button type="button" aria-label="Đóng">×</button>';
+    v.addEventListener("click",function(ev){ if(ev.target===v || ev.target.tagName==="BUTTON"){ v.remove(); } });
+    document.body.appendChild(v);
+}
+
+function slug(t){
+    return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D")
+        .replace(/[^A-Za-z0-9]+/g,"_").replace(/^_+|_+$/g,"").slice(0,50)||"giay_chung_nhan";
+}
+
+async function save(i,btn){
+    var it=C.data && C.data.items[i];
+    var msg=$("profileCertMsg");
+    if(!it){ return; }
+    btn.disabled=true;
+    var old=btn.textContent;
+    btn.textContent="ĐANG TẢI...";
+    try{
+        var r=await api({action:"imageProxy",ids:[it.fileId]},30000);
+        var dataUrl=r && r.ok && r.images ? r.images[it.fileId] : "";
+        if(!dataUrl){
+            /* máy chủ chưa hỗ trợ -> mở ảnh gốc để học viên tự lưu */
+            window.open(thumb(it.fileId,1600),"_blank","noopener");
+            if(msg){ msg.textContent="Đã mở ảnh trong thẻ mới – nhấn giữ vào ảnh và chọn “Lưu vào Ảnh”."; }
+            return;
+        }
+        var blob=await (await fetch(dataUrl)).blob();
+        var name=slug(it.title)+"_"+slug(fmtDate(it.time))+"."+((blob.type.split("/")[1]||"png").replace("jpeg","jpg"));
+        var file=null;
+        try{ file=new File([blob],name,{type:blob.type}); }catch(e){}
+        if(file && navigator.canShare && navigator.canShare({files:[file]})){
+            try{ await navigator.share({files:[file],title:it.title}); return; }catch(e){ if(e && e.name==="AbortError"){ return; } }
+        }
+        var url=URL.createObjectURL(blob);
+        var a=document.createElement("a");
+        a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(url); },30000);
+        if(msg){ msg.textContent="Đã tải ảnh về máy."; }
+    }finally{
+        btn.disabled=false;
+        btn.textContent=old;
+    }
+}
+
+async function load(code){
+    var seq=++C.seq;
+    C.code=code;
+    C.data=null;
+    var b=$("profileCertButton");
+    if(b){ b.style.display="none"; }
+    closePanel();
+    if(!code || code==="ADMIN"){ return; }
+    var r=await api({action:"certificates",code:code},20000);
+    if(seq!==C.seq){ return; }
+    if(!r || !r.ok){ return; }
+    var items=(r.items||[]).filter(function(x){ return x && x.fileId; });
+    var pending=r.pending||[];
+    C.data={items:items,pending:pending};
+    if(!ensureUi()){ return; }
+    b=$("profileCertButton");
+    $("profileCertTotal").textContent=String(items.length);
+    b.style.display=(items.length||pending.length) ? "" : "none";
+    if($("profileCertPanel").classList.contains("visible")){ render(); }
+}
+
+function visibleProfile(){
+    var m=$("studentProfileModule");
+    return !!m && m.style.display!=="none" && getComputedStyle(m).display!=="none";
+}
+
+var lastSeen="";
+function check(){
+    if(!visibleProfile()){
+        if(lastSeen){ lastSeen=""; C.seq++; var b=$("profileCertButton"); if(b){ b.style.display="none"; } closePanel(); }
+        return;
+    }
+    var input=$("rxStudentCode");
+    var code=norm(input && input.value);
+    if(code && code!==lastSeen){
+        lastSeen=code;
+        load(code);
+    }
+}
+
+function start(){
+    var m=$("studentProfileModule");
+    if(!m){ return; }
+    ensureUi();
+    new MutationObserver(check).observe(m,{attributes:true,attributeFilter:["style","class"]});
+    var name=$("studentProfileName");
+    if(name){ new MutationObserver(check).observe(name,{childList:true,characterData:true,subtree:true}); }
+    document.addEventListener("click",function(ev){
+        var v=ev.target.closest("#profileCertPanel [data-cert-view]");
+        if(v){ view(+v.getAttribute("data-cert-view")); return; }
+        var s=ev.target.closest("#profileCertPanel [data-cert-save]");
+        if(s){ save(+s.getAttribute("data-cert-save"),s); }
+    });
+    window.addEventListener("ocdRewardProfileChanged",function(){ setTimeout(check,0); });
+    check();
+}
+
+if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",start,{once:true});
+}else{
+    start();
+}
+})();
+</script>
+
 </div>
 
 
