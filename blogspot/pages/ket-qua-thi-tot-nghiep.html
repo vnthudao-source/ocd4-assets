@@ -1093,7 +1093,7 @@ window.OCD_GRADUATION_RESULT_SETTINGS = {
 
     /* URL ứng dụng web Apps Script ChamThi.gs (khu chấm bài).
        Để trống thì giáo viên dán URL ở khu chấm bài (lưu trên máy). */
-    graderApiUrl: ""
+    graderApiUrl: "https://script.google.com/macros/s/AKfycbx4VqQ3Ud6yu2gyDyGuQsoTthTwCX3P3e_FpNqx8Q0EF5hq9KPFYh5FQBxnRKLr9axh/exec"
 
 };
 </script>
@@ -1122,6 +1122,9 @@ var W=1080, H=1920;
 var API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
 
 var SUBMIT_KEY="ocd_card_submitted_v1";
+
+/* Exam ID đang nộp thẻ trên trang này (tránh nộp 2 lần khi thẻ được vẽ lại) */
+var INFLIGHT={};
 
 function settings(){
     var s=window.OCD_GRADUATION_RESULT_SETTINGS || {};
@@ -1734,8 +1737,16 @@ async function mount(container,data){
         return;
     }
     say("Đang nộp thẻ thành tích vào trang Nộp bài tập…","");
-    var jpg=canvas.toDataURL("image/jpeg",0.9);
-    var r=await submitToNopBai(data,jpg);
+    var r;
+    if(INFLIGHT[data.examId]){
+        /* thẻ được vẽ lại trong lúc đang nộp: chờ lượt nộp đang chạy, không nộp thêm */
+        r=await INFLIGHT[data.examId];
+    }else{
+        var jpg=canvas.toDataURL("image/jpeg",0.9);
+        INFLIGHT[data.examId]=submitToNopBai(data,jpg);
+        try{ r=await INFLIGHT[data.examId]; }
+        finally{ delete INFLIGHT[data.examId]; }
+    }
     if(r && r.ok){
         markSubmitted(data.examId);
         say("✅ Đã nộp thẻ thành tích vào trang Nộp bài tập"+(r.time?" lúc "+r.time:"")+".","ok");
@@ -1763,6 +1774,7 @@ window.OCDAchievementCard={
 <script>
 /* =========================================================
    OCD GRADUATION RESULT
+   v1.4.1 (29/10/2026): gắn URL Apps Script chấm bài (ChamThi.gs); không nộp thẻ 2 lần khi thẻ vẽ lại
    v1.4.0 (29/10/2026): điểm thi làm tròn đến số nguyên (từ 0,5 lên, dưới 0,5 xuống),
    ghi chú "làm tròn từ ..." bên cạnh; xếp loại theo điểm đã làm tròn
    v1.3.0 (29/10/2026): thi giữa kỳ hiện XẾP LOẠI thay cho ĐẠT TỐT NGHIỆP
@@ -1788,7 +1800,7 @@ window.OCDGraduationResult || {};
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_RESULT_V1.4.0",
+        "OCD_GRADUATION_RESULT_V1.4.1",
 
     spreadsheetId:
         "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
