@@ -956,6 +956,10 @@
 .gr-grader-note{font-size:12px;color:var(--muted);margin-top:6px}
 .gr-grader-score.bad{border-color:#c0392b;background:#fbe9e6}
 textarea.gr-input{resize:vertical;min-height:54px;font-family:inherit}
+
+/* v1.4.0: ghi chú làm tròn điểm */
+.gr-round-note{display:block;margin-top:2px;font-size:11px;font-weight:600;letter-spacing:0;opacity:.75;line-height:1.3}
+.gr-attempt-status .gr-round-note,.gr-grader-who .gr-round-note,.gr-waiting-text .gr-round-note{display:inline;margin-left:4px}
 </style>
 
 
@@ -1137,6 +1141,19 @@ function rankOf(score){
     return {key:"tb", label:"TRUNG BÌNH", text:"Trung bình", color:"#4b5563"};
 }
 
+/* Điểm thi làm tròn đến số nguyên: từ 0,5 trở lên làm tròn lên, dưới 0,5 xuống */
+function roundInt(n){
+    var v=Number(n);
+    if(!Number.isFinite(v)){ return null; }
+    return Math.floor(Math.round(v*1000)/1000+0.5);
+}
+function roundNoteText(n){
+    var v=Number(n);
+    if(!Number.isFinite(v)){ return ""; }
+    var r=Math.round(v*1000)/1000;
+    if(r===roundInt(v)){ return ""; }
+    return "làm tròn từ "+String(Math.round(v*100)/100).replace(".",",");
+}
 function fmt(n){
     var v=Number(n);
     if(!Number.isFinite(v)){ return "-"; }
@@ -1463,10 +1480,19 @@ async function draw(data){
         ctx.fillText(item[0],bx+bw/2,boxY+50);
         ctx.fillStyle="#3a2418";
         ctx.font="900 80px "+FONT_SERIF;
-        ctx.fillText(fmt(item[1]),bx+bw/2,boxY+140);
+        var ri=roundInt(item[1]);
+        var rn=roundNoteText(item[1]);
+        ctx.fillText(ri===null?"-":String(ri),bx+bw/2,boxY+(rn?126:140));
+        if(rn){
+            ctx.fillStyle="#8a6b50";
+            ctx.font="600 22px "+FONT_SANS;
+            ctx.fillText("("+rn+")",bx+bw/2,boxY+156);
+        }
     });
 
-    var rank=rankOf(Number(data.total));
+    var totalInt=roundInt(data.total);
+    var totalNote=roundNoteText(data.total);
+    var rank=rankOf(totalInt===null?0:totalInt);
     var tY=boxY+bh+30, tH=240;
     ctx.save();
     roundRect(ctx,px+60,tY,pw-120,tH,30);
@@ -1483,7 +1509,12 @@ async function draw(data){
     ctx.fillText("TỔNG ĐIỂM TRUNG BÌNH",cx,tY+54);
     ctx.fillStyle="#fffaf0";
     ctx.font="900 120px "+FONT_SERIF;
-    ctx.fillText(fmt(data.total),cx,tY+172);
+    ctx.fillText(totalInt===null?"-":String(totalInt),cx,tY+(totalNote?160:172));
+    if(totalNote){
+        ctx.fillStyle="#f3d9a4";
+        ctx.font="600 24px "+FONT_SANS;
+        ctx.fillText("("+totalNote+")",cx,tY+196);
+    }
     /* dải xếp loại */
     ctx.font="900 34px "+FONT_SANS;
     var rbW=Math.max(360,ctx.measureText("XẾP LOẠI: "+rank.label).width+90), rbH=66, rbX=cx-rbW/2, rbY=tY+tH-rbH/2;
@@ -1732,6 +1763,8 @@ window.OCDAchievementCard={
 <script>
 /* =========================================================
    OCD GRADUATION RESULT
+   v1.4.0 (29/10/2026): điểm thi làm tròn đến số nguyên (từ 0,5 lên, dưới 0,5 xuống),
+   ghi chú "làm tròn từ ..." bên cạnh; xếp loại theo điểm đã làm tròn
    v1.3.0 (29/10/2026): thi giữa kỳ hiện XẾP LOẠI thay cho ĐẠT TỐT NGHIỆP
    v1.2.0 (29/10/2026): khu chấm bài cho giáo viên (ChamThi.gs),
    thang 10, thực hành 50% + lý thuyết 50%
@@ -1755,7 +1788,7 @@ window.OCDGraduationResult || {};
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_RESULT_V1.3.0",
+        "OCD_GRADUATION_RESULT_V1.4.0",
 
     spreadsheetId:
         "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
@@ -2279,6 +2312,90 @@ function round2(value){
         Number(value) *
         100
     ) / 100;
+}
+
+
+/*
+   v1.4.0: ĐIỂM THI LÀM TRÒN ĐẾN SỐ NGUYÊN
+   phần lẻ từ 0,5 trở lên -> làm tròn lên, dưới 0,5 -> làm tròn xuống
+   (8,75 -> 9 · 8,5 -> 9 · 8,25 -> 8). Bên cạnh ghi "làm tròn từ ...".
+*/
+function roundScore(value){
+
+    var n=
+        parseNumber(value);
+
+    if(n===null){
+
+        return null;
+    }
+
+    return Math.floor(
+        Math.round(n*1000)/1000 +
+        0.5
+    );
+}
+
+
+function rawScoreText(value){
+
+    var n=
+        parseNumber(value);
+
+    if(n===null){
+
+        return "-";
+    }
+
+    return String(
+        Math.round(n*100)/100
+    )
+    .replace(".",",");
+}
+
+
+function roundNote(value){
+
+    var n=
+        parseNumber(value);
+
+    if(
+        n===null ||
+        Math.round(n*1000)/1000===roundScore(n)
+    ){
+
+        return "";
+    }
+
+    return "làm tròn từ " +
+        rawScoreText(n);
+}
+
+
+/* Điểm nguyên + ghi chú làm tròn (HTML) */
+function roundHtml(value){
+
+    var r=
+        roundScore(value);
+
+    if(r===null){
+
+        return "-";
+    }
+
+    var note=
+        roundNote(value);
+
+    return (
+        String(r) +
+        (
+            note
+                ?
+                '<span class="gr-round-note">(' + escapeHtml(note) + ')</span>'
+                :
+                ''
+        )
+    );
 }
 
 
@@ -3379,7 +3496,7 @@ function renderAttemptList(){
                             finalScore!==null
                                 ?
                                 ' - ' +
-                                scoreDisplay(
+                                roundHtml(
                                     finalScore
                                 ) +
                                 ' ĐIỂM'
@@ -3809,10 +3926,8 @@ function renderResult(){
 
                     'Điểm lý thuyết hiện tại: ' +
                     '<strong>' +
-                        escapeHtml(
-                            scoreDisplay(
-                                exam.theoryScore
-                            )
+                        roundHtml(
+                            exam.theoryScore
                         ) +
                     '/10</strong>' +
 
@@ -3901,7 +4016,9 @@ function renderResult(){
 
     var rank=
         rankOfScore(
-            finalScore
+            roundScore(
+                finalScore
+            )
         );
 
     var passed=
@@ -3951,8 +4068,8 @@ function renderResult(){
                 ) +
             '</div>' +
             '<div class="gr-final-score">' +
-                escapeHtml(
-                    finalScore.toFixed(2)
+                roundHtml(
+                    finalScore
                 ) +
             '</div>' +
             '<div class="gr-final-status">' +
@@ -3984,10 +4101,8 @@ function renderResult(){
             '<div class="gr-score-box">' +
 
                 '<div class="gr-score-number">' +
-                    escapeHtml(
-                        scoreDisplay(
-                            theory
-                        )
+                    roundHtml(
+                        theory
                     ) +
                 '</div>' +
 
@@ -4001,10 +4116,8 @@ function renderResult(){
             '<div class="gr-score-box">' +
 
                 '<div class="gr-score-number">' +
-                    escapeHtml(
-                        scoreDisplay(
-                            practical
-                        )
+                    roundHtml(
+                        practical
                     ) +
                 '</div>' +
 
@@ -4018,8 +4131,8 @@ function renderResult(){
             '<div class="gr-score-box">' +
 
                 '<div class="gr-score-number">' +
-                    escapeHtml(
-                        finalScore.toFixed(2)
+                    roundHtml(
+                        finalScore
                     ) +
                 '</div>' +
 
@@ -4043,28 +4156,35 @@ function renderResult(){
         '<div class="gr-formula">' +
 
             '<strong>Cách tính:</strong> ' +
-
-            scoreDisplay(
-                theory
+            escapeHtml(
+                rawScoreText(
+                    theory
+                )
             ) +
-
             ' × 50% + ' +
-
-            scoreDisplay(
-                practical
+            escapeHtml(
+                rawScoreText(
+                    practical
+                )
             ) +
-
             ' × 50% = ' +
-
-            '<strong>' +
-                finalScore.toFixed(2) +
-            '</strong>' +
-
+            escapeHtml(
+                rawScoreText(
+                    finalScore
+                )
+            ) +
+            ' → <strong>' +
+                roundScore(
+                    finalScore
+                ) +
+            ' điểm</strong>' +
+            '<br>' +
+            'Điểm thi làm tròn đến số nguyên: phần lẻ từ 0,5 trở lên làm tròn lên, dưới 0,5 làm tròn xuống.' +
             '<br>' +
             (
                 rankMode
                     ?
-                    'Xếp loại: Giỏi từ 8 điểm · Khá từ 5 đến dưới 8 · Trung bình dưới 5.'
+                    'Xếp loại (theo điểm đã làm tròn): Giỏi từ 8 điểm · Khá từ 5 đến 7 điểm · Trung bình dưới 5 điểm.'
                     :
                     'Điều kiện tốt nghiệp: điểm tổng từ ' +
                     CONFIG.passScore.toFixed(2) +
@@ -4250,12 +4370,9 @@ function renderResult(){
                             '<div class="gr-small-score-label">' +
                                 'Điểm thi' +
                             '</div>' +
-
                             '<div class="gr-small-score-value">' +
-                                escapeHtml(
-                                    scoreDisplay(
-                                        examScore
-                                    )
+                                roundHtml(
+                                    examScore
                                 ) +
                             '</div>' +
 
@@ -4928,11 +5045,11 @@ function graderListView(){
                             escapeHtml(m.exam.studentCode) +
                             ' · Tổ ' + escapeHtml(m.exam.group || "-") +
                             ' · Khoá ' + escapeHtml(m.exam.course || "-") +
-                            ' · LT ' + escapeHtml(scoreDisplay(m.exam.theoryScore)) +
+                            ' · LT ' + roundHtml(m.exam.theoryScore) +
                             (
                                 m.grading
                                     ?
-                                    ' · TH ' + escapeHtml(scoreDisplay(m.grading.practicalScore))
+                                    ' · TH ' + roundHtml(m.grading.practicalScore)
                                     :
                                     ''
                             ) +
@@ -5051,7 +5168,7 @@ function(index){
 
         '<div class="gr-grader-sum">' +
             '<div><span>Lý thuyết (tự chấm)</span><strong>' +
-                escapeHtml(scoreDisplay(exam.theoryScore)) +
+                roundHtml(exam.theoryScore) +
             '</strong><em>' +
                 escapeHtml(String(exam.theoryCorrect)) + '/' + escapeHtml(String(exam.theoryAnswered || exam.theoryCorrect + exam.theoryWrong)) + ' câu đúng' +
             '</em></div>' +
@@ -5303,8 +5420,8 @@ function(){
             s.items.length
         );
 
-    p.textContent=
-        scoreDisplay(
+    p.innerHTML=
+        roundHtml(
             practical
         );
 
@@ -5321,8 +5438,13 @@ function(){
             practical*CONFIG.practicalWeight
         );
 
-    t.textContent=
-        scoreDisplay(
+    t.innerHTML=
+        roundHtml(
+            total
+        );
+
+    total=
+        roundScore(
             total
         );
 
@@ -5445,9 +5567,9 @@ async function(){
 
     msg.textContent=
         "Đã lưu: thực hành " +
-        scoreDisplay(r.practicalScore) +
+        roundScore(r.practicalScore) +
         ", tổng " +
-        scoreDisplay(r.finalScore) +
+        roundScore(r.finalScore) +
         (
             r.regraded
                 ?

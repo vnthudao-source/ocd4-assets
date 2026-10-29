@@ -1523,7 +1523,9 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
 <script>
 /* =========================================================
    OCD GRADUATION EXAM
-   v2.7.1 - 20 THEORY + 10 IMAGE + 2 PRACTICAL
+   v2.7.2 - 20 THEORY + 10 IMAGE + 2 PRACTICAL
+
+   v2.7.2 (29/10/2026): điểm trắc nghiệm hiện số nguyên + ghi chú làm tròn.
 
    v2.7.1 (29/10/2026): tài khoản kiểm thử (unlimitedCodes, TEST001)
    thi không giới hạn số lần, mỗi lần đề mới, bài vẫn gửi như thật.
@@ -1616,7 +1618,7 @@ var UNLIMITED_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.7.1_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.7.2_20_10_2",
 
     durationMs:
         60*60*1000,
@@ -10454,6 +10456,45 @@ function openResultScreen(){
 }
 
 
+/*
+   v2.7.2: điểm hiện số nguyên – từ 0,5 trở lên làm tròn lên,
+   dưới 0,5 làm tròn xuống – kèm ghi chú "làm tròn từ ...".
+   (Điểm gửi vào BaiThiTotNghiep vẫn giữ số lẻ để tính tổng chính xác.)
+*/
+function roundedScoreHtml(value){
+
+    var n=
+        Number(value);
+
+    if(!Number.isFinite(n)){
+
+        return "-";
+    }
+
+    var exact=
+        Math.round(n*1000)/1000;
+
+    var r=
+        Math.floor(
+            exact +
+            0.5
+        );
+
+    return (
+        String(r) +
+        (
+            exact===r
+                ?
+                ''
+                :
+                '<span style="display:block;font-size:11px;font-weight:600;opacity:.75;margin-top:2px;">(làm tròn từ ' +
+                    String(Math.round(n*100)/100).replace(".",",") +
+                ')</span>'
+        )
+    );
+}
+
+
 function renderResult(){
 
     var r=
@@ -10542,7 +10583,7 @@ function renderResult(){
 
                 '<div class="result-value">' +
 
-                    escapeHtml(
+                    roundedScoreHtml(
                         r.theory.score
                     ) +
 
