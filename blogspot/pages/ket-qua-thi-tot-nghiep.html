@@ -1022,8 +1022,666 @@
 
 <script>
 /* =========================================================
+   CẤU HÌNH THẺ THÀNH TÍCH (đổi ở các đợt thi sau)
+========================================================= */
+window.OCD_GRADUATION_RESULT_SETTINGS = {
+
+    /* Tiêu đề trên thẻ */
+    cardTitle: "BÀI THI GIỮA KỲ KHOÁ D3",
+
+    /* Dùng trong lời chúc: "... trong <roundName>." */
+    roundName: "đợt thi giữa kỳ của toàn khoá",
+
+    teacherTitle: "Giáo viên chủ nhiệm",
+
+    teacherName: "Thanh Phong - Bùi Khắc Sáng",
+
+    /* true = bài đã chấm thì tự nộp thẻ vào trang Nộp bài tập (1 lần / Exam ID) */
+    autoSubmitCard: true
+
+};
+</script>
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@58a6a19947e7851ecf6df088c941f0114d01f91b/auth/ocd-auth.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@604535314d18c9139dcdc2c97396a5a0433c8191/ocd-shared/ocd-identity.js"></script>
+<script>
+/* =========================================================
+   OCD · THẺ THÀNH TÍCH KỲ THI · v1.0.0
+   - Vẽ một ảnh 1080x1920 (vừa màn hình điện thoại): tên học viên
+     (hiệu ứng thuốc đa nhiệm nếu có), tổ, khoá, nền hồ sơ, điểm
+     lý thuyết, thực hành, tổng điểm trung bình, xếp loại, chữ ký GVCN.
+   - Tải ảnh về máy / chia sẻ (iPhone: Lưu hình ảnh).
+   - Tự nộp ảnh vào trang Nộp bài tập (Apps Script submitWork, bài "KHAC")
+     MỘT lần cho mỗi Exam ID, khi bài đã được chấm.
+   API: OCDAchievementCard.mount(container, data)
+========================================================= */
+(function(){
+"use strict";
+
+if(window.OCDAchievementCard){
+    return;
+}
+
+var W=1080, H=1920;
+
+var API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
+
+var SUBMIT_KEY="ocd_card_submitted_v1";
+
+function settings(){
+    var s=window.OCD_GRADUATION_RESULT_SETTINGS || {};
+    return {
+        cardTitle: s.cardTitle || "BÀI THI GIỮA KỲ KHOÁ D3",
+        roundName: s.roundName || "đợt thi giữa kỳ của toàn khoá",
+        teacherTitle: s.teacherTitle || "Giáo viên chủ nhiệm",
+        teacherName: s.teacherName || "Thanh Phong - Bùi Khắc Sáng",
+        autoSubmit: s.autoSubmitCard !== false
+    };
+}
+
+/* Xếp loại theo tổng điểm trung bình */
+function rankOf(score){
+    if(score>=8){ return {key:"gioi", label:"GIỎI", text:"Giỏi", color:"#b4232a"}; }
+    if(score>=5){ return {key:"kha", label:"KHÁ", text:"Khá", color:"#9a6b12"}; }
+    return {key:"tb", label:"TRUNG BÌNH", text:"Trung bình", color:"#4b5563"};
+}
+
+function fmt(n){
+    var v=Number(n);
+    if(!Number.isFinite(v)){ return "-"; }
+    return (Math.round(v*100)/100).toFixed(2).replace(/\.?0+$/,"") || "0";
+}
+
+/* ---------------- ảnh ---------------- */
+function driveId(v){
+    var s=String(v||"");
+    var m=s.match(/\/file\/d\/([^/?&#]+)/i) || s.match(/\/d\/([^/?&#]+)/i) || s.match(/[?&]id=([^&#]+)/i);
+    return m ? m[1] : "";
+}
+function bigImageUrl(value,size){
+    if(!value){ return ""; }
+    var id=driveId(value);
+    if(id){ return "https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(size||1080); }
+    var s=String(value).trim();
+    return /^https:\/\//i.test(s) ? s : "";
+}
+function loadImage(url){
+    return new Promise(function(resolve){
+        if(!url){ resolve(null); return; }
+        var img=new Image();
+        var done=false;
+        var timer=setTimeout(function(){ if(!done){ done=true; resolve(null); } },12000);
+        img.crossOrigin="anonymous";
+        img.onload=function(){ if(done){ return; } done=true; clearTimeout(timer); resolve(img); };
+        img.onerror=function(){ if(done){ return; } done=true; clearTimeout(timer); resolve(null); };
+        img.src=url;
+    });
+}
+
+/* ---------------- phông chữ ---------------- */
+var FONT_SERIF="'Playfair Display', Georgia, 'Times New Roman', serif";
+var FONT_SANS="'Be Vietnam Pro', Arial, Helvetica, sans-serif";
+
+function ensureFonts(){
+    if(!document.getElementById("ocd-card-fonts")){
+        var link=document.createElement("link");
+        link.id="ocd-card-fonts";
+        link.rel="stylesheet";
+        link.href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&family=Playfair+Display:wght@700;900&display=swap";
+        document.head.appendChild(link);
+    }
+    if(!document.fonts || !document.fonts.load){ return Promise.resolve(); }
+    var want=[
+        "900 80px 'Playfair Display'","700 60px 'Playfair Display'",
+        "800 40px 'Be Vietnam Pro'","600 30px 'Be Vietnam Pro'","400 30px 'Be Vietnam Pro'"
+    ];
+    var all=Promise.all(want.map(function(f){ return document.fonts.load(f,"Thư Đạo ĐỆ"); })).catch(function(){});
+    return Promise.race([all,new Promise(function(r){ setTimeout(r,4000); })]);
+}
+
+/* ---------------- vẽ ---------------- */
+function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+}
+
+function wrap(ctx,text,maxWidth){
+    var words=String(text||"").split(/\s+/), lines=[], line="";
+    words.forEach(function(w){
+        var test=line ? line+" "+w : w;
+        if(ctx.measureText(test).width>maxWidth && line){ lines.push(line); line=w; }
+        else{ line=test; }
+    });
+    if(line){ lines.push(line); }
+    return lines;
+}
+
+function fitFont(ctx,text,weight,family,start,min,maxWidth){
+    var size=start;
+    while(size>min){
+        ctx.font=weight+" "+size+"px "+family;
+        if(ctx.measureText(text).width<=maxWidth){ break; }
+        size-=2;
+    }
+    return size;
+}
+
+function drawCover(ctx,img,x,y,w,h){
+    var r=Math.max(w/img.width,h/img.height);
+    var dw=img.width*r, dh=img.height*r;
+    ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
+}
+
+function star(ctx,cx,cy,r,color){
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.beginPath();
+    for(var i=0;i<8;i++){
+        var rad=i%2===0 ? r : r*0.32;
+        var a=Math.PI/4*i-Math.PI/2;
+        ctx[i===0?"moveTo":"lineTo"](Math.cos(a)*rad,Math.sin(a)*rad);
+    }
+    ctx.closePath();
+    ctx.fillStyle=color;
+    ctx.shadowColor="rgba(251,191,36,.95)";
+    ctx.shadowBlur=18;
+    ctx.fill();
+    ctx.restore();
+}
+
+function drawBackground(ctx,bgImg){
+    if(bgImg){
+        drawCover(ctx,bgImg,0,0,W,H);
+        var g=ctx.createLinearGradient(0,0,0,H);
+        g.addColorStop(0,"rgba(28,18,12,.35)");
+        g.addColorStop(1,"rgba(28,18,12,.65)");
+        ctx.fillStyle=g;
+        ctx.fillRect(0,0,W,H);
+        return;
+    }
+    var g2=ctx.createLinearGradient(0,0,W,H);
+    g2.addColorStop(0,"#3b2416");
+    g2.addColorStop(0.55,"#6b3f24");
+    g2.addColorStop(1,"#2a1a10");
+    ctx.fillStyle=g2;
+    ctx.fillRect(0,0,W,H);
+    /* hoa văn vòng tròn mờ */
+    ctx.save();
+    ctx.globalAlpha=0.08;
+    ctx.strokeStyle="#f3d9a4";
+    ctx.lineWidth=3;
+    for(var i=0;i<9;i++){
+        ctx.beginPath();
+        ctx.arc(W*0.85,H*0.12,120+i*70,0,Math.PI*2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(W*0.1,H*0.92,90+i*65,0,Math.PI*2);
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+function drawAvatar(ctx,cx,cy,size,avatarImg,frameImg,name){
+    var r=size*0.4;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx,cy,r+8,0,Math.PI*2);
+    ctx.fillStyle="#fff";
+    ctx.shadowColor="rgba(0,0,0,.25)";
+    ctx.shadowBlur=24;
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.clip();
+    if(avatarImg){
+        drawCover(ctx,avatarImg,cx-r,cy-r,r*2,r*2);
+    }else{
+        ctx.fillStyle="#f3eee8";
+        ctx.fillRect(cx-r,cy-r,r*2,r*2);
+        var words=String(name||"").trim().split(/\s+/);
+        var letter=(words[words.length-1]||"✍").charAt(0).toUpperCase();
+        ctx.fillStyle="#8a6b50";
+        ctx.font="900 "+Math.round(r*0.95)+"px "+FONT_SERIF;
+        ctx.textAlign="center";
+        ctx.textBaseline="middle";
+        ctx.fillText(letter,cx,cy+4);
+    }
+    ctx.restore();
+
+    if(frameImg){
+        ctx.drawImage(frameImg,cx-size/2,cy-size/2,size,size);
+    }else{
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx,cy,r+8,0,Math.PI*2);
+        ctx.lineWidth=6;
+        ctx.strokeStyle="#c9a45c";
+        ctx.stroke();
+        ctx.restore();
+    }
+}
+
+function drawName(ctx,name,cx,y,maxWidth,multitask){
+    var size=fitFont(ctx,name,"900",FONT_SERIF,76,44,maxWidth);
+    ctx.font="900 "+size+"px "+FONT_SERIF;
+    ctx.textAlign="center";
+    ctx.textBaseline="alphabetic";
+    var w=ctx.measureText(name).width;
+    if(multitask){
+        /* Hiệu ứng thuốc đa nhiệm: chữ đổi sắc cam – hồng – tím – xanh, phát sáng, có sao lấp lánh */
+        var g=ctx.createLinearGradient(cx-w/2,0,cx+w/2,0);
+        g.addColorStop(0,"#f59e0b");
+        g.addColorStop(0.33,"#ec4899");
+        g.addColorStop(0.66,"#8b5cf6");
+        g.addColorStop(1,"#0ea5e9");
+        ctx.save();
+        ctx.shadowColor="rgba(245,158,11,.75)";
+        ctx.shadowBlur=26;
+        ctx.fillStyle=g;
+        ctx.fillText(name,cx,y);
+        ctx.shadowColor="rgba(255,255,255,.9)";
+        ctx.shadowBlur=8;
+        ctx.fillText(name,cx,y);
+        ctx.restore();
+        star(ctx,cx-w/2-30,y-size*0.78,20,"#fff");
+        star(ctx,cx+w/2+32,y-size*0.7,16,"#fff7d6");
+        star(ctx,cx-w/2-14,y+18,13,"#fff7d6");
+        star(ctx,cx+w/2+20,y+16,15,"#fff");
+    }else{
+        ctx.fillStyle="#3a2418";
+        ctx.fillText(name,cx,y);
+    }
+    return size;
+}
+
+function drawSeal(ctx,x,y,s){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(-0.05);
+    roundRect(ctx,0,0,s,s,s*0.08);
+    ctx.fillStyle="#b4232a";
+    ctx.globalAlpha=0.92;
+    ctx.fill();
+    ctx.globalAlpha=1;
+    ctx.lineWidth=5;
+    ctx.strokeStyle="#fff1ec";
+    roundRect(ctx,s*0.08,s*0.08,s*0.84,s*0.84,s*0.05);
+    ctx.stroke();
+    ctx.fillStyle="#fff1ec";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    var fs=Math.round(s*0.27);
+    ctx.font="900 "+fs+"px "+FONT_SERIF;
+    while(fs>10 && ctx.measureText("PHONG").width>s*0.7){ fs-=1; ctx.font="900 "+fs+"px "+FONT_SERIF; }
+    ctx.fillText("THANH",s/2,s*0.37);
+    ctx.fillText("PHONG",s/2,s*0.65);
+    ctx.restore();
+}
+
+async function draw(data){
+    var cfg=settings();
+    await ensureFonts();
+    var look=data.profile || {};
+    var imgs=await Promise.all([
+        loadImage(bigImageUrl(look.background,1080)),
+        loadImage(bigImageUrl(look.avatar,400)),
+        loadImage(bigImageUrl(look.frame,400))
+    ]);
+
+    var canvas=document.createElement("canvas");
+    canvas.width=W;
+    canvas.height=H;
+    var ctx=canvas.getContext("2d");
+
+    drawBackground(ctx,imgs[0]);
+
+    /* Khung giấy */
+    var px=64, py=96, pw=W-128, ph=H-192;
+    ctx.save();
+    roundRect(ctx,px,py,pw,ph,44);
+    ctx.shadowColor="rgba(0,0,0,.35)";
+    ctx.shadowBlur=50;
+    ctx.fillStyle="rgba(255,250,240,.94)";
+    ctx.fill();
+    ctx.restore();
+    ctx.lineWidth=4;
+    ctx.strokeStyle="#c9a45c";
+    roundRect(ctx,px+18,py+18,pw-36,ph-36,32);
+    ctx.stroke();
+    ctx.lineWidth=1.5;
+    roundRect(ctx,px+30,py+30,pw-60,ph-60,26);
+    ctx.stroke();
+
+    var cx=W/2;
+    ctx.textAlign="center";
+
+    /* Đầu thẻ */
+    ctx.fillStyle="#9a6b12";
+    ctx.font="800 30px "+FONT_SANS;
+    ctx.textBaseline="alphabetic";
+    if("letterSpacing" in ctx){ ctx.letterSpacing="8px"; }
+    ctx.fillText("THƯ ĐẠO · THANH PHONG THƯ MÔN",cx,py+108);
+    if("letterSpacing" in ctx){ ctx.letterSpacing="0px"; }
+
+    ctx.fillStyle="#8b1e24";
+    var titleSize=fitFont(ctx,cfg.cardTitle,"900",FONT_SERIF,64,40,pw-140);
+    ctx.font="900 "+titleSize+"px "+FONT_SERIF;
+    ctx.fillText(cfg.cardTitle,cx,py+196);
+
+    ctx.strokeStyle="#c9a45c";
+    ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(cx-150,py+232); ctx.lineTo(cx+150,py+232); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx,py+232,7,0,Math.PI*2); ctx.fillStyle="#c9a45c"; ctx.fill();
+
+    /* Avatar + tên */
+    drawAvatar(ctx,cx,py+395,260,imgs[1],imgs[2],data.name);
+    var nameY=py+600;
+    drawName(ctx,data.name,cx,nameY,pw-200,!!look.multitask);
+
+    ctx.fillStyle="#6b5a48";
+    ctx.font="600 34px "+FONT_SANS;
+    ctx.textAlign="center";
+    var meta=["Tổ "+(data.group||"-"),"Khoá "+(data.course||"-"),"Mã "+data.code].join("   ·   ");
+    ctx.fillText(meta,cx,nameY+64);
+
+    /* Điểm */
+    var boxY=nameY+110, gap=30, bw=(pw-120-gap)/2, bh=170;
+    [["ĐIỂM LÝ THUYẾT",data.theory],["ĐIỂM THỰC HÀNH",data.practical]].forEach(function(item,i){
+        var bx=px+60+i*(bw+gap);
+        ctx.save();
+        roundRect(ctx,bx,boxY,bw,bh,26);
+        ctx.fillStyle="#fff";
+        ctx.shadowColor="rgba(120,80,40,.15)";
+        ctx.shadowBlur=20;
+        ctx.fill();
+        ctx.restore();
+        ctx.lineWidth=2;
+        ctx.strokeStyle="#e6d6bb";
+        roundRect(ctx,bx,boxY,bw,bh,26);
+        ctx.stroke();
+        ctx.fillStyle="#8a6b50";
+        ctx.font="800 26px "+FONT_SANS;
+        ctx.fillText(item[0],bx+bw/2,boxY+50);
+        ctx.fillStyle="#3a2418";
+        ctx.font="900 80px "+FONT_SERIF;
+        ctx.fillText(fmt(item[1]),bx+bw/2,boxY+140);
+    });
+
+    var rank=rankOf(Number(data.total));
+    var tY=boxY+bh+30, tH=240;
+    ctx.save();
+    roundRect(ctx,px+60,tY,pw-120,tH,30);
+    var tg=ctx.createLinearGradient(0,tY,0,tY+tH);
+    tg.addColorStop(0,"#8b1e24");
+    tg.addColorStop(1,"#5c1217");
+    ctx.fillStyle=tg;
+    ctx.shadowColor="rgba(92,18,23,.35)";
+    ctx.shadowBlur=30;
+    ctx.fill();
+    ctx.restore();
+    ctx.fillStyle="#f3d9a4";
+    ctx.font="800 28px "+FONT_SANS;
+    ctx.fillText("TỔNG ĐIỂM TRUNG BÌNH",cx,tY+54);
+    ctx.fillStyle="#fffaf0";
+    ctx.font="900 120px "+FONT_SERIF;
+    ctx.fillText(fmt(data.total),cx,tY+172);
+    /* dải xếp loại */
+    ctx.font="900 34px "+FONT_SANS;
+    var rbW=Math.max(360,ctx.measureText("XẾP LOẠI: "+rank.label).width+90), rbH=66, rbX=cx-rbW/2, rbY=tY+tH-rbH/2;
+    ctx.save();
+    roundRect(ctx,rbX,rbY,rbW,rbH,33);
+    ctx.fillStyle="#f3d9a4";
+    ctx.shadowColor="rgba(0,0,0,.2)";
+    ctx.shadowBlur=12;
+    ctx.fill();
+    ctx.restore();
+    ctx.fillStyle="#5c1217";
+    ctx.font="900 34px "+FONT_SANS;
+    ctx.fillText("XẾP LOẠI: "+rank.label,cx,rbY+46);
+
+    /* Lời chúc */
+    ctx.fillStyle="#3a2418";
+    ctx.font="600 36px "+FONT_SANS;
+    var msg="Chúc mừng bạn đã đạt thành tích "+rank.text+" trong "+cfg.roundName+".";
+    var lines=wrap(ctx,msg,pw-170);
+    var my=rbY+rbH+72;
+    lines.forEach(function(l,i){ ctx.fillText(l,cx,my+i*52); });
+
+    /* Chữ ký: luôn nằm dưới lời chúc */
+    var sy=Math.max(my+(lines.length-1)*52+90,py+ph-330);
+    var sx=px+pw-260;
+    ctx.textAlign="center";
+    ctx.fillStyle="#6b5a48";
+    ctx.font="800 30px "+FONT_SANS;
+    ctx.fillText(cfg.teacherTitle,sx,sy);
+    ctx.font="italic 400 28px "+FONT_SANS;
+    ctx.fillText("(Đã ký)",sx,sy+42);
+    drawSeal(ctx,sx-66,sy+62,132);
+    ctx.fillStyle="#8b1e24";
+    var tnSize=fitFont(ctx,cfg.teacherName,"700",FONT_SERIF,38,24,440);
+    ctx.font="700 "+tnSize+"px "+FONT_SERIF;
+    ctx.fillText(cfg.teacherName,sx,sy+240);
+
+    /* Thông tin phụ góc trái */
+    ctx.textAlign="left";
+    ctx.fillStyle="#8a7a68";
+    ctx.font="400 24px "+FONT_SANS;
+    if(data.gradedAt){ ctx.fillText("Ngày chấm: "+String(data.gradedAt).split(" ")[0],px+70,py+ph-150); }
+    ctx.fillText("thudao.com",px+70,py+ph-112);
+    if(data.examId){
+        ctx.font="400 19px "+FONT_SANS;
+        ctx.fillText(data.examId,px+70,py+ph-78);
+    }
+    return canvas;
+}
+
+function toBlob(canvas,type,quality){
+    return new Promise(function(resolve){
+        try{ canvas.toBlob(function(b){ resolve(b); },type,quality); }
+        catch(e){ resolve(null); } /* canvas bị khoá do ảnh ngoài -> null */
+    });
+}
+
+/* ---------------- nộp vào Nộp bài tập ---------------- */
+function submittedMap(){
+    try{ return JSON.parse(localStorage.getItem(SUBMIT_KEY)||"{}")||{}; }catch(e){ return {}; }
+}
+function markSubmitted(examId){
+    try{ var m=submittedMap(); m[examId]=Date.now(); localStorage.setItem(SUBMIT_KEY,JSON.stringify(m)); }catch(e){}
+}
+function cardNote(data){
+    return "Thẻ thành tích "+settings().cardTitle+" – "+data.examId;
+}
+/* Đã có bài thẻ thành tích của Exam ID này trong lịch sử nộp bài chưa (Apps Script, lọc theo mã) */
+async function alreadyInNopBai(data){
+    try{
+        var key="students:Form Responses 1!";
+        var res=await fetch(API+"?multi="+encodeURIComponent(key)+"&code="+encodeURIComponent(data.code)+"&v=449&_="+Date.now(),{cache:"no-store",credentials:"omit"});
+        var json=JSON.parse(await res.text());
+        var rows=json && json.ok && json.sheets && json.sheets[key];
+        if(!Array.isArray(rows)){ return null; }
+        return rows.some(function(r){ return (r||[]).some(function(v){ return String(v||"").indexOf(data.examId)!==-1; }); });
+    }catch(e){
+        return null;
+    }
+}
+async function submitToNopBai(data,dataUrl){
+    var A=window.OCDAuth;
+    var payload={
+        token: A && A.token ? (A.token()||"") : "",
+        code: data.code,
+        lesson: "KHAC",
+        note: cardNote(data),
+        data: dataUrl
+    };
+    var ac=new AbortController(), timer=setTimeout(function(){ ac.abort(); },120000);
+    try{
+        var res=await fetch(API,{method:"POST",
+            body:JSON.stringify({action:"enroll",op:"submitWork",token:payload.token,code:payload.code,device:navigator.userAgent.slice(0,100),fields:Object.assign({op:"submitWork"},payload)}),
+            headers:{"Content-Type":"text/plain;charset=utf-8"},credentials:"omit",cache:"no-store",signal:ac.signal});
+        return JSON.parse(await res.text()) || {ok:false};
+    }catch(e){
+        return {ok:false,network:true,error:"Không kết nối được máy chủ."};
+    }finally{
+        clearTimeout(timer);
+    }
+}
+
+/* ---------------- giao diện ---------------- */
+var CSS=
+    ".ocdcard{margin:22px 0 6px;padding:16px;border-radius:18px;background:#fffaf2;border:1px solid #e3d7c7}"
+    +".ocdcard-title{margin:0 0 4px;font:900 18px/1.35 Georgia,'Times New Roman',serif;color:#765344}"
+    +".ocdcard-sub{margin:0 0 12px;font-size:13px;line-height:1.5;color:#786f66}"
+    +".ocdcard-preview{display:block;width:100%;max-width:420px;margin:0 auto;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.18);background:#eee;aspect-ratio:9/16;object-fit:cover}"
+    +".ocdcard-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}"
+    +".ocdcard-btn{flex:1;min-width:150px;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 16px;border:0;border-radius:11px;background:#765344;color:#fff;font:900 14px Arial,Helvetica,sans-serif;text-decoration:none;cursor:pointer}"
+    +".ocdcard-btn.gold{background:#aa7a35}"
+    +".ocdcard-btn[disabled]{opacity:.6;cursor:wait}"
+    +".ocdcard-note{margin-top:10px;font-size:12.5px;line-height:1.55;color:#786f66}"
+    +".ocdcard-status{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.5;background:#f7f1e7;color:#51372d}"
+    +".ocdcard-status.ok{background:#e7f3ec;color:#2f5d26}.ocdcard-status.err{background:#fbe9e6;color:#8b2a1f}"
+    +".ocdcard-loading{display:flex;align-items:center;justify-content:center;aspect-ratio:9/16;max-width:420px;margin:0 auto;border-radius:16px;background:#f2ebe0;color:#786f66;font-size:14px}";
+
+function injectCss(){
+    if(document.getElementById("ocdcard-style")){ return; }
+    var st=document.createElement("style");
+    st.id="ocdcard-style";
+    st.textContent=CSS;
+    document.head.appendChild(st);
+}
+
+function h(tag,cls,text){
+    var e=document.createElement(tag);
+    if(cls){ e.className=cls; }
+    if(text!==undefined){ e.textContent=text; }
+    return e;
+}
+
+async function mount(container,data){
+    injectCss();
+    var cfg=settings();
+    container.innerHTML="";
+    var box=h("section","ocdcard");
+    box.appendChild(h("h3","ocdcard-title","🎖 Thẻ thành tích"));
+    box.appendChild(h("p","ocdcard-sub","Ảnh thành tích "+cfg.cardTitle+" của "+data.name+". Tải về để lưu vào điện thoại hoặc chia sẻ."));
+    var stage=h("div","ocdcard-loading","Đang vẽ thẻ thành tích…");
+    box.appendChild(stage);
+    var actions=h("div","ocdcard-actions");
+    var status=h("div","ocdcard-status");
+    status.style.display="none";
+    box.appendChild(actions);
+    box.appendChild(status);
+    var hint=h("div","ocdcard-note","Trên iPhone: bấm TẢI ẢNH VỀ MÁY rồi chọn “Lưu hình ảnh”, hoặc nhấn giữ vào ảnh và chọn “Lưu vào Ảnh”.");
+    box.appendChild(hint);
+    container.appendChild(box);
+
+    var profile=data.profile;
+    if(!profile && window.OCDIdentity && typeof window.OCDIdentity.profile==="function"){
+        try{
+            profile=await Promise.race([
+                window.OCDIdentity.profile(data.code),
+                new Promise(function(r){ setTimeout(function(){ r(null); },15000); })
+            ]);
+        }catch(e){ profile=null; }
+    }
+    data=Object.assign({},data,{profile:profile||{}});
+
+    var canvas=await draw(data);
+    var blob=await toBlob(canvas,"image/png");
+    if(!blob){
+        /* ảnh nền/avatar không cho đọc chéo -> vẽ lại không dùng ảnh ngoài */
+        data.profile={multitask:!!(profile&&profile.multitask)};
+        canvas=await draw(data);
+        blob=await toBlob(canvas,"image/png");
+    }
+    if(!blob){
+        stage.textContent="Trình duyệt không tạo được ảnh. Vui lòng thử trình duyệt khác.";
+        return;
+    }
+    var url=URL.createObjectURL(blob);
+    var img=h("img","ocdcard-preview");
+    img.alt="Thẻ thành tích "+data.name;
+    img.src=url;
+    stage.replaceWith(img);
+
+    var fileName="ThanhTich_"+data.code+".png";
+    var save=h("button","ocdcard-btn gold","TẢI ẢNH VỀ MÁY");
+    save.type="button";
+    save.onclick=async function(){
+        try{
+            var file=new File([blob],fileName,{type:"image/png"});
+            if(navigator.canShare && navigator.canShare({files:[file]})){
+                await navigator.share({files:[file],title:"Thẻ thành tích"});
+                return;
+            }
+        }catch(e){
+            if(e && e.name==="AbortError"){ return; }
+        }
+        var a=document.createElement("a");
+        a.href=url;
+        a.download=fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    };
+    actions.appendChild(save);
+
+    /* Tự nộp vào Nộp bài tập (một lần cho mỗi Exam ID) */
+    if(!cfg.autoSubmit || !data.examId){ return; }
+    var say=function(text,kind){ status.style.display="block"; status.className="ocdcard-status "+(kind||""); status.textContent=text; };
+    if(submittedMap()[data.examId]){
+        say("Thẻ thành tích đã được nộp vào trang Nộp bài tập.","ok");
+        return;
+    }
+    var exists=await alreadyInNopBai(data);
+    if(exists===true){
+        markSubmitted(data.examId);
+        say("Thẻ thành tích đã có trong trang Nộp bài tập.","ok");
+        return;
+    }
+    if(exists===null){
+        say("Chưa kiểm tra được trang Nộp bài tập, thẻ sẽ được nộp vào lần mở sau.","");
+        return;
+    }
+    say("Đang nộp thẻ thành tích vào trang Nộp bài tập…","");
+    var jpg=canvas.toDataURL("image/jpeg",0.9);
+    var r=await submitToNopBai(data,jpg);
+    if(r && r.ok){
+        markSubmitted(data.examId);
+        say("✅ Đã nộp thẻ thành tích vào trang Nộp bài tập"+(r.time?" lúc "+r.time:"")+".","ok");
+        return;
+    }
+    var err=(r && r.error) || "Chưa nộp được thẻ thành tích.";
+    say(err+" Thẻ sẽ được thử nộp lại vào lần mở trang sau.","err");
+    var A=window.OCDAuth;
+    if(A && A.openLogin && !(A.isMe && A.isMe(data.code)) && /bảo mật|đăng nhập|token|mật khẩu/i.test(err)){
+        var login=h("button","ocdcard-btn","ĐĂNG NHẬP ĐỂ NỘP THẺ");
+        login.type="button";
+        login.onclick=function(){ A.openLogin({code:data.code,onSuccess:function(){ mount(container,data); }}); };
+        actions.appendChild(login);
+    }
+}
+
+window.OCDAchievementCard={
+    version:"1.0.0",
+    mount:mount,
+    draw:draw,
+    rankOf:rankOf
+};
+})();
+</script>
+<script>
+/* =========================================================
    OCD GRADUATION RESULT
-   v1.0
+   v1.1.0 (29/10/2026): thẻ thành tích (tải ảnh về máy, tự nộp
+   vào Nộp bài tập khi đã chấm); bỏ dòng START / dòng gửi trùng
 ========================================================= */
 
 window.OCDGraduationResult =
@@ -3530,21 +4188,69 @@ function renderResult(){
 
 
     html+=
-
         '<div class="gr-notice">' +
-
             'Điểm bài luyện tập cũ chỉ có giá trị tham khảo. ' +
             'Điểm thực hành tốt nghiệp được lấy từ bản chấm của giáo viên. ' +
             'Kết quả tốt nghiệp được tính theo tỷ trọng 50% lý thuyết và 50% thực hành.' +
-
         '</div>';
 
+    /* v1.1.0: thẻ thành tích tải về máy + tự nộp vào Nộp bài tập */
+    html+=
+        '<div id="grAchievementCard"></div>';
 
     el(
         "grResultContent"
     )
     .innerHTML=
         html;
+
+    if(window.OCDAchievementCard){
+
+        window.OCDAchievementCard.mount(
+            el(
+                "grAchievementCard"
+            ),
+            {
+                examId:
+                    exam.examId,
+
+                code:
+                    exam.studentCode,
+
+                name:
+                    exam.studentName ||
+                    exam.studentCode,
+
+                group:
+                    exam.group,
+
+                course:
+                    exam.course,
+
+                theory:
+                    theory,
+
+                practical:
+                    practical,
+
+                total:
+                    finalScore,
+
+                gradedAt:
+                    grading.gradedAt ||
+                    grading.timestamp ||
+                    ""
+            }
+        )
+        .catch(
+            function(error){
+
+                console.error(
+                    error
+                );
+            }
+        );
+    }
 }
 
 
