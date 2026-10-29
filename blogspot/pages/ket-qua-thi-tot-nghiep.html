@@ -1797,6 +1797,7 @@ window.OCDAchievementCard={
 /* =========================================================
    OCD GRADUATION RESULT
    v1.5.0 (29/10/2026): thẻ thành tích nộp qua ChamThi.gs (không bị giới hạn 2 bài/ngày)
+   v1.5.1 (29/10/2026): mở trang với ?ma=MÃ (nút từ phòng thi) sẽ tự điền mã và tra cứu
    v1.4.1 (29/10/2026): gắn URL Apps Script chấm bài (ChamThi.gs); không nộp thẻ 2 lần khi thẻ vẽ lại
    v1.4.0 (29/10/2026): điểm thi làm tròn đến số nguyên (từ 0,5 lên, dưới 0,5 xuống),
    ghi chú "làm tròn từ ..." bên cạnh; xếp loại theo điểm đã làm tròn
@@ -1823,7 +1824,7 @@ window.OCDGraduationResult || {};
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_RESULT_V1.5.0",
+        "OCD_GRADUATION_RESULT_V1.5.1",
 
     spreadsheetId:
         "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
@@ -5703,6 +5704,41 @@ function init(){
             )
             .value=
                 last;
+        }
+
+    }catch(error){}
+
+
+    /* v1.5.1: mở từ phòng thi (…?ma=MÃ) -> điền mã và tra cứu luôn */
+    try{
+
+        var fromExam=
+            String(
+                new URLSearchParams(
+                    location.search
+                )
+                .get("ma") ||
+                ""
+            )
+            .trim();
+
+        if(
+            fromExam &&
+            /^[A-Za-z0-9-]{2,60}$/.test(
+                fromExam
+            )
+        ){
+
+            el(
+                "grLookupInput"
+            )
+            .value=
+                fromExam;
+
+            setTimeout(
+                APP.lookup,
+                0
+            );
         }
 
     }catch(error){}

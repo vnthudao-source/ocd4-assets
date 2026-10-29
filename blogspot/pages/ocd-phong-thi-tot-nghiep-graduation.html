@@ -42,7 +42,10 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
        Apps Script ChamThi.gs (v1.1.0+): câu 32 tải ảnh thẳng lên, không qua
        trang Nộp bài (không bị giới hạn 2 bài/ngày, không tính vào bài luyện tập).
     */
-    examUploadUrl: "https://script.google.com/macros/s/AKfycbx4VqQ3Ud6yu2gyDyGuQsoTthTwCX3P3e_FpNqx8Q0EF5hq9KPFYh5FQBxnRKLr9axh/exec"
+    examUploadUrl: "https://script.google.com/macros/s/AKfycbx4VqQ3Ud6yu2gyDyGuQsoTthTwCX3P3e_FpNqx8Q0EF5hq9KPFYh5FQBxnRKLr9axh/exec",
+
+    /* Trang Kết quả thi tốt nghiệp (nút "Xem kết quả thi") */
+    resultPageUrl: "https://www.thudao.com/p/ket-qua-thi-tot-nghiep.html"
 
 };
 </script>
@@ -1148,6 +1151,12 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
     display:none !important;
 }
 
+.exam-result-link-row{margin-top:12px;text-align:center}
+.exam-result-link{display:inline-block;font-size:13px;font-weight:800;color:#8a5a2b;text-decoration:none;border-bottom:1px dashed #c9a46a;padding-bottom:1px}
+.exam-result-link:hover{color:#5c3b1c}
+.exam-result-cta{margin-top:16px;padding:14px;border-radius:12px;background:#fff7e8;border:1px solid #ecd6ad;text-align:center}
+.exam-result-cta p{margin:0 0 10px;font-size:13px;line-height:1.55;color:#5b4a38}
+.exam-result-cta a.exam-btn{display:inline-block;text-decoration:none}
 .exam-center{
     text-align:center;
 }
@@ -1350,6 +1359,16 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
         class="exam-message"
         id="examLookupMessage"
     ></div>
+
+    <div class="exam-result-link-row">
+        <a
+            class="exam-result-link"
+            id="examResultPageLink"
+            href="https://www.thudao.com/p/ket-qua-thi-tot-nghiep.html"
+        >
+            📜 Đã thi xong? Xem kết quả thi tốt nghiệp →
+        </a>
+    </div>
 
 </section>
 
@@ -1639,7 +1658,7 @@ var UNLIMITED_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.8.1_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.8.2_20_10_2",
 
     durationMs:
         60*60*1000,
@@ -1667,6 +1686,12 @@ var CONFIG={
 
     nopBaiUrl:
         "https://www.thudao.com/p/nop-bai.html",
+
+    resultPageUrl:
+        String(
+            GLOBAL_SETTINGS.resultPageUrl ||
+            "https://www.thudao.com/p/ket-qua-thi-tot-nghiep.html"
+        ).trim(),
 
     examUploadUrl:
         String(
@@ -11117,6 +11142,41 @@ function roundedScoreHtml(value){
 }
 
 
+function resultPageLink(code){
+
+    var url=
+        CONFIG.resultPageUrl ||
+        "";
+
+    code=
+        normalizeCode(
+            code ||
+            ""
+        );
+
+    if(
+        !url ||
+        !code
+    ){
+
+        return url;
+    }
+
+    return url +
+        (
+            url.indexOf("?")>=0
+                ?
+                "&"
+                :
+                "?"
+        ) +
+        "ma=" +
+        encodeURIComponent(
+            code
+        );
+}
+
+
 function renderResult(){
 
     var r=
@@ -11319,6 +11379,31 @@ function renderResult(){
                     ) +
 
                 '</button>' +
+
+            '</div>';
+    }
+
+
+    /* nút sang trang Kết quả thi (không hiện ở chế độ thi thử) */
+    if(
+        !CONFIG.trialMode &&
+        CONFIG.resultPageUrl
+    ){
+
+        html+=
+
+            '<div class="exam-result-cta">' +
+
+                '<p>Phần lý thuyết đã được chấm tự động. Phần thực hành sẽ do giáo viên chấm; ' +
+                'khi có điểm, bạn xem điểm, xếp loại và tải thẻ thành tích ở trang Kết quả thi.</p>' +
+
+                '<a class="exam-btn gold" id="examGoResultPage" href="' +
+                    escapeHtml(
+                        resultPageLink(
+                            r.studentCode
+                        )
+                    ) +
+                '">XEM KẾT QUẢ THI</a>' +
 
             '</div>';
     }
