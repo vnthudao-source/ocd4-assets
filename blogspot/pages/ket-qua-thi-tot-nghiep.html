@@ -1877,6 +1877,13 @@ async function loadExams(){
 
     var result=[];
 
+    /*
+       v1.0.1 (29/10/2026):
+       - Bỏ dòng "START" (phòng thi ghi lúc học viên bắt đầu thi)
+       - Một Exam ID chỉ lấy bài nộp ĐẦU TIÊN (bỏ dòng gửi trùng)
+    */
+    var seenExam={};
+
 
     for(
         var i=1;
@@ -1899,6 +1906,26 @@ async function loadExams(){
 
             continue;
         }
+
+        if(
+            normalizeCode(
+                valueAt(
+                    row,
+                    cols.submitReason
+                )
+            )==="START"
+        ){
+
+            continue;
+        }
+
+        if(seenExam[examId]){
+
+            continue;
+        }
+
+        seenExam[examId]=
+            true;
 
 
         result.push({

@@ -12,10 +12,17 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
        false = THI CHÍNH THỨC
        true  = THI THỬ
     */
-    trialMode: true
+    trialMode: true,
+
+    /*
+       true = THI CHÍNH THỨC chỉ nhận tài khoản đã bảo mật
+              và đang đăng nhập đúng mã (icon Minh Hồng).
+    */
+    requireSecureAccount: true
 
 };
 </script>
+<script src="https://cdn.jsdelivr.net/gh/vnthudao-source/ocd4-assets@58a6a19947e7851ecf6df088c941f0114d01f91b/auth/ocd-auth.js"></script>
 
 
 <style>
@@ -1485,7 +1492,20 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
 <script>
 /* =========================================================
    OCD GRADUATION EXAM
-   v2.5.0 - 20 THEORY + 5 PRACTICAL
+   v2.6.0 - 20 THEORY + 5 PRACTICAL
+
+   v2.6.0 (29/10/2026):
+   - Không gửi kết quả 2 lần; chỉ báo "đã ghi nhận" khi
+     thấy bài trong BaiThiTotNghiep, gửi lỗi thì cho gửi lại
+   - Ghi lượt BẮT ĐẦU (Hình thức nộp = START): đổi máy
+     không được đề mới / giờ mới, phải làm tiếp phiên cũ
+   - Đọc ngày dd/mm/yyyy đúng (bài đã xoá được loại đủ,
+     danh sách bài nộp đúng thứ tự); khớp bài xoá theo ID ảnh
+   - Thi chính thức: cần tài khoản bảo mật + đăng nhập
+   - ADMIN thi chính thức chỉ chạy thử trên máy, không gửi
+   - Không đọc được XoaBai: thi chính thức dừng lại báo lỗi
+   - Không lưu đáp án đúng trong bộ nhớ trình duyệt
+   - Thi thử: cần ít nhất 5 bài nộp
 
    ---------------------------------------------------------
    - Ngân hàng 35 câu
@@ -1533,6 +1553,9 @@ var GLOBAL_SETTINGS =
 var IS_TRIAL_MODE =
     GLOBAL_SETTINGS.trialMode === true;
 
+var REQUIRE_SECURE_ACCOUNT =
+    GLOBAL_SETTINGS.requireSecureAccount !== false;
+
 
 /* =========================================================
    CONFIG
@@ -1541,7 +1564,7 @@ var IS_TRIAL_MODE =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.5.0_20_5",
+        "OCD_GRADUATION_EXAM_V2.6.0_20_5",
 
     durationMs:
         60*60*1000,
@@ -1558,8 +1581,26 @@ var CONFIG={
     minSubmissionExclusive:
         100,
 
-    trialMode:
+        trialMode:
         IS_TRIAL_MODE,
+
+    requireSecureAccount:
+        REQUIRE_SECURE_ACCOUNT,
+
+    /* Hình thức nộp của dòng ghi lượt bắt đầu thi */
+    startReason:
+        "START",
+
+    /* Thực hành cần ít nhất 5 bài nộp để chọn */
+    minPracticalSubmissions:
+        5,
+
+    /* Xác nhận bài đã vào BaiThiTotNghiep: số lần đọc lại, cách nhau */
+    verifyTries:
+        6,
+
+    verifyDelayMs:
+        2500,
 
     adminCode:
         "ADMIN",
@@ -1681,7 +1722,7 @@ var THEORY_BANK=[
             "Bút, Nghiên, Triện, Mực",
             "Nghiên, Giấy, Mực, Ấn"
         ],
-        correct:0
+        key:"1u0bjwn"
     },
 
     {
@@ -1693,7 +1734,7 @@ var THEORY_BANK=[
             "Tên của nét bút để lộ ra phần đầu tự nhiên của mao bút trên mặt giấy",
             "Kỹ thuật xoay đầu bút khi thu bút"
         ],
-        correct:2
+        key:"1xvirp5"
     },
 
     {
@@ -1705,7 +1746,7 @@ var THEORY_BANK=[
             "Tám kỹ thuật vận động cổ tay",
             "Tám loại nét cơ bản của thư pháp"
         ],
-        correct:1
+        key:"mnrky8"
     },
 
     {
@@ -1717,7 +1758,7 @@ var THEORY_BANK=[
             "Vì mặt bút số 9 giúp tâm bút luôn nằm giữa nét",
             "Vì đa số người viết dùng tay phải, vị trí phát lực thuận lợi ở mặt bút số 9"
         ],
-        correct:3
+        key:"1ovweb9"
     },
 
     {
@@ -1729,7 +1770,7 @@ var THEORY_BANK=[
             "Dụng mực, đóng ấn và trang trí",
             "Nét chữ đẹp, đều và rõ ràng"
         ],
-        correct:0
+        key:"1qq00dx"
     },
 
     {
@@ -1741,7 +1782,7 @@ var THEORY_BANK=[
             "Kỹ thuật thay đổi tư thế đứng khi viết",
             "Kỹ thuật điều chỉnh tốc độ viết sao cho đồng đều"
         ],
-        correct:1
+        key:"1qlhyk9"
     },
 
     {
@@ -1753,7 +1794,7 @@ var THEORY_BANK=[
             "Kỹ thuật sử dụng phần giữa của mao bút",
             "Kỹ thuật hành bút sao cho tâm bút nằm giữa nét"
         ],
-        correct:3
+        key:"1m6qevn"
     },
 
     {
@@ -1765,7 +1806,7 @@ var THEORY_BANK=[
             "Chỉ có thể tạo ra nét đậm",
             "Có hình thái nét ít thay đổi hơn"
         ],
-        correct:0
+        key:"11hdjkb"
     },
 
     {
@@ -1777,7 +1818,7 @@ var THEORY_BANK=[
             "Năm ngón tay cùng được sử dụng để cầm bút",
             "Năm kỹ thuật cơ bản để điều khiển mao bút"
         ],
-        correct:2
+        key:"18s8jjj"
     },
 
     {
@@ -1789,7 +1830,7 @@ var THEORY_BANK=[
             "Khởi bút, hành bút, thu bút, chuyển bút, chiết bút, đề bút, án bút, trú bút, hồi bút",
             "Lộ phong, tàng phong, trung phong, trắc phong, thuận phong, nghịch phong, hồi phong, chuyển phong, xuất phong"
         ],
-        correct:1
+        key:"1tqsccu"
     },
 
     {
@@ -1801,7 +1842,7 @@ var THEORY_BANK=[
             "Ngang, Dọc, Tròn, Vuông, Móc, Hất, Chấm, Xoay",
             "Ngang, Dọc, Cong, Gãy, Hất, Phẩy, Chấm, Xổ"
         ],
-        correct:0
+        key:"1andlvj"
     },
 
     {
@@ -1813,7 +1854,7 @@ var THEORY_BANK=[
             "Thư pháp là phương pháp viết chữ thật nhanh nhưng vẫn đảm bảo đúng cấu trúc",
             "Thư pháp là nghệ thuật mô tả nội tâm bằng việc sử dụng đường nét; thư pháp không nhất thiết chữ viết phải đẹp"
         ],
-        correct:3
+        key:"9ctsb2"
     },
 
     {
@@ -1825,7 +1866,7 @@ var THEORY_BANK=[
             "Tiến bộ thế, thoái bộ thế, trung bộ thế",
             "Chính thế, nghiêng thế, chuyển thế"
         ],
-        correct:1
+        key:"1w4lfa"
     },
 
     {
@@ -1837,7 +1878,7 @@ var THEORY_BANK=[
             "Là nét bút phản ánh trên giấy khi chưa có sự lan toả của mặc đạo",
             "Là kỹ thuật điều khiển tốc độ của mao bút"
         ],
-        correct:2
+        key:"9i4v7r"
     },
 
     {
@@ -1849,7 +1890,7 @@ var THEORY_BANK=[
             "Bố cục phải cân xứng tuyệt đối",
             "Kỹ thuật sử dụng mực phải phức tạp"
         ],
-        correct:0
+        key:"g6f4yn"
     },
 
     {
@@ -1861,7 +1902,7 @@ var THEORY_BANK=[
             "Các bản chữ mẫu được sao chép bằng mực",
             "Các nội dung được khắc, dập, thác bản trên đá"
         ],
-        correct:3
+        key:"ceqbd3"
     },
 
     {
@@ -1873,7 +1914,7 @@ var THEORY_BANK=[
             "Các bản chữ được khắc trên gỗ rồi in lại",
             "Các nội dung được viết trên bia rồi thác bản"
         ],
-        correct:1
+        key:"omzd8z"
     },
 
     {
@@ -1885,7 +1926,7 @@ var THEORY_BANK=[
             "Không sử dụng màu; không dùng thước; không phác thảo trước",
             "Chỉ sử dụng trung phong; không xoay bút; không đổi tư thế"
         ],
-        correct:0
+        key:"3khdqq"
     },
 
     {
@@ -1897,7 +1938,7 @@ var THEORY_BANK=[
             "Kỹ thuật để sao chép lại chữ viết của người khác",
             "Kỹ thuật viết lại một chữ nhiều lần để tạo thành tác phẩm"
         ],
-        correct:2
+        key:"o3uofx"
     },
 
     {
@@ -1909,7 +1950,7 @@ var THEORY_BANK=[
             "Kim thể, Mộc thể, Thuỷ thể, Hoả thể, Thổ thể",
             "Chính thể, Hành thể, Biến thể, Cổ thể, Tân thể"
         ],
-        correct:1
+        key:"fc6uir"
     },
 
     {
@@ -1921,7 +1962,7 @@ var THEORY_BANK=[
             "Typography",
             "Shufa"
         ],
-        correct:3
+        key:"8q99g9"
     },
 
     {
@@ -1933,7 +1974,7 @@ var THEORY_BANK=[
             "Khả năng sắp xếp bố cục chữ trên giấy",
             "Quy định về kích thước của từng nét chữ"
         ],
-        correct:0
+        key:"1rv0efv"
     },
 
     {
@@ -1945,7 +1986,7 @@ var THEORY_BANK=[
             "Thanh, trọng, khô, nhuận, đậm",
             "Tiêu, trung, đạm, khô, nhuận"
         ],
-        correct:1
+        key:"1ws9hlq"
     },
 
     {
@@ -1957,7 +1998,7 @@ var THEORY_BANK=[
             "Cách sử dụng cổ tay cuộn lắc để tạo tác chữ",
             "Cách thay đổi vị trí cầm bút trong quá trình viết"
         ],
-        correct:2
+        key:"1dcmdcl"
     },
 
     {
@@ -1969,7 +2010,7 @@ var THEORY_BANK=[
             "Vì ngón tay không được phép chuyển động khi viết thư pháp",
             "Vì sử dụng cổ tay giúp mọi nét chữ có độ dày giống nhau"
         ],
-        correct:0
+        key:"w1bllb"
     },
 
     {
@@ -1981,7 +2022,7 @@ var THEORY_BANK=[
             "Thấp vị, ngang vị, cao vị",
             "Hạ vị, trung vị, thượng vị"
         ],
-        correct:3
+        key:"54bsw5"
     },
 
     {
@@ -1993,7 +2034,7 @@ var THEORY_BANK=[
             "Chủ phong và quản bút",
             "Mao bút, tâm bút và phụ hào"
         ],
-        correct:1
+        key:"p4xtwy"
     },
 
     {
@@ -2005,7 +2046,7 @@ var THEORY_BANK=[
             "Tâm bút (chủ phong) và phụ hào (phó hào)",
             "Chủ phong, quản bút và bút căn"
         ],
-        correct:2
+        key:"13nqc8g"
     },
 
     {
@@ -2017,7 +2058,7 @@ var THEORY_BANK=[
             "Ấn thể hiện chủ đề và tư tưởng của tác phẩm",
             "Ấn ghi địa điểm nơi tác phẩm được sáng tác"
         ],
-        correct:0
+        key:"1i3pqmf"
     },
 
     {
@@ -2029,7 +2070,7 @@ var THEORY_BANK=[
             "Ấn dùng để xác định quyền sở hữu tác phẩm",
             "Ấn chứa thông tin về thời gian, địa điểm, chủ đề dẫn dắt cho tác phẩm"
         ],
-        correct:3
+        key:"ts4qxo"
     },
 
     {
@@ -2041,7 +2082,7 @@ var THEORY_BANK=[
             "Có đủ danh chương và nhàn chương, không cần xét nội dung",
             "Có đầy đủ nội dung, lạc khoản và tối thiểu ba loại ấn"
         ],
-        correct:1
+        key:"qgcezy"
     },
 
     {
@@ -2053,7 +2094,7 @@ var THEORY_BANK=[
             "Khả năng “sát chỉ” của mao bút trên bề mặt giấy viết",
             "Khả năng giữ bút thẳng đứng trong suốt quá trình hành bút"
         ],
-        correct:2
+        key:"bm73km"
     },
 
     {
@@ -2065,7 +2106,7 @@ var THEORY_BANK=[
             "Chuyển là đưa bút từ dưới lên trên; Chiết là đưa bút từ trên xuống dưới",
             "Chuyển là kỹ thuật đổi mặt bút; Chiết là kỹ thuật đổi vị trí cầm bút"
         ],
-        correct:0
+        key:"81qxro"
     },
 
     {
@@ -2077,7 +2118,7 @@ var THEORY_BANK=[
             "Kỹ thuật xoay tròn quản bút trong khi hành bút",
             "Tên của nét được tạo ra khi khởi thu, hình thái của nét tạo ra dạng hình tròn"
         ],
-        correct:3
+        key:"4qwdxl"
     },
 
     {
@@ -2089,7 +2130,7 @@ var THEORY_BANK=[
             "Giúp người học không cần nghiên cứu kỹ thuật dụng bút",
             "Chủ yếu giúp tăng tốc độ viết chữ"
         ],
-        correct:1
+        key:"39hkvy"
     }
 
 ];
@@ -2161,6 +2202,10 @@ var STATE={
     timerHandle:null,
 
     remoteSubmitting:false,
+
+    remoteStart:null,
+
+    verifying:false,
 
     startChecking:false
 
@@ -2420,38 +2465,12 @@ function buildTheoryPaper(
             CONFIG.theoryCount
         );
 
+        /*
+       v2.6.0: đề lưu trong máy KHÔNG kèm đáp án đúng.
+       Chấm điểm bằng khóa băm trong ngân hàng (isCorrectChoice).
+    */
     return selected.map(
         function(source,index){
-
-            var optionObjects=
-                source.options.map(
-                    function(text,optionIndex){
-
-                        return {
-
-                            text:
-                                text,
-
-                            isCorrect:
-                                optionIndex===
-                                source.correct
-                        };
-                    }
-                );
-
-            optionObjects=
-                shuffleWithRandom(
-                    optionObjects,
-                    random
-                );
-
-            var newCorrect=
-                optionObjects.findIndex(
-                    function(item){
-
-                        return !!item.isCorrect;
-                    }
-                );
 
             return {
 
@@ -2465,17 +2484,74 @@ function buildTheoryPaper(
                     source.text,
 
                 options:
-                    optionObjects.map(
-                        function(item){
-
-                            return item.text;
-                        }
-                    ),
-
-                correct:
-                    newCorrect
+                    shuffleWithRandom(
+                        source.options,
+                        random
+                    )
             };
         }
+    );
+}
+
+
+function isCorrectChoice(
+    bankId,
+    optionText
+){
+
+    var source=
+        THEORY_BANK.find(
+            function(item){
+
+                return (
+                    Number(item.bankId)===
+                    Number(bankId)
+                );
+            }
+        );
+
+    if(
+        !source ||
+        optionText===undefined ||
+        optionText===null
+    ){
+
+        return false;
+    }
+
+    return (
+        hashString(
+            "OCD-K|" +
+            source.bankId +
+            "|" +
+            String(optionText)
+        )
+        .toString(36)===
+        source.key
+    );
+}
+
+
+function questionIsCorrect(
+    q,
+    answer
+){
+
+    if(
+        answer===undefined ||
+        answer===null ||
+        !q ||
+        !Array.isArray(q.options)
+    ){
+
+        return false;
+    }
+
+    return isCorrectChoice(
+        q.bankId,
+        q.options[
+            Number(answer)
+        ]
     );
 }
 
@@ -2865,21 +2941,15 @@ function parseDateLoose(value){
         String(value)
         .trim();
 
-    var direct=
-        new Date(raw);
-
-    if(
-        !isNaN(
-            direct.getTime()
-        )
-    ){
-
-        return direct;
-    }
-
+    /*
+       v2.6.0: Sheet dùng định dạng Việt Nam ngày/tháng/năm.
+       Đọc dd/mm/yyyy TRƯỚC; trước đây new Date("03/10/2026")
+       hiểu thành 10/3 (tháng/ngày) nên bài xoá không khớp,
+       danh sách bài nộp xếp sai thứ tự.
+    */
     var match=
         raw.match(
-            /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/
+            /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/
         );
 
     if(match){
@@ -2902,6 +2972,18 @@ function parseDateLoose(value){
 
             return date;
         }
+    }
+
+    var direct=
+        new Date(raw);
+
+    if(
+        !isNaN(
+            direct.getTime()
+        )
+    ){
+
+        return direct;
     }
 
     return null;
@@ -3179,17 +3261,18 @@ function examHistoryCsvUrl(){
 
 async function findPreviousExam(code){
 
-    if(CONFIG.trialMode){
-
-        return null;
-    }
-
     if(
+        CONFIG.trialMode ||
         normalizeCode(code)===
         CONFIG.adminCode
     ){
 
-        return null;
+        return {
+
+            done:null,
+
+            start:null
+        };
     }
 
     var text=
@@ -3267,12 +3350,33 @@ async function findPreviousExam(code){
             ]
         );
 
+    var reasonCol=
+        findColumn(
+            headers,
+            [
+                "Hình thức nộp",
+                "hinh thuc nop"
+            ]
+        );
+
     if(codeCol<0){
 
         throw new Error(
             "Không xác định được cột Mã học viên trong BaiThiTotNghiep."
         );
     }
+
+    /*
+       v2.6.0: tách 2 loại dòng
+       - dòng START: ghi lúc bắt đầu thi (đang thi dở)
+       - dòng còn lại: bài đã nộp -> khóa lượt thi
+    */
+    var out={
+
+        done:null,
+
+        start:null
+    };
 
     for(
         var i=rows.length-1;
@@ -3295,7 +3399,31 @@ async function findPreviousExam(code){
             )
         ){
 
-            return {
+            var isStart=
+                normalizeCode(
+                    valueAt(
+                        row,
+                        reasonCol
+                    )
+                )===
+                CONFIG.startReason;
+
+            if(
+                isStart
+                    ?
+                    out.start
+                    :
+                    out.done
+            ){
+
+                continue;
+            }
+
+            var info={
+
+                isStart:
+                    isStart,
+
 
                 examId:
                     valueAt(
@@ -3335,10 +3463,37 @@ async function findPreviousExam(code){
                 rowNumber:
                     i+1
             };
+
+            if(isStart){
+
+                out.start=
+                    info;
+
+            }else{
+
+                out.done=
+                    info;
+            }
         }
     }
 
-    return null;
+    /*
+       Dòng START nào đã có bài nộp cùng Exam ID thì không còn là
+       "đang thi dở".
+    */
+    if(
+        out.start &&
+        out.done &&
+        out.done.examId &&
+        out.done.examId===
+        out.start.examId
+    ){
+
+        out.start=
+            null;
+    }
+
+    return out;
 }
 
 
@@ -3704,16 +3859,43 @@ async function getDeleteRows(){
                 CONFIG.deleteLogCsv
             );
 
-        STATE.deleteRows=
+        var parsed=
             parseCSV(
                 text
             );
+
+        /*
+           v2.6.0: phải đúng là bảng XoaBai (có cột Mã bài nộp),
+           không phải trang lỗi / trang đăng nhập của Google.
+        */
+        if(
+            !parsed.length ||
+            detectDeleteColumns(
+                parsed[0]
+            ).submissionId<0
+        ){
+
+            throw new Error(
+                "XoaBai không đúng cấu trúc."
+            );
+        }
+
+        STATE.deleteRows=
+            parsed;
 
         return STATE.deleteRows;
 
     }catch(error){
 
-        return [];
+        console.error(
+            error
+        );
+
+        /*
+           v2.6.0: báo rõ là KHÔNG đọc được danh sách bài đã xoá,
+           thay vì im lặng tính cả bài đã xoá.
+        */
+        return null;
     }
 }
 
@@ -3791,8 +3973,22 @@ async function applyDeleteLog(
     var rows=
         await getDeleteRows();
 
+    if(!rows){
+
+        return {
+
+            valid:
+                submissions.slice(),
+
+            removed:
+                0,
+
+            failed:
+                true
+        };
+    }
+
     if(
-        !rows ||
         rows.length<2
     ){
 
@@ -3813,6 +4009,31 @@ async function applyDeleteLog(
 
     var stateMap={};
 
+    /*
+       v2.6.0: khớp thêm theo ID ảnh Drive (duy nhất cho mỗi lần nộp).
+       Dòng XoaBai ghi lệch cột (tên nằm ở cột mã) hoặc mã bài nộp
+       tạo theo cách đọc ngày khác vẫn khớp đúng bài.
+    */
+    var fileStateMap={};
+
+    var ownFiles={};
+
+    submissions.forEach(
+        function(item){
+
+            var fid=
+                driveIdFromUrl(
+                    item.file
+                );
+
+            if(fid){
+
+                ownFiles[fid]=
+                    true;
+            }
+        }
+    );
+
     for(
         var i=1;
         i<rows.length;
@@ -3830,19 +4051,37 @@ async function applyDeleteLog(
                 )
             );
 
+        var rawId=
+            valueAt(
+                row,
+                cols.submissionId
+            );
+
+        var rowFile=
+            driveIdFromUrl(
+                String(rawId).split("|").pop()
+            ) ||
+            driveIdFromUrl(
+                valueAt(
+                    row,
+                    cols.file
+                )
+            );
+
         if(
             rowCode &&
-            rowCode!==code
+            rowCode!==code &&
+            !(
+                rowFile &&
+                ownFiles[rowFile]
+            )
         ){
 
             continue;
         }
 
         var id=
-            valueAt(
-                row,
-                cols.submissionId
-            );
+            rawId;
 
         if(!id){
 
@@ -3873,6 +4112,8 @@ async function applyDeleteLog(
                 )
             );
 
+        var deleted=null;
+
         if(
             action.indexOf(
                 "khoi phuc"
@@ -3882,7 +4123,7 @@ async function applyDeleteLog(
             )!==-1
         ){
 
-            stateMap[id]=
+            deleted=
                 false;
 
         }else if(
@@ -3894,8 +4135,25 @@ async function applyDeleteLog(
             )!==-1
         ){
 
-            stateMap[id]=
+            deleted=
                 true;
+        }
+
+        if(deleted===null){
+
+            continue;
+        }
+
+        stateMap[id]=
+            deleted;
+
+        if(
+            rowFile &&
+            ownFiles[rowFile]
+        ){
+
+            fileStateMap[rowFile]=
+                deleted;
         }
     }
 
@@ -3905,11 +4163,25 @@ async function applyDeleteLog(
     submissions.forEach(
         function(item){
 
-            if(
-                stateMap[
-                    item.submissionId
-                ]
-            ){
+            var fid=
+                driveIdFromUrl(
+                    item.file
+                );
+
+            var isDeleted=
+                fid &&
+                Object.prototype.hasOwnProperty.call(
+                    fileStateMap,
+                    fid
+                )
+                    ?
+                    fileStateMap[fid]
+                    :
+                    !!stateMap[
+                        item.submissionId
+                    ];
+
+            if(isDeleted){
 
                 removed++;
 
@@ -4085,6 +4357,290 @@ function setLookupMessage(
 
 
 /* =========================================================
+   v2.6.0: NÚT TRONG Ô THÔNG BÁO / ẨN HỒ SƠ / LỖI DỄ HIỂU
+========================================================= */
+
+function addLookupButton(
+    text,
+    onClick
+){
+
+    var box=
+        el(
+            "examLookupMessage"
+        );
+
+    if(!box){
+
+        return;
+    }
+
+    var wrap=
+        document.createElement(
+            "div"
+        );
+
+    wrap.style.marginTop=
+        "10px";
+
+    var button=
+        document.createElement(
+            "button"
+        );
+
+    button.type=
+        "button";
+
+    button.className=
+        "exam-btn gold";
+
+    button.textContent=
+        text;
+
+    button.onclick=
+        function(){
+
+            onClick();
+
+            return false;
+        };
+
+    wrap.appendChild(
+        button
+    );
+
+    box.appendChild(
+        wrap
+    );
+}
+
+
+function hideCandidate(){
+
+    var panel=
+        el(
+            "examCandidatePanel"
+        );
+
+    if(panel){
+
+        panel.classList.add(
+            "exam-hidden"
+        );
+    }
+
+    STATE.student=
+        null;
+}
+
+
+function friendlyError(error){
+
+    var message=
+        error &&
+        error.message
+            ?
+            String(
+                error.message
+            )
+            :
+            "";
+
+    if(
+        !message ||
+        /^HTTP \d+/.test(message) ||
+        /abort|Failed to fetch|NetworkError|Load failed/i.test(message)
+    ){
+
+        return "Không tải được dữ liệu từ hệ thống (mạng chậm hoặc Google đang bận). Vui lòng thử lại sau ít phút.";
+    }
+
+    return message;
+}
+
+
+/* =========================================================
+   v2.6.0: TÀI KHOẢN BẢO MẬT (OCDAuth – icon Minh Hồng)
+========================================================= */
+
+async function checkAccount(code){
+
+    var au=
+        window.OCDAuth;
+
+    var again=
+        function(){
+
+            APP.lookup();
+        };
+
+    var official=
+        !CONFIG.trialMode;
+
+    if(
+        official &&
+        CONFIG.requireSecureAccount
+    ){
+
+        if(!au){
+
+            return {
+
+                ok:false,
+
+                message:
+                    "Chưa tải được hệ thống tài khoản. Vui lòng tải lại trang."
+            };
+        }
+
+        if(
+            au.isMe(
+                code
+            )
+        ){
+
+            return {
+                ok:true
+            };
+        }
+
+        var status=null;
+
+        try{
+
+            status=
+                await au.post(
+                    "authStatus",
+                    {
+                        code:code
+                    }
+                );
+
+        }catch(error){}
+
+        if(
+            !status ||
+            !status.ok
+        ){
+
+            return {
+
+                ok:false,
+
+                message:
+                    "Chưa kiểm tra được tài khoản của mã " +
+                    code +
+                    ". Vui lòng thử lại sau ít phút."
+            };
+        }
+
+        if(status.protected){
+
+            au.openLogin({
+
+                code:code,
+
+                onSuccess:again
+            });
+
+            return {
+
+                ok:false,
+
+                message:
+                    "Mã " +
+                    code +
+                    " đã được bảo mật. Vui lòng đăng nhập để vào phòng thi.",
+
+                button:{
+
+                    text:"ĐĂNG NHẬP",
+
+                    onClick:function(){
+
+                        au.openLogin({
+
+                            code:code,
+
+                            onSuccess:again
+                        });
+                    }
+                }
+            };
+        }
+
+        return {
+
+            ok:false,
+
+            message:
+                "Thi chính thức chỉ dành cho tài khoản đã bảo mật, để không ai thi thay khi biết mã của bạn. " +
+                "Bấm NÂNG CẤP BẢO MẬT (xác minh bằng số điện thoại và email đã đăng ký), đặt mật khẩu rồi tra cứu lại.",
+
+            button:{
+
+                text:"NÂNG CẤP BẢO MẬT",
+
+                onClick:function(){
+
+                    au.openUpgrade({
+
+                        code:code,
+
+                        onSuccess:again
+                    });
+                }
+            }
+        };
+    }
+
+    /* Thi thử: mã đã bảo mật thì phải đăng nhập */
+    if(
+        au &&
+        typeof au.ensureAccess===
+        "function"
+    ){
+
+        var allowed=false;
+
+        try{
+
+            allowed=
+                await au.ensureAccess(
+                    code,
+                    {
+                        onSuccess:again
+                    }
+                );
+
+        }catch(error){
+
+            allowed=
+                true;
+        }
+
+        if(!allowed){
+
+            return {
+
+                ok:false,
+
+                message:
+                    "Mã " +
+                    code +
+                    " đã được bảo mật. Vui lòng đăng nhập để vào phòng thi."
+            };
+        }
+    }
+
+    return {
+        ok:true
+    };
+}
+
+
+
+/* =========================================================
    LOOKUP
    GIỮ NGUYÊN CƠ CHẾ BẢN ĐANG HOẠT ĐỘNG
 ========================================================= */
@@ -4124,6 +4680,9 @@ async function(){
         "ĐANG TRA CỨU...";
 
     STATE.previousExam=
+        null;
+
+    STATE.remoteStart=
         null;
 
     setLookupMessage(
@@ -4211,42 +4770,22 @@ async function(){
            HỌC VIÊN
         ================================================= */
 
-        var results;
+        var results=
+            await Promise.all([
 
-        if(CONFIG.trialMode){
+                loadStudentIdentity(
+                    code
+                ),
 
-            results=
-                await Promise.all([
+                loadStudentSubmissions(
+                    code
+                ),
 
-                    loadStudentIdentity(
-                        code
-                    ),
+                findPreviousExam(
+                    code
+                )
 
-                    loadStudentSubmissions(
-                        code
-                    )
-
-                ]);
-
-        }else{
-
-            results=
-                await Promise.all([
-
-                    loadStudentIdentity(
-                        code
-                    ),
-
-                    loadStudentSubmissions(
-                        code
-                    ),
-
-                    findPreviousExam(
-                        code
-                    )
-
-                ]);
-        }
+            ]);
 
         var identity=
             results[0];
@@ -4254,12 +4793,12 @@ async function(){
         var allSubmissions=
             results[1];
 
-        var previousExam=
-            CONFIG.trialMode
-                ?
-                null
-                :
-                results[2];
+        var history=
+            results[2] ||
+            {
+                done:null,
+                start:null
+            };
 
         if(!identity){
 
@@ -4268,11 +4807,60 @@ async function(){
             );
         }
 
+
+        /* =================================================
+           v2.6.0: TÀI KHOẢN BẢO MẬT
+           Người khác không thể thi thay khi chỉ biết mã.
+        ================================================= */
+
+        var access=
+            await checkAccount(
+                code
+            );
+
+        if(!access.ok){
+
+            STATE.eligible=
+                false;
+
+            hideCandidate();
+
+            setLookupMessage(
+                access.message,
+                "error"
+            );
+
+            if(access.button){
+
+                addLookupButton(
+                    access.button.text,
+                    access.button.onClick
+                );
+            }
+
+            return false;
+        }
+
+
         var deleteResult=
             await applyDeleteLog(
                 code,
                 allSubmissions
             );
+
+        /*
+           v2.6.0: không đọc được XoaBai -> thi chính thức dừng lại,
+           tránh tính cả bài đã bị loại.
+        */
+        if(
+            deleteResult.failed &&
+            !CONFIG.trialMode
+        ){
+
+            throw new Error(
+                "Không đọc được danh sách bài đã xoá (XoaBai). Vui lòng tải lại trang và thử lại sau ít phút."
+            );
+        }
 
         var metrics=
             calculateMetrics(
@@ -4313,13 +4901,17 @@ async function(){
             deleteResult.removed;
 
         STATE.previousExam=
-            previousExam;
+            history.done;
+
+        STATE.remoteStart=
+            history.start;
 
 
         if(CONFIG.trialMode){
 
             STATE.eligible=
-                true;
+                metrics.submissionCount>=
+                CONFIG.minPracticalSubmissions;
 
         }else{
 
@@ -4332,7 +4924,7 @@ async function(){
                     metrics.submissionCount >
                     CONFIG.minSubmissionExclusive
                 ) &&
-                !previousExam;
+                !history.done;
         }
 
         renderCandidate();
@@ -4343,15 +4935,43 @@ async function(){
         if(CONFIG.trialMode){
 
             setLookupMessage(
-                "Đã xác nhận mã học viên. Chế độ THI THỬ không áp dụng điều kiện điểm trung bình và số bài nộp.",
-                "success"
+                STATE.eligible
+                    ?
+                    (
+                        "Đã xác nhận mã học viên. Chế độ THI THỬ không áp dụng điều kiện điểm trung bình và số bài nộp." +
+                        (
+                            deleteResult.failed
+                                ?
+                                " (Chưa đọc được danh sách bài đã xoá, số bài có thể chưa chính xác.)"
+                                :
+                                ""
+                        )
+                    )
+                    :
+                    "Cần ít nhất " +
+                    CONFIG.minPracticalSubmissions +
+                    " bài nộp để làm phần thực hành.",
+                STATE.eligible
+                    ?
+                    "success"
+                    :
+                    "error"
             );
 
-        }else if(previousExam){
+        }else if(history.done){
 
             setLookupMessage(
                 "Học viên đã có bài thi trong hệ thống. Không thể tạo thêm phiên thi mới.",
                 "error"
+            );
+
+        }else if(history.start){
+
+            setLookupMessage(
+                "Học viên đang có một phiên thi chưa nộp (bắt đầu lúc " +
+                history.start.startedAt +
+                "). Bấm TIẾP TỤC BÀI THI để làm tiếp; thời gian vẫn tính từ lúc bắt đầu.",
+                "loading"
             );
 
         }else{
@@ -4371,13 +4991,12 @@ async function(){
         STATE.eligible=
             false;
 
+        hideCandidate();
+
         setLookupMessage(
-            error &&
-            error.message
-                ?
-                error.message
-                :
-                "Không thể xác minh dữ liệu dự thi.",
+            friendlyError(
+                error
+            ),
             "error"
         );
 
@@ -4504,7 +5123,51 @@ function renderCandidate(){
         );
 
 
+    var localSession=
+        loadSession();
+
+    var hasActive=
+        (
+            localSession &&
+            sessionStatus(
+                localSession
+            )==="active"
+        ) ||
+        (
+            !CONFIG.trialMode &&
+            !s.isAdmin &&
+            !!STATE.remoteStart
+        );
+
+
     if(CONFIG.trialMode){
+
+        if(
+            !s.isAdmin &&
+            !STATE.eligible
+        ){
+
+            status.className=
+                "exam-eligibility fail";
+
+            status.innerHTML=
+                "<strong>CHƯA ĐỦ BÀI NỘP ĐỂ THI THỬ</strong><br>" +
+                "Phần thực hành cần chọn " +
+                CONFIG.practicalCount +
+                " bài đã nộp. Hiện có " +
+                escapeHtml(
+                    s.submissionCount
+                ) +
+                " bài hợp lệ.";
+
+            start.disabled=
+                true;
+
+            start.textContent=
+                "BẮT ĐẦU THI THỬ";
+
+            return;
+        }
 
         status.className=
             "exam-eligibility pass";
@@ -4519,7 +5182,11 @@ function renderCandidate(){
             false;
 
         start.textContent=
-            "BẮT ĐẦU THI THỬ";
+            hasActive
+                ?
+                "TIẾP TỤC BÀI THI THỬ"
+                :
+                "BẮT ĐẦU THI THỬ";
 
         return;
     }
@@ -4576,7 +5243,11 @@ function renderCandidate(){
     }
 
     start.textContent=
-        "BẮT ĐẦU BÀI THI";
+        hasActive
+            ?
+            "TIẾP TỤC BÀI THI"
+            :
+            "BẮT ĐẦU BÀI THI";
 
     if(
         STATE.eligible ||
@@ -4590,7 +5261,8 @@ function renderCandidate(){
 
             status.innerHTML=
                 "<strong>CHẾ ĐỘ KIỂM THỬ</strong><br>" +
-                "Tài khoản kiểm thử không bị giới hạn số lần thi.";
+                "Tài khoản kiểm thử không bị giới hạn số lần thi.<br>" +
+                "<strong>Bài của ADMIN chỉ chạy thử trên máy, không gửi vào BaiThiTotNghiep.</strong>";
 
         }else{
 
@@ -4856,151 +5528,16 @@ function ensureTheoryPaper(){
    START
 ========================================================= */
 
-APP.start=
-async function(){
+/*
+   v2.6.0: tạo phiên mới (dùng chung cho bắt đầu mới và
+   dựng lại phiên từ dòng START ở thiết bị khác)
+*/
+function createSession(
+    startedAt,
+    examId
+){
 
-    if(
-        !STATE.student ||
-        STATE.startChecking
-    ){
-
-        return false;
-    }
-
-    var startButton=
-        el(
-            "examStartButton"
-        );
-
-    var old=
-        loadSession();
-
-    if(
-        old &&
-        sessionStatus(
-            old
-        )===
-        "active"
-    ){
-
-        STATE.session=
-            old;
-
-        ensureTheoryPaper();
-
-        openExamScreen();
-
-        return false;
-    }
-
-    if(
-        old &&
-        sessionStatus(
-            old
-        )===
-        "submitted"
-    ){
-
-        STATE.session=
-            old;
-
-        openResultScreen();
-
-        return false;
-    }
-
-
-    if(
-        !CONFIG.trialMode &&
-        !STATE.student.isAdmin
-    ){
-
-        if(!STATE.eligible){
-
-            return false;
-        }
-
-        STATE.startChecking=
-            true;
-
-        if(startButton){
-
-            startButton.disabled=
-                true;
-
-            startButton.textContent=
-                "ĐANG XÁC MINH LẦN CUỐI...";
-        }
-
-        try{
-
-            var existingExam=
-                await findPreviousExam(
-                    STATE.student.code
-                );
-
-            if(existingExam){
-
-                STATE.previousExam=
-                    existingExam;
-
-                STATE.eligible=
-                    false;
-
-                renderCandidate();
-
-                setLookupMessage(
-                    "Không thể bắt đầu: hệ thống vừa phát hiện học viên đã có bài thi tốt nghiệp.",
-                    "error"
-                );
-
-                return false;
-            }
-
-        }catch(error){
-
-            console.error(
-                error
-            );
-
-            setLookupMessage(
-                "Không thể xác minh trạng thái dự thi. Hệ thống tạm thời chưa cho bắt đầu để tránh tạo bài thi trùng.",
-                "error"
-            );
-
-            return false;
-
-        }finally{
-
-            STATE.startChecking=
-                false;
-
-            if(
-                startButton &&
-                !STATE.previousExam
-            ){
-
-                startButton.disabled=
-                    false;
-
-                startButton.textContent=
-                    "BẮT ĐẦU BÀI THI";
-            }
-        }
-    }
-
-
-    var now=
-        Date.now();
-
-    var generatedTheory=
-        buildTheoryPaper(
-            STATE.student.code,
-            now,
-            !!STATE.student.isAdmin
-        );
-
-    STATE.session={
+    return {
 
         version:
             CONFIG.version,
@@ -5012,9 +5549,10 @@ async function(){
             CONFIG.theoryBankVersion,
 
         examId:
+            examId ||
             buildExamId(
                 STATE.student.code,
-                now
+                startedAt
             ),
 
         student:{
@@ -5033,13 +5571,17 @@ async function(){
         },
 
         theoryQuestions:
-            generatedTheory,
+            buildTheoryPaper(
+                STATE.student.code,
+                startedAt,
+                !!STATE.student.isAdmin
+            ),
 
         startedAt:
-            now,
+            startedAt,
 
         endAt:
-            now +
+            startedAt +
             CONFIG.durationMs,
 
         status:
@@ -5086,12 +5628,334 @@ async function(){
                 null
         }
     };
+}
 
-    saveSession();
 
-    openExamScreen();
+/* Thời điểm bắt đầu lấy từ Exam ID (OCD-EXAM-MÃ-yyyymmddhhmmss) */
+function startTimeFromRemote(info){
 
-    return false;
+    var m=
+        String(
+            info &&
+            info.examId ||
+            ""
+        )
+        .match(
+            /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/
+        );
+
+    if(m){
+
+        return new Date(
+            Number(m[1]),
+            Number(m[2])-1,
+            Number(m[3]),
+            Number(m[4]),
+            Number(m[5]),
+            Number(m[6])
+        )
+        .getTime();
+    }
+
+    var d=
+        parseDateLoose(
+            info &&
+            info.startedAt
+        );
+
+    return d
+        ?
+        d.getTime()
+        :
+        null;
+}
+
+
+function lockAsFinished(existing){
+
+    STATE.previousExam=
+        existing;
+
+    STATE.eligible=
+        false;
+
+    renderCandidate();
+
+    setLookupMessage(
+        "Không thể bắt đầu: hệ thống đã có bài thi tốt nghiệp của học viên này.",
+        "error"
+    );
+}
+
+
+APP.start=
+async function(){
+
+    if(
+        !STATE.student ||
+        STATE.startChecking
+    ){
+
+        return false;
+    }
+
+    var startButton=
+        el(
+            "examStartButton"
+        );
+
+    var official=
+        !CONFIG.trialMode &&
+        !STATE.student.isAdmin;
+
+    var old=
+        loadSession();
+
+    if(
+        old &&
+        sessionStatus(
+            old
+        )===
+        "submitted"
+    ){
+
+        STATE.session=
+            old;
+
+        openResultScreen();
+
+        return false;
+    }
+
+    if(
+        !official
+    ){
+
+        if(
+            old &&
+            sessionStatus(
+                old
+            )===
+            "active"
+        ){
+
+            STATE.session=
+                old;
+
+            ensureTheoryPaper();
+
+            openExamScreen();
+
+            return false;
+        }
+
+        if(
+            CONFIG.trialMode &&
+            !STATE.student.isAdmin &&
+            !STATE.eligible
+        ){
+
+            return false;
+        }
+
+        STATE.session=
+            createSession(
+                Date.now()
+            );
+
+        saveSession();
+
+        openExamScreen();
+
+        return false;
+    }
+
+
+    /* ================= THI CHÍNH THỨC ================= */
+
+    if(
+        !STATE.eligible &&
+        !(
+            old &&
+            sessionStatus(
+                old
+            )===
+            "active"
+        )
+    ){
+
+        return false;
+    }
+
+    STATE.startChecking=
+        true;
+
+    if(startButton){
+
+        startButton.disabled=
+            true;
+
+        startButton.textContent=
+            "ĐANG XÁC MINH LẦN CUỐI...";
+    }
+
+    var opened=false;
+
+    try{
+
+        var history=
+            await findPreviousExam(
+                STATE.student.code
+            );
+
+        if(history.done){
+
+            lockAsFinished(
+                history.done
+            );
+
+            return false;
+        }
+
+
+        /* Phiên đang làm dở trên chính máy này */
+        if(
+            old &&
+            sessionStatus(
+                old
+            )===
+            "active"
+        ){
+
+            STATE.session=
+                old;
+
+            ensureTheoryPaper();
+
+            opened=true;
+
+            openExamScreen();
+
+            return false;
+        }
+
+
+        /*
+           Đã bắt đầu ở thiết bị khác: làm tiếp đúng phiên đó,
+           thời gian tính từ lúc bắt đầu (không có đề mới / giờ mới).
+        */
+        if(history.start){
+
+            var remoteStartedAt=
+                startTimeFromRemote(
+                    history.start
+                );
+
+            if(!remoteStartedAt){
+
+                throw new Error(
+                    "Không đọc được thời điểm bắt đầu của phiên thi trước."
+                );
+            }
+
+            STATE.session=
+                createSession(
+                    remoteStartedAt,
+                    history.start.examId
+                );
+
+            STATE.session.startRecorded=
+                true;
+
+            STATE.session.resumedFromRemote=
+                true;
+
+            saveSession();
+
+            opened=true;
+
+            openExamScreen();
+
+            return false;
+        }
+
+
+        /* Bắt đầu mới: ghi lượt START trước khi mở đề */
+        if(startButton){
+
+            startButton.textContent=
+                "ĐANG GHI NHẬN LƯỢT THI...";
+        }
+
+        var session=
+            createSession(
+                Date.now()
+            );
+
+        var recorded=
+            await postForm(
+                startPayload(
+                    session
+                )
+            );
+
+        if(!recorded){
+
+            setLookupMessage(
+                "Chưa ghi nhận được lượt bắt đầu thi (mạng không ổn định). Đề thi chưa được mở – vui lòng kiểm tra mạng rồi bấm BẮT ĐẦU lại.",
+                "error"
+            );
+
+            return false;
+        }
+
+        session.startRecorded=
+            true;
+
+        STATE.session=
+            session;
+
+        saveSession();
+
+        opened=true;
+
+        openExamScreen();
+
+        return false;
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        setLookupMessage(
+            "Không thể xác minh trạng thái dự thi. Hệ thống tạm thời chưa cho bắt đầu để tránh tạo bài thi trùng. " +
+            friendlyError(
+                error
+            ),
+            "error"
+        );
+
+        return false;
+
+    }finally{
+
+        STATE.startChecking=
+            false;
+
+        if(
+            startButton &&
+            !opened &&
+            !STATE.previousExam
+        ){
+
+            startButton.disabled=
+                false;
+
+            renderCandidate();
+        }
+    }
 };
 
 
@@ -7505,14 +8369,12 @@ function gradeTheory(){
                 return;
             }
 
-            answered++;
+                        answered++;
 
             if(
-                Number(
+                questionIsCorrect(
+                    q,
                     answer
-                )===
-                Number(
-                    q.correct
                 )
             ){
 
@@ -7591,20 +8453,18 @@ function buildTheoryData(){
                 options:
                     q.options.slice(),
 
-                answer:
+                                answer:
                     answer===undefined
                         ?
                         null
                         :
                         Number(answer),
 
-                correct:
-                    q.correct,
-
                 isCorrect:
-                    answer!==undefined &&
-                    Number(answer)===
-                    Number(q.correct)
+                    questionIsCorrect(
+                        q,
+                        answer
+                    )
             };
         }
     );
@@ -7899,6 +8759,14 @@ function finalizeExam(
         STATE.session.remoteSave.status=
             "trial_not_sent";
 
+    }else if(
+        isAdminSession()
+    ){
+
+        /* v2.6.0: ADMIN chỉ chạy thử, không gửi vào form thật */
+        STATE.session.remoteSave.status=
+            "admin_local";
+
     }else{
 
         STATE.session.remoteSave.status=
@@ -7915,12 +8783,8 @@ function finalizeExam(
 
     saveSession();
 
+    /* openResultScreen tự gửi (một lần duy nhất) khi cần */
     openResultScreen();
-
-    if(!CONFIG.trialMode){
-
-        sendResultToGoogleForm();
-    }
 }
 
 
@@ -7928,10 +8792,30 @@ function finalizeExam(
    FORM PAYLOAD
 ========================================================= */
 
+function isAdminSession(){
+
+    return (
+        (
+            STATE.student &&
+            STATE.student.isAdmin
+        ) ||
+        (
+            STATE.session &&
+            STATE.session.student &&
+            normalizeCode(
+                STATE.session.student.code
+            )===
+            CONFIG.adminCode
+        )
+    );
+}
+
+
 function formPayload(){
 
     if(
         CONFIG.trialMode ||
+        isAdminSession() ||
         !STATE.session ||
         !STATE.session.result
     ){
@@ -8038,96 +8922,68 @@ function formPayload(){
 
 
 /* =========================================================
-   GOOGLE FORM
+   v2.6.0: DÒNG START (ghi lượt bắt đầu thi)
 ========================================================= */
 
-function sendResultToGoogleForm(){
+function startPayload(session){
 
-    if(CONFIG.trialMode){
+    var E=
+        CONFIG.formEntries;
 
-        return;
-    }
+    var payload={};
 
-    if(
-        !STATE.session ||
-        !STATE.session.result ||
-        STATE.remoteSubmitting
-    ){
+    payload[E.examId]=
+        session.examId;
 
-        return;
-    }
+    payload[E.studentCode]=
+        session.student.code;
 
-    if(!navigator.onLine){
+    payload[E.studentName]=
+        session.student.name;
 
-        STATE.session
-        .remoteSave
-        .status=
-            "pending";
+    payload[E.group]=
+        session.student.group ||
+        "";
 
-        saveSession();
+    payload[E.course]=
+        session.student.course ||
+        "";
 
-        renderRemoteStatus();
+    payload[E.startedAt]=
+        formatDateTime(
+            session.startedAt
+        );
 
-        return;
-    }
+    payload[E.submittedAt]=
+        "";
 
-    var payload=
-        formPayload();
+    payload[E.submitReason]=
+        CONFIG.startReason;
+
+    payload[E.systemVersion]=
+        CONFIG.version +
+        " | START";
+
+    return payload;
+}
+
+
+/* =========================================================
+   v2.6.0: GỬI GOOGLE FORM
+   - fetch no-cors: lỗi mạng -> biết là CHƯA gửi được
+   - Sau khi gửi, đọc lại BaiThiTotNghiep để XÁC NHẬN
+   - Mỗi lúc chỉ một lượt gửi, đã xác nhận thì không gửi lại
+========================================================= */
+
+function postForm(payload){
 
     if(!payload){
 
-        return;
+        return Promise.resolve(false);
     }
 
-    STATE.remoteSubmitting=
-        true;
-
-    STATE.session
-    .remoteSave
-    .attempts=
-        Number(
-            STATE.session
-            .remoteSave
-            .attempts ||
-            0
-        ) + 1;
-
-    STATE.session
-    .remoteSave
-    .lastAttemptAt=
-        Date.now();
-
-    STATE.session
-    .remoteSave
-    .status=
-        "sending";
-
-    saveSession();
-
-    renderRemoteStatus();
-
-    var iframe=
-        el(
-            "graduationFormFrame"
-        );
-
-    var form=
-        document.createElement(
-            "form"
-        );
-
-    form.method=
-        "POST";
-
-    form.action=
-        CONFIG.formAction;
-
-    form.target=
-        "graduationFormFrame";
-
-    form.style.display=
-        "none";
-
+    var body=
+        new URLSearchParams();
 
     Object.keys(
         payload
@@ -8135,148 +8991,318 @@ function sendResultToGoogleForm(){
     .forEach(
         function(name){
 
-            var input=
-                document.createElement(
-                    "input"
-                );
-
-            input.type=
-                "hidden";
-
-            input.name=
-                name;
-
-            input.value=
-                String(
-                    payload[name]===
-                    undefined ||
-                    payload[name]===
-                    null
-                        ?
-                        ""
-                        :
+            body.append(
+                name,
+                payload[name]===undefined ||
+                payload[name]===null
+                    ?
+                    ""
+                    :
+                    String(
                         payload[name]
-                );
-
-            form.appendChild(
-                input
+                    )
             );
         }
     );
 
+    var controller=
+        typeof AbortController!=="undefined"
+            ?
+            new AbortController()
+            :
+            null;
 
-    document.body
-    .appendChild(
-        form
+    var timer=
+        controller
+            ?
+            setTimeout(
+                function(){
+
+                    controller.abort();
+                },
+                20000
+            )
+            :
+            null;
+
+    return fetch(
+        CONFIG.formAction,
+        {
+            method:"POST",
+
+            mode:"no-cors",
+
+            cache:"no-store",
+
+            body:body,
+
+            signal:
+                controller
+                    ?
+                    controller.signal
+                    :
+                    undefined
+        }
+    )
+    .then(
+        function(){
+
+            return true;
+        },
+        function(error){
+
+            console.error(
+                error
+            );
+
+            return false;
+        }
+    )
+    .finally(
+        function(){
+
+            if(timer){
+
+                clearTimeout(
+                    timer
+                );
+            }
+        }
     );
+}
 
 
-    var done=
-        false;
+/* Bài nộp (không phải dòng START) của Exam ID đã có trong BaiThiTotNghiep chưa */
+async function examRecorded(examId){
 
-    function finish(){
+    var rows=
+        parseCSV(
+            await fetchTextRetry(
+                examHistoryCsvUrl()
+            )
+        );
 
-        if(done){
+    if(rows.length<2){
+
+        return false;
+    }
+
+    var idCol=
+        findColumn(
+            rows[0],
+            [
+                "Exam ID",
+                "examid",
+                "exam id"
+            ]
+        );
+
+    var reasonCol=
+        findColumn(
+            rows[0],
+            [
+                "Hình thức nộp",
+                "hinh thuc nop"
+            ]
+        );
+
+    if(idCol<0){
+
+        return false;
+    }
+
+    for(
+        var i=1;
+        i<rows.length;
+        i++
+    ){
+
+        if(
+            valueAt(
+                rows[i],
+                idCol
+            )===examId &&
+            normalizeCode(
+                valueAt(
+                    rows[i],
+                    reasonCol
+                )
+            )!==
+            CONFIG.startReason
+        ){
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+function markRemote(status){
+
+    var remote=
+        STATE.session.remoteSave;
+
+    remote.status=
+        status;
+
+    if(status==="sent"){
+
+        remote.sentAt=
+            Date.now();
+    }
+
+    saveSession();
+
+    renderRemoteStatus();
+}
+
+
+async function sendResultToGoogleForm(){
+
+    if(
+        CONFIG.trialMode ||
+        !STATE.session ||
+        !STATE.session.result ||
+        isAdminSession() ||
+        STATE.remoteSubmitting
+    ){
+
+        return;
+    }
+
+    STATE.session.remoteSave=
+        STATE.session.remoteSave ||
+        {};
+
+    var remote=
+        STATE.session.remoteSave;
+
+    if(
+        remote.status==="sent"
+    ){
+
+        return;
+    }
+
+    STATE.remoteSubmitting=
+        true;
+
+    var examId=
+        STATE.session.examId;
+
+    try{
+
+        /*
+           Đã từng gửi (gửi lại / tải lại trang giữa chừng):
+           kiểm tra trước, có bài rồi thì không gửi thêm.
+        */
+        if(
+            Number(
+                remote.attempts ||
+                0
+            )>0
+        ){
+
+            markRemote(
+                "verifying"
+            );
+
+            try{
+
+                if(
+                    await examRecorded(
+                        examId
+                    )
+                ){
+
+                    markRemote(
+                        "sent"
+                    );
+
+                    return;
+                }
+
+            }catch(error){}
+        }
+
+        if(!navigator.onLine){
+
+            markRemote(
+                "failed"
+            );
 
             return;
         }
 
-        done=
-            true;
+        remote.attempts=
+            Number(
+                remote.attempts ||
+                0
+            ) + 1;
 
-        STATE.remoteSubmitting=
-            false;
-
-        STATE.session
-        .remoteSave
-        .status=
-            "sent";
-
-        STATE.session
-        .remoteSave
-        .sentAt=
+        remote.lastAttemptAt=
             Date.now();
 
-        saveSession();
-
-        renderRemoteStatus();
-
-        try{
-
-            form.remove();
-
-        }catch(error){}
-    }
-
-
-    function onLoad(){
-
-        iframe.removeEventListener(
-            "load",
-            onLoad
+        markRemote(
+            "sending"
         );
 
-        finish();
-    }
+        var ok=
+            await postForm(
+                formPayload()
+            );
 
+        if(!ok){
 
-    iframe.addEventListener(
-        "load",
-        onLoad
-    );
+            markRemote(
+                "failed"
+            );
 
+            return;
+        }
 
-    try{
-
-        HTMLFormElement
-        .prototype
-        .submit
-        .call(
-            form
+        markRemote(
+            "verifying"
         );
 
-        setTimeout(
-            function(){
+        for(
+            var i=0;
+            i<CONFIG.verifyTries;
+            i++
+        ){
+
+            await sleep(
+                CONFIG.verifyDelayMs
+            );
+
+            try{
 
                 if(
-                    STATE.remoteSubmitting
+                    await examRecorded(
+                        examId
+                    )
                 ){
 
-                    iframe.removeEventListener(
-                        "load",
-                        onLoad
+                    markRemote(
+                        "sent"
                     );
 
-                    finish();
+                    return;
                 }
 
-            },
-            6000
+            }catch(error){}
+        }
+
+        markRemote(
+            "unconfirmed"
         );
 
-    }catch(error){
-
-        console.error(
-            error
-        );
+    }finally{
 
         STATE.remoteSubmitting=
             false;
-
-        STATE.session
-        .remoteSave
-        .status=
-            "pending";
-
-        saveSession();
-
-        renderRemoteStatus();
-
-        try{
-
-            form.remove();
-
-        }catch(e){}
     }
 }
 
@@ -8288,12 +9314,8 @@ function sendResultToGoogleForm(){
 APP.retryRemoteSave=
 function(){
 
-    if(CONFIG.trialMode){
-
-        return false;
-    }
-
     if(
+        CONFIG.trialMode ||
         !STATE.session ||
         !STATE.session.result
     ){
@@ -8301,27 +9323,34 @@ function(){
         return false;
     }
 
-    STATE.session
-    .remoteSave
-    .status=
-        "pending";
-
-    saveSession();
-
     sendResultToGoogleForm();
 
     return false;
 };
 
 
+function needsRemoteSend(session){
+
+    var status=
+        session &&
+        session.remoteSave &&
+        session.remoteSave.status;
+
+    return (
+        !CONFIG.trialMode &&
+        !!session &&
+        !!session.result &&
+        !isAdminSession() &&
+        status!=="sent" &&
+        status!=="admin_local" &&
+        status!=="trial_not_sent"
+    );
+}
+
+
 window.addEventListener(
     "online",
     function(){
-
-        if(CONFIG.trialMode){
-
-            return;
-        }
 
         if(
             STATE.session &&
@@ -8329,11 +9358,9 @@ window.addEventListener(
                 STATE.session
             )===
             "submitted" &&
-            STATE.session.remoteSave &&
-            STATE.session
-            .remoteSave
-            .status===
-            "pending"
+            needsRemoteSend(
+                STATE.session
+            )
         ){
 
             sendResultToGoogleForm();
@@ -8400,18 +9427,15 @@ function openResultScreen(){
     renderResult();
 
     if(
-        !CONFIG.trialMode &&
-        STATE.session.remoteSave &&
-        STATE.session
-        .remoteSave
-        .status===
-        "pending" &&
+        needsRemoteSend(
+            STATE.session
+        ) &&
         navigator.onLine
     ){
 
         setTimeout(
             sendResultToGoogleForm,
-            800
+            0
         );
     }
 }
@@ -8668,65 +9692,87 @@ function renderRemoteStatus(){
         .remoteSave ||
         {};
 
+    var idLine=
+        'ExamID: ' +
+        escapeHtml(
+            STATE.session.examId
+        );
 
-    if(
-        remote.status===
-        "sent"
-    ){
+    var retryButton=
+        function(text){
 
-        box.innerHTML=
+            return (
+                '<br><br>' +
+                '<button ' +
+                    'class="exam-btn gold" ' +
+                    'type="button" ' +
+                    'onclick="return window.OCDGraduationExam.retryRemoteSave();">' +
+                    text +
+                '</button>'
+            );
+        };
 
+    var html;
+
+    if(remote.status==="admin_local"){
+
+        html=
             '<div class="remote-status sent">' +
-
-                '<strong>Đã gửi dữ liệu tới Google Form.</strong><br>' +
-
-                'ExamID: ' +
-
-                escapeHtml(
-                    STATE.session.examId
-                ) +
-
+                '<strong>BÀI KIỂM THỬ ADMIN</strong><br>' +
+                'Chỉ chạy thử trên thiết bị này, không gửi vào BaiThiTotNghiep.' +
             '</div>';
 
-        return;
-    }
+    }else if(remote.status==="sent"){
 
+        html=
+            '<div class="remote-status sent">' +
+                '<strong>Đã ghi nhận bài thi trong hệ thống.</strong><br>' +
+                idLine +
+            '</div>';
 
-    if(
-        remote.status===
-        "sending"
-    ){
+    }else if(remote.status==="sending"){
 
-        box.innerHTML=
-
+        html=
             '<div class="remote-status pending">' +
-
-                '<strong>Đang gửi dữ liệu bài thi...</strong>' +
-
+                '<strong>Đang gửi dữ liệu bài thi...</strong><br>' +
+                'Vui lòng giữ trang mở.' +
             '</div>';
 
-        return;
-    }
+    }else if(remote.status==="verifying"){
 
+        html=
+            '<div class="remote-status pending">' +
+                '<strong>Đã gửi – đang xác nhận bài trong hệ thống...</strong><br>' +
+                'Vui lòng giữ trang mở trong giây lát.' +
+            '</div>';
+
+    }else if(remote.status==="unconfirmed"){
+
+        html=
+            '<div class="remote-status pending">' +
+                '<strong>Đã gửi nhưng chưa thấy bài trong hệ thống.</strong><br>' +
+                'Bấm nút dưới để kiểm tra lại (hệ thống chỉ gửi thêm nếu vẫn chưa có bài). ' +
+                idLine +
+                retryButton(
+                    'KIỂM TRA / GỬI LẠI'
+                ) +
+            '</div>';
+
+    }else{
+
+        html=
+            '<div class="remote-status pending">' +
+                '<strong>Bài đã khóa trên thiết bị nhưng CHƯA gửi được kết quả.</strong><br>' +
+                'Kiểm tra kết nối mạng rồi bấm gửi lại. Không đóng hoặc xoá dữ liệu trang này. ' +
+                idLine +
+                retryButton(
+                    'GỬI LẠI KẾT QUẢ'
+                ) +
+            '</div>';
+    }
 
     box.innerHTML=
-
-        '<div class="remote-status pending">' +
-
-            '<strong>Bài đã khóa trên thiết bị nhưng đang chờ gửi dữ liệu.</strong>' +
-
-            '<br><br>' +
-
-            '<button ' +
-                'class="exam-btn gold" ' +
-                'type="button" ' +
-                'onclick="return window.OCDGraduationExam.retryRemoteSave();">' +
-
-                'GỬI LẠI KẾT QUẢ' +
-
-            '</button>' +
-
-        '</div>';
+        html;
 }
 
 
