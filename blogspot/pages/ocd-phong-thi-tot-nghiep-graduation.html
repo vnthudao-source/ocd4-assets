@@ -1639,7 +1639,7 @@ var UNLIMITED_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.8.0_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.8.1_20_10_2",
 
     durationMs:
         60*60*1000,
@@ -2281,7 +2281,7 @@ var PRACTICAL_QUESTIONS=[
 
         mode:"live",
 
-        text:"Tại chỗ sáng tác một tác phẩm mới, chụp lại ảnh và đăng lên trang Nộp bài.",
+        text:"Tại chỗ sáng tác một tác phẩm mới, chụp lại ảnh và tải lên bài thi.",
 
         help:
             "B1: Tại chỗ sáng tác một tác phẩm mới. " +
@@ -8178,6 +8178,16 @@ async function postExamUpload(payload){
 }
 
 
+APP.toggleUploadAlt=
+function(open){
+
+    STATE.uploadAltOpen=
+        !!open;
+
+    return false;
+};
+
+
 APP.sendUpload=
 async function(questionId){
 
@@ -8346,7 +8356,14 @@ async function(questionId){
                         ?
                         "Ảnh này đã có trong bài thi, đã chọn lại cho câu " + questionId + "."
                         :
-                        "✅ Đã tải ảnh lên bài thi và chọn cho câu " + questionId + "."
+                        "✅ Đã tải ảnh lên bài thi và chọn cho câu " + questionId + "." +
+                        (
+                            Number(questionId)===Number(PRACTICAL_QUESTIONS[PRACTICAL_QUESTIONS.length-1].id)
+                                ?
+                                " Bấm RÀ SOÁT & NỘP BÀI ở cuối trang để kiểm tra lại và nộp bài."
+                                :
+                                ""
+                        )
                 ),
         kind:"ok",
         /* giữ mô tả học viên đã gõ cho lần tải sau */
@@ -8607,8 +8624,17 @@ function renderPractical(){
                         ""
                     ) +
                 '</div>' +
-                '<details class="exam-upload-alt">' +
-                    '<summary>Hoặc chọn bài đã đăng trên trang Nộp bài sau lúc bắt đầu thi</summary>' +
+                /* cách dự phòng: thu gọn, danh sách bài nộp nằm bên trong */
+                '<details class="exam-upload-alt" ' +
+                    (
+                        STATE.uploadAltOpen
+                            ?
+                            'open '
+                            :
+                            ''
+                    ) +
+                    'ontoggle="window.OCDGraduationExam.toggleUploadAlt(this.open);">' +
+                    '<summary>Dự phòng: chọn bài đã đăng trên trang Nộp bài sau lúc bắt đầu thi</summary>' +
                     '<button class="exam-btn secondary" type="button" id="examRefreshSubmissions" ' +
                         (
                             STATE.submissionsRefreshing
@@ -8632,6 +8658,8 @@ function renderPractical(){
                             ""
                         ) +
                     '</div>' +
+                    /* ô tìm kiếm + danh sách bài nộp được chèn vào đây (chỉ hiện khi mở mục dự phòng) */
+                    '%%OCD_ALT_LIST%%' +
                 '</details>' +
             '</div>';
 
@@ -8711,7 +8739,7 @@ function renderPractical(){
     }
 
 
-    html+=
+    var listHtml=
 
         '<div class="practical-search">' +
 
@@ -8727,11 +8755,28 @@ function renderPractical(){
                 '" ' +
                 'oninput="window.OCDGraduationExam.filterPractical(this.value);">' +
 
-        '</div>';
+        '</div>' +
 
-
-    html+=
         '<div id="examSubmissionList"></div>';
+
+
+    if(
+        q.mode==="live" &&
+        html.indexOf("%%OCD_ALT_LIST%%")>=0
+    ){
+
+        /* câu 32: danh sách bài nộp nằm trong mục dự phòng thu gọn */
+        html=
+            html.replace(
+                "%%OCD_ALT_LIST%%",
+                listHtml
+            );
+
+    }else{
+
+        html+=
+            listHtml;
+    }
 
 
     html+=
@@ -8756,24 +8801,26 @@ function renderPractical(){
 
             '</button>' +
 
-            '<button ' +
-                'class="exam-btn" ' +
-                'type="button" ' +
-
-                (
-                    STATE.practicalIndex>=
-                    PRACTICAL_QUESTIONS.length-1
-                        ?
-                        "disabled "
-                        :
-                        ""
-                ) +
-
-                'onclick="return window.OCDGraduationExam.nextPractical();">' +
-
-                'CÂU TIẾP' +
-
-            '</button>' +
+            (
+                /* câu thực hành cuối: chuyển sang rà soát & nộp bài thay vì nút khoá mờ */
+                STATE.practicalIndex>=
+                PRACTICAL_QUESTIONS.length-1
+                    ?
+                    '<button ' +
+                        'class="exam-btn gold" ' +
+                        'id="examGoReviewButton" ' +
+                        'type="button" ' +
+                        'onclick="return window.OCDGraduationExam.openReview();">' +
+                        'RÀ SOÁT & NỘP BÀI' +
+                    '</button>'
+                    :
+                    '<button ' +
+                        'class="exam-btn" ' +
+                        'type="button" ' +
+                        'onclick="return window.OCDGraduationExam.nextPractical();">' +
+                        'CÂU TIẾP' +
+                    '</button>'
+            ) +
 
         '</div>';
 
@@ -9005,7 +9052,7 @@ function renderSubmissionList(){
                 (
                     q.mode==="live"
                         ?
-                        'Chưa có bài nộp nào sau lúc bắt đầu thi. Hãy đăng tác phẩm vừa sáng tác lên trang Nộp bài, rồi bấm TẢI LẠI DANH SÁCH BÀI NỘP.'
+                        'Chưa có bài nào trên trang Nộp bài sau lúc bắt đầu thi. Cách chính là bấm TẢI ẢNH LÊN BÀI THI ở phía trên.'
                         :
                         'Không tìm thấy bài phù hợp.'
                 ) +
