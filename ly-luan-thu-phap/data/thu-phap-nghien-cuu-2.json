@@ -1,0 +1,1157 @@
+{
+ "id": "thu-phap-nghien-cuu-2",
+ "chapters": [
+  {
+   "id": "c01",
+   "no": "Bài 1",
+   "title": "Nhìn qua ống trúc: bản «Đường thác Thập thất thiếp»",
+   "titleZh": "《唐拓十七帖》管窥",
+   "author": "Ngưu Quang Phủ",
+   "pages": "1–19",
+   "summary": "Một bản thác «Thập thất thiếp» lưu ở Khai Phong được tác giả đối chiếu với các bản Bắc Tống nổi tiếng và cho là xứng gọi “Đường thác”; từ đó bài viết rút ra những bài học về phong cách hùng cường và cách lâm thảo thư của Vương Hi Chi.",
+   "body": [
+    {
+     "t": "p",
+     "x": "«Thập thất thiếp» là tập thư từ thảo thư của **Vương Hi Chi** (thế kỷ IV), được gọi theo hai chữ “thập thất” mở đầu bức thư thứ nhất. Từ đời Đường, triều đình đã cho tập hợp, hiệu đính và khắc thành bản mẫu, và từ đó tập này trở thành giáo trình kinh điển của kim thảo (thảo thư hiện đại, khác chương thảo). Vấn đề là bản khắc đá truyền đời nay đã qua nhiều lần khắc lại, nhiều bản thác bị mờ, thiếu trang, đảo thứ tự. Vì thế một bản thác sớm và còn nguyên vẹn có giá trị rất lớn cho người học, vì nó cho thấy nét bút gần với chữ gốc hơn."
+    },
+    {
+     "t": "p",
+     "x": "Bài viết của Ngưu Quang Phủ, một cán bộ bảo tàng ở Khai Phong, bàn về một bản như vậy. Ông vốn nghi ngờ hai chữ “Đường thác” trên nhãn, nhưng sau khi đối chiếu kỹ lại nghiêng về phía công nhận. Bài giảng này tóm lại cách ông lập luận và những gì người học thảo có thể rút ra."
+    },
+    {
+     "t": "h",
+     "x": "1. Một bản thác và hành trình qua tay các nhà sưu tầm"
+    },
+    {
+     "t": "p",
+     "x": "Lịch sử truyền tàng của một bản thác là một phần chứng cứ. Bản Khai Phong mang ấn của vương phủ đời Minh, rồi lần lượt qua tay những người có tên tuổi: **Phùng Thuyên** đầu đời Thanh (người từng giữ mặc tích «Khoái tuyết thời tình thiếp» và cho khắc «Khoái tuyết đường pháp thiếp»), học giả **Uông Trung** đời Càn Long, rồi đầu thế kỷ XX được **La Chấn Ngọc** đề bạt. Mỗi người để lại lời đề hoặc ấn, giống như những “con dấu xác nhận” nối nhau qua các thế kỷ. Người học nên hiểu: trong giám định bi thiếp, giá trị của một bản không chỉ ở nét chữ mà còn ở chuỗi lời chứng này, tuy rằng lời chứng của người xưa cũng có thể sai và phải được kiểm tra lại."
+    },
+    {
+     "t": "p",
+     "x": "Một chi tiết kỹ thuật đáng nhớ: La Chấn Ngọc chú ý rằng hai chữ ký áp thự “Tăng Quyền” (dấu của Từ Tăng Quyền, người giám định thư họa đời Lương) chỉ còn một nửa, giống như ở bản Bắc Tống của họ Khương. Những vết tích nhỏ kiểu này (chữ khuyết bao nhiêu nét, vết nứt đá chạy ở đâu) là cách giới giám định dùng để xếp các bản thác theo thứ tự sớm muộn."
+    },
+    {
+     "t": "h",
+     "x": "2. Đối chiếu: vì sao bản Khai Phong được đánh giá cao"
+    },
+    {
+     "t": "p",
+     "x": "Tác giả so bản Khai Phong với hai bản Bắc Tống vẫn được tôn sùng: bản của **Khương Thần Anh** (Khương Tây Minh) và bản của **Ngô Khoan** (Ngô Bào Am). Lý lẽ của ông xoay quanh ba phương diện, cũng là ba câu hỏi người học nên đặt ra mỗi khi chọn bản mẫu:"
+    },
+    {
+     "t": "p",
+     "x": "**Thứ nhất, sự đầy đủ.** Bản Khai Phong giữ nguyên bố cục của bản khắc thời Đường, không mất trang mất dòng, thứ tự các bức thư đúng như các bản tốt nhất. Ngược lại, có bản thiếu cả chục dòng, có bản đảo hai bức thư cho nhau; còn «Thuần Hóa các thiếp» đời Tống chỉ khắc một phần, lại dời những chữ viết chen giữa hàng vào trong hàng, làm hỏng chương pháp gốc. Bài học: một bản thiếp bị cắt dán lại có thể khiến ta học sai cả nhịp điệu của trang chữ."
+    },
+    {
+     "t": "p",
+     "x": "**Thứ hai, chất lượng khắc và thác.** Khi thợ thác để mực thấm vào lòng chữ, nét đáng liền thành đứt, góc đáng vuông thành tròn. Người lâm thiếp không biết điều đó sẽ cố bắt chước cả những “khuyết tật” do giấy mực gây ra. Bản tốt cho thấy rõ mũi nhọn của phong, nét vuông và cả những chỗ **khát bút** (bút khô để lộ sợi lông)."
+    },
+    {
+     "t": "p",
+     "x": "**Thứ ba, tinh thần.** Đây là phần chủ quan nhất nhưng cũng là phần quyết định với người viết: chữ có giữ được thế mạnh mẽ, góc cạnh, vẻ “rồng nhảy hổ nằm” hay không. Tác giả cho rằng bản Khai Phong hơn hẳn các bản khác ở điểm này. Người học không nhất thiết phải đồng ý với kết luận giám định, nhưng nên tập con mắt so sánh như vậy: đặt hai bản của cùng một chữ cạnh nhau và hỏi bản nào cho thấy đường đi của bút rõ hơn."
+    },
+    {
+     "t": "h",
+     "x": "3. Kim thảo ra đời: vừa kế thừa vừa đổi mới"
+    },
+    {
+     "t": "p",
+     "x": "Từ bản thiếp, tác giả chuyển sang nhận xét về nghệ thuật của Vương Hi Chi. Điểm đáng chú ý nhất là hiện tượng chữ nối liền với chữ (tác giả gọi là “từ liên”): hai, ba, thậm chí bốn chữ được viết liền một mạch. Trong chương thảo đời Hán, mỗi chữ thường đứng riêng, còn có nét ba tấp (đuôi nét kiểu lệ thư). Việc các chữ bắt đầu nối với nhau là dấu hiệu rõ rằng «Thập thất thiếp» đã là kim thảo. Tuy vậy, nó chưa phải cuồng thảo kiểu Trương Húc, Hoài Tố đời Đường: kết cấu vẫn còn chút dư vị chương thảo, nhịp vẫn điềm tĩnh."
+    },
+    {
+     "t": "p",
+     "x": "Hai lời phê bình cổ trái ngược nhau có thể giúp hiểu vị trí này: sách «Nam Tề thư» cho rằng thể chữ của Hữu quân “hơi cổ”, còn Hàn Dũ đời Đường lại chê chữ Hi Chi là “tục”, chạy theo vẻ đẹp mềm mại. Một bên thấy cái cũ, một bên thấy cái mới. Chính sự kép đôi ấy là bản chất của một bước chuyển: Vương Hi Chi đứng giữa truyền thống Chung Do, Trương Chi và lối viết nhanh tiện dụng của người đương thời."
+    },
+    {
+     "t": "quote",
+     "zh": "羲之俗书趁姿媚",
+     "hv": "Hi Chi tục thư sấn tư mị",
+     "vi": "Chữ “tục” của Hi Chi chạy theo vẻ duyên dáng mềm mại.",
+     "src": "Hàn Dũ, «Thạch cổ ca»"
+    },
+    {
+     "t": "p",
+     "x": "Cần hiểu chữ “tục thư” ở đây không hẳn là chê thô tục: Hàn Dũ đang so với chữ triện cổ kính trên trống đá, nên mọi lối chữ đương thời đều là “chữ thường dùng”. Đọc lời bình cổ, phải đặt nó vào ngữ cảnh."
+    },
+    {
+     "t": "h",
+     "x": "4. Hùng cường: chữ và người"
+    },
+    {
+     "t": "p",
+     "x": "Lời bình nổi tiếng nhất về Vương Hi Chi là câu của Lương Vũ Đế, được hậu thế lặp lại không ngớt. Hai chữ “hùng cường” đã thành cách tóm tắt phong cách Hữu quân, đối lập với hình dung phổ biến rằng chữ Vương chỉ có vẻ thanh nhã, mềm mại."
+    },
+    {
+     "t": "quote",
+     "zh": "王右军书字势雄逸，如龙跳天门，虎卧凤阙，故历代宝之，永以为训。",
+     "hv": "Vương Hữu quân thư tự thế hùng dật, như long khiêu Thiên môn, hổ ngọa Phượng khuyết, cố lịch đại bảo chi, vĩnh dĩ vi huấn.",
+     "vi": "Thế chữ của Vương Hữu quân mạnh mẽ phóng khoáng, như rồng nhảy qua cửa trời, như hổ nằm trước cửa khuyết Phượng; vì thế các đời quý trọng, mãi lấy làm khuôn phép.",
+     "src": "Lương Vũ Đế, «Cổ kim thư nhân ưu liệt bình»"
+    },
+    {
+     "t": "p",
+     "x": "(Các bản truyền đời ghi “hùng dật” hoặc “hùng cường”; bài viết dùng chữ sau.) Tác giả nối phong cách ấy với tính cách của Vương Hi Chi theo «Tấn thư»: tuổi nhỏ đã chịu cảnh mất nước phải chạy về phương Nam, lớn lên bất mãn với triều đình chỉ lo yên phận, từng phê bình thẳng cả Tạ An khi ông này muốn lui về ở ẩn. Cuối đời ông thề trước mộ cha mẹ không ra làm quan nữa vì không chịu cộng sự với kẻ mình khinh. Lời Vương Hi Chi nói với Tạ An khi cùng lên thành Dã Thành được «Thế thuyết tân ngữ» chép lại:"
+    },
+    {
+     "t": "quote",
+     "zh": "夏禹勤王，手足胼胝；文王旰食，日不暇给。今四郊多垒，宜人人自效；而虚谈废务，浮文妨要，恐非当今所宜。",
+     "hv": "Hạ Vũ cần vương, thủ túc biền chi; Văn Vương cán thực, nhật bất hạ cấp. Kim tứ giao đa lũy, nghi nhân nhân tự hiệu, nhi hư đàm phế vụ, phù văn phương yếu, khủng phi đương kim sở nghi.",
+     "vi": "Vua Vũ nhà Hạ lo việc nước đến chai cả tay chân; Văn Vương bận đến muộn mới ăn, cả ngày không đủ thì giờ. Nay bốn phía ngoại thành đầy lũy giặc, mỗi người nên tự góp sức, mà bàn suông bỏ việc, văn hoa phù phiếm làm hại việc chính, e không hợp với thời nay.",
+     "src": "«Thế thuyết tân ngữ · Ngôn ngữ»"
+    },
+    {
+     "t": "p",
+     "x": "Thuyết “chữ như người” cần được dùng thận trọng: không phải cứ người cứng cỏi thì chữ hùng mạnh. Nhưng với người học, ý chính của tác giả rất thực tế: lâm «Thập thất thiếp» mà chỉ bắt chước dáng nghiêng, vẻ duyên, thì dễ thành “nô lệ của thiếp”. Cái cần học là lực bên trong nét: khởi bút dứt khoát, chuyển hướng có góc, nét đi có xương."
+    },
+    {
+     "t": "h",
+     "x": "5. Học «Thập thất thiếp» thế nào"
+    },
+    {
+     "t": "p",
+     "x": "Tác giả nhắc lại truyền thuyết về sự khổ luyện của Vương Hi Chi: thuở nhỏ học Vệ phu nhân, sau đi khắp nơi xem bia của Lý Tư, Chung Do, Thái Ung rồi đổi thầy, học từ trăm bia. Ông cũng tự so mình với Trương Chi, người luyện chữ bên ao đến nỗi nước ao đen như mực."
+    },
+    {
+     "t": "quote",
+     "zh": "张芝临池学书，池水尽黑，使人耽之若是，未必后之也。",
+     "hv": "Trương Chi lâm trì học thư, trì thủy tận hắc; sử nhân đam chi nhược thị, vị tất hậu chi dã.",
+     "vi": "Trương Chi ngồi bên ao học chữ, nước ao đen hết; nếu người khác say mê được như thế thì chưa chắc đã kém ông.",
+     "src": "Vương Hi Chi, thư gửi người, chép trong «Tấn thư · Vương Hi Chi truyện»"
+    },
+    {
+     "t": "p",
+     "x": "Từ đó tác giả đưa ra những điều cần chú ý khi lâm. Có thể gom lại thành ba thói quen luyện tập:"
+    },
+    {
+     "t": "p",
+     "x": "**Đọc thiếp trước khi viết.** Thảo thư của Vương Hi Chi không hề cẩu thả: trong mỗi chữ, nét này dẫn sang nét kia theo một lộ trình xác định. Muốn “thảo mà không ẩu” thì phải đọc kỹ lộ trình ấy, thuộc lòng nó, rồi tập **bối lâm** (viết theo trí nhớ không nhìn mẫu) và tự sửa. Chỉ nhìn một nét viết một nét thì không bao giờ có được mạch liền."
+    },
+    {
+     "t": "p",
+     "x": "**Nhận ra cái hiểm trong cái bình.** Chữ trong thiếp thoạt nhìn có vẻ bình thường, dễ viết. Chỉ khi lâm mãi không giống, người học mới thấy những chỗ lệch tâm, những nét nghiêng táo bạo được giấu trong dáng vẻ yên ổn. Một chữ lặp lại trong cùng một bức thư hầu như không bao giờ được viết giống hệt nhau. Lâm không giống thì chuyển sang mô (đặt giấy lên mà tô), mô xong lại lâm, lặp đi lặp lại."
+    },
+    {
+     "t": "p",
+     "x": "**Cân bằng các đối lập.** Nhanh và chậm, nặng và nhẹ, khô và ướt, chữ to và chữ nhỏ, chỗ thưa và chỗ dày, tất cả đặt cạnh nhau mà vẫn hài hòa. Đây là chỗ khó nhất và chỉ thấm dần sau nhiều năm. Với người viết chữ Việt kiểu thư pháp, bài học này vẫn đúng: một hàng chữ hay là một hàng chữ có nhịp, không phải chuỗi chữ đẹp đứng cạnh nhau."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Thác bản",
+       "zh": "拓本",
+       "vi": "Bản in giấy lấy từ bia hoặc bản khắc bằng cách phủ giấy và đập mực; “Đường thác” là bản thác làm từ đời Đường."
+      },
+      {
+       "hv": "Kim thảo",
+       "zh": "今草",
+       "vi": "Thảo thư “mới”, chữ có thể nối liền nhau, không còn nét ba tấp; phân biệt với chương thảo đời Hán."
+      },
+      {
+       "hv": "Chương thảo",
+       "zh": "章草",
+       "vi": "Thảo thư sớm, phát triển từ lệ thư, mỗi chữ thường đứng riêng và còn đuôi nét kiểu lệ."
+      },
+      {
+       "hv": "Khát bút",
+       "zh": "渴笔",
+       "vi": "Nét bút khô, mực ít, để lộ vệt sợi lông; trên bản thác tốt vẫn nhận ra được."
+      },
+      {
+       "hv": "Bối lâm",
+       "zh": "背临",
+       "vi": "Viết lại mẫu theo trí nhớ, không nhìn thiếp; bước sau khi đã đối lâm thành thạo."
+      },
+      {
+       "hv": "Đề bạt",
+       "zh": "题跋",
+       "vi": "Lời viết thêm ở đầu (đề) hoặc cuối (bạt) một tác phẩm, thường ghi nhận xét và lịch sử truyền tàng."
+      },
+      {
+       "hv": "Hùng cường",
+       "zh": "雄强",
+       "vi": "Mạnh mẽ, có khí lực; nét chữ ẩn sức bên trong chứ không chỉ đẹp ở bề ngoài."
+      },
+      {
+       "hv": "Thiếp nô",
+       "zh": "帖奴",
+       "vi": "“Nô lệ của thiếp”: chỉ bắt chước hình dáng bên ngoài mà không hiểu tinh thần."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Vương Hi Chi",
+       "zh": "王羲之",
+       "years": "303–361 (có thuyết khác), đời Đông Tấn",
+       "note": "“Thư thánh”; tác giả các bức thư hợp thành «Thập thất thiếp»."
+      },
+      {
+       "name": "Phùng Thuyên",
+       "zh": "冯铨",
+       "years": "1595–1672, cuối Minh đầu Thanh",
+       "note": "Nhà sưu tầm, khắc «Khoái tuyết đường pháp thiếp»; đề bạt khen bản thiếp này."
+      },
+      {
+       "name": "Uông Trung",
+       "zh": "汪中",
+       "years": "1745–1794, đời Thanh",
+       "note": "Học giả Dương Châu, từng giữ bản thiếp."
+      },
+      {
+       "name": "La Chấn Ngọc",
+       "zh": "罗振玉",
+       "years": "1866–1940",
+       "note": "Nhà kim thạch học; đề bạt bản thiếp năm 1923."
+      },
+      {
+       "name": "Lương Vũ Đế",
+       "zh": "梁武帝",
+       "years": "464–549, đời Lương",
+       "note": "Người viết lời bình “rồng nhảy cửa trời, hổ nằm cửa khuyết”."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Ba tiêu chí nào thường được dùng để so sánh các bản thác của cùng một thiếp, và vì sao chúng quan trọng với người lâm chữ?",
+      "Hiện tượng chữ nối chữ trong «Thập thất thiếp» cho thấy điều gì về sự chuyển từ chương thảo sang kim thảo?",
+      "Hai lời phê “hơi cổ” và “tục” về chữ Vương Hi Chi có thực sự mâu thuẫn không? Giải thích.",
+      "“Thiếp nô” là gì, và làm thế nào để tránh nó khi lâm «Thập thất thiếp»?",
+      "Hãy mô tả một quy trình luyện tập gồm đọc thiếp, đối lâm, mô và bối lâm cho một bức thư ngắn trong tập."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c02",
+   "no": "Bài 2",
+   "title": "Đôi điều tự đắc khi học thảo thư",
+   "titleZh": "学草偶得",
+   "author": "Mã Quốc Quyền",
+   "pages": "20–34",
+   "summary": "Một lộ trình học thảo thư: hiểu chữ thảo được giản lược theo những quy luật nào, phân biệt các chữ gần giống nhau, coi trọng thể thế, tránh nét rối và cuối cùng mới tìm biến hóa.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Thảo thư là thể chữ viết nhanh nhất, nét sống động nhất và cũng bộc lộ cá tính người viết rõ nhất. Người ta hay nói thảo “dễ học khó tinh”: ai cũng có thể vung bút cho ra những đường uốn lượn, nhưng để viết đúng chữ, đẹp thế và có hồn thì cần cả kiến thức văn tự lẫn tu dưỡng. Bài viết của Mã Quốc Quyền, một nhà nghiên cứu văn tự và thư pháp, tổng hợp kinh nghiệm của người xưa thành một lộ trình học. Dưới đây ta sắp xếp lại thành bốn chủ đề lớn, từ “hiểu chữ” đến “viết hay”."
+    },
+    {
+     "t": "h",
+     "x": "1. Chữ thảo không phải chữ tùy tiện: hiểu gốc của sự giản lược"
+    },
+    {
+     "t": "p",
+     "x": "Sai lầm phổ biến nhất của người mới học là chép hình chữ thảo như vẽ, không biết vì sao nó có hình ấy. Kết quả là nhớ sai, viết nhầm. Thảo thư sinh ra vì nhu cầu viết nhanh trong công việc gấp gáp, và nhà lý luận đời Tấn **Vệ Hằng** đã nói rõ điều đó:"
+    },
+    {
+     "t": "quote",
+     "zh": "应时谕指，用于卒迫。兼功并用，爱日省力。纯俭之变，岂必古式。",
+     "hv": "Ứng thời dụ chỉ, dụng ư thốt bách. Kiêm công tịnh dụng, ái nhật tỉnh lực. Thuần kiệm chi biến, khởi tất cổ thức.",
+     "vi": "Đáp ứng nhu cầu truyền đạt ý kịp thời, dùng trong lúc gấp gáp. Gộp công, dùng chung, quý thời gian, tiết kiệm sức. Đã là biến đổi theo hướng giản tiện thì đâu cần giữ khuôn cũ.",
+     "src": "Vệ Hằng, «Tứ thể thư thế» (phần Thảo thư thế)"
+    },
+    {
+     "t": "p",
+     "x": "Nhưng “giản tiện” không có nghĩa là hỗn loạn. Tác giả phân ra tám con đường giản lược mà ta có thể gom lại thành ba nhóm dễ nhớ:"
+    },
+    {
+     "t": "p",
+     "x": "**Nhóm giữ gốc cổ.** Nhiều hình chữ thảo bắt nguồn trực tiếp từ triện và lệ, chứ không phải từ chữ khải. Chương thảo kế thừa lệ thư, nhiều khi còn giữ cả “cái đuôi” kết cấu của lệ; có chữ thảo thậm chí giống triện hơn giống khải. Đây là lý do người học thảo nghiêm túc nên biết chút văn tự học: nhìn qua chữ triện, ta hiểu ngay vì sao một bộ phận trong chữ thảo lại có hình như vậy."
+    },
+    {
+     "t": "p",
+     "x": "**Nhóm rút gọn.** Nối nhiều nét thành một hay vài nét liền; lược bỏ hẳn một bộ phận; dùng một hai chấm hay một ký hiệu để thay cho cả cụm nét phức tạp; cho hai bộ phận dùng chung một nét; viết một nửa chữ đối xứng hoặc nhập hai thiên bàng làm một."
+    },
+    {
+     "t": "p",
+     "x": "**Nhóm sắp xếp lại.** Đổi thứ tự nét so với chữ khải, hoặc dời vị trí một bộ phận, để đường bút đi thuận hơn khi chuyển hướng."
+    },
+    {
+     "t": "p",
+     "x": "Một chữ có thể kết hợp nhiều cách. Nhưng khi đã quen tám con đường này, người học có thể “phân tích” một chữ thảo lạ thay vì học thuộc mù quáng. Đối với người Việt học chữ Hán, đây là chìa khóa: chữ thảo trở thành một hệ thống có lý, chứ không phải hàng nghìn hình vẽ rời rạc."
+    },
+    {
+     "t": "h",
+     "x": "2. Sai một ly đi một dặm: phân biệt chữ gần giống"
+    },
+    {
+     "t": "p",
+     "x": "Chữ Hán vốn đã nhiều chữ gần giống nhau; khi giản lược thành thảo thì số chữ gần giống càng tăng. Nguyên nhân chính là hiện tượng **tịnh tá**: một ký hiệu thảo được dùng chung cho nhiều bộ thủ khác nhau, hoặc cho nhiều “linh kiện” trong chữ. Thêm nữa, cùng một chữ có thể giản lược theo hai cách khác nhau, và mỗi cách lại vô tình trùng với hình thảo của một chữ khác."
+    },
+    {
+     "t": "p",
+     "x": "Người xưa ý thức rất rõ nguy cơ này. Các bài ca quyết dạy thảo như «Thảo quyết bách vận ca» được soạn chủ yếu để dạy phân biệt: mỗi câu năm chữ đặt cạnh nhau hai chữ dễ lẫn. Bản đời Tống chỉ hơn bảy trăm chữ mà nêu ra khoảng hai trăm bốn mươi chữ cần phân biệt. Điều đó cho thấy với người xưa, phân biệt chữ là bài học nhập môn, không phải chuyện phụ."
+    },
+    {
+     "t": "p",
+     "x": "Kinh nghiệm thực hành: khi học một chữ thảo, hãy học luôn chữ “anh em” dễ nhầm với nó, và ghi chú chỗ khác biệt (có hay không một chấm, nét cuối gập ngang hay hất lên, nét giữa xuyên qua hay dừng lại). Khi viết tác phẩm, một chữ thảo sai không chỉ làm người đọc khó hiểu mà còn là lỗi kiến thức rất dễ bị nhận ra."
+    },
+    {
+     "t": "h",
+     "x": "3. Thể thế: điểm họa và sử chuyển"
+    },
+    {
+     "t": "p",
+     "x": "Nắm được hình chữ mới chỉ là nửa đường. Câu mở đầu của «Thảo quyết bách vận ca» nói rằng phải phân biệt từng ly, nhưng thể thế lại càng phải trọn vẹn. Nghĩa là: biết chữ mà bút không vững, cốt không đứng, thì vẫn không thành thảo thư. Cơ sở lý luận cho điều này là câu nổi tiếng của Tôn Quá Đình:"
+    },
+    {
+     "t": "quote",
+     "zh": "真以点画为形质，使转为情性；草以点画为情性，使转为形质。",
+     "hv": "Chân dĩ điểm họa vi hình chất, sử chuyển vi tình tính; thảo dĩ điểm họa vi tình tính, sử chuyển vi hình chất.",
+     "vi": "Chữ chân lấy điểm nét làm hình chất, lấy sử chuyển làm tình tính; chữ thảo lấy điểm nét làm tình tính, lấy sử chuyển làm hình chất.",
+     "src": "Tôn Quá Đình, «Thư phổ»"
+    },
+    {
+     "t": "p",
+     "x": "Hiểu nôm na: ở chữ thảo, những đường chuyển hướng liên tục tạo nên “thân thể” của chữ, còn chính những điểm nét dứt khoát, có nhấn có nhấc, mới mang lại “tính tình”, thần thái. Đường nối liền chỉ là cái vỏ dễ thấy; cái quyết định là điểm nét bên trong. Kỹ thuật then chốt là **đề đốn**: ấn bút xuống để nét hiện ra, nhấc bút lên để đường dẫn uốn lượn nhẹ nhàng. Thiếu ấn thì nét không có góc cạnh, thiếu nhấc thì đường vòng không có chỗ “như đứt như liền”."
+    },
+    {
+     "t": "p",
+     "x": "Bao Thế Thần đời Thanh nói thẳng rằng người đời biết cái hay của chữ chân nằm ở sử chuyển, nhưng không biết cái hay của chữ thảo nằm ở điểm nét. Ông mô tả thảo thư của Vương Hiến Chi tuy xoay vòng liền mạch, nhưng mỗi chỗ chuyển đều có khởi phục đốn tỏa, đều mang thế của điểm nét."
+    },
+    {
+     "t": "quote",
+     "zh": "盖必点画寓使转之中，即性情发形质之内。",
+     "hv": "Cái tất điểm họa ngụ sử chuyển chi trung, tức tính tình phát hình chất chi nội.",
+     "vi": "Ắt phải để điểm nét ngụ trong sử chuyển, thì tình tính mới phát ra từ bên trong hình chất.",
+     "src": "Bao Thế Thần, «Nghệ chu song tiếp»"
+    },
+    {
+     "t": "p",
+     "x": "Một bổ sung quý: bản «Thư phổ» do sư Không Hải (Kūkai, Nhật Bản) chép có thêm vài câu không thấy trong bản thông hành, trong đó có ý “thảo mà không có điểm nét thì không hiện được vẻ khôi vĩ”. Câu này nhấn mạnh rằng sức nặng của chữ thảo nằm ở những nét chắc, không ở những đường vòng."
+    },
+    {
+     "t": "p",
+     "x": "Một nguyên tắc cụ thể khác đến từ Khương Quỳ đời Tống: phải phân biệt **chủ bút** (nét thật của chữ) và **liên bút** (đường dẫn nối). Chỗ là nét thì nặng, chỗ chỉ là dẫn nối thì nhẹ."
+    },
+    {
+     "t": "quote",
+     "zh": "古人作草，如今人作真，何尝苟且？其相连处，特是引带。尝考其字，是点画处皆重，非点画处偶相引带，其笔皆轻。虽复变化多端，而未尝乱其法度。",
+     "hv": "Cổ nhân tác thảo, như kim nhân tác chân, hà thường cẩu thả? Kỳ tương liên xứ, đặc thị dẫn đới. Thường khảo kỳ tự, thị điểm họa xứ giai trọng, phi điểm họa xứ ngẫu tương dẫn đới, kỳ bút giai khinh. Tuy phục biến hóa đa đoan, nhi vị thường loạn kỳ pháp độ.",
+     "vi": "Người xưa viết thảo cũng như người nay viết chân, nào có cẩu thả? Chỗ nối liền chỉ là đường dẫn. Xét kỹ chữ của họ, chỗ là điểm nét thì đều nặng, chỗ không phải điểm nét mà ngẫu nhiên dẫn nối thì bút đều nhẹ. Tuy biến hóa muôn vẻ mà chưa từng làm loạn phép tắc.",
+     "src": "Khương Quỳ, «Tục thư phổ»"
+    },
+    {
+     "t": "p",
+     "x": "Cuối cùng, thể thế phải học từ mẫu tốt. Tác giả khuyên lấy thảo đời Tấn, Đường làm gốc vì hạ bút có nguồn, giữ phép tắc nghiêm; thảo đời Minh tuy có ý mới nhưng hay có vẻ gồng sức, phô trương. Hình ảnh người múa kiếm giỏi rất đáng nhớ: múa xong, thu kiếm, mặt không đỏ, hơi không gấp. Cái tĩnh bên trong cái động là đặc trưng của thảo Tấn, Đường."
+    },
+    {
+     "t": "h",
+     "x": "4. Tránh nét rối, rồi mới tìm biến hóa"
+    },
+    {
+     "t": "p",
+     "x": "Một bệnh rất hay gặp ở người viết thảo là để quá nhiều **vòng mắt** (khoanh tròn, tam giác do đường dẫn tạo ra) và những nét **giao, chạm** không cần thiết. Đường Thái Tông từng chê thảo thư thiếu cốt cách là hàng hàng như giun mùa xuân, chữ chữ như rắn mùa thu cuộn lại:"
+    },
+    {
+     "t": "quote",
+     "zh": "行行若萦春蚓，字字如绾秋蛇。",
+     "hv": "Hàng hàng nhược oanh xuân dẫn, tự tự như oản thu xà.",
+     "vi": "Hàng hàng như giun xuân quấn quýt, chữ chữ như rắn thu cuộn thắt.",
+     "src": "Đường Thái Tông, «Vương Hi Chi truyện luận» (trong «Tấn thư»)"
+    },
+    {
+     "t": "p",
+     "x": "Tác giả phân biệt: có những chỗ giao là bắt buộc (như chữ 十, 文), nhưng giao do đường dẫn kéo lê qua nét chính thì nên tránh. “Chạm” là khi hai bộ phận dính vào nhau, hoặc nét cuối quét chạm vào nét khác. Giảm những chỗ thừa này, chữ sẽ thông thoáng, khởi và dừng rõ ràng. Nhiều kiệt tác xưa đạt được cái thần “bút đứt mà ý liền”, nghĩa là không cần nối bằng mực mà mạch vẫn chảy."
+    },
+    {
+     "t": "p",
+     "x": "Chỉ khi đã có phép tắc mới nói đến biến hóa. Khang Hữu Vi chỉ ra trình tự:"
+    },
+    {
+     "t": "quote",
+     "zh": "学草书先写智永《千文》、过庭《书谱》千百遍，尽得其使转顿挫之法，形质具矣，然后求性情，笔力足矣，然后求变化。",
+     "hv": "Học thảo thư tiên tả Trí Vĩnh «Thiên văn», Quá Đình «Thư phổ» thiên bách biến, tận đắc kỳ sử chuyển đốn tỏa chi pháp, hình chất cụ hĩ, nhiên hậu cầu tính tình; bút lực túc hĩ, nhiên hậu cầu biến hóa.",
+     "vi": "Học thảo thư, trước hãy viết «Thiên tự văn» của Trí Vĩnh và «Thư phổ» của Quá Đình hàng trăm hàng nghìn lần, nắm hết phép sử chuyển đốn tỏa; hình chất đã đủ rồi mới tìm tình tính, bút lực đã đủ rồi mới tìm biến hóa.",
+     "src": "Khang Hữu Vi, «Quảng nghệ chu song tiếp · Hành thảo»"
+    },
+    {
+     "t": "p",
+     "x": "Biến hóa ở ba tầng. **Dụng bút**: nhanh chậm, có phong và giấu phong; cầm bút cao hơn một chút để cán bút hoạt động rộng. **Kết cấu**: sắp xếp thiên bàng không cứng nhắc, tránh kiểu “như con tính bàn tính”. Tác giả lưu ý dùng dị thể nhiều để khoe uyên bác là phản tác dụng; Tôn Quá Đình lặp chữ rất nhiều mà gần như không dùng dị thể, chỉ thay đổi độ nghiêng, độ đậm nhạt, và đó mới là cách đáng học. **Chương pháp**: thảo Tấn tự nhiên, trục hàng dao động như quả lắc; thảo Đường của Trương Húc, Hoài Tố táo bạo, chữ lớn nhỏ chen nhau, có hàng chỉ hai chữ. Nhưng chương pháp phải hợp với bút pháp: chữ kiểu Vương Hi Chi mà bố cục kiểu Hoài Tố thì lạc điệu."
+    },
+    {
+     "t": "p",
+     "x": "Câu kết của «Thảo quyết bách vận ca» khuyên năng xem dấu tích của hai họ Vương để khỏi làm đục ao mực. Dù học quy củ hay tìm sáng tạo, trở về Vương Hi Chi, Vương Hiến Chi vẫn là cách giữ mình khỏi lạc lối."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Thảo biến",
+       "zh": "草变",
+       "vi": "Quá trình và quy luật giản lược chữ chính thể thành chữ thảo."
+      },
+      {
+       "hv": "Tịnh tá",
+       "zh": "并借",
+       "vi": "Dùng chung một ký hiệu thảo cho nhiều bộ thủ hoặc bộ phận khác nhau; nguyên nhân chính khiến chữ thảo dễ lẫn."
+      },
+      {
+       "hv": "Thể thế",
+       "zh": "体势",
+       "vi": "Dáng dấp, cục diện và khí thế của chữ."
+      },
+      {
+       "hv": "Sử chuyển",
+       "zh": "使转",
+       "vi": "Động tác chuyển hướng, xoay bút liên tục tạo nên dòng chảy của nét."
+      },
+      {
+       "hv": "Đề đốn",
+       "zh": "提顿",
+       "vi": "Nhấc và ấn bút; tạo độ nặng nhẹ, chỗ dừng chỗ đi của nét."
+      },
+      {
+       "hv": "Chủ bút / liên bút",
+       "zh": "主笔 / 连笔",
+       "vi": "Nét thật của chữ (nặng, chắc) và đường dẫn nối (nhẹ, lướt qua)."
+      },
+      {
+       "hv": "Du ti",
+       "zh": "游丝",
+       "vi": "Sợi tơ mực mảnh nối các nét, các chữ."
+      },
+      {
+       "hv": "Bút đoạn ý liên",
+       "zh": "笔断意连",
+       "vi": "Nét đứt mà mạch ý vẫn liền; lý tưởng của chương pháp thảo."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Vệ Hằng",
+       "zh": "卫恒",
+       "years": "?–291, đời Tây Tấn",
+       "note": "Tác giả «Tứ thể thư thế», một trong những bài luận thư pháp sớm nhất."
+      },
+      {
+       "name": "Tôn Quá Đình",
+       "zh": "孙过庭",
+       "years": "khoảng 646–691, đời Đường",
+       "note": "Tác giả «Thư phổ», vừa là lý luận vừa là mẫu thảo kinh điển."
+      },
+      {
+       "name": "Khương Quỳ",
+       "zh": "姜夔",
+       "years": "khoảng 1155–1221, đời Nam Tống",
+       "note": "Tác giả «Tục thư phổ», phân biệt chủ bút và đường dẫn."
+      },
+      {
+       "name": "Bao Thế Thần",
+       "zh": "包世臣",
+       "years": "1775–1855, đời Thanh",
+       "note": "Tác giả «Nghệ chu song tiếp», nhấn mạnh điểm nét trong thảo."
+      },
+      {
+       "name": "Khang Hữu Vi",
+       "zh": "康有为",
+       "years": "1858–1927",
+       "note": "Tác giả «Quảng nghệ chu song tiếp», nêu trình tự học thảo."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Vì sao biết văn tự học (triện, lệ) lại giúp người học thảo thư nhớ đúng hình chữ?",
+      "Hiện tượng “tịnh tá” là gì và nó dẫn đến khó khăn nào cho người đọc, người viết thảo?",
+      "Giải thích câu của Tôn Quá Đình về điểm họa và sử chuyển trong chữ chân và chữ thảo.",
+      "Phân biệt chủ bút và liên bút; khi luyện tập, làm thế nào để thể hiện sự khác biệt ấy?",
+      "Theo Khang Hữu Vi, trình tự học thảo nên đi từ đâu đến đâu? Áp dụng cho kế hoạch luyện của bạn."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c03",
+   "no": "Bài 3",
+   "title": "Đề bạt còn sót lại của Minh Lưỡng Lư",
+   "titleZh": "明两庐题跋劫余录",
+   "author": "Vương Cừ Thường",
+   "pages": "35–43",
+   "summary": "Chùm lời đề bạt của nhà chương thảo Vương Cừ Thường về các bản «Cấp tựu chương», «Bình phục thiếp», «Thập thất thiếp» và bia Bắc triều, cho thấy cách một thư gia kết hợp khảo chứng, giám định và kinh nghiệm luyện chữ.",
+   "body": [
+    {
+     "t": "p",
+     "x": "**Vương Cừ Thường** (1900–1989), hiệu Minh Lưỡng, là học giả và thư gia hiện đại nổi tiếng nhất về **chương thảo**. “Minh Lưỡng Lư” là tên thư phòng của ông; chữ “kiếp dư” trong nhan đề cho biết đây là những lời đề bạt còn sót lại sau biến cố, phần lớn đã mất. Bài đăng gồm khoảng mười lăm đoạn đề bạt ngắn, viết bằng văn ngôn, rải từ thập niên 1930 đến 1970, ghi trên các bản thác, bản ảnh in hay bản lâm của chính ông."
+    },
+    {
+     "t": "p",
+     "x": "Đây là văn bản hiện đại có bản quyền, nên bài giảng không dịch từng đoạn mà nhóm lại theo chủ đề, nêu những luận điểm và phương pháp đáng học. Thể loại **đề bạt** tự nó là một bài học: ngắn, đặc, vừa khảo cứu vừa bình phẩm, vừa ghi lại kỷ niệm riêng. Đọc đề bạt của bậc thầy là cách nhanh nhất để học “con mắt” xem bi thiếp."
+    },
+    {
+     "t": "h",
+     "x": "1. Chương thảo và «Cấp tựu chương»: chuyên môn của tác giả"
+    },
+    {
+     "t": "p",
+     "x": "Gần một nửa số đề bạt xoay quanh chương thảo, sở trường cả đời của Vương Cừ Thường. Điểm nổi bật đầu tiên là cách ông giải thích tên gọi “chương thảo”. Thuyết phổ biến từ đời Đường cho rằng Hán Chương Đế thích viết thảo nên thể chữ mang tên ông. Vương Cừ Thường bác bỏ thuyết ấy, cũng như thuyết “dùng được trong chương tấu”. Ông đưa ra giả thuyết riêng: học giả đời Hán chú trọng “chương cú”, sách dạy chữ như «Cấp tựu thiên» của Sử Du được chia thành từng “chương”, nên chữ “chương” trong tên gọi gắn với việc chia chương của sách học chữ. Đó là một giả thuyết, không phải kết luận chung của giới học thuật, nhưng cho thấy thói quen tra lại nguồn gốc thay vì nhận truyền thuyết."
+    },
+    {
+     "t": "p",
+     "x": "Cùng tinh thần ấy, ông xem đoạn “Hán Chương Đế thiên văn” trong «Thuần Hóa các thiếp» là do người đời Tùy, Đường tập chữ chương thảo rồi gán cho Chương Đế, và chê người biên tập Vương Trước tin nhầm. Tuy vậy ông vẫn công nhận giá trị nghệ thuật của bản này. Đây là thái độ đáng học: **chân ngụy là một chuyện, hay dở là chuyện khác**."
+    },
+    {
+     "t": "p",
+     "x": "Ba đề bạt về **«Cấp tựu chương»** cho thấy cách làm việc với các bản khắc khác nhau. Bản khắc ở Tùng Giang đời Minh dựa trên bản của Diệp Mộng Đắc đời Tống, tương truyền chữ của **Hoàng Tượng** (Tam Quốc); phần thiếu được bổ bằng chữ của **Tống Khắc** đời Minh. Với một bản «Tập trân lâu» do học trò mang đến, ông dùng ba chứng cứ (giấy bồi ghi niên hiệu Vạn Lịch, ấn của lầu Tập Trân, đề tên Sách Tĩnh) để xác định đó là bản khắc lại từ bản Tùng Giang, cố ý làm khác đi đôi chút. Còn với bản mặc tích «Cấp tựu chương» của Triệu Mạnh Phủ, ông khen bút lực nhưng liệt kê nhiều chữ viết lẫn, viết thiếu, thậm chí gộp hai chữ thành một. Bài học ông rút ra: chữ thảo khác nhau trong từng ly, nên dù là danh gia cũng phải kiểm tra từng chữ."
+    },
+    {
+     "t": "p",
+     "x": "Để đối chiếu, có thể đọc lời phê của **Vương Thế Trinh** đời Minh về chữ Tống Khắc mà tác giả dẫn lại: lời phê ấy chê nét ba quá hiểm, gân cốt lộ ra nên thành nhẹ nổi. Vương Cừ Thường cho rằng điều đó có thể đúng với Tống Khắc thời trẻ, nhưng phần bổ khuyết trên bản Tùng Giang lại cho thấy kết thể chắc, vận bút ung dung."
+    },
+    {
+     "t": "quote",
+     "vi": "Nét ba hiểm quá mức, gân cựa tràn ra ngoài, thành ra nhẹ nổi phù phiếm.",
+     "src": "Vương Thế Trinh, lời bình về chữ Tống Khắc (dẫn theo bài)"
+    },
+    {
+     "t": "h",
+     "x": "2. Con mắt giám định: ấn chương, chữ khuyết và thứ tự thư từ"
+    },
+    {
+     "t": "p",
+     "x": "Một số đề bạt là những bài khảo chứng thu nhỏ. Với «Thử sự thiếp» của Vương Hi Chi (bản ảnh), ông lần theo ấn của các triều đại: ấn của vua Kim chứng tỏ khi Bắc Tống mất, văn vật cung đình rơi vào tay Kim; một ấn của Giả Tự Đạo đời Nam Tống cho thấy văn vật lại chảy về phương Nam sau khi Kim bị diệt. Như ông nhận xét, một cái ấn nhỏ có thể ghi lại cả lịch sử chiến tranh và sự tan hợp của văn vật. Ông còn soi kỹ mặc tích để chỉ ra rằng bản thích văn cũ đọc sai một chữ và bỏ sót một chữ đã mờ."
+    },
+    {
+     "t": "p",
+     "x": "Với «Chiêm cận thiếp» khắc trong «Tam Hi đường pháp thiếp», ông đặt cạnh bản Đường thác «Thập thất thiếp» và nhận thấy khác xa về độ cổ đạm, lại gần với bản Hà Nam (một bản khắc lại muộn). Thêm nữa, trên cùng tờ có một bức thư gửi người khác; hai bức thư gửi hai người không lẽ nằm chung một tờ giấy gốc, vậy đây là bản lâm. Lý lẽ dựa vào nội dung thư (người nhận là ai) để phán đoán vật chất (một tờ hay nhiều tờ) là một kỹ thuật rất hay mà người học có thể ghi nhớ."
+    },
+    {
+     "t": "p",
+     "x": "Ở đề bạt về «Bình phục thiếp» của **Lục Cơ** (Tây Tấn), ông đi ngược số đông. Các bộ sách từ «Tuyên Hòa thư phổ» trở đi đều xếp thiếp này vào chương thảo và khen là kỳ cổ. Vương Cừ Thường cho rằng toàn thiên không có ý chương thảo, nếu có thì chỉ hơi có ý triện; ông đánh giá chữ này kém xa Sách Tĩnh và đồng tình với việc Dữu Kiên Ngô thời Lương xếp Lục Cơ ở hạng trung hạ. Ông còn cho rằng thiếp của em trai là Lục Vân trong «Thuần Hóa các thiếp» hay hơn. Dù đồng ý hay không, người học thấy được rằng danh tiếng của một văn vật và giá trị nghệ thuật của nó cần được xét riêng."
+    },
+    {
+     "t": "p",
+     "x": "Một đề bạt khác bàn về bản thảo «Tuyệt giao thư» (thư tuyệt giao của Kê Khang) thường gán cho Lý Hoài Lâm đời Đường. Ông lập luận rằng lời bạt đi kèm cho thấy đây là chữ người đời Lương, và việc gán cho Lý Hoài Lâm chỉ dựa trên một câu bình mơ hồ của Đậu Cơ; ông còn dựa vào một bài tựa ký tên Lý Hoài Lâm để sửa lại quê quán của nhân vật này."
+    },
+    {
+     "t": "h",
+     "x": "3. Ký ức học chữ: «Thập thất thiếp» bên giường bệnh"
+    },
+    {
+     "t": "p",
+     "x": "Đoạn cảm động nhất là đề bạt trên bản ảnh «Thập thất thiếp». Năm mười bảy tuổi, tác giả mắc sốt rét nặng, nằm liệt hai năm; cha ông đưa cho cuốn thiếp để khuây khỏa. Ông giở xem mỗi ngày nhiều lần đến thuộc lòng, nhắm mắt vẫn thấy từng chữ hiện lên. Mồ hôi lúc lên cơn làm cuốn sách nát, cha lại mua cuốn mới; đến cuốn thứ tư ông vẫn giữ làm kỷ niệm. Nằm trên giường, ông lấy ngón tay vẽ chữ lên chăn, và nhận ra rằng chuyện người xưa “vạch đất, vạch chăn” để luyện chữ hẳn là luyện thảo chứ không phải luyện khải, vì chỉ thảo mới có những đường liền để ngón tay vẽ theo."
+    },
+    {
+     "t": "p",
+     "x": "Ông cũng nhân đó giải nghĩa nhiều từ thư từ của người Tấn: những cách nói như “liệt liệt” (ốm yếu), “vật vật” (vội vã), “du du” (nhớ xa), cùng lối diễn đạt cô đọng của văn thư đời Tấn. Bài học thực hành ở đây rất rõ: **muốn lâm thư từ cổ thì nên hiểu nội dung**. Biết câu nào là hỏi bệnh, câu nào là hẹn gặp, ta mới cảm được nhịp và tâm trạng của nét chữ."
+    },
+    {
+     "t": "h",
+     "x": "4. Bia Bắc triều: Thoán Bảo Tử, Trịnh Văn Công, Thạch Môn minh"
+    },
+    {
+     "t": "p",
+     "x": "Phần cuối là các đề bạt về bia chữ khải cổ. Khi còn trẻ chỉ thích chữ hai họ Vương, Vương Cừ Thường lần đầu thấy **«Thoán Bảo Tử bi»** thì cho là quái dị. Thầy ông là **Thẩm Tăng Thực** khuyến khích ông thử học, nói rằng bia ấy như vách núi khó leo, nhưng luyện lâu sẽ thấy vẻ duyên dáng gần gũi và chữa được bệnh tầm thường. Lời thầy dặn tìm cách “thông” giữa hai nhà Thoán (Thoán Bảo Tử, Thoán Long Nhan) với chữ Tấn của họ Vương đã định hướng cả phong cách về sau của ông. Đây là một bài học về cách thầy dẫn trò ra khỏi vùng quen thuộc."
+    },
+    {
+     "t": "p",
+     "x": "Khang Hữu Vi từng khen «Thoán Bảo Tử» là “đoan phác như dung mạo Phật cổ”; tác giả cho rằng lời khen ấy vẫn chưa nói hết vẻ kỳ vĩ của bia."
+    },
+    {
+     "t": "quote",
+     "zh": "端朴若古佛之容",
+     "hv": "Đoan phác nhược cổ Phật chi dung",
+     "vi": "Ngay ngắn, chất phác như dung nhan Phật cổ.",
+     "src": "Khang Hữu Vi, «Quảng nghệ chu song tiếp»"
+    },
+    {
+     "t": "p",
+     "x": "Với **«Trịnh Văn Công bi»** (Trịnh Hi bi) của Trịnh Đạo Chiêu, tác giả tranh luận với Bao Thế Thần, người được xem là hiểu bia này sâu nhất. Ông đồng ý rằng chữ bia đặc biệt đoan chính và mang dáng triện, vận lệ, tình thảo; đồng ý dùng khắc đá Vân Phong sơn để chứng minh tác giả là Trịnh Đạo Chiêu. Nhưng ông không chấp nhận việc Bao gắn bia này với «Ất Anh bi» và «Thạch cổ văn», và chỉ ra rằng chữ “thảo” nhỏ dưới tên bia là do người sau thêm vào, không phải lời “tự xưng thảo triện”. Ông cũng nghi việc gán «Kinh Thạch Dụ» và «Điêu Tuân mộ chí» cho Đạo Chiêu."
+    },
+    {
+     "t": "quote",
+     "zh": "北碑体多旁出，郑文公字独真正，而篆势、分韵、草情毕具。",
+     "hv": "Bắc bi thể đa bàng xuất, Trịnh Văn Công tự độc chân chính, nhi triện thế, phân vận, thảo tình tất cụ.",
+     "vi": "Bia phương Bắc phần nhiều thể chữ chệch lệch, riêng chữ bia Trịnh Văn Công thì ngay thẳng đoan chính, mà thế của triện, vận của lệ, tình của thảo đều đủ cả.",
+     "src": "Bao Thế Thần, «Nghệ chu song tiếp»"
+    },
+    {
+     "t": "p",
+     "x": "Một đề bạt khác khảo bản lâm «Trịnh Văn Công» của chính Bao Thế Thần và phát hiện nhiều chữ viết sai, có chữ sai vì không hiểu điển «Truy y» trong Kinh Thi. Vương Cừ Thường nghi bản này là giả, nhưng nét bút lại rất giống thật nên ông để ngỏ. Ông cũng ghi lại quan điểm của Bao về việc lâm phóng to hoặc thu nhỏ chữ mẫu, một kỹ thuật luyện tập đáng thử. Cuối cùng, so «Thạch Môn minh» của Vương Viễn với bia Trịnh, ông thấy nhiều chữ như cùng một tay, chỉ khác ở độ phóng túng và độ trầm tĩnh, và không đồng tình với việc Khang Hữu Vi đặt «Thạch Môn minh» làm chính, «Trịnh Văn Công» làm phụ."
+    },
+    {
+     "t": "h",
+     "x": "Đọc đề bạt để học gì?"
+    },
+    {
+     "t": "p",
+     "x": "Chùm đề bạt này gợi ý một cách học trọn vẹn: biết **văn tự** để đọc đúng chữ, biết **lịch sử truyền tàng** để đặt bản thiếp vào đúng chỗ, dám **hoài nghi** cả lời của danh gia như Bao Thế Thần, Khang Hữu Vi, và gắn tất cả với **thực hành**: lâm, bối lâm, phóng to thu nhỏ. Người học thư pháp Việt cũng có thể tập viết đề bạt ngắn cho những bản mẫu mình lâm: ghi nguồn bản, nhận xét chỗ hay chỗ dở, và điều mình học được."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Đề bạt",
+       "zh": "题跋",
+       "vi": "Lời viết thêm trên tác phẩm hoặc bản thác, gồm khảo chứng, bình luận, ghi chép riêng."
+      },
+      {
+       "hv": "Chương thảo",
+       "zh": "章草",
+       "vi": "Thảo thư đời Hán, Tấn, mỗi chữ tách riêng, còn nét ba của lệ."
+      },
+      {
+       "hv": "Cấp tựu chương",
+       "zh": "急就章",
+       "vi": "Sách dạy chữ đời Hán của Sử Du; bản chương thảo tương truyền của Hoàng Tượng là mẫu chương thảo kinh điển."
+      },
+      {
+       "hv": "Phiên khắc",
+       "zh": "翻刻",
+       "vi": "Khắc lại một bản thiếp dựa trên bản thác cũ; thường làm sai lệch nét."
+      },
+      {
+       "hv": "Thích văn",
+       "zh": "释文",
+       "vi": "Bản phiên chữ thảo hoặc chữ cổ sang chữ chính thể."
+      },
+      {
+       "hv": "Lâm bản",
+       "zh": "临本",
+       "vi": "Bản do người sau chép lại theo mẫu, không phải nguyên bản."
+      },
+      {
+       "hv": "Bắc bi",
+       "zh": "北碑",
+       "vi": "Bia khắc thời Bắc triều (thế kỷ V–VI), tiêu biểu là «Trịnh Văn Công», «Thạch Môn minh»."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Vương Cừ Thường",
+       "zh": "王蘧常",
+       "years": "1900–1989",
+       "note": "Học giả, thư gia chương thảo; tác giả các đề bạt."
+      },
+      {
+       "name": "Thẩm Tăng Thực",
+       "zh": "沈曾植",
+       "years": "1850–1922",
+       "note": "Thầy của tác giả; thư gia, học giả cuối Thanh."
+      },
+      {
+       "name": "Hoàng Tượng",
+       "zh": "皇象",
+       "years": "thế kỷ III, Đông Ngô",
+       "note": "Tương truyền là người viết bản chương thảo «Cấp tựu chương»."
+      },
+      {
+       "name": "Lục Cơ",
+       "zh": "陆机",
+       "years": "261–303, Tây Tấn",
+       "note": "Văn nhân, tác giả «Bình phục thiếp»."
+      },
+      {
+       "name": "Sách Tĩnh",
+       "zh": "索靖",
+       "years": "239–303, Tây Tấn",
+       "note": "Danh gia chương thảo; «Xuất sư tụng» tương truyền là chữ ông."
+      },
+      {
+       "name": "Trịnh Đạo Chiêu",
+       "zh": "郑道昭",
+       "years": "?–516, Bắc Ngụy",
+       "note": "Người viết «Trịnh Văn Công bi» và khắc đá Vân Phong sơn."
+      },
+      {
+       "name": "Bao Thế Thần",
+       "zh": "包世臣",
+       "years": "1775–1855, đời Thanh",
+       "note": "Lý luận gia đề cao bia Bắc triều; bị tác giả phản biện nhiều điểm."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Vương Cừ Thường giải thích tên gọi “chương thảo” khác thuyết truyền thống thế nào? Thái độ học thuật đằng sau là gì?",
+      "Nêu ba loại chứng cứ mà tác giả dùng khi giám định một bản thiếp (ví dụ ấn chương, chữ khuyết, nội dung thư).",
+      "Kinh nghiệm “vạch chăn” của tác giả khi bệnh gợi ý gì về cách luyện thảo thư?",
+      "Vì sao Thẩm Tăng Thực khuyên học trò học «Thoán Bảo Tử bi»? Điều đó có ích gì cho người chỉ quen chữ thanh nhã?",
+      "Hãy thử viết một đề bạt ngắn (5–8 câu) cho bản mẫu bạn đang lâm."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c04",
+   "no": "Bài 4",
+   "title": "Hai khảo cứu bia thiếp",
+   "titleZh": "碑帖丛考二则",
+   "author": "Ông Khải Vận",
+   "pages": "44–49",
+   "summary": "Hai khảo cứu ngắn: bản thác «Kim cương kinh» tập chữ Vương Hi Chi khắc năm 832 đời Đường, và mảnh bia Hán nhắc đến Trương Giác, cho thấy bia thiếp vừa là tư liệu thư pháp vừa là tư liệu lịch sử.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Khảo cứu bia thiếp (bi thiếp khảo) là một nhánh quan trọng của học thuật thư pháp Trung Hoa: người nghiên cứu đọc từng chữ trên bản thác, đối chiếu với sử sách, xác định niên đại, người viết, người khắc, và từ đó đánh giá giá trị nghệ thuật. Ông Khải Vận (1912–2006), thư gia và nhà giám định ở Thượng Hải, giới thiệu ở đây hai hiện vật ít được biết: một bản thác kinh Phật tập chữ Vương Hi Chi đời Đường và một mảnh bia đời Hán. Bài giảng tóm lược những điều người học thư pháp nên biết từ hai khảo cứu này."
+    },
+    {
+     "t": "h",
+     "x": "1. Tập tự: khi không có thư gia, người ta “ghép” chữ Vương Hi Chi"
+    },
+    {
+     "t": "p",
+     "x": "**Tập tự** là cách dựng văn bản bằng những chữ lấy ra từ các bút tích sẵn có của một danh gia: người tập chữ tìm từng chữ trong thư từ, thiếp, rồi câu (đồ) lại, sắp xếp thành bài mới để khắc đá. Tác phẩm nổi tiếng nhất là **«Tập Vương thư Thánh giáo tự»** (672) do sư Hoài Nhân chùa Hoằng Phúc mất khoảng hơn hai mươi năm tập chữ Vương Hi Chi. Lý do tập chữ cũng thú vị: khi bài tựa «Thánh giáo» đã được Chử Toại Lương viết và khắc (bia Nhạn Tháp), giới tăng sĩ vẫn muốn có một bản mang chữ “thư thánh”. Sau bài tựa là «Tâm kinh», bản kinh Phật tập chữ cổ nhân sớm nhất."
+    },
+    {
+     "t": "p",
+     "x": "Bản thác được giới thiệu trong bài là «Kim cương kinh» theo bản dịch lần thứ bảy, khắc năm Đại Hòa thứ sáu (832), do **Đường Huyền Tự** tập chữ Vương Hi Chi, Đường Huyền Độ viết triện ở đầu bia, sau có lời tán của nhiều quan đại thần, trong đó có Liễu Công Quyền. Một câu hỏi tác giả đặt ra rất đáng suy nghĩ: lúc ấy Liễu Công Quyền đang lừng danh, vậy sao không nhờ ông viết mà lại đi tập chữ Vương? Câu trả lời ngầm hiểu: việc tập chữ Vương Hi Chi là sự tôn trọng cao nhất dành cho bản kinh. Ghi chú cuối bia cho biết lý do khác nữa: bản khắc trước bằng chữ lệ khiến người đọc hay đọc sai, nên mới tập lại bằng hành thư của họ Vương."
+    },
+    {
+     "t": "p",
+     "x": "Theo tác giả, giấy mực cho thấy đây là bản thác đời Tống, dù một lời bạt đời Minh khen là “Đường thác”. Đây lại là lời nhắc thường gặp trong giám định: nhãn “Đường thác” trên các bản thác cần được thẩm định độc lập."
+    },
+    {
+     "t": "h",
+     "x": "2. Những người đứng sau một tấm bia: tập chữ, hiệu khám, thợ khắc"
+    },
+    {
+     "t": "p",
+     "x": "Một đóng góp của bài là làm rõ những người “vô danh” trong quy trình làm bia. Kinh Phật dịch ra phải được quan có học vấn duyệt lại: người đầu tiên viết lời tán cho bản kinh này là Trịnh Đàm, tể tướng chủ trì hiệu khám «Khai Thành thạch kinh»; người viết triện ở đầu, Đường Huyền Độ, là quan hiệu khám thạch kinh và tác giả «Cửu kinh tự dạng». Người tập chữ, Đường Huyền Tự, có lẽ là anh em với Huyền Độ."
+    },
+    {
+     "t": "p",
+     "x": "Về **thợ khắc**, tác giả chỉ ra rằng thời Đường các thư gia lớn thường có thợ khắc riêng, gắn bó lâu dài: chữ Chử Toại Lương do Vạn Văn Thiều khắc, chữ Lý Ung do Hoàng Tiên Hạc, Phục Linh Chi khắc, chữ Liễu Công Quyền do anh em Thiệu Kiến Hòa, Thiệu Kiến Sơ khắc; người khắc bản kinh này mang tên Thiệu Kiến, có lẽ cùng họ nghề. Nhiều thợ khắc còn mang chức quan. Với người học, đây là điều quan trọng: chữ trên bia là kết quả hợp tác giữa người viết và người khắc. Một bia khắc khéo giữ được nét bút, một bia khắc vụng có thể biến chữ hay thành chữ cứng. Vì thế khi lâm bia, nên tự hỏi nét nào là của bút, nét nào là của dao."
+    },
+    {
+     "t": "h",
+     "x": "3. Thứ bậc của các bia tập chữ Vương và một chi tiết in ấn"
+    },
+    {
+     "t": "p",
+     "x": "Tác giả xếp hạng: trong các bia tập chữ Vương đời Đường, chỉ «Thánh giáo tự» giữ được bút ý như viết tay; kế đến là «Hưng Phúc tự đoạn bi» (721) của sư Đại Nhã, vì người được dựng bia là quan nội thị, có thể mượn được chân tích trong cung. Các bia dựng sau loạn An Sử phải tập chữ từ những bản đã qua nhiều lần mô lại, nên kém hẳn. Bản «Kim cương kinh» này tuy muộn nhưng do tay giỏi tập nên vẫn giữ được diện mạo chữ Vương. Đá đã mất từ lâu, bản thác hiếm, nên sách cổ ghi chép về nó nhiều chỗ sai (gọi nhầm “lục dịch”, nhầm tên người tập chữ), và chỉ khi thấy được hiện vật mới sửa được."
+    },
+    {
+     "t": "p",
+     "x": "Thêm một chi tiết kỹ thuật: bia xưa khắc hàng dọc từ trên xuống dưới, muốn đóng thành tập thì phải cắt từng hàng. Đến cuối Đường, việc thác bia và đóng tập đã phổ biến nên một số bia, như «Liễu thư Kim cương kinh», «Khai Thành thạch kinh» và bản kinh này, được viết thành nhiều tầng hàng ngắn, thác xong có thể nối thành cuộn. Tác giả xem đây là một tư liệu về giai đoạn đầu của nghề in."
+    },
+    {
+     "t": "h",
+     "x": "4. Mảnh bia Hán và cuộc khởi nghĩa Khăn Vàng"
+    },
+    {
+     "t": "p",
+     "x": "Khảo cứu thứ hai bàn về một mảnh chân bia nhỏ ở Khúc Phụ (Sơn Đông), còn hơn hai mươi chữ, trong đó đọc được các cụm như “trị Trương Giác”, “nguyên ác tảo…”, “thiên tử sách công”, “thư Đông Quán”. Đối chiếu với «Hậu Hán thư», tác giả cho rằng chủ nhân bia là một quan lại được bổ dụng theo chiếu chiêu mộ năm Trung Bình nguyên niên (184) để đánh quân **Khăn Vàng** của Trương Giác, lập công, được ghi tên vào sử quán Đông Quán; bia do thuộc lại dựng. Từ thời gian các trận đánh và việc vùng Dự Châu tạm yên rồi lại có khởi nghĩa năm 188, ông khoanh niên đại bia vào khoảng 184–188."
+    },
+    {
+     "t": "p",
+     "x": "Bài viết in năm 1979, nên cách đánh giá chính trị về chủ nhân bia mang dấu ấn thời đại. Điều người học thư pháp cần giữ lại là phương pháp: **từ vài chữ còn sót, kết hợp sử liệu để xác định niên đại**, và giá trị nghệ thuật của bia Hán cuối thời Đông Hán. Vệ Hằng đã ghi nhận thời Linh Đế người viết chữ giỏi rất đông:"
+    },
+    {
+     "t": "quote",
+     "zh": "灵帝好书，时多能者。",
+     "hv": "Linh Đế hiếu thư, thời đa năng giả.",
+     "vi": "Vua Linh Đế thích thư pháp, đương thời có nhiều người giỏi.",
+     "src": "Vệ Hằng, «Tứ thể thư thế»"
+    },
+    {
+     "t": "p",
+     "x": "Theo tác giả, chữ lệ trên mảnh đá dày dặn, vuông vức, phong cách nằm giữa «Lỗ Tuấn bi» và «Hành Phương bi» mà không rập khuôn. Người học lệ thư có thể tìm xem bản ảnh hai bia này để hình dung phong cách “hùng hậu phương chỉnh” ấy."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Tập tự",
+       "zh": "集字",
+       "vi": "Ghép chữ lấy từ bút tích sẵn có của một danh gia để dựng thành văn bản mới."
+      },
+      {
+       "hv": "Câu mô",
+       "zh": "钩摹",
+       "vi": "Đồ viền nét chữ từ bản gốc rồi tô kín; cách sao chép bút tích trước khi có nhiếp ảnh."
+      },
+      {
+       "hv": "Triện ngạch",
+       "zh": "篆额",
+       "vi": "Dòng chữ triện ở đầu bia ghi tên bia."
+      },
+      {
+       "hv": "Khắc công",
+       "zh": "刻工",
+       "vi": "Thợ khắc đá; tay nghề quyết định độ trung thực của nét bút trên bia."
+      },
+      {
+       "hv": "Thạch kinh",
+       "zh": "石经",
+       "vi": "Kinh điển khắc lên đá làm bản chuẩn, như «Khai Thành thạch kinh» đời Đường."
+      },
+      {
+       "hv": "Tàn thạch",
+       "zh": "残石",
+       "vi": "Mảnh bia vỡ, chỉ còn một phần chữ."
+      },
+      {
+       "hv": "Hán lệ",
+       "zh": "汉隶",
+       "vi": "Lệ thư đời Hán, đỉnh cao vào thời Đông Hán cuối."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Hoài Nhân",
+       "zh": "怀仁",
+       "years": "thế kỷ VII, đời Đường",
+       "note": "Tăng sĩ tập chữ Vương Hi Chi thành «Thánh giáo tự» (672)."
+      },
+      {
+       "name": "Đường Huyền Độ",
+       "zh": "唐玄度",
+       "years": "thế kỷ IX, đời Đường",
+       "note": "Viết triện ngạch; tác giả «Cửu kinh tự dạng»."
+      },
+      {
+       "name": "Liễu Công Quyền",
+       "zh": "柳公权",
+       "years": "778–865, đời Đường",
+       "note": "Thư gia, viết «Kim cương kinh» năm 824 và lời tán cho bản tập chữ này."
+      },
+      {
+       "name": "Thiệu Kiến Hòa",
+       "zh": "邵建和",
+       "years": "thế kỷ IX, đời Đường",
+       "note": "Thợ khắc chuyên khắc chữ Liễu Công Quyền."
+      },
+      {
+       "name": "Trương Giác",
+       "zh": "张角",
+       "years": "?–184, Đông Hán",
+       "note": "Thủ lĩnh khởi nghĩa Khăn Vàng, được nhắc trên mảnh bia."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Tập tự là gì? Vì sao người đời Đường lại tập chữ Vương Hi Chi thay vì nhờ thư gia đương thời viết?",
+      "Vì sao chất lượng các bia tập chữ Vương sau loạn An Sử thường kém «Thánh giáo tự»?",
+      "Vai trò của thợ khắc ảnh hưởng thế nào đến việc lâm bia?",
+      "Tác giả dùng những chứng cứ nào để định niên đại mảnh bia Trương Giác?",
+      "Lối khắc bia thành nhiều tầng hàng ngắn cuối đời Đường liên quan gì đến lịch sử in ấn?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c05",
+   "no": "Bài 5",
+   "title": "Bước đầu tìm hiểu nghệ thuật thư pháp trong «Lỗ Tấn thi cảo»",
+   "titleZh": "《鲁迅诗稿》的书法艺术初探",
+   "author": "Vương Tân Lăng",
+   "pages": "50–53",
+   "summary": "Qua tập thủ bút thơ của Lỗ Tấn, bài viết theo dấu ba giai đoạn chữ của ông và cho thấy một văn nhân không chuyên thư pháp vẫn có thể đạt phong cách riêng nhờ say mê bia khắc và hiểu biết văn tự.",
+   "body": [
+    {
+     "t": "p",
+     "x": "**Lỗ Tấn** (1881–1936) được biết đến như nhà văn, nhà tư tưởng hàng đầu của Trung Quốc hiện đại. Ít người để ý rằng ông cũng là người sưu tầm bia thiếp rất công phu: các bản thác và những trang ông tự tay chép chữ bia cổ chất đầy mấy rương. «Lỗ Tấn thi cảo» là tập in lại thủ bút các bài thơ cũ và thơ mới của ông, cùng những trang ông chép thơ văn cổ. Bài viết của Vương Tân Lăng dùng tập này để tìm hiểu chữ của Lỗ Tấn. Vì thơ của Lỗ Tấn là tác phẩm hiện đại, bài giảng chỉ nhắc tên và nội dung khái quát, không trích nguyên văn."
+    },
+    {
+     "t": "p",
+     "x": "Với người học thư pháp, trường hợp Lỗ Tấn đặt ra một câu hỏi hay: một người không lấy thư pháp làm nghề, không tự xưng thư gia, làm sao có được nét chữ được giới thư pháp quý trọng? Câu trả lời của bài viết là: nhờ **nền văn tự học**, nhờ **con mắt được nuôi bằng bia khắc**, và nhờ **cá tính** mạnh mẽ."
+    },
+    {
+     "t": "h",
+     "x": "1. Gốc rễ: Hán giản, cổ lệ và chương thảo"
+    },
+    {
+     "t": "p",
+     "x": "Thủ bút sớm nhất trong tập là trang Lỗ Tấn chép một bài thơ của **Lý Hạ** đời Đường. Theo tác giả, bút pháp và kết thể ở đây dường như bắt nguồn từ thẻ tre đời Hán và lệ thư cổ, còn thế bút chịu ảnh hưởng chương thảo kiểu «Cấp tựu chương». Đó là một nhận xét đáng chú ý: thay vì đi con đường quen thuộc từ chữ khải đời Đường sang hành thư nhà Tống, Lỗ Tấn tiếp cận chữ viết tay qua những di tích viết tay cổ hơn, mộc mạc hơn."
+    },
+    {
+     "t": "p",
+     "x": "Điều này khớp với sở thích nghiên cứu của ông. Những năm làm việc ở Bắc Kinh, ông dành nhiều thời gian sưu tập và đối chiếu bản thác bia, tượng đá, mộ chí đời Hán đến đời Đường, hàng trăm loại. Ông quan tâm đến toàn bộ di sản nghệ thuật cổ, không chỉ chữ: tranh khắc đá Hán, đường nét hội họa Đường. Ông từng nhận xét đại ý rằng khắc đá đời Hán có khí phách sâu lắng hùng vĩ, còn nét vẽ đời Đường thì linh động như sống. Theo tác giả, Lỗ Tấn đã hòa cái mộc của Hán với cái uyển chuyển của Đường vào nét chữ của mình."
+    },
+    {
+     "t": "h",
+     "x": "2. Ba giai đoạn của một nét chữ"
+    },
+    {
+     "t": "p",
+     "x": "Tác giả chia chữ Lỗ Tấn thành ba thời kỳ. Thời đầu, nét còn chịu ảnh hưởng rõ của Hán giản và chương thảo, vận bút thuần thục, thanh tú mà không ẻo lả. Thời trung niên, khi đã tích lũy lượng lớn kiến thức về bia khắc, chữ ông tổng hợp lệ cổ thời Hán, Ngụy với triện, thảo, hành, khải: thể thế trang trọng mà có khí phóng khoáng, bút lực trầm mà vận bút hơi rít (sáp bút). Một bản thủ bút bài thơ mới mang tính trào phúng của ông được tác giả khen là uyển chuyển, tiêu sái, bố cục trang có dáng dấp bố cục tranh."
+    },
+    {
+     "t": "p",
+     "x": "Thời cuối, chữ ông giống văn ông: sắc sảo, dứt khoát, già dặn. Tác giả phân tích thủ bút một bài thơ vô đề tưởng niệm người đã khuất, nét đầy và trầm, mực lúc khô lúc nhuận, khí thế nghiêm trang; và thủ bút bài «Đáp khách tiêu» (bài thơ ngắn về tình cha con), nét thanh mà trong mềm có cứng, kết thể rộng rãi, nghiêm mà không bí, thoáng mà không tản. Đặc biệt những trang Lỗ Tấn cuối đời chép thơ cổ, như một chương trong «Sở từ», được khen là mang vận vị kim thạch đậm đặc."
+    },
+    {
+     "t": "p",
+     "x": "Bài học cho người học: phong cách có thể thay đổi rõ rệt theo tuổi tác và tâm thế, và việc theo dõi “ba thời” của một người viết là cách đọc thủ bút rất bổ ích. Khi xem chữ một tác giả, đừng chỉ xem một trang: hãy xếp các trang theo thời gian và tìm sự chuyển biến."
+    },
+    {
+     "t": "h",
+     "x": "3. Kế thừa có chọn lọc và “hút mật trăm hoa”"
+    },
+    {
+     "t": "p",
+     "x": "Tác giả nhấn mạnh rằng nhìn các thủ bút của Lỗ Tấn, ta không thể nói chữ này học nhà nào, nét kia theo phái nào. Ông hấp thu mạnh dạn nhưng cũng dám thoát ra. Lỗ Tấn có một ví von nổi tiếng về việc đọc sách: phải như con ong, hút mật nhiều hoa mới làm được nhiều mật, chỉ đậu một chỗ thì thu được rất ít. Theo tác giả, chữ ông cũng thế: lấy cái hùng mộc của Tần Hán, cái cứng cỏi thanh tú của Ngụy Tấn, cái nghiêm cẩn rộng rãi của Đường Tống, rồi biến hóa thành của mình."
+    },
+    {
+     "t": "p",
+     "x": "Một nguyên tắc cổ mà tác giả nhắc lại để mô tả cách học này là câu của họa gia Trương Táo đời Đường, vốn bàn về hội họa nhưng thư gia cũng hay dùng:"
+    },
+    {
+     "t": "quote",
+     "zh": "外师造化，中得心源。",
+     "hv": "Ngoại sư tạo hóa, trung đắc tâm nguyên.",
+     "vi": "Bên ngoài lấy tạo hóa làm thầy, bên trong đạt được nguồn của tâm.",
+     "src": "Trương Táo, dẫn theo Trương Ngạn Viễn, «Lịch đại danh họa ký»"
+    },
+    {
+     "t": "p",
+     "x": "Bài viết in năm 1979 nên dùng nhiều ngôn ngữ chính trị thời ấy khi bàn về “kế thừa và cách tân”. Gạt lớp ngôn ngữ đó sang một bên, ý cốt lõi vẫn rất có giá trị: không sùng bái mù quáng di sản, cũng không phủ nhận sạch trơn, mà chọn lọc để sáng tạo. Tác giả cũng dẫn lời khen của Quách Mạt Nhược, đại ý rằng chữ Lỗ Tấn dung hợp triện lệ, chất phác mà không gò bó, phóng khoáng mà có phép tắc, vượt Tống Đường mà vươn tới Ngụy Tấn."
+    },
+    {
+     "t": "h",
+     "x": "4. Thư pháp của người viết văn: bài học cho người học hôm nay"
+    },
+    {
+     "t": "p",
+     "x": "Ta có thể rút ra mấy điểm thực tế. **Thứ nhất**, chữ viết hằng ngày cũng là thư pháp: phần lớn di sản chữ của Lỗ Tấn là nhật ký, thư từ, bản thảo, không phải tác phẩm treo tường. Những bản thảo viết bằng bút lông của văn nhân thời Dân Quốc là kho mẫu hành khải rất tự nhiên. **Thứ hai**, xem nhiều bia khắc, kể cả tranh khắc và tượng đá, nuôi dưỡng cảm giác về đường nét, khối và không gian. **Thứ ba**, tri thức văn tự (biết chữ cổ, biết nguồn gốc chữ) giúp người viết tự tin biến hóa mà không sai."
+    },
+    {
+     "t": "p",
+     "x": "Với người học thư pháp chữ Việt, câu chuyện Lỗ Tấn gợi ý rằng phong cách không đến từ việc cố tạo dáng, mà từ việc tích lũy hiểu biết và để cá tính tự hiện ra. Một trang chép thơ cẩn thận, viết bằng tâm thế chân thành, có khi còn có hồn hơn một bức chữ được dàn dựng công phu."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Thi cảo",
+       "zh": "诗稿",
+       "vi": "Bản thảo thơ viết tay của tác giả."
+      },
+      {
+       "hv": "Hán giản",
+       "zh": "汉简",
+       "vi": "Chữ viết trên thẻ tre, thẻ gỗ đời Hán; nguồn mẫu viết tay rất sinh động."
+      },
+      {
+       "hv": "Cổ lệ",
+       "zh": "古隶",
+       "vi": "Lệ thư giai đoạn sớm, còn dấu vết triện, ít nét ba tấp."
+      },
+      {
+       "hv": "Sáp bút",
+       "zh": "涩笔",
+       "vi": "Lối đi bút hơi rít, có lực cản, tạo nét chắc và có vị kim thạch."
+      },
+      {
+       "hv": "Kim thạch khí",
+       "zh": "金石气",
+       "vi": "Vận vị cổ kính, mộc mạc như chữ trên đồ đồng và bia đá."
+      },
+      {
+       "hv": "Bố bạch",
+       "zh": "布白",
+       "vi": "Cách phân bố khoảng trắng giữa nét, giữa chữ, giữa hàng."
+      },
+      {
+       "hv": "Trung phong",
+       "zh": "中锋",
+       "vi": "Giữ ngòi bút đi ở giữa nét, giúp nét tròn chắc."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Theo bài viết, chữ Lỗ Tấn bắt nguồn từ những loại di tích chữ viết nào, và điều này khác con đường học chữ thông thường ra sao?",
+      "Mô tả ngắn ba giai đoạn chữ của Lỗ Tấn theo cách chia của tác giả.",
+      "Vì sao việc xem tranh khắc đá, tượng đá cũng có ích cho người luyện chữ?",
+      "Ví von “con ong hút mật nhiều hoa” áp dụng vào việc học thư pháp thế nào?",
+      "Bạn rút ra bài học gì từ trường hợp một văn nhân không chuyên thư pháp mà có nét chữ được quý trọng?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c06",
+   "no": "Bài 6",
+   "title": "Mã Tự Luân bàn về thư pháp",
+   "titleZh": "马叙伦先生论书法",
+   "author": "Trần Tòng Chu",
+   "pages": "54–56, 72",
+   "summary": "Trần Tòng Chu giới thiệu quan điểm thư pháp của học giả Mã Tự Luân qua hai mươi bài tuyệt cú luận thư, thuyết “năm điều nuôi dưỡng” khi viết và những nhận xét về bút mực.",
+   "body": [
+    {
+     "t": "p",
+     "x": "**Mã Tự Luân** (1885–1970), người Hàng Châu, là học giả văn tự học (tác giả bộ «Thuyết văn giải tự lục thư sớ chứng»), nhà giáo dục và chính khách, từng giữ chức Bộ trưởng Giáo dục rồi Bộ trưởng Giáo dục cao đẳng của nước Cộng hòa Nhân dân Trung Hoa. Ông viết chữ đẹp, đặc biệt tiểu khải, và thời ấy được đặt ngang với Thẩm Doãn Mặc. Bài ngắn của kiến trúc sư, nhà vườn học **Trần Tòng Chu** gom lại những ý kiến về thư pháp của ông: hai mươi bài tuyệt cú luận thư, một đoạn về “năm điều nuôi dưỡng” khi viết, và một đoạn về bút."
+    },
+    {
+     "t": "p",
+     "x": "Thơ luận thư của Mã Tự Luân là tác phẩm hiện đại, vì thế bài giảng không chép lại, mà tóm lược các ý chính và đối chiếu với lý luận cổ để người học thấy ông kế thừa và phản biện những gì."
+    },
+    {
+     "t": "h",
+     "x": "1. Chấp bút và vận bút: sức đến từ toàn thân"
+    },
+    {
+     "t": "p",
+     "x": "Nhiều bài tuyệt cú tập trung vào kỹ thuật cầm bút. Ý xuyên suốt: viết chữ là công việc của cả cánh tay, ngón tay, thậm chí lưng và eo, chứ không phải chỉ cố nâng cổ tay lên cao. Ông nhắc đến Hà Thiệu Cơ đời Thanh, người viết mỗi chữ mồ hôi đầm đìa, để nói rằng điều khiển bút cần sức của thân. Ông nhắc lại các truyền thống lý luận chấp bút từ Bao Thế Thần đến Khang Hữu Vi, và ý chính của họ: ngón tay chuyển thì ngòi bút chuyển theo, lông bút phải trải đều chính phó thì nét mới không lệch."
+    },
+    {
+     "t": "p",
+     "x": "Một bài khác bàn lại câu chuyện nổi tiếng “bút gián” của **Liễu Công Quyền**: khi vua hỏi cách dùng bút, Liễu đáp rằng tâm chính thì bút chính. Mã Tự Luân hiểu câu ấy theo hướng kỹ thuật: chỉ cần vạn sợi lông cùng ra sức thì nghiêng về trước hay sau cũng không sao. Nói cách khác, ông không bám cứng vào “bút phải thẳng đứng”, mà coi trọng việc toàn bộ ngòi bút làm việc. Đó là một quan điểm thực tế mà người luyện chữ nên thử nghiệm."
+    },
+    {
+     "t": "quote",
+     "zh": "心正则笔正。",
+     "hv": "Tâm chính tắc bút chính.",
+     "vi": "Lòng ngay thì bút ngay.",
+     "src": "Liễu Công Quyền, theo «Cựu Đường thư · Liễu Công Quyền truyện»"
+    },
+    {
+     "t": "p",
+     "x": "Về độ mở của ngòi bút, ông nhắc lời truyền “mở hai phần ba ngòi” nhưng cho rằng nếu mở hết ngòi mà vẫn sử chuyển được thì càng biến hóa. Ông còn bàn về “ý tại bút tiên” và nguyên tắc “vô thùy bất súc” (không có nét buông xuống nào mà không thu lại), coi tàng phong và nhịp nhanh chậm là những điều phải tự luyện mới hiểu."
+    },
+    {
+     "t": "quote",
+     "zh": "无垂不缩，无往不收。",
+     "hv": "Vô thùy bất súc, vô vãng bất thu.",
+     "vi": "Không nét buông xuống nào mà không thu lại, không nét đi nào mà không vòng về.",
+     "src": "Lời truyền của Mễ Phế, đời Tống"
+    },
+    {
+     "t": "h",
+     "x": "2. Chống lối nói cực đoan: bia và thiếp, vuông và tròn"
+    },
+    {
+     "t": "p",
+     "x": "Một số bài tuyệt cú mang tính phản biện. Đối với khẩu quyết “ngang bằng sổ thẳng”, ông chỉ ra rằng chữ trên đồ đồng nhà Chu và bia đá đời Hán đâu có hoàn toàn bằng thẳng. Đối với những người cố phân định bút vuông, bút tròn như hai phái đối lập, ông coi đó là nhìn bề ngoài: người hiểu sâu thì vuông tròn tùy ý. Với cuộc tranh luận lớn thời Thanh–Dân Quốc giữa **phái bia** (đề cao bia Bắc triều) và **phái thiếp** (đề cao thiếp nhà Tấn), ông khuyên đừng thiên lệch, vì vụng và duyên đều có thể đạt cao."
+    },
+    {
+     "t": "p",
+     "x": "Ông cũng có những nhận xét về sự liên hệ giữa thư pháp với khắc đá: chữ thời Lục triều trên bia vốn là kết quả của dao khắc, nên thợ khắc ở Hà Nam thời ông làm giả bia Ngụy rất giống. Ý này gặp gỡ với bài 4 của tập (Ông Khải Vận): khi lâm bia phải phân biệt cái gì là của bút, cái gì là của dao."
+    },
+    {
+     "t": "h",
+     "x": "3. Lâm cổ: vào được và ra được"
+    },
+    {
+     "t": "p",
+     "x": "Trong các bài về lâm mô, ý nổi bật là: học người xưa phải “được thỏ quên bẫy”, tức nắm được tinh thần rồi bỏ cái vỏ, chứ làm giả cho giống thật thì phí công, “vào mà không ra” thì thành nô lệ. Ông khuyên người mới bắt đầu có thể nhập môn từ «Long Tạng tự bi» đời Tùy vì bia ấy nối liền trước sau, và không nên xem nhẹ Âu Dương Tuân hay Chử Toại Lương. Ông cũng gợi ý xem thẻ tre ở Lưu Sa (vùng Đôn Hoàng) để thấy chân hành của người Hán Tấn."
+    },
+    {
+     "t": "p",
+     "x": "Có một bài ông chê chữ sau đời Đường, nhất là chê Mễ Phế, có phần cực đoan; Trần Tòng Chu lại cho biết chính Mã Tự Luân từ năm mươi tuổi trở đi học Mễ và tự nhận đắc lực từ «Quần ngọc đường pháp thiếp». Mâu thuẫn bề ngoài này rất người: nhà thư pháp vừa phê phán vừa học hỏi. Người học không cần chấp nhận mọi phán đoán của ông, mà nên lấy tinh thần: đối thoại với cổ nhân, không thần phục mù quáng."
+    },
+    {
+     "t": "h",
+     "x": "4. “Năm điều nuôi dưỡng” và đồ dùng văn phòng"
+    },
+    {
+     "t": "p",
+     "x": "Đoạn văn xuôi được trích dẫn nêu thuyết **ngũ dưỡng**: khi viết phải nuôi thần, nuôi sức, nuôi bút, nuôi mực, nuôi nghiên. Ý không yên thì thần không tụ, nói “ý tại bút tiên” cũng vô nghĩa; sức không được nuôi thì viết vài chữ đã mỏi lưng, thần cũng suy. Nghiên và mực có thể chuẩn bị dự phòng, riêng bút thì đang viết say mà phải đổi sang bút khác thì như đang trò chuyện với bạn mà khách lạ đến, phải hàn huyên lại từ đầu, mất hết hứng. Mực cũng nên mài xong dùng ngay, để lâu thành mực cũ. Hình ảnh so sánh ấy rất đáng nhớ cho bất kỳ ai từng bị đứt mạch khi đổi bút giữa chừng."
+    },
+    {
+     "t": "p",
+     "x": "Trần Tòng Chu kể ông Mã giữ văn phòng tứ bảo cực kỳ cẩn thận: nghiên phải rửa, mực phải gói, bút phải treo sạch, nước trong ao nghiên phải thay mới, sáng nào cũng tự tay sắp xếp. Ông thích mực cũ chế tác trước năm Quang Tự thứ 11 (1885), với điều kiện chất mịn keo nhẹ. Về bút, ông kể đã dùng bút Nhật, thấy chế tác tinh nhưng lông không thật tốt, cứng nên có lực mà sử chuyển không hoàn toàn như ý; sau dùng bút do thợ Triều Tiên làm thì thấy mềm mà vẫn xoay chuyển tùy ý, nhiều bút pháp và dáng chữ đời Tấn, Ngụy tự nhiên mà có. Ông rút ra một nhận xét quan trọng: có những thứ ta tưởng là bút pháp, thực ra là do chính cây bút tạo ra."
+    },
+    {
+     "t": "p",
+     "x": "Nhận xét cuối này đặc biệt hữu ích. Khi lâm một bản mẫu mãi không giống, người học nên tự hỏi: có phải mình đang dùng loại bút khác hẳn với người xưa? Thử nhiều loại lông (kiêm hào, lang hào, dương hào), nhiều độ dài ngòi, là một phần của việc học chứ không phải chuyện phụ."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Chấp bút",
+       "zh": "执笔",
+       "vi": "Cách cầm bút; ảnh hưởng trực tiếp đến tầm vận động và lực nét."
+      },
+      {
+       "hv": "Vạn hào tề lực",
+       "zh": "万毫齐力",
+       "vi": "Mọi sợi lông bút cùng ra sức; nét đầy và chắc."
+      },
+      {
+       "hv": "Ý tại bút tiên",
+       "zh": "意在笔先",
+       "vi": "Ý định có trước khi hạ bút; trong đầu đã hình dung chữ."
+      },
+      {
+       "hv": "Tàng phong",
+       "zh": "藏锋",
+       "vi": "Giấu mũi bút trong nét khi khởi và thu."
+      },
+      {
+       "hv": "Bi học / thiếp học",
+       "zh": "碑学 / 帖学",
+       "vi": "Hai trường phái: đề cao bia khắc Bắc triều và đề cao thiếp viết tay thời Tấn, Đường."
+      },
+      {
+       "hv": "Ngũ dưỡng",
+       "zh": "五养",
+       "vi": "Nuôi thần, sức, bút, mực, nghiên khi viết (theo Mã Tự Luân)."
+      },
+      {
+       "hv": "Văn phòng tứ bảo",
+       "zh": "文房四宝",
+       "vi": "Bút, mực, giấy, nghiên."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Mã Tự Luân",
+       "zh": "马叙伦",
+       "years": "1885–1970",
+       "note": "Học giả văn tự học, thư gia tiểu khải và hành thư."
+      },
+      {
+       "name": "Trần Tòng Chu",
+       "zh": "陈从周",
+       "years": "1918–2000",
+       "note": "Kiến trúc sư, nhà nghiên cứu vườn cổ, tác giả bài viết."
+      },
+      {
+       "name": "Hà Thiệu Cơ",
+       "zh": "何绍基",
+       "years": "1799–1873, đời Thanh",
+       "note": "Thư gia nổi tiếng với lối cầm bút “hồi uyển”, viết rất tốn sức."
+      },
+      {
+       "name": "Liễu Công Quyền",
+       "zh": "柳公权",
+       "years": "778–865, đời Đường",
+       "note": "Tác giả câu “tâm chính tắc bút chính”."
+      },
+      {
+       "name": "Thẩm Doãn Mặc",
+       "zh": "沈尹默",
+       "years": "1883–1971",
+       "note": "Thư gia thiếp học hàng đầu thời ấy, được so sánh với Mã Tự Luân."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Mã Tự Luân hiểu câu “tâm chính tắc bút chính” theo hướng kỹ thuật như thế nào?",
+      "Vì sao ông phản đối việc tuyệt đối hóa “ngang bằng sổ thẳng” hay chia phái bút vuông, bút tròn?",
+      "Giải thích thuyết “ngũ dưỡng”. Điều nào bạn thấy mình hay bỏ qua nhất khi luyện chữ?",
+      "Nhận xét “có thứ tưởng là bút pháp, thực ra do cây bút tạo ra” gợi ý gì cho việc chọn bút khi lâm mẫu?",
+      "“Vào được và ra được” khi lâm cổ nghĩa là gì?"
+     ]
+    }
+   ]
+  }
+ ]
+}

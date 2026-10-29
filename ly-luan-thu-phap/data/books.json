@@ -1,0 +1,335 @@
+{
+ "version": 1,
+ "books": [
+  {
+   "id": "ly-luan-cuong-yeu",
+   "seal": "綱",
+   "title": "Cương yếu lý luận thư pháp Trung Quốc",
+   "titleZh": "中国书法理论纲要",
+   "authors": "Vương Thế Chinh, Vân Chí Công",
+   "intro": [
+    "Giáo trình hệ thống về các vấn đề cơ bản của lý luận thư pháp: bản chất, hình thức và nội dung, sáng tác, thưởng thức và phê bình.",
+    "Mục lục chi tiết sẽ được cập nhật khi có bản đọc được của sách."
+   ],
+   "chapters": []
+  },
+  {
+   "id": "thu-phap-nghien-cuu-1",
+   "seal": "研",
+   "title": "Thư pháp nghiên cứu · Tập 1",
+   "titleZh": "书法研究 第1辑",
+   "authors": "Ban biên tập tạp chí «Thư pháp»",
+   "publisher": "Thượng Hải Thư hoạ xuất bản xã",
+   "year": "1979",
+   "intro": [
+    "Tập chuyên khảo đầu tiên của tạp chí «Thư pháp», gồm các bài của những thư gia, học giả tên tuổi bàn về phương pháp học chữ, bút pháp, kết thể và tinh thần thư pháp."
+   ],
+   "chapters": [
+    {
+     "id": "c01",
+     "no": "Bài 1",
+     "title": "Quần chúng nhân dân và nghệ thuật thư pháp",
+     "titleZh": "人民群众与书法艺术",
+     "author": "Quách Thiệu Ngu",
+     "ready": true
+    },
+    {
+     "id": "c02",
+     "no": "Bài 2",
+     "title": "Giảng về việc học thư pháp",
+     "titleZh": "书法学习讲话",
+     "author": "Bạch Tiêu",
+     "ready": true
+    },
+    {
+     "id": "c03",
+     "no": "Bài 3",
+     "title": "Trích giải ba mươi sáu phép kết thể của Âu Dương",
+     "titleZh": "欧阳结体三十六法摘录简释",
+     "author": "Chúc Gia",
+     "ready": true
+    },
+    {
+     "id": "c04",
+     "no": "Bài 4",
+     "title": "“Vi” và “Hoà” – ghi chép khi đọc Thư phổ",
+     "titleZh": "“违”与“和”——读《书谱》札记",
+     "author": "Kim Học Trí",
+     "ready": true
+    },
+    {
+     "id": "c05",
+     "no": "Bài 5",
+     "title": "Bàn về cầm bút và vận bút",
+     "titleZh": "关于笔的执使",
+     "author": "Hoàng Ỷ",
+     "ready": false
+    },
+    {
+     "id": "c06",
+     "no": "Bài 6",
+     "title": "Thần lực của Hoài Tố – thử giải bài «Quan Hoài Tố thảo thư ca»",
+     "titleZh": "怀素的神力——《观怀素草书歌》试解",
+     "author": "Triệu Nhất Tân",
+     "ready": false
+    },
+    {
+     "id": "c07",
+     "no": "Bài 7",
+     "title": "Chuyện nhỏ về Quản Thành Tử (cây bút)",
+     "titleZh": "管城子小谈",
+     "author": "Lão Huỷ",
+     "ready": false
+    },
+    {
+     "id": "c08",
+     "no": "Bài 8",
+     "title": "Nghệ thuật khắc ấn của Tề Bạch Thạch",
+     "titleZh": "齐白石的治印艺术",
+     "author": "Hoàng Dưỡng Huy",
+     "ready": false
+    },
+    {
+     "id": "c09",
+     "no": "Bài 9",
+     "title": "Bàn phiếm về ấn chương",
+     "titleZh": "漫谈印章",
+     "author": "Đinh Cát Phủ",
+     "ready": false
+    }
+   ]
+  },
+  {
+   "id": "thu-phap-nghien-cuu-2",
+   "seal": "研",
+   "title": "Thư pháp nghiên cứu · Tập 2",
+   "titleZh": "书法研究 第2辑",
+   "authors": "Ban biên tập tạp chí «Thư pháp»",
+   "publisher": "Thượng Hải Thư hoạ xuất bản xã",
+   "year": "1979",
+   "intro": [
+    "Tập chuyên khảo thứ hai, bàn về thiếp cổ, thảo thư, đề bạt, khảo cứu bia thiếp, mặc pháp, nghiên mực, ấn chương và ảnh hưởng của thư pháp Trung Hoa ra nước ngoài."
+   ],
+   "chapters": [
+    {
+     "id": "c01",
+     "no": "Bài 1",
+     "title": "Nhìn qua ống trúc: bản «Đường thác Thập thất thiếp»",
+     "titleZh": "《唐拓十七帖》管窥",
+     "author": "Ngưu Quang Phủ",
+     "ready": true
+    },
+    {
+     "id": "c02",
+     "no": "Bài 2",
+     "title": "Đôi điều tự đắc khi học thảo thư",
+     "titleZh": "学草偶得",
+     "author": "Mã Quốc Quyền",
+     "ready": true
+    },
+    {
+     "id": "c03",
+     "no": "Bài 3",
+     "title": "Đề bạt còn sót lại của Minh Lưỡng Lư",
+     "titleZh": "明两庐题跋劫余录",
+     "author": "Vương Cừ Thường",
+     "ready": true
+    },
+    {
+     "id": "c04",
+     "no": "Bài 4",
+     "title": "Hai khảo cứu bia thiếp",
+     "titleZh": "碑帖丛考二则",
+     "author": "Ông Khải Vận",
+     "ready": true
+    },
+    {
+     "id": "c05",
+     "no": "Bài 5",
+     "title": "Bước đầu tìm hiểu nghệ thuật thư pháp trong «Lỗ Tấn thi cảo»",
+     "titleZh": "《鲁迅诗稿》的书法艺术初探",
+     "author": "Vương Tân Lăng",
+     "ready": true
+    },
+    {
+     "id": "c06",
+     "no": "Bài 6",
+     "title": "Mã Tự Luân bàn về thư pháp",
+     "titleZh": "马叙伦先生论书法",
+     "author": "Trần Tòng Chu",
+     "ready": true
+    },
+    {
+     "id": "c07",
+     "no": "Bài 7",
+     "title": "Bàn về mặc pháp",
+     "titleZh": "论墨法",
+     "author": "Hồng Phi Mô",
+     "ready": false
+    },
+    {
+     "id": "c08",
+     "no": "Bài 8",
+     "title": "Nghiên Đoan Khê danh tiếng",
+     "titleZh": "端溪名砚",
+     "author": "Lưu Diễn Lương",
+     "ready": false
+    },
+    {
+     "id": "c09",
+     "no": "Bài 9",
+     "title": "Tính nghệ thuật của ấn chương đời Hán",
+     "titleZh": "论汉代印章的艺术性",
+     "author": "Trang Tân Hưng",
+     "ready": false
+    },
+    {
+     "id": "c10",
+     "no": "Bài 10",
+     "title": "Ảnh hưởng của thư pháp Trung Quốc",
+     "titleZh": "中国书法的影响",
+     "author": "Itō Sanshū (Y Đông Tham Châu)",
+     "ready": false
+    }
+   ]
+  },
+  {
+   "id": "thu-phap-su",
+   "seal": "史",
+   "title": "Lịch sử thư pháp Trung Quốc",
+   "titleZh": "中国书法史",
+   "authors": "Chu Thiên Thự",
+   "intro": [
+    "Bộ thông sử thư pháp từ văn tự sơ khai đến cận đại, đi qua các thời kỳ, thư thể và thư gia tiêu biểu.",
+    "Mục lục chi tiết sẽ được cập nhật khi có bản đọc được của sách."
+   ],
+   "chapters": []
+  },
+  {
+   "id": "tu-tuong-su",
+   "seal": "思",
+   "title": "Lịch sử tư tưởng thư pháp Trung Quốc",
+   "titleZh": "中国书法思想史",
+   "authors": "Khương Trừng Thanh",
+   "publisher": "Cam Túc nhân dân mỹ thuật xuất bản xã",
+   "year": "2008",
+   "intro": [
+    "Khảo sát sự hình thành và biến chuyển của tư tưởng thư pháp qua các thời đại, từ thời kỳ thai nghén đường nét trước chữ Hán đến thời kỳ phê phán cuối Thanh."
+   ],
+   "chapters": [
+    {
+     "id": "c01",
+     "no": "Chương 1",
+     "title": "Dẫn luận",
+     "titleZh": "引论",
+     "ready": true
+    },
+    {
+     "id": "c02",
+     "no": "Chương 2",
+     "title": "Thời kỳ thai nghén vận đường nét trước khi có chữ Hán",
+     "titleZh": "汉文字产生前的线韵孕育期",
+     "ready": true
+    },
+    {
+     "id": "c03",
+     "no": "Chương 3",
+     "title": "Từ thần thoại tạo chữ đến sự thần hoá văn tự",
+     "titleZh": "从造字的神话看文字的神化",
+     "ready": true
+    },
+    {
+     "id": "c04",
+     "no": "Chương 4",
+     "title": "Thời kỳ đặt nền tư tưởng triết học cho nghệ thuật thư pháp",
+     "titleZh": "书法艺术的哲学思想奠基期",
+     "ready": true
+    },
+    {
+     "id": "c05",
+     "no": "Chương 5",
+     "title": "Các thể chữ nghệ thuật hoàn bị và mầm mống tư tưởng thư pháp theo nghĩa hẹp",
+     "titleZh": "艺术体的大备与狭义书法思想的始萌",
+     "ready": true
+    },
+    {
+     "id": "c06",
+     "no": "Chương 6",
+     "title": "Bước vào thời đại tự giác",
+     "titleZh": "步入自觉的大时代",
+     "ready": false
+    },
+    {
+     "id": "c07",
+     "no": "Chương 7",
+     "title": "Phân dòng lưu phái và đối trĩ học phái",
+     "titleZh": "流派的分野与学派的对峙",
+     "ready": false
+    },
+    {
+     "id": "c08",
+     "no": "Chương 8",
+     "title": "Thời đại sùng Vương, trọng pháp",
+     "titleZh": "崇王尚法的大时代",
+     "ready": false
+    },
+    {
+     "id": "c09",
+     "no": "Chương 9",
+     "title": "Thời đại của cuộc chơi",
+     "titleZh": "玩的游戏时代",
+     "ready": false
+    },
+    {
+     "id": "c10",
+     "no": "Chương 10",
+     "title": "Thời đại sùng bái người khổng lồ khập khiễng",
+     "titleZh": "向跛足巨人膜拜的时代",
+     "ready": false
+    },
+    {
+     "id": "c11",
+     "no": "Chương 11",
+     "title": "Thời đại phê phán",
+     "titleZh": "批判的时代",
+     "ready": false
+    },
+    {
+     "id": "c12",
+     "no": "Phụ lục",
+     "title": "Lược thuật tư tưởng thư pháp sau Cách mạng Tân Hợi",
+     "titleZh": "附：辛亥后书法思想的简介",
+     "ready": false
+    }
+   ]
+  },
+  {
+   "id": "chiet-giang-thuong",
+   "seal": "文",
+   "title": "Văn tập Mỹ thuật Đại học Chiết Giang · Quyển thượng",
+   "titleZh": "浙江大学美术文集（上）",
+   "authors": "Trần Chấn Liêm chủ biên",
+   "publisher": "Chiết Giang Đại học xuất bản xã",
+   "year": "2007",
+   "intro": [
+    "Tuyển tập nghiên cứu mỹ thuật, thư pháp và ấn chương của giảng viên, nghiên cứu sinh Đại học Chiết Giang.",
+    "Mục lục chi tiết sẽ được cập nhật khi có bản đọc được của sách."
+   ],
+   "chapters": []
+  },
+  {
+   "id": "chiet-giang-ha",
+   "seal": "文",
+   "title": "Văn tập Mỹ thuật Đại học Chiết Giang · Quyển hạ",
+   "titleZh": "浙江大学美术文集（下）",
+   "authors": "Trần Chấn Liêm chủ biên",
+   "publisher": "Chiết Giang Đại học xuất bản xã",
+   "year": "2007",
+   "intro": [
+    "Gồm ba phần hội hoạ, thư pháp và triện khắc: nghiên cứu mỹ thuật thời Dân Quốc, hội hoạ Tống – Nguyên – Minh, học thuật thư pháp, thư gia và lưu phái, kim thạch triện khắc.",
+    "Mục lục chi tiết từng bài sẽ được cập nhật dần."
+   ],
+   "chapters": []
+  }
+ ]
+}
