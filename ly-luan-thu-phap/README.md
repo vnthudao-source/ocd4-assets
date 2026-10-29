@@ -3,7 +3,7 @@
 Trang Blogspot đọc bài giảng tiếng Việt theo từng chương của các sách lý luận thư pháp (tóm lược, bình giải; cổ văn dịch trọn).
 
 - `ly-luan-thu-phap.css`, `.html`, `.js` – giao diện, khung, mã xử lý
-- `ly-luan-thu-phap.min.js` – file nén duy nhất trang tải
+- `ly-luan-thu-phap.bundle.js` – file nén duy nhất trang tải
 - `data/books.json` – danh mục 7 cuốn và mục lục; `data/<id>.json` – bài giảng từng chương
 - `blogspot.html` – khối tải dán vào Blogspot
 

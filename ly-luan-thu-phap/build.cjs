@@ -1,4 +1,4 @@
-/* Đóng gói Tủ sách Lý luận thư pháp thành MỘT file ly-luan-thu-phap.min.js (CSS + khung HTML + JS).
+/* Đóng gói Tủ sách Lý luận thư pháp thành MỘT file ly-luan-thu-phap.bundle.js (CSS + khung HTML + JS).
    Dữ liệu (data/*.json) không gộp vào file nén: trang tải theo cùng mã phiên bản với file nén.
    Chạy: node ly-luan-thu-phap/build.cjs   (đặt ESBUILD_LIB nếu esbuild không nằm trong node_modules) */
 const fs = require('fs'), path = require('path');
@@ -21,5 +21,5 @@ const src = '(function(){var r=document.getElementById("ly-luan-thu-phap");if(!r
   + 'var st=document.createElement("style");st.textContent=' + JSON.stringify(css)
   + ';document.head.appendChild(st);r.innerHTML=' + JSON.stringify(html) + ';\n' + read('ly-luan-thu-phap.js') + '\n})();';
 const out = esbuild.transformSync(src, { loader: 'js', minify: true, charset: 'utf8', target: 'es2018' }).code;
-fs.writeFileSync(path.join(dir, 'ly-luan-thu-phap.min.js'), out);
-console.log('ly-luan-thu-phap.min.js', out.length, 'bytes');
+fs.writeFileSync(path.join(dir, 'ly-luan-thu-phap.bundle.js'), out);
+console.log('ly-luan-thu-phap.bundle.js', out.length, 'bytes');
