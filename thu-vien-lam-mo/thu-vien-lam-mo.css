@@ -598,7 +598,9 @@ GỢI Ý
 #thu-vien-lam-mo .lm-show-heart{position:absolute;top:6px;right:6px;border:1px solid #e5ccc1;border-radius:14px;padding:4px 7px;color:#a04538;background:#fffdf8ee;cursor:pointer;font:600 12px Arial;min-height:28px;z-index:2}
 #thu-vien-lam-mo .lm-show-heart:hover{background:#f9e2d7}
 #thu-vien-lam-mo .lm-show-heart.is-liked{color:#c33235;background:#fff0f0}
-#thu-vien-lam-mo .lm-show-heart:disabled{opacity:.65;cursor:wait}
+#thu-vien-lam-mo .lm-show-heart:disabled{opacity:1;cursor:progress}
+#thu-vien-lam-mo .lm-show-heart:disabled span{display:inline-block;animation:lmHeartBeat .9s ease-in-out infinite}
+@keyframes lmHeartBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
 #thu-vien-lam-mo .lm-show-image{max-width:90vw;max-height:90vh;border:0;border-radius:14px;padding:16px;background:#faf7ef}
 #thu-vien-lam-mo .lm-show-image img{display:block;max-width:85vw;max-height:75vh;object-fit:contain;margin:10px auto}
 #thu-vien-lam-mo .lm-show-image::backdrop{background:#000b}

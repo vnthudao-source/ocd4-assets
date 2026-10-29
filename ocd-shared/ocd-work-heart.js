@@ -1,5 +1,10 @@
 /* =========================================================
-   OCD · NÚT THẢ TIM TÁC PHẨM (dùng chung) · v1.0.0
+   OCD · NÚT THẢ TIM TÁC PHẨM (dùng chung) · v1.2.0
+   v1.2.0 (29/10/2026) – thả tim nhanh:
+     - Gửi tim bằng fetch và đọc luôn kết quả Apps Script trả về (doPost đã trả JSON),
+       không còn chờ 1,5 giây rồi hỏi lại nhiều lần; chỉ khi fetch lỗi mới quay về cách cũ.
+     - Tim đổi màu + số tim tăng ngay khi bấm, nút không bị mờ trong lúc đồng bộ.
+     - Nhớ số tim lần trước trên máy (localStorage) để mở trang là hiện số ngay, rồi cập nhật ngầm.
    Dùng cho: Phòng triển lãm, trang Nộp bài.
    - Cùng một bài nộp (Mã bài nộp) thì số tim chung ở mọi trang.
    - Ghi chung tab TimBanLam qua Apps Script "Thư viện lâm mô" (Exhibition.gs v1.2.0):
@@ -30,7 +35,10 @@ const CSS=
     +".ocdh.is-liked{color:#c33235;background:#fff0f0;border-color:#efb7b7}"
     +".ocdh.is-goal{border-color:#d9b25a;box-shadow:0 0 0 2px rgba(217,178,90,.35),0 3px 10px rgba(68,45,30,.12)}"
     +".ocdh.is-own{cursor:default;opacity:.85}"
-    +".ocdh:disabled{opacity:.65;cursor:wait}"
+    +".ocdh:disabled{opacity:1;cursor:progress}"
+    +".ocdh.is-syncing span{animation:ocdhBeat .9s ease-in-out infinite}"
+    +"@keyframes ocdhBeat{0%,to{transform:scale(1)}50%{transform:scale(1.25)}}"
+    +"@media(prefers-reduced-motion:reduce){.ocdh.is-syncing span{animation:none}}"
     +".ocdh.ocdh-inline{position:static;box-shadow:none}"
     +".ocdh-toast{position:fixed;left:50%;bottom:22px;z-index:100000;max-width:min(92vw,460px);padding:11px 16px;border-radius:14px;"
     +"background:#4d3225;color:#fffdf8;font:14px/1.45 Arial,Helvetica,sans-serif;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25);"
@@ -198,6 +206,50 @@ function jsonp(params,timeout){
 }
 
 
+/* ---- nhớ số tim trên máy để hiện ngay khi mở trang ---- */
+const CACHE_KEY="ocdh_cache_v1";
+const CACHE_MAX_AGE=12*3600*1000;
+function readCache(v){
+    try{
+        const c=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
+        if(c && c.v===v && c.counts && Date.now()-Number(c.t||0) < CACHE_MAX_AGE){
+            return c;
+        }
+    }catch(error){}
+    return null;
+}
+function writeCache(){
+    try{
+        localStorage.setItem(
+            CACHE_KEY,
+            JSON.stringify({v:S.viewer,t:Date.now(),counts:S.counts,liked:Array.from(S.liked),goal:S.goal,prize:S.prize})
+        );
+    }catch(error){}
+}
+/* Gửi tim và đọc kết quả ngay (Apps Script doPost trả JSON). null = không đọc được -> dùng cách cũ */
+async function postFast(fields){
+    if(typeof fetch!=="function" || typeof URLSearchParams!=="function"){
+        return null;
+    }
+    const ac=typeof AbortController==="function" ? new AbortController() : null;
+    const timer=ac ? setTimeout(function(){ ac.abort(); },25000) : null;
+    try{
+        const res=await fetch(API,{
+            method:"POST",
+            body:new URLSearchParams(fields),
+            credentials:"omit",
+            cache:"no-store",
+            redirect:"follow",
+            signal:ac ? ac.signal : undefined
+        });
+        const data=JSON.parse(await res.text());
+        return data && typeof data==="object" ? data : null;
+    }catch(error){
+        return null;
+    }finally{
+        if(timer){ clearTimeout(timer); }
+    }
+}
 function count(id){
 
     return Math.max(0,Number(S.counts[id]) || 0);
@@ -225,6 +277,7 @@ function paint(button,item){
     button.classList.toggle("is-own",own);
 
     button.disabled=S.pending.has(item.id);
+    button.classList.toggle("is-syncing",S.pending.has(item.id));
 
     button.setAttribute("aria-pressed",String(liked));
 
@@ -327,7 +380,18 @@ function load(force){
     }
 
     S.viewer=v;
-
+    /* có số tim lần trước trên máy -> hiện ngay, tải mới ở nền */
+    if(!S.loaded){
+        const c=readCache(v);
+        if(c){
+            S.counts=Object.assign({},c.counts);
+            S.liked=new Set(Array.isArray(c.liked) ? c.liked : []);
+            if(Number(c.goal) > 0){ S.goal=Number(c.goal); }
+            if(Number(c.prize) > 0){ S.prize=Number(c.prize); }
+            S.loaded=true;
+            repaint();
+        }
+    }
     S.loading=
         jsonp({action:"exhibitHearts",code:v},25000)
         .then(
@@ -336,10 +400,16 @@ function load(force){
                 if(S.viewer !== v){
                     return;
                 }
-
+                /* giữ trạng thái các bài đang gửi dở, không để bản tải về ghi đè */
+                const keep={};
+                S.pending.forEach(function(id){ keep[id]={c:S.counts[id],l:S.liked.has(id)}; });
                 S.counts=result.counts || {};
 
                 S.liked=new Set(Array.isArray(result.liked) ? result.liked : []);
+                Object.keys(keep).forEach(function(id){
+                    S.counts[id]=keep[id].c;
+                    if(keep[id].l){ S.liked.add(id); }else{ S.liked.delete(id); }
+                });
 
                 if(Number(result.rewardHearts) > 0){
                     S.goal=Number(result.rewardHearts);
@@ -350,9 +420,8 @@ function load(force){
                 }
 
                 S.loaded=true;
-
+                writeCache();
                 emitRules();
-
                 repaint();
             }
         )
@@ -444,23 +513,29 @@ async function toggle(item){
     repaint();
 
     let cleanup=null;
-
     try{
-
-        cleanup=
-            sendForm({
-                action:"exhibitHeart",
-                studentCode:v,
-                postId:item.id,
-                active:String(active)
-            });
-
+        const fields={
+            action:"exhibitHeart",
+            studentCode:v,
+            postId:item.id,
+            active:String(active)
+        };
         let confirmed=null;
         let lastError="";
-
-        for(let attempt=0; attempt<8; attempt++){
-
-            await new Promise(function(resolve){ setTimeout(resolve,1500); });
+        let fastReward=false;
+        /* Cách nhanh: đọc luôn kết quả Apps Script trả về */
+        const fast=await postFast(fields);
+        if(fast && fast.ok === true && typeof fast.active === "boolean"){
+            confirmed=fast;
+            fastReward=fast.reward === "created";
+        }else if(fast && fast.ok === false){
+            throw new Error(fast.message || "Chưa thả được tim.");
+        }else{
+            /* Dự phòng: gửi kiểu cũ rồi hỏi lại trạng thái */
+            cleanup=sendForm(fields);
+        }
+        for(let attempt=0; !confirmed && attempt<10; attempt++){
+            await new Promise(function(resolve){ setTimeout(resolve,attempt === 0 ? 800 : 1200); });
 
             try{
 
@@ -492,13 +567,12 @@ async function toggle(item){
 
         /* Chỉ báo "được thưởng" khi Apps Script vừa ghi thưởng (mỗi bài một lần) */
         const rewardTime=Date.parse(confirmed.rewardedAt || "");
-
+        writeCache();
         if(
             confirmed.active
             && oldCount < S.goal
             && S.counts[item.id] >= S.goal
-            && rewardTime
-            && Math.abs(Date.now() - rewardTime) < 120000
+            && (fastReward || (rewardTime && Math.abs(Date.now() - rewardTime) < 120000))
             && !S.celebrated.has(item.id)
         ){
 
@@ -509,9 +583,6 @@ async function toggle(item){
                 + " tim! Tác giả được thưởng " + S.prize + " Hồng Ngọc."
             );
 
-        }else{
-
-            toast(confirmed.active ? "Đã thả tim." : "Đã bỏ tim.");
         }
 
     }catch(error){
@@ -571,12 +642,11 @@ function bind(button,item){
         );
     }
 
-    paint(button,item);
-
+    /* tải trước (lấy ngay số tim đã nhớ trên máy nếu có) rồi mới vẽ nút */
     if(!S.loading){
         load();
     }
-
+    paint(button,item);
     return button;
 }
 
@@ -625,7 +695,7 @@ function start(){
 
 
 window.OCDWorkHeart={
-    version:"1.1.0",
+    version:"1.2.0",
     button:button,
     bind:bind,
     load:load,
