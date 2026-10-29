@@ -1,5 +1,7 @@
 /* =========================================================
-   OCD4 · TRANG NỘP BÀI / TÁC PHẨM HỌC VIÊN · v1.8.0
+   OCD4 · TRANG NỘP BÀI / TÁC PHẨM HỌC VIÊN · v1.8.1
+   - v1.8.1: bài vừa nộp hiện ngay trong "Tác phẩm mới nhất" của người nộp (lấy từ dữ liệu trực tiếp qua Apps Script),
+     không phải chờ Google cập nhật bản CSV công khai (khoảng 5 phút).
    - v1.8.0: nút thả tim trên mỗi bài (chung số tim với Phòng triển lãm, 15 tim thưởng 1 Hồng Ngọc);
      thẻ học viên dùng chung trên thẻ bài (avatar, khung, nền hồ sơ, thuốc đa nhiệm cho cả bài của người khác).
    - Chỉ tải tab BaiMoiNhat (~80 bài mới nhất) thay vì toàn bộ TacPhamWeb.
@@ -1078,6 +1080,9 @@ async function refreshOwnWorks(force){
             );
         renderOwnWorks();
         updateSubmitAvailability();
+        if(mergeOwnIntoLatest()){
+            renderLatest();
+        }
     }catch(error){
         console.warn(
             "[Student Work] Own works:",
@@ -1213,6 +1218,43 @@ function applyLatestText(text,deleteText){
         }
     );
     rebuildWorkMap();
+    mergeOwnIntoLatest();
+}
+/* v1.8.1: bài của học viên đang xem (đọc trực tiếp qua Apps Script) mà danh sách công khai (CSV xuất bản,
+   Google cập nhật chậm ~5 phút) chưa có -> chèn vào "Tác phẩm mới nhất" để người vừa nộp thấy ngay. */
+function mergeOwnIntoLatest(){
+    if(!state.currentStudent){
+        return false;
+    }
+    const own=state.ownWorksMap.get(normalizeCode(state.currentStudent.code));
+    if(!own || !own.length){
+        return false;
+    }
+    const keyOf=function(item){
+        return normalizeCode(item.code)+"|"+String(item.url||item.file||"").trim();
+    };
+    const ids=new Set(state.works.map(function(item){ return item.id; }));
+    const keys=new Set(state.works.map(keyOf));
+    const oldest=state.works.length ? state.works[state.works.length-1].time : 0;
+    let added=0;
+    own.forEach(function(item){
+        if(!item || !item.time || ids.has(item.id) || keys.has(keyOf(item)) || state.deletedIds.has(item.id)){
+            return;
+        }
+        if(state.works.length && item.time<oldest){
+            return;
+        }
+        state.works.push(item);
+        ids.add(item.id);
+        keys.add(keyOf(item));
+        added++;
+    });
+    if(!added){
+        return false;
+    }
+    state.works.sort(function(a,b){ return b.time-a.time; });
+    rebuildWorkMap();
+    return true;
 }
 function afterLatestApplied(){
     if(
