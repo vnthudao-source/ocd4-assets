@@ -22,7 +22,7 @@ const API=
     "https://script.google.com/macros/s/AKfycbz4pa-q_ALScuiY8tbhi5bdJ0MPtl-IBu6gjZuDeFXuailbvPYhlk1TmE_Hq4DjJxHFIg/exec";
 
 const CSS=
-    ".ocdh{position:absolute;top:8px;right:8px;z-index:2;display:inline-flex;align-items:center;gap:4px;min-height:32px;padding:5px 10px;"
+    ".ocdh{position:absolute;top:8px;right:8px;z-index:1;display:inline-flex;align-items:center;gap:4px;min-height:32px;padding:5px 10px;"
     +"border:1px solid #e5ccc1;border-radius:16px;background:rgba(255,253,248,.94);color:#a04538;font:600 13px Arial,Helvetica,sans-serif;"
     +"line-height:1;cursor:pointer;box-shadow:0 3px 10px rgba(68,45,30,.12);-webkit-tap-highlight-color:transparent;margin:0}"
     +".ocdh span{font-size:16px;line-height:1}"
