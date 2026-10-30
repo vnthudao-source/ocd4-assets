@@ -44,6 +44,8 @@
      từng ô thay vì cả hàng; mọi điểm ghi dạng chữ thống nhất (không lẫn số và chữ).
      Trả kèm chi tiết bản chấm (gradingData) để trang Kết quả vẽ thẻ thành tích và tự nộp
      ngay sau khi chấm, không phải chờ Google cập nhật Sheet.
+     cardUpload có thêm chế độ thay thẻ (replace + mật khẩu chấm bài): GVCN chấm lại hoặc
+     thẻ cũ thiếu avatar/khung/nền thì thẻ mới thay ảnh trong đúng dòng Nộp bài tập cũ.
    Nâng cấp từ v1.2.0: dán đè toàn bộ file -> Lưu -> Triển khai -> Quản lý triển khai
    -> sửa -> Phiên bản mới (giữ nguyên URL). Không cần thêm quyền mới.
 
@@ -526,13 +528,22 @@ function cardUpload_(b) {
   var resp = ss.getSheetByName(CHAM_CONFIG.respSheet);
   if (!resp) return { ok: false, error: "Không thấy tab " + CHAM_CONFIG.respSheet + "." };
   var lastResp = respLastRow_(resp);
+  var hit = null;
   if (lastResp >= 2) {
-    var hit = resp.getRange(2, 7, lastResp - 1, 1).createTextFinder(examId).findNext();
-    if (hit) return { ok: true, dup: true, row: hit.getRow(), time: "" };
+    hit = resp.getRange(2, 7, lastResp - 1, 1).createTextFinder(examId).findNext();
   }
+  /* v1.2.1: GVCN (đúng mật khẩu chấm bài) được thay thẻ đã nộp bằng thẻ vẽ lại */
+  var replace = b.replace === true;
+  if (replace && !checkPassword_(b.password)) {
+    Utilities.sleep(800);
+    return { ok: false, auth: false, error: "Sai mật khẩu chấm bài, không thay được thẻ." };
+  }
+  if (hit && !replace) return { ok: true, dup: true, row: hit.getRow(), time: "" };
 
   var img = readImage_(b.data);
   if (img.error) return { ok: false, error: img.error };
+
+  if (hit && replace) return replaceCard_(ss, resp, hit.getRow(), examId, code, img);
 
   var hv = hocVien_(ss, code) || {};
   var exam = findExam_(ss, examId) || {};
@@ -564,6 +575,26 @@ function cardUpload_(b) {
 
   return { ok: true, row: row, url: url, time: Utilities.formatDate(now, CHAM_CONFIG.timeZone, "dd/MM/yyyy HH:mm") };
 }
+/* v1.2.1: thay ảnh thẻ trong dòng Nộp bài tập đã có (giữ nguyên dòng, thời gian nộp) */
+function replaceCard_(ss, resp, row, examId, code, img) {
+  var now = new Date();
+  var file = saveImage_(img, code + "_THE_THANH_TICH_" + Utilities.formatDate(now, CHAM_CONFIG.timeZone, "yyyyMMdd_HHmmss") + "." + img.ext);
+  var url = "https://drive.google.com/open?id=" + file.getId();
+  resp.getRange(row, 6).setValue(url);
+  var log = ss.getSheetByName(CHAM_CONFIG.logSheet);
+  if (log && log.getLastRow() >= 2) {
+    var lv = log.getRange(2, 1, log.getLastRow() - 1, 7).getDisplayValues();
+    for (var i = lv.length - 1; i >= 0; i--) {
+      if (norm_(lv[i][6]) === "the-thanh-tich" && norm_(lv[i][1]).toUpperCase() === code && norm_(lv[i][2]).indexOf(examId) >= 0) {
+        log.getRange(i + 2, 4, 1, 2).setValues([["'" + img.hash, "'" + file.getId()]]);
+        break;
+      }
+    }
+  }
+  SpreadsheetApp.flush();
+  return { ok: true, replaced: true, row: row, url: url, time: Utilities.formatDate(now, CHAM_CONFIG.timeZone, "dd/MM/yyyy HH:mm") };
+}
+
 function kiemTraDrive() {
   Logger.log("Thư mục ảnh thi: " + examFolder_().getUrl());
 }

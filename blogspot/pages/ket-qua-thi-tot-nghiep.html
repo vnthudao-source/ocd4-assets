@@ -1662,11 +1662,13 @@ function fileSlug(text){
     return String(text||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D")
         .replace(/[^A-Za-z0-9]+/g,"_").replace(/^_+|_+$/g,"").slice(0,40) || "hoc_vien";
 }
-async function submitViaChamThi(data,dataUrl,url){
+async function submitViaChamThi(data,dataUrl,url,replacePw){
     var ac=new AbortController(), timer=setTimeout(function(){ ac.abort(); },120000);
     try{
+        var body={action:"cardUpload",examId:data.examId,code:data.code,note:cardNote(data),data:dataUrl};
+        if(replacePw){ body.replace=true; body.password=replacePw; }
         var res=await fetch(url,{method:"POST",
-            body:JSON.stringify({action:"cardUpload",examId:data.examId,code:data.code,note:cardNote(data),data:dataUrl}),
+            body:JSON.stringify(body),
             headers:{"Content-Type":"text/plain;charset=utf-8"},credentials:"omit",cache:"no-store",signal:ac.signal});
         return JSON.parse(await res.text()) || {ok:false};
     }catch(e){
@@ -1675,9 +1677,9 @@ async function submitViaChamThi(data,dataUrl,url){
         clearTimeout(timer);
     }
 }
-async function submitToNopBai(data,dataUrl){
+async function submitToNopBai(data,dataUrl,replacePw){
     var viaUrl=settings().cardUploadUrl;
-    if(viaUrl){ return submitViaChamThi(data,dataUrl,viaUrl); }
+    if(viaUrl){ return submitViaChamThi(data,dataUrl,viaUrl,replacePw); }
     var A=window.OCDAuth;
     var payload={
         token: A && A.token ? (A.token()||"") : "",
@@ -1729,6 +1731,34 @@ function h(tag,cls,text){
     return e;
 }
 
+/* v1.6.3: hồ sơ (avatar / khung / nền / thuốc đa nhiệm) tải chậm hoặc lỗi mạng tạm thời
+   thì thử lại tối đa 3 lần, mỗi lần chờ tối đa 30 giây (trước đây chỉ chờ 15 giây một lần,
+   quá hạn là vẽ thẻ trống rồi nộp luôn). */
+function hasLookData(p){ return !!(p && (p.avatar || p.frame || p.background || p.multitask)); }
+async function loadProfileLook(code){
+    var I=window.OCDIdentity;
+    if(!I || typeof I.profile!=="function"){ return {}; }
+    var p=null;
+    for(var i=0;i<3;i++){
+        try{
+            p=await Promise.race([
+                I.profile(code),
+                new Promise(function(r){ setTimeout(function(){ r(null); },30000); })
+            ]);
+        }catch(e){ p=null; }
+        if(hasLookData(p)){ return p; }
+        await new Promise(function(r){ setTimeout(r,2500); });
+    }
+    return p || {};
+}
+/* Giáo viên đang đăng nhập khu chấm bài: được thay thẻ đã nộp (mật khẩu chấm bài) */
+function graderReplacePassword(examId,auto){
+    try{
+        var G=window.OCDGraduationResult;
+        return (G && typeof G.cardReplacePassword==="function") ? (G.cardReplacePassword(examId,auto)||"") : "";
+    }catch(e){ return ""; }
+}
+
 async function mount(container,data){
     injectCss();
     var cfg=settings();
@@ -1748,13 +1778,9 @@ async function mount(container,data){
     container.appendChild(box);
 
     var profile=data.profile;
-    if(!profile && window.OCDIdentity && typeof window.OCDIdentity.profile==="function"){
-        try{
-            profile=await Promise.race([
-                window.OCDIdentity.profile(data.code),
-                new Promise(function(r){ setTimeout(function(){ r(null); },15000); })
-            ]);
-        }catch(e){ profile=null; }
+    if(!profile){
+        stage.textContent="Đang tải avatar, khung, nền hồ sơ…";
+        profile=await loadProfileLook(data.code);
     }
     data=Object.assign({},data,{profile:profile||{}});
 
@@ -1801,6 +1827,34 @@ async function mount(container,data){
     /* Tự nộp vào Nộp bài tập (một lần cho mỗi Exam ID) */
     if(!cfg.autoSubmit || !data.examId){ return; }
     var say=function(text,kind){ status.style.display="block"; status.className="ocdcard-status "+(kind||""); status.textContent=text; };
+    /* v1.6.3: giáo viên vừa chấm (hoặc chấm lại) bài này -> thẻ mới thay thẻ cũ đã nộp;
+       giáo viên đang đăng nhập khu chấm bài -> có nút thay thẻ */
+    var autoReplace=cfg.cardUploadUrl ? graderReplacePassword(data.examId,true) : "";
+    var manualReplace=cfg.cardUploadUrl ? graderReplacePassword(data.examId,false) : "";
+    if(manualReplace && !autoReplace){
+        var rb=h("button","ocdcard-btn","THAY THẺ ĐÃ NỘP BẰNG THẺ NÀY");
+        rb.type="button";
+        rb.onclick=async function(){
+            rb.disabled=true;
+            say("Đang thay thẻ thành tích trong trang Nộp bài tập…","");
+            var rr=await submitToNopBai(data,canvas.toDataURL("image/jpeg",0.9),manualReplace);
+            rb.disabled=false;
+            if(rr && rr.ok){ markSubmitted(data.examId); say("✅ Đã thay thẻ thành tích trong trang Nộp bài tập.","ok"); }
+            else { say((rr && rr.error) || "Chưa thay được thẻ.","err"); }
+        };
+        actions.appendChild(rb);
+    }
+    if(autoReplace){
+        say("Đang nộp thẻ thành tích (thay thẻ cũ nếu có)…","");
+        var ar=await submitToNopBai(data,canvas.toDataURL("image/jpeg",0.9),autoReplace);
+        if(ar && ar.ok){
+            markSubmitted(data.examId);
+            say(ar.replaced ? "✅ Đã thay thẻ thành tích cũ bằng thẻ mới trong trang Nộp bài tập." : "✅ Đã nộp thẻ thành tích vào trang Nộp bài tập"+(ar.time?" lúc "+ar.time:"")+".","ok");
+        }else{
+            say(((ar && ar.error) || "Chưa nộp được thẻ thành tích.")+" Hãy bấm tra cứu lại học viên này để thử lại.","err");
+        }
+        return;
+    }
     if(submittedMap()[data.examId]){
         say("Thẻ thành tích đã được nộp vào trang Nộp bài tập.","ok");
         return;
@@ -1855,6 +1909,8 @@ window.OCDAchievementCard={
 /* =========================================================
    OCD GRADUATION RESULT
    v1.5.0 (29/10/2026): thẻ thành tích nộp qua ChamThi.gs (không bị giới hạn 2 bài/ngày)
+   v1.6.3 (30/10/2026): thẻ chờ tải đủ avatar/khung/nền/thuốc đa nhiệm (thử lại 3 lần); chấm/chấm lại thì thẻ mới
+     thay thẻ cũ; giáo viên đăng nhập khu chấm có nút "THAY THẺ ĐÃ NỘP"
    v1.6.2 (30/10/2026): đọc Sheet bằng export CSV (không mất điểm lý thuyết); sau khi chấm, kết quả + thẻ lấy từ
      phản hồi máy chủ nên thẻ luôn được tự nộp kể cả khi Sheet chưa cập nhật
    v1.6.0 (29/10/2026): thẻ thành tích vẽ đủ avatar / khung / nền (ảnh qua lh3 hoặc ChamThi.gs imageProxy), bỏ mã học viên trên thẻ
@@ -1885,7 +1941,7 @@ window.OCDGraduationResult || {};
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_RESULT_V1.6.2",
+        "OCD_GRADUATION_RESULT_V1.6.3",
 
     spreadsheetId:
         "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
@@ -5704,6 +5760,7 @@ async function(){
                 ? fromSheet
                 : freshGrading(exam, r, s.items, fromSheet);
         map[key]=grading;
+        GRADER.justSaved=exam.examId;
 
         GRADER.list.forEach(
             function(m){
@@ -5749,6 +5806,18 @@ async function(){
 
 
 
+/* v1.6.3: mật khẩu chấm bài cho việc thay thẻ: auto=true chỉ cho bài vừa chấm (dùng một lần) */
+APP.cardReplacePassword=function(examId,auto){
+    if(!GRADER.password){ return ""; }
+    if(auto){
+        if(GRADER.justSaved && normalizeCode(GRADER.justSaved)===normalizeCode(examId)){
+            GRADER.justSaved="";
+            return GRADER.password;
+        }
+        return "";
+    }
+    return GRADER.password;
+};
 /* v1.6.2: dựng bản chấm từ phản hồi ChamThi.gs (khi Sheet chưa kịp cập nhật) */
 function freshGrading(exam, r, items, old){
     var details=(Array.isArray(r.gradingData) ? r.gradingData : (items||[]).map(function(it){
