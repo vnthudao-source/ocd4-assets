@@ -1675,7 +1675,7 @@ var UNLIMITED_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.10.0_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.10.1_20_10_2",
 
     durationMs:
         (Number(GLOBAL_SETTINGS.examMinutes) > 0 ? Number(GLOBAL_SETTINGS.examMinutes) : 60)*60*1000,
@@ -2344,7 +2344,7 @@ var PRACTICAL_QUESTIONS=[
         help:
             "B1: Tại chỗ sáng tác một tác phẩm mới. " +
             "Tiêu chí: sử dụng các kỹ thuật thư pháp đã học, bài viết khoảng 20 chữ trở lên, " +
-            "gồm cả Đại tự – Tiểu tự, chủ đề “Nhập cổ xuất tân”, phong cách viết tự do. " +
+            "gồm cả Đại tự – Tiểu tự, chủ đề “Dốc tâm cầu học”, phong cách viết tự do. " +
             "B2: Bấm CHỤP / CHỌN ẢNH TÁC PHẨM rồi bấm TẢI ẢNH LÊN BÀI THI – ảnh được nộp thẳng vào bài thi, " +
             "không cần qua trang Nộp bài và không tính vào giới hạn 2 bài/ngày."
     }
@@ -8353,7 +8353,7 @@ async function(questionId){
             up.note ||
             ""
         ).trim() ||
-        "Sáng tác tại chỗ – Nhập cổ xuất tân";
+        "Sáng tác tại chỗ – Dốc tâm cầu học";
 
     var local=
         CONFIG.trialMode ||
@@ -8720,7 +8720,7 @@ function renderPractical(){
                         ''
                 ) +
                 '<input class="exam-input" id="examUploadNote" type="text" maxlength="200" ' +
-                    'placeholder="Mô tả ngắn (không bắt buộc), ví dụ: Nhập cổ xuất tân" value="' +
+                    'placeholder="Mô tả ngắn (không bắt buộc), ví dụ: Dốc tâm cầu học" value="' +
                     escapeHtml(
                         up.note ||
                         ""
