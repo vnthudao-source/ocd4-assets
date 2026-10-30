@@ -1466,6 +1466,610 @@
      ]
     }
    ]
+  },
+  {
+   "id": "c07",
+   "no": "Bài 7",
+   "title": "Chuyện nhỏ về Quản Thành Tử (cây bút)",
+   "titleZh": "管城子小谈",
+   "author": "Lão Huỷ",
+   "pages": "75–80",
+   "summary": "Một bài tạp đàm về cây bút lông: tên gọi xưa, những cây bút cổ còn lại, chuyện bút cứng – bút mềm, các trung tâm làm bút, và lời biện hộ cho việc học chữ triện. Ý chính: phong cách thư pháp do bút pháp của người viết quyết định, không do loại lông bút.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Trong «văn phòng tứ bảo» (bút, mực, giấy, nghiên), cây bút là thứ gắn trực tiếp nhất với bàn tay người viết. Bài của Lão Huỷ là những ghi chép rời, nhưng có một luận điểm xuyên suốt: **chất lông bút không tự quyết định phong cách**; điều quyết định là bút pháp. Từ đó tác giả phản bác hai định kiến phổ biến: “bút lông cứng mới là thượng phẩm” và “chữ triện có học cũng được, không học cũng chẳng sao”. Bài giảng dưới đây gom các ý ấy thành bốn chủ đề, kèm những điều người học cần biết khi chọn và dùng bút."
+    },
+    {
+     "t": "h",
+     "x": "Tên gọi và dấu vết cây bút cổ"
+    },
+    {
+     "t": "p",
+     "x": "Trước đời Tần, mỗi vùng gọi cây bút một khác; đến khi Tần thống nhất, chữ **bút** mới thành tên chung. Sách «Thuyết văn giải tự» của Hứa Thận đời Hán còn ghi lại sự khác biệt địa phương đó:"
+    },
+    {
+     "t": "quote",
+     "zh": "聿，所以书也。楚谓之聿，吴谓之不律，燕谓之弗。",
+     "hv": "Duật, sở dĩ thư dã. Sở vị chi duật, Ngô vị chi bất luật, Yên vị chi phất.",
+     "vi": "“Duật” là đồ dùng để viết. Nước Sở gọi là duật, nước Ngô gọi là bất luật, nước Yên gọi là phất.",
+     "src": "Hứa Thận, «Thuyết văn giải tự»"
+    },
+    {
+     "t": "p",
+     "x": "Văn nhân đời sau còn đặt cho bút nhiều biệt hiệu thân mật: *Mao Trùy Tử* (cái dùi lông), *Trung Thư Quân*, *Long Tu Hữu* (bạn râu rồng), *Tiêm Đầu Nô* (đứa hầu đầu nhọn)… Nổi tiếng nhất là **Quản Thành Tử**, xuất phát từ bài văn giỡn «Mao Dĩnh truyện» của Hàn Dũ đời Đường, nhân cách hoá cây bút thành một nhân vật tên Mao Dĩnh được Tần Thuỷ Hoàng phong đất:"
+    },
+    {
+     "t": "quote",
+     "zh": "秦皇帝使恬赐之汤沐，而封诸管城，号曰管城子，日见亲宠任事。",
+     "hv": "Tần hoàng đế sử Điềm tứ chi thang mộc, nhi phong chư Quản Thành, hiệu viết Quản Thành Tử, nhật kiến thân sủng nhậm sự.",
+     "vi": "Hoàng đế nhà Tần sai (Mông) Điềm ban cho ấp thang mộc, phong ở đất Quản Thành, hiệu là Quản Thành Tử, ngày càng được thân yêu và giao việc.",
+     "src": "Hàn Dũ, «Mao Dĩnh truyện»"
+    },
+    {
+     "t": "p",
+     "x": "Cái tên là một lối chơi chữ: *quản* vừa là ống, vừa là cán bút. Truyền thuyết “Mông Điềm làm bút” cũng chỉ nên hiểu là Mông Điềm cải tiến, vì khảo cổ cho thấy bút có trước đời Tần. Hai mẫu vật thường được nhắc là cây bút thời Chiến Quốc có cả ống bọc, đào được năm 1954 trong mộ Sở ở Tả Gia Công Sơn (Trường Sa), và **bút Cư Diên** đầu đời Đông Hán, do đoàn khảo sát Tây Bắc phát hiện năm 1931 ở vùng Cư Diên (Nội Mông). Cả hai đều là bút viết mực, không phải bút quét sơn."
+    },
+    {
+     "t": "h",
+     "x": "Bút cứng, bút mềm hay bút kiêm hào?"
+    },
+    {
+     "t": "p",
+     "x": "Nhiều người tin rằng bút cổ đều là **ngạnh hào** (lông cứng: lông thỏ tía, lông chồn, râu chuột), còn bút lông dê mềm là thứ mới có. Tác giả dẫn sử liệu để cho thấy điều ngược lại. Theo «Cổ kim chú» của Thôi Báo, bút Mông Điềm làm có lõi lông hươu, áo ngoài lông dê, tức là bút pha. Cách làm bút của Vi Đản đời Tào Nguỵ, chép trong «Tề dân yếu thuật», cũng xen lông thỏ với lông dê xanh. Bài «Bút kinh» (tương truyền của Vương Hi Chi) tả cách lấy ngọn tóc người làm lõi, trộn lông dê và lông tơ thỏ rồi cắt cho bằng:"
+    },
+    {
+     "t": "quote",
+     "zh": "先用人发杪数十茎，杂青羊毛并兔毳，裁令齐平。",
+     "hv": "Tiên dụng nhân phát diểu sổ thập hành, tạp thanh dương mao tịnh thố thuế, tài linh tề bình.",
+     "vi": "Trước hết lấy vài chục sợi ngọn tóc người, trộn với lông dê xanh và lông tơ thỏ, cắt cho bằng phẳng.",
+     "src": "«Bút kinh», tương truyền của Vương Hi Chi"
+    },
+    {
+     "t": "p",
+     "x": "Như vậy cái gọi là “bút cứng” thời xưa phần lớn là **kiêm hào** (bút pha), chỉ khác nhau ở tỉ lệ. Bút thuần mềm cũng có từ sớm: Đoàn Công Lộ đời Đường trong «Bắc hộ lục» kể miền Lĩnh Nam ít thỏ nên dân làm bút bằng lông dê, thậm chí lông gà, mà viết chữ nhỏ vẫn tốt. Tiêu chuẩn của bút tốt từ xưa vì thế không phải “cứng” mà là **cương nhu tương tế**: có lực đàn hồi để nét vững, có độ mềm để nét biến hoá. Giới làm bút đúc kết thành bốn đức *tiêm, tề, viên, kiện*: ngòi nhọn, đầu lông bằng khi ấn dẹt, thân tròn đầy, lông đàn hồi bật lại. Với người học, đây cũng là bốn điểm cần thử khi mua bút: chấm nước, vuốt nhọn, ấn dẹt, nhấc lên xem lông có tự trở về không."
+    },
+    {
+     "t": "h",
+     "x": "Phong cách do bút pháp, không do lông bút"
+    },
+    {
+     "t": "p",
+     "x": "Đây là phần thuyết phục nhất của bài, vì tác giả đưa ra những ví dụ “ngược đời”. **Tô Thức** đời Tống dùng bút lông thỏ tía của nhà họ Chư Cát ở Tuyên Thành, loại bút cứng điển hình, vậy mà chữ ông béo, đậm, từng bị chê là “mặc trư” (lợn mực). Lý do nằm ở bút pháp: ông cầm bút thấp, không treo cổ tay, ưa ngọn nghiêng (trắc phong), hạ bút trải lông xuống giấy, thu bút lại cố giấu ngọn, nên nét tự nhiên đầy. Ngược lại, **Đặng Thạch Như** đời Thanh dùng bút lông dê mà triện, lệ của ông hùng kiện, không hề mềm nhũn, lại mở ra phong cách mới. Từ thời Càn Long – Gia Khánh, bút lông dê thịnh hành; Lương Đồng Thư, Bao Thế Thần, Hà Thiệu Cơ đều dùng nó, nhưng mỗi người một diện mạo."
+    },
+    {
+     "t": "p",
+     "x": "Một bằng chứng nữa là **quán các thể**, lối chữ khải đen, vuông, bóng, đều tăm tắp của các kỳ thi đời Thanh, bị giới thư pháp coi là cứng nhắc như “con tính xếp hàng”. Những người viết lối này lại thường dùng bút cứng hoặc bút pha đắt tiền. Kết luận rút ra rất thực tế: thói “ngọt, trơn, quen tay” hay vẻ “sắc, khoẻ” đều có thể xuất hiện với bất kỳ loại bút nào. Nói chữ đẹp nhờ độ đàn hồi của bút chỉ đúng một nửa; nửa kia là độ mềm, và trên hết là tay nghề người viết, sao cho bút cứng không lộ xương, bút mềm không nhão thịt."
+    },
+    {
+     "t": "p",
+     "x": "Hai trải nghiệm được kể thêm. Lâm Tán Chi, danh gia chữ thảo thế kỷ XX, viết bằng bút lông dê ngọn dài: chấm no mực, ấn ít nhấc nhiều, dùng phần mũi lông, chấm mực lại trước khi cạn để lông không oặt. Tác giả thì thử một cây bút thai hào cực mềm làm theo lối cổ: ban đầu viết không thành chữ, sau vài chục tờ mới điều khiển được và ra nét mạnh bất ngờ. Vậy đừng vội đổ lỗi cho bút; cây bút nào cũng cần thời gian làm quen."
+    },
+    {
+     "t": "h",
+     "x": "Bút Tuyên, bút Hồ và lời bênh vực chữ triện"
+    },
+    {
+     "t": "p",
+     "x": "Đời Đường – Tống, **bút Tuyên** (Tuyên Thành, An Huy) nổi tiếng nhất; từ Nam Tống trở đi, **bút Hồ** (Hồ Châu, Chiết Giang) dần thay thế, và theo địa chí, nhiều thợ bút Hồ Châu vốn gốc Tuyên Thành. Bút Hồ tiến bộ nhờ bám sát nhu cầu người viết, nhất là tuyển lông dê để tăng đàn hồi."
+    },
+    {
+     "t": "p",
+     "x": "Phần cuối bài phản bác ý kiến cho rằng triện thư đã lỗi thời. Triện có cả một dòng phong phú, từ giáp cốt, kim văn, «Thạch cổ văn» đến tiểu triện; lối đốt ngọn bút hay bó lông để “ép” nét tròn chỉ là ngả rẽ, không phải dòng chính. Thành tựu của Đặng Thạch Như, người khiến Tiền Điểm, một nhà triện thư kiêu hãnh, phải thán phục, lại đạt được bằng bút lông dê. Cổ nhân cũng luôn coi triện là gốc của các thể khác; Tôn Quá Đình viết:"
+    },
+    {
+     "t": "quote",
+     "zh": "故亦傍通二篆，俯贯八分，包括篇章，涵泳飞白。",
+     "hv": "Cố diệc bàng thông nhị triện, phủ quán bát phân, bao quát thiên chương, hàm vịnh phi bạch.",
+     "vi": "Cho nên còn phải thông suốt cả đại triện lẫn tiểu triện, quán triệt bát phân, bao quát chương pháp toàn thiên, thấm nhuần lối phi bạch.",
+     "src": "Tôn Quá Đình, «Thư phổ»"
+    },
+    {
+     "t": "p",
+     "x": "Với học viên Thư Đạo, ý này rất thiết thực: dù chủ yếu viết khải, hành hay chữ Việt, tập một ít triện giúp hiểu **trung phong** và nét tròn có lực. Còn về bút, hãy chọn cây phù hợp với phong cách mình hướng tới, rồi kiên nhẫn luyện bút pháp, vì bút pháp mới là thứ làm nên chữ."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Quản Thành Tử",
+       "zh": "管城子",
+       "vi": "Biệt hiệu của cây bút, từ «Mao Dĩnh truyện» của Hàn Dũ."
+      },
+      {
+       "hv": "Ngạnh hào",
+       "zh": "硬毫",
+       "vi": "Bút lông cứng, đàn hồi mạnh (lông thỏ tía, lông chồn…)."
+      },
+      {
+       "hv": "Nhuyễn hào",
+       "zh": "软毫",
+       "vi": "Bút lông mềm, chủ yếu lông dê; giữ nhiều mực, nét biến hoá."
+      },
+      {
+       "hv": "Kiêm hào",
+       "zh": "兼毫",
+       "vi": "Bút pha hai loại lông, cứng làm lõi, mềm làm áo, theo nhiều tỉ lệ."
+      },
+      {
+       "hv": "Tử hào",
+       "zh": "紫毫",
+       "vi": "Lông thỏ tía (lông lưng thỏ rừng), loại bút cứng quý."
+      },
+      {
+       "hv": "Thai hào",
+       "zh": "胎毫",
+       "vi": "Bút làm bằng tóc máu trẻ sơ sinh, rất mềm."
+      },
+      {
+       "hv": "Cương nhu tương tế",
+       "zh": "刚柔相济",
+       "vi": "Cứng và mềm bổ trợ nhau, tiêu chuẩn của bút tốt và của nét chữ."
+      },
+      {
+       "hv": "Tiêm, tề, viên, kiện",
+       "zh": "尖齐圆健",
+       "vi": "“Bốn đức” của bút: nhọn, bằng, tròn, đàn hồi."
+      },
+      {
+       "hv": "Hồ bút / Tuyên bút",
+       "zh": "湖笔 / 宣笔",
+       "vi": "Bút Hồ Châu (Chiết Giang) và bút Tuyên Thành (An Huy), hai dòng bút nổi tiếng."
+      },
+      {
+       "hv": "Quán các thể",
+       "zh": "馆阁体",
+       "vi": "Lối chữ khải đều, đen, bóng dùng trong khoa cử, triều đình Minh – Thanh."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Mông Điềm",
+       "zh": "蒙恬",
+       "years": "?–210 TCN, đời Tần",
+       "note": "Danh tướng, tương truyền là người cải tiến cây bút."
+      },
+      {
+       "name": "Vi Đản (Vi Trọng Tương)",
+       "zh": "韦诞",
+       "years": "179–253, Tào Nguỵ",
+       "note": "Nhà thư pháp, nổi tiếng với cách làm bút và mực."
+      },
+      {
+       "name": "Tô Thức",
+       "zh": "苏轼",
+       "years": "1037–1101, đời Tống",
+       "note": "Dùng bút lông thỏ tía Tuyên Thành nhưng chữ đầy đặn, béo."
+      },
+      {
+       "name": "Đặng Thạch Như",
+       "zh": "邓石如",
+       "years": "1743–1805, đời Thanh",
+       "note": "Đại gia triện, lệ, dùng bút lông dê mà nét hùng kiện."
+      },
+      {
+       "name": "Hà Thiệu Cơ",
+       "zh": "何绍基",
+       "years": "1799–1873, đời Thanh",
+       "note": "Học lệ Hán, bia Nhan; một trong những người dùng bút lông dê nổi tiếng."
+      },
+      {
+       "name": "Lâm Tán Chi",
+       "zh": "林散之",
+       "years": "1898–1989",
+       "note": "Danh gia chữ thảo hiện đại, dùng bút lông dê ngọn dài."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Vì sao tác giả cho rằng phần lớn “bút cứng” thời xưa thực chất là bút kiêm hào? Nêu ít nhất hai dẫn chứng.",
+      "Trường hợp Tô Thức và Đặng Thạch Như cho thấy điều gì về quan hệ giữa loại bút và phong cách chữ?",
+      "Bốn đức “tiêm, tề, viên, kiện” là gì? Hãy mô tả cách kiểm tra chúng khi chọn một cây bút.",
+      "Người mới dùng bút lông dê thường gặp lỗi gì, và có thể khắc phục bằng những thao tác nào?",
+      "Theo Tôn Quá Đình và tác giả, vì sao người viết khải, hành, thảo vẫn nên học chữ triện?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c08",
+   "no": "Bài 8",
+   "title": "Nghệ thuật khắc ấn của Tề Bạch Thạch",
+   "titleZh": "齐白石的治印艺术",
+   "author": "Hoàng Dưỡng Huy",
+   "pages": "81–84",
+   "summary": "Hồi ức của một người từng nhiều năm gần gũi Tề Bạch Thạch về con đường học khắc ấn, cách viết bản thảo, đao pháp đơn đao và khâu chỉnh sửa của ông. Bài giảng tóm lược các đặc điểm ấy và rút ra bài học cho người học triện khắc.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Tề Bạch Thạch (1864–1957), người Tương Đàm (Hồ Nam), được biết đến rộng rãi nhất như một hoạ sĩ, nhưng chính ông lại xếp **kim thạch triện khắc** lên hàng đầu trong các sở trường của mình, rồi mới đến thơ, thư pháp và hội hoạ. Tác giả bài viết, hoạ sĩ Hoàng Dưỡng Huy, từng dạy học ở Bắc Kinh, nhiều năm trò chuyện với ông và được xem nhiều ấn ông khắc. Bài viết vì thế có giá trị của một lời chứng kiến tận mắt. Ở đây ta không chép lại thơ, đề từ hay hình ấn của Tề Bạch Thạch, mà chỉ thuật lại bằng lời của bài giảng những đặc điểm chính trong nghệ thuật của ông, theo ba chủ đề: con đường học, cách làm việc, và thẩm mỹ."
+    },
+    {
+     "t": "h",
+     "x": "Một con đường “nhiều lần biến pháp”"
+    },
+    {
+     "t": "p",
+     "x": "Điều đáng chú ý trước tiên là thành tựu của ông **không đi theo đường thẳng**. Thuở trẻ ở quê, ông học khắc cùng một người bạn đồng hương là Lê Tùng An và nhờ gia đình họ Lê mà được xem ấn phổ của **Đinh Kính** và **Hoàng Dịch**, hai bậc thầy phái Chiết đời Thanh. Ông chép đi chép lại các ấn ấy để tìm cửa vào. Vài năm sau, gặp ấn của **Triệu Chi Khiêm**, ông nhận ra cái hay của sự sơ – mật (thưa – dày) tự nhiên. Sau đó ông say mê bia «Thiên phát thần sấm» đời Ngô (Tam Quốc), và đao pháp đổi khác; rồi đến bia «Tam Công sơn» đời Đông Hán, cách viết triện lại đổi; cuối cùng ông tìm đến chữ khắc trên quả cân, đồ đong đời Tần (*Tần quyền lượng*), nét ngang dọc thẳng thắn, tự nhiên. Qua mấy lần chuyển biến như thế, ông mới thành phong cách riêng."
+    },
+    {
+     "t": "p",
+     "x": "Cũng có một giai thoại đáng nhớ: khi ông than mãi không khắc được tốt, một người bạn khuyên hãy gánh về cả gánh đá, khắc rồi mài, mài rồi khắc, đến khi đá thành bùn thì sẽ giỏi. Ông làm đúng như vậy, thêm khoảng mười năm khổ luyện nữa mới đạt thành tựu rõ rệt. Bài học cho người học rất giản dị: **lượng luyện tập là điều kiện không thể thay thế**, và mỗi lần gặp một nguồn cổ mới (bia, quả cân, ấn Hán) đều có thể là một bước ngoặt nếu ta thực sự “tiêu hoá” được nó."
+    },
+    {
+     "t": "h",
+     "x": "Cách làm việc: viết, khắc, rồi soát lại"
+    },
+    {
+     "t": "p",
+     "x": "Về quy trình, Tề Bạch Thạch dùng bút mực viết chữ triện trực tiếp lên mặt đá đã mài phẳng. Thời trẻ và trung niên, ông viết đi viết lại nhiều lần cho đến khi các chữ phối hợp hư – thực ổn thoả. Đến khi tác giả gặp ông (lúc ông đã ngoài tám mươi), mấy chục năm luyện tập đã thành phản xạ: nét bút trên đá chỉ như vài dấu ghi nhớ, còn khi khắc thì ông **“thành trúc tại hung”**, cứ theo ý mà đi dao, không bám sát nét mực. Ông cầm đá trong tay, không dùng ấn sàng (giá kẹp ấn)."
+    },
+    {
+     "t": "p",
+     "x": "Đặc sắc nhất là **đơn đao**: mỗi nét chỉ đi một nhát dao, không đi lại. Theo mô tả, lưỡi dao hướng ra ngoài, hơi nghiêng; khi đổi hướng nét ngang sang nét dọc, ông xoay hòn đá chứ không xoay dao (lấy đá theo dao). Vì lực cổ tay rất mạnh, một bên nét gọn sạch, bên kia vỡ lởm chởm như răng cưa. Chính vết vỡ tự nhiên đó tạo nên **kim thạch vị**, vẻ cổ kính của kim loại và đá đã qua năm tháng."
+    },
+    {
+     "t": "p",
+     "x": "Sau nhát khắc đầu, ông chải sạch vụn đá, đóng thử ra giấy rồi bình tĩnh xem xét toàn ấn. Mọi quyết định, chỗ nào nên vuông, nên tròn, nên bỏ, nên giữ, nên đứt, nên liền, nên lành, nên vỡ, từ nét chữ đến viền và bốn góc, đều xét theo bố cục chung và sự **thống nhất trong biến hoá** của cả ấn. Tác giả nhận xét thời gian ông ngắm nghía còn nhiều hơn thời gian khắc. Tuy vậy ông chủ trương chỉnh sửa ít: thà để hơi thô còn hơn sửa quá tay làm mất góc cạnh và sức sống tự nhiên. Đây là một quan niệm rất gần với thư pháp: nét viết một lần mới có khí, nét tô lại thì chết."
+    },
+    {
+     "t": "h",
+     "x": "Thẩm mỹ: táo bạo nhưng có pháp độ"
+    },
+    {
+     "t": "p",
+     "x": "Ấn của Tề Bạch Thạch có chương pháp mạnh: chỗ dày đặc dồn lại, chỗ trống mở toang, tương phản gay gắt mà vẫn cân. Nguyên lý này đã được các bậc thầy đời Thanh nói rõ. Bao Thế Thần thuật lại lời Đặng Thạch Như:"
+    },
+    {
+     "t": "quote",
+     "zh": "字画疏处可以走马，密处不使透风，常计白以当黑，奇趣乃出。",
+     "hv": "Tự hoạch sơ xứ khả dĩ tẩu mã, mật xứ bất sử thấu phong, thường kế bạch dĩ đương hắc, kỳ thú nãi xuất.",
+     "vi": "Chỗ nét chữ thưa thì ngựa chạy lọt, chỗ dày thì gió không lọt qua; thường tính phần trắng như phần đen, thì cái thú lạ mới hiện ra.",
+     "src": "Bao Thế Thần, «Nghệ chu song tiếp», thuật lời Đặng Thạch Như"
+    },
+    {
+     "t": "p",
+     "x": "Tề Bạch Thạch đẩy nguyên lý ấy đến cực độ, cộng với nét đơn đao thẳng, sắc, tạo nên vẻ hùng hồn, rộng lớn, đầy khí thế. Tác giả nhấn mạnh rằng ông đã hấp thụ cái hay của quả cân Tần, bia Tam Công sơn và bia Thiên phát thần sấm đến mức “hoá vào vô hình”: người xem không thấy dấu vết sao chép mà chỉ thấy một phong cách riêng. Có thể đặt điều này cạnh tư tưởng *ấn ngoại cầu ấn* (tìm ấn ở ngoài ấn) của Triệu Chi Khiêm: nguồn cảm hứng của người khắc ấn không chỉ là ấn cổ mà là toàn bộ văn tự kim thạch."
+    },
+    {
+     "t": "p",
+     "x": "Người học cần thấy cả hai mặt. Cái “tự do” của Tề Bạch Thạch được xây trên hàng chục năm chép ấn Chiết phái, học Triệu Chi Khiêm và nghiền ngẫm bia khắc. Bắt chước ngay vẻ phóng túng của đơn đao mà chưa có nền tảng triện thư và chương pháp thì dễ thành thô lỗ. Thứ tự hợp lý vẫn là: viết triện cho vững, chép ấn Hán và ấn các phái, rồi mới tìm đường riêng."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Trị ấn",
+       "zh": "治印",
+       "vi": "Làm ấn, khắc ấn; đồng nghĩa với triện khắc."
+      },
+      {
+       "hv": "Đơn đao",
+       "zh": "单刀",
+       "vi": "Mỗi nét chỉ khắc một nhát dao, một mặt nét gọn, một mặt vỡ tự nhiên."
+      },
+      {
+       "hv": "Xung đao",
+       "zh": "冲刀",
+       "vi": "Lối đẩy dao thẳng tới một mạch; đơn đao của Tề Bạch Thạch thuộc lối này."
+      },
+      {
+       "hv": "Ấn sàng",
+       "zh": "印床",
+       "vi": "Giá kẹp để cố định hòn đá khi khắc."
+      },
+      {
+       "hv": "Chương pháp",
+       "zh": "章法",
+       "vi": "Cách sắp xếp chữ, nét, khoảng trống trên mặt ấn."
+      },
+      {
+       "hv": "Kế bạch đương hắc",
+       "zh": "计白当黑",
+       "vi": "Tính khoảng trắng như một phần của bố cục, ngang với nét đen."
+      },
+      {
+       "hv": "Kim thạch vị",
+       "zh": "金石味",
+       "vi": "Vẻ cổ kính, mộc của văn tự trên đồng, đá; thường có nhờ vết vỡ tự nhiên."
+      },
+      {
+       "hv": "Tần quyền lượng",
+       "zh": "秦权量",
+       "vi": "Chữ khắc trên quả cân, đồ đong đời Tần; nét thẳng, tự nhiên."
+      },
+      {
+       "hv": "Ấn ngoại cầu ấn",
+       "zh": "印外求印",
+       "vi": "Quan niệm của Triệu Chi Khiêm: tìm chất liệu cho ấn từ văn tự kim thạch ngoài ấn."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Tề Bạch Thạch",
+       "zh": "齐白石",
+       "years": "1864–1957",
+       "note": "Hoạ sĩ, nhà triện khắc; tự xếp triện khắc lên hàng đầu trong sở trường."
+      },
+      {
+       "name": "Đinh Kính",
+       "zh": "丁敬",
+       "years": "1695–1765, đời Thanh",
+       "note": "Tổ phái Chiết, đứng đầu Tây Linh bát gia."
+      },
+      {
+       "name": "Hoàng Dịch",
+       "zh": "黄易",
+       "years": "1744–1802, đời Thanh",
+       "note": "Một trong Tây Linh tứ gia, giỏi khảo cứu kim thạch."
+      },
+      {
+       "name": "Triệu Chi Khiêm",
+       "zh": "赵之谦",
+       "years": "1829–1884, đời Thanh",
+       "note": "Mở rộng nguồn nhập ấn ra tiền cổ, gương đồng, bia khắc."
+      },
+      {
+       "name": "Đặng Thạch Như",
+       "zh": "邓石如",
+       "years": "1743–1805, đời Thanh",
+       "note": "Đưa bút ý triện thư vào ấn; nguyên lý “kế bạch đương hắc”."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Tề Bạch Thạch đã trải qua những nguồn học nào trên con đường triện khắc, và mỗi nguồn thay đổi điều gì trong ấn của ông?",
+      "Mô tả kỹ thuật đơn đao của Tề Bạch Thạch. Vì sao nó tạo ra “kim thạch vị”?",
+      "Trong khâu chỉnh sửa, ông cân nhắc những gì và vì sao lại chủ trương “sửa ít”?",
+      "Giải thích câu “kế bạch đương hắc” và tìm một ví dụ áp dụng trong chương pháp ấn hoặc thư pháp.",
+      "Theo em, người mới học nên học gì trước khi thử lối khắc phóng túng như Tề Bạch Thạch? Vì sao?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c09",
+   "no": "Bài 9",
+   "title": "Bàn phiếm về ấn chương",
+   "titleZh": "漫谈印章",
+   "author": "Đinh Cát Phủ",
+   "pages": "85–94",
+   "summary": "Một lược sử ấn chương Trung Hoa từ tỉ ấn thời Chiến Quốc, ấn Tần Hán, ấn giám thưởng đời Đường đến các lưu phái Minh – Thanh và Tề Bạch Thạch, kèm nhận xét về thẩm mỹ chu văn – bạch văn và vấn đề dùng chữ đương đại trong ấn.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Với người học thư pháp, con dấu đỏ trên tác phẩm không phải trang trí phụ mà là một nghệ thuật song hành. Bài của Đinh Cát Phủ đi một vòng lịch sử dài hơn hai nghìn năm, từ khi ấn chỉ là công cụ niêm phong hàng hoá đến khi thành một môn nghệ thuật có trường phái. Bài giảng sắp xếp lại thành năm chủ đề: nguồn gốc và công dụng, ấn Tần Hán như mẫu mực, ấn hậu kỳ và cửu điệp văn, cuộc “phục cổ” đời Nguyên mở đường cho văn nhân khắc ấn, và các lưu phái Minh – Thanh."
+    },
+    {
+     "t": "h",
+     "x": "Ấn ra đời từ chợ búa và việc niêm phong"
+    },
+    {
+     "t": "p",
+     "x": "Thuyết đáng tin nhất cho rằng ấn chương xuất hiện từ cuối Xuân Thu đến Chiến Quốc. Công cụ sắt phổ biến, sản xuất tăng, các đô thị buôn bán lớn mọc lên như Lâm Truy (Tề), Hàm Đan (Triệu), Đại Lương, Lạc Dương. Hàng hoá trao đổi nhiều thì cần một dấu hiệu bảo đảm, và ấn ra đời từ đó. «Chu lễ» đã nói hàng hoá dùng “tỉ tiết”, và chú giải của Trịnh Huyền đời Hán cho biết đó chính là ấn chương. Lưu Hi trong «Thích danh» giải thích chữ tỉ:"
+    },
+    {
+     "t": "quote",
+     "zh": "玺，徙也，封物使可转徙而不可发也。",
+     "hv": "Tỉ, tỉ dã, phong vật sử khả chuyển tỉ nhi bất khả phát dã.",
+     "vi": "Tỉ (ấn) nghĩa là “dời”: niêm vật lại khiến có thể chuyển dời đi mà không thể mở ra.",
+     "src": "Lưu Hi, «Thích danh»"
+    },
+    {
+     "t": "p",
+     "x": "Cách dùng cụ thể: buộc đồ vật hay thẻ tre bằng dây, trát đất sét lên nút dây rồi ấn con dấu xuống, giống như niêm xi ngày nay. Cục đất có dấu ấy gọi là **phong nê**. Vì in vào đất, nét chìm của ấn sẽ thành nét nổi trên đất, nên ấn thời này chủ yếu là **bạch văn** (chữ khắc chìm). Đến khi giấy thay thẻ tre, khoảng sau đời Đông Tấn, người ta mới dùng mực đỏ (ấn nê) đóng lên giấy; lúc đó **chu văn** (chữ nổi, in ra chữ đỏ) rõ ràng hơn nên dần chiếm ưu thế trong ấn quan. Đây là một ví dụ đẹp về việc vật liệu và công dụng quyết định thẩm mỹ."
+    },
+    {
+     "t": "p",
+     "x": "Ấn còn gắn với thứ bậc. Từ đời Tần, chữ *tỉ* dành riêng cho thiên tử, người khác chỉ gọi là *ấn*; đời Hán, thiên tử có sáu tỉ, quan từ hai nghìn thạch trở lên gọi ấn là *chương*, thấp hơn gọi *ấn*; ấn riêng thường khắc “mỗ mỗ tư ấn”. Núm ấn cũng phân biệt cấp bậc với hình rùa, lạc đà, núm mũi. Về chất liệu, sử liệu đời Hán chép:"
+    },
+    {
+     "t": "quote",
+     "zh": "秦以前，民皆以金玉为印，龙虎钮，唯其所好。",
+     "hv": "Tần dĩ tiền, dân giai dĩ kim ngọc vi ấn, long hổ nữu, duy kỳ sở hảo.",
+     "vi": "Trước đời Tần, dân đều lấy vàng, ngọc làm ấn, núm hình rồng hổ, tuỳ theo ý thích.",
+     "src": "Vệ Hoành, «Hán cựu nghi» (dẫn trong «Độc đoán» của Thái Ung)"
+    },
+    {
+     "t": "h",
+     "x": "Ấn Tần Hán: đỉnh cao của “phân chu bố bạch”"
+    },
+    {
+     "t": "p",
+     "x": "Ấn cổ phần lớn là **chú ấn**: đúc bằng khuôn cát hoặc khuôn sáp chảy. Khi cần gấp, như phong quan trong quân, người ta khắc thẳng lên phôi, gọi là **tạc ấn** hay “cấp tựu chương”, nét mạnh và tự nhiên hơn. Ấn trước Tần (cổ tỉ) mang nhiều dị thể chữ của sáu nước, khó đọc. Tần Thuỷ Hoàng thống nhất văn tự, Lý Tư định tiểu triện, nên ấn Tần dùng tiểu triện, thường có khung chữ điền chia ô."
+    },
+    {
+     "t": "p",
+     "x": "Đời Hán thông dụng lệ thư, ấn thì dùng **mậu triện** (còn gọi mô ấn triện): một thứ triện được vuông hoá, bớt cong, gần với lệ, rất hợp với khuôn ấn vuông. Tác giả ví thành tựu của ấn Hán như thơ Đường, từ Tống, khúc Nguyên: một ngọn núi vút lên, thời kỳ phồn thịnh nhất của ấn chương. Ấn Hán có đủ loại một mặt, hai mặt, nhiều mặt, ấn mẹ con, ấn hình (tiếu hình ấn). Điểm chung của ấn Tần Hán là trong khoảng vuông chỉ chừng một tấc, nhờ **phân chu bố bạch**, chia nét đỏ và khoảng trắng, mà đạt vẻ chất phác, dày dặn, so le mà có trật tự. Ngô Khâu Diễn sau này đúc kết:"
+    },
+    {
+     "t": "quote",
+     "zh": "白文印，皆用汉篆，平方正直，字不可圆。",
+     "hv": "Bạch văn ấn, giai dụng Hán triện, bình phương chính trực, tự bất khả viên.",
+     "vi": "Ấn bạch văn đều dùng triện Hán, bằng, vuông, ngay thẳng, chữ không được tròn.",
+     "src": "Ngô Khâu Diễn, «Tam thập ngũ cử»"
+    },
+    {
+     "t": "h",
+     "x": "Ấn giám thưởng và cửu điệp văn"
+    },
+    {
+     "t": "p",
+     "x": "Từ Đường, Tống, Nguyên, ấn mở rộng từ công cụ xác tín sang **giám tàng** và **đề bạt** thư hoạ. Ấn sớm nhất thấy trên thư hoạ là ấn liên châu “Trinh Quán” của Đường Thái Tông; nội phủ đời Đường còn có các ấn “Khai Nguyên”, “Tập Hiền”, “Bí Các”, “Hoằng Văn”. Sau đó tư nhân sưu tập cũng làm ấn tên hiệu, ấn trai đường, ấn thu tàng. Chính từ đây hình thành truyền thống đóng ấn trên tác phẩm mà ngày nay người viết thư pháp vẫn dùng: ấn tên, ấn hiệu, ấn nhàn chương."
+    },
+    {
+     "t": "p",
+     "x": "Ấn quan từ Tống trở đi dùng **cửu điệp văn**: nét chữ uốn gấp nhiều lần để lấp đầy mặt ấn lớn. Tên gọi thường được giải thích bằng số chín, số dương cực trong Kinh Dịch, với câu “Càn nguyên dụng cửu, thiên hạ trị dã” (Văn ngôn, quẻ Càn). Lối chữ này đều đặn, kín, nhưng thiên về hoa văn, mất cái tự nhiên, cổ phác của ấn Tần Hán. Đời Nguyên có ấn quan dùng chữ Bát Tư Ba, ấn áp (ký hiệu) dùng chữ khải; đời Minh, Thanh, ấn quan tiếp tục quy cách hoá, đời Thanh dùng song song chữ Hán và chữ Mãn."
+    },
+    {
+     "t": "h",
+     "x": "Cuộc phục cổ đời Nguyên và hòn đá hoa nhũ"
+    },
+    {
+     "t": "p",
+     "x": "Bước ngoặt mở ra thời đại văn nhân khắc ấn đến từ đời Nguyên. **Triệu Mạnh Phủ**, người chủ trương trở về với cổ pháp trong hội hoạ, cũng đề xướng lối chu văn nét đều mảnh như đũa ngọc (*ngọc trợ văn*, về sau gọi là *viên chu văn*) để thay cửu điệp văn. **Ngô Khâu Diễn** viết «Tam thập ngũ cử»: mười tám điều đầu bàn nguồn gốc chữ triện và việc viết triện, mười bảy điều sau bàn thể thức ấn và cách bố trí chu, bạch, khẳng định khắc ấn phải học Tần Hán và phải bắt đầu từ thư pháp."
+    },
+    {
+     "t": "p",
+     "x": "Yếu tố quyết định thứ hai là chất liệu. Tương truyền cuối đời Nguyên, Vương Miện dùng **đá hoa nhũ** để khắc ấn. Đá mềm, dễ khắc, nên người viết triện có thể tự cầm dao, không phải giao bản viết cho thợ khắc đồng, ngọc. Từ triện đến khắc do một người làm, thư pháp và đao pháp hợp nhất; đó là tiền đề để các lưu phái Minh – Thanh nở rộ. Với học viên, đây là lý do sâu xa của câu “ấn tòng thư xuất”: khắc ấn tốt trước hết phải viết triện tốt."
+    },
+    {
+     "t": "h",
+     "x": "Các lưu phái Minh – Thanh và Tề Bạch Thạch"
+    },
+    {
+     "t": "p",
+     "x": "**Văn Bành** đời Minh được coi là người nối trước mở sau, học ấn Hán để sửa thói uốn khúc đời Tống Nguyên, hướng tới vẻ nhã chính, tươi nhuận. Học trò ông là **Hà Chấn** thêm phần mạnh mẽ, sắc gắt, được tôn là tổ phái Huy (Hoàn). Hậu bối của phái này, Trình Thoại, Ba Uý Tổ, Hồ Đường, Uông Triệu Long (Huy phái tứ gia), học sâu ấn Tần Hán đến mức đặt lẫn với ấn cổ khó phân biệt, nhưng vẫn có ý mới. **Phái Chiết** do Đinh Kính mở đầu, cùng Tưởng Nhân, Hề Cương, Hoàng Dịch rồi Trần Dự Chung, Trần Hồng Thọ, Triệu Chi Thâm, Tiền Tùng (Tây Linh bát gia), có vẻ tĩnh, già dặn, cứng cỏi, bạch văn dùng **thiết đao** vụn để lộ ngọn dao. Tác giả cũng lưu ý: người theo đông thì sinh lối giả tạo, khoa trương."
+    },
+    {
+     "t": "p",
+     "x": "**Đặng Thạch Như** đem bút ý tiểu triện của mình vào ấn, mở ra Đặng phái với chu văn tiểu triện uyển chuyển; học trò Ngô Nhượng Chi tiếp nối bằng đao pháp lưu loát. **Triệu Chi Khiêm** học Chiết rồi Đặng, Ngô, mở rộng nguồn nhập ấn ra bia khắc, tượng Phật Hán – Lục triều, thành công cả chu lẫn bạch. **Ngô Xương Thạc**, “cự phách” đầu thời Dân Quốc, dựa vào «Thạch cổ văn», ấn Hán, gạch ngói, chữ trên chuông đỉnh, tạo vẻ hồn hậu, cổ chuyết. **Hoàng Sĩ Lăng** (phái Di Sơn) có nét bóng sạch, bằng thẳng, tưởng đơn điệu mà biến hoá vô cùng. Cuối cùng là **Tề Bạch Thạch** với đơn đao khắc sâu và chương pháp hiểm kỳ (xem Bài 8). Tác giả nhận xét ông kém Ngô Xương Thạc ở vẻ hồn hậu, kém Triệu Chi Khiêm ở vẻ tĩnh tú, nhưng vẫn có phong độ đại gia."
+    },
+    {
+     "t": "p",
+     "x": "Phần kết, tác giả nêu một đề nghị gây tranh luận: vì phần đông người trẻ và người xem không đọc được triện, ông kêu gọi mạnh dạn đưa chữ đương đại, kể cả chữ giản thể, vào ấn. Đây là quan điểm riêng gắn với bối cảnh thời ông viết. Với người học thư pháp Việt, câu hỏi ấy cũng rất gần gũi: khi khắc ấn chữ Quốc ngữ, ta vẫn có thể giữ tinh thần phân chu bố bạch và sự chất phác của ấn Hán, dù chữ không còn là triện."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Tỉ",
+       "zh": "玺",
+       "vi": "Tên gọi ấn thời cổ; từ đời Tần chỉ dành cho ấn của thiên tử."
+      },
+      {
+       "hv": "Phong nê",
+       "zh": "封泥",
+       "vi": "Cục đất sét niêm nút dây, có in dấu ấn; cách dùng ấn trước khi có giấy."
+      },
+      {
+       "hv": "Bạch văn / Chu văn",
+       "zh": "白文 / 朱文",
+       "vi": "Chữ khắc chìm (in ra chữ trắng) / chữ khắc nổi (in ra chữ đỏ)."
+      },
+      {
+       "hv": "Chú ấn / Tạc ấn",
+       "zh": "铸印 / 凿印",
+       "vi": "Ấn đúc bằng khuôn / ấn khắc thẳng lên phôi (cấp tựu chương)."
+      },
+      {
+       "hv": "Mậu triện",
+       "zh": "缪篆",
+       "vi": "Thứ triện vuông hoá, gần lệ, dùng trong ấn Hán (mô ấn triện)."
+      },
+      {
+       "hv": "Phân chu bố bạch",
+       "zh": "分朱布白",
+       "vi": "Chia phần đỏ và phần trắng trên mặt ấn; cốt lõi của chương pháp."
+      },
+      {
+       "hv": "Cửu điệp văn",
+       "zh": "九叠文",
+       "vi": "Lối triện uốn gấp nhiều lần dùng trong ấn quan từ Tống trở đi."
+      },
+      {
+       "hv": "Ngọc trợ văn / Viên chu văn",
+       "zh": "玉箸文 / 圆朱文",
+       "vi": "Chu văn nét đều, tròn, mảnh như đũa ngọc; do Triệu Mạnh Phủ đề xướng."
+      },
+      {
+       "hv": "Thiết đao",
+       "zh": "切刀",
+       "vi": "Đao pháp cắt từng đoạn ngắn nối nhau; đặc trưng của phái Chiết."
+      },
+      {
+       "hv": "Lưu phái",
+       "zh": "流派",
+       "vi": "Các trường phái triện khắc Minh – Thanh: Huy, Chiết, Đặng, Triệu, Ngô, Di Sơn, Tề…"
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Triệu Mạnh Phủ",
+       "zh": "赵孟頫",
+       "years": "1254–1322, đời Nguyên",
+       "note": "Đề xướng chu văn ngọc trợ, phục hồi cổ pháp."
+      },
+      {
+       "name": "Ngô Khâu Diễn",
+       "zh": "吾丘衍",
+       "years": "1272–1311, đời Nguyên",
+       "note": "Tác giả «Tam thập ngũ cử», lý luận ấn học đầu tiên có hệ thống."
+      },
+      {
+       "name": "Văn Bành",
+       "zh": "文彭",
+       "years": "1498–1573, đời Minh",
+       "note": "Con Văn Trưng Minh, người mở đầu văn nhân khắc ấn bằng đá."
+      },
+      {
+       "name": "Hà Chấn",
+       "zh": "何震",
+       "years": "khoảng 1530–1604, đời Minh",
+       "note": "Tổ phái Huy, phong cách mạnh mẽ, sắc gắt."
+      },
+      {
+       "name": "Đinh Kính",
+       "zh": "丁敬",
+       "years": "1695–1765, đời Thanh",
+       "note": "Tổ phái Chiết, đứng đầu Tây Linh bát gia."
+      },
+      {
+       "name": "Đặng Thạch Như",
+       "zh": "邓石如",
+       "years": "1743–1805, đời Thanh",
+       "note": "Đưa bút ý tiểu triện vào ấn, mở Đặng phái."
+      },
+      {
+       "name": "Ngô Nhượng Chi",
+       "zh": "吴让之",
+       "years": "1799–1870, đời Thanh",
+       "note": "Học trò truyền đời của Đặng Thạch Như, đao pháp lưu loát."
+      },
+      {
+       "name": "Triệu Chi Khiêm",
+       "zh": "赵之谦",
+       "years": "1829–1884, đời Thanh",
+       "note": "Mở rộng nguồn nhập ấn ra bia khắc, tiền, gương."
+      },
+      {
+       "name": "Ngô Xương Thạc",
+       "zh": "吴昌硕",
+       "years": "1844–1927",
+       "note": "Học Thạch cổ văn và ấn Hán; vẻ hồn hậu, cổ chuyết."
+      },
+      {
+       "name": "Hoàng Sĩ Lăng",
+       "zh": "黄士陵",
+       "years": "1849–1908, đời Thanh",
+       "note": "Phái Di Sơn, nét bóng sạch, bằng thẳng."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Ấn chương ra đời trong bối cảnh kinh tế – xã hội nào? Phong nê là gì và vì sao ấn thời này chủ yếu là bạch văn?",
+      "Giải thích khái niệm “phân chu bố bạch” và vì sao ấn Tần Hán được coi là mẫu mực của chương pháp.",
+      "Cửu điệp văn khác ấn Tần Hán ở điểm nào về thẩm mỹ?",
+      "Triệu Mạnh Phủ, Ngô Khâu Diễn và việc dùng đá hoa nhũ đã thay đổi nghề khắc ấn như thế nào?",
+      "Chọn hai lưu phái Minh – Thanh và so sánh phong cách của chúng. Em nghĩ gì về việc dùng chữ Quốc ngữ trong ấn?"
+     ]
+    }
+   ]
   }
  ]
 }

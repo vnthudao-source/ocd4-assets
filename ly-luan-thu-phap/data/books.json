@@ -79,7 +79,7 @@
      "title": "Chuyện nhỏ về Quản Thành Tử (cây bút)",
      "titleZh": "管城子小谈",
      "author": "Lão Huỷ",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c08",
@@ -87,7 +87,7 @@
      "title": "Nghệ thuật khắc ấn của Tề Bạch Thạch",
      "titleZh": "齐白石的治印艺术",
      "author": "Hoàng Dưỡng Huy",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c09",
@@ -95,7 +95,7 @@
      "title": "Bàn phiếm về ấn chương",
      "titleZh": "漫谈印章",
      "author": "Đinh Cát Phủ",
-     "ready": false
+     "ready": true
     }
    ]
   },
