@@ -42,6 +42,8 @@
    v1.2.1 (30/10/2026) – sửa lỗi chấm lại báo "Lỗi máy chủ: Vui lòng chỉ chọn trong một
      cột duy nhất...": tab ChamThiTotNghiep là Bảng (Table), nên định dạng chữ được đặt
      từng ô thay vì cả hàng; mọi điểm ghi dạng chữ thống nhất (không lẫn số và chữ).
+     Trả kèm chi tiết bản chấm (gradingData) để trang Kết quả vẽ thẻ thành tích và tự nộp
+     ngay sau khi chấm, không phải chờ Google cập nhật Sheet.
    Nâng cấp từ v1.2.0: dán đè toàn bộ file -> Lưu -> Triển khai -> Quản lý triển khai
    -> sửa -> Phiên bản mới (giữ nguyên URL). Không cần thêm quyền mới.
 
@@ -315,7 +317,8 @@ function saveGrade_(body) {
       finalScore: isFinite(theory) ? round2_(theory * 0.5 + practicalScore * 0.5) : null,
       row: target,
       regraded: target <= last,
-      gradedAt: now
+      gradedAt: now,
+      gradingData: details
     };
   } finally {
     lock.releaseLock();

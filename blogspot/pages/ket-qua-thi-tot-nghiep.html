@@ -1855,6 +1855,8 @@ window.OCDAchievementCard={
 /* =========================================================
    OCD GRADUATION RESULT
    v1.5.0 (29/10/2026): thẻ thành tích nộp qua ChamThi.gs (không bị giới hạn 2 bài/ngày)
+   v1.6.2 (30/10/2026): đọc Sheet bằng export CSV (không mất điểm lý thuyết); sau khi chấm, kết quả + thẻ lấy từ
+     phản hồi máy chủ nên thẻ luôn được tự nộp kể cả khi Sheet chưa cập nhật
    v1.6.0 (29/10/2026): thẻ thành tích vẽ đủ avatar / khung / nền (ảnh qua lh3 hoặc ChamThi.gs imageProxy), bỏ mã học viên trên thẻ
    v1.5.1 (29/10/2026): mở trang với ?ma=MÃ (nút từ phòng thi) sẽ tự điền mã và tra cứu
    v1.4.1 (29/10/2026): gắn URL Apps Script chấm bài (ChamThi.gs); không nộp thẻ 2 lần khi thẻ vẽ lại
@@ -1883,7 +1885,7 @@ window.OCDGraduationResult || {};
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_RESULT_V1.6.1",
+        "OCD_GRADUATION_RESULT_V1.6.2",
 
     spreadsheetId:
         "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
@@ -5692,13 +5694,16 @@ async function(){
                 gradings
             );
 
+        /* v1.6.2: Google có thể trả dữ liệu Sheet cũ vài phút sau khi ghi.
+           Bản chấm vừa lưu lấy thẳng từ phản hồi máy chủ, để thẻ thành tích
+           luôn được vẽ và tự nộp ngay (không phụ thuộc Sheet đã cập nhật chưa). */
+        var key=normalizeCode(exam.examId);
+        var fromSheet=map[key] || null;
         var grading=
-            map[
-                normalizeCode(
-                    exam.examId
-                )
-            ] ||
-            null;
+            fromSheet && String(fromSheet.gradedAt||"")===String(r.gradedAt||"")
+                ? fromSheet
+                : freshGrading(exam, r, s.items, fromSheet);
+        map[key]=grading;
 
         GRADER.list.forEach(
             function(m){
@@ -5744,6 +5749,28 @@ async function(){
 
 
 
+/* v1.6.2: dựng bản chấm từ phản hồi ChamThi.gs (khi Sheet chưa kịp cập nhật) */
+function freshGrading(exam, r, items, old){
+    var details=(Array.isArray(r.gradingData) ? r.gradingData : (items||[]).map(function(it){
+        return {questionId:it.q, examScore:it.examScore, examinerComment:it.examinerComment||""};
+    }));
+    return {
+        rowNumber: old ? old.rowNumber : 0,
+        timestamp: old ? old.timestamp : (r.gradedAt || ""),
+        examId: exam.examId,
+        studentCode: normalizeCode(r.code || exam.studentCode),
+        studentName: exam.studentName,
+        group: exam.group,
+        course: exam.course,
+        theoryScore: parseNumber(r.theoryScore),
+        practicalScore: parseNumber(r.practicalScore),
+        practicalGraded: details.length,
+        gradingRaw: JSON.stringify(details),
+        examiner: GRADER.examiner || "GVCN",
+        gradedAt: r.gradedAt || "",
+        version: "server"
+    };
+}
 /* =========================================================
    INIT
 ========================================================= */
