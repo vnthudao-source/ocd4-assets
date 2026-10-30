@@ -3,7 +3,7 @@
  "chapters": [
   {
    "id": "c01",
-   "no": "Bài 1",
+   "no": "Chương 1",
    "title": "Dẫn luận",
    "titleZh": "引论",
    "pages": "1–8",
@@ -159,7 +159,7 @@
   },
   {
    "id": "c02",
-   "no": "Bài 2",
+   "no": "Chương 2",
    "title": "Thời kỳ thai nghén vận đường nét trước khi có chữ Hán",
    "titleZh": "汉文字产生前的线韵孕育期",
    "pages": "9–18",
@@ -325,7 +325,7 @@
   },
   {
    "id": "c03",
-   "no": "Bài 3",
+   "no": "Chương 3",
    "title": "Từ thần thoại tạo chữ đến sự thần hoá văn tự",
    "titleZh": "从造字的神话看文字的神化",
    "pages": "19–26",
@@ -532,7 +532,7 @@
   },
   {
    "id": "c04",
-   "no": "Bài 4",
+   "no": "Chương 4",
    "title": "Thời kỳ đặt nền tư tưởng triết học cho nghệ thuật thư pháp",
    "titleZh": "书法艺术的哲学思想奠基期",
    "pages": "27–44",
@@ -780,7 +780,7 @@
   },
   {
    "id": "c05",
-   "no": "Bài 5",
+   "no": "Chương 5",
    "title": "Các thể chữ nghệ thuật hoàn bị và mầm mống tư tưởng thư pháp theo nghĩa hẹp",
    "titleZh": "艺术体的大备与狭义书法思想的始萌",
    "pages": "45–65",
@@ -1052,6 +1052,2125 @@
       "So sánh lập trường của Triệu Nhất trong «Phi thảo thư» với lập trường của Thái Ung trong «Bút luận» và «Cửu thế».",
       "Ba lớp ý trong «Bút luận» của Thái Ung gợi ý gì cho việc chuẩn bị tâm thế trước khi viết?",
       "Vì sao giản độc đời Hán có giá trị đặc biệt đối với người học bút pháp?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c06",
+   "no": "Chương 6",
+   "title": "Bước vào thời đại tự giác",
+   "titleZh": "步入自觉的大时代",
+   "pages": "66–79",
+   "summary": "Giữa loạn lạc Tam Quốc – Lưỡng Tấn, thư pháp lần đầu được viết vì cái đẹp chứ không chỉ vì công dụng: Chung Do nêu chữ “lưu mỹ”, các gia tộc thư pháp và giấy viết thúc đẩy phong khí, còn các văn bản của Thành Công Tuy, Vệ Hằng, Vệ phu nhân và những bài mang tên Vương Hi Chi dựng nên khung lý luận kỹ pháp – sáng tác – thẩm mỹ cho cả nghìn năm sau.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Từ cuối Hán đến hết Đông Tấn là gần hai trăm năm binh đao liên miên, triều đại thay nhau sụp đổ. Thế nhưng đây lại chính là lúc thư pháp Trung Hoa thật sự *đứng vững như một nghệ thuật*, và phần lớn bộ khung tư tưởng mà đời sau dùng đến đều được dựng lên trong khoảng thời gian này. Bài học đầu tiên của chương: sự thịnh suy của nghệ thuật không nhất thiết đi cùng nhịp với sức mạnh của quốc gia."
+    },
+    {
+     "t": "p",
+     "x": "Có thể gom các điều kiện thuận lợi của thời đại vào mấy ý. Người Nguỵ Tấn đứng rất gần thời Hán: bia Đông Hán phần lớn dựng dưới thời Hoàn Đế, Linh Đế (147–189), Thái Ung mất năm 192, nên những gì đời sau coi là báu vật thì họ thấy hằng ngày. Thể chữ đến đây đã định hình; người viết không còn phải vật lộn với chuyện chữ biến thể như đời Hán mà có thể dồn sức vào bản thân nghệ thuật. Phong khí thanh đàm, coi nhẹ công danh khiến kẻ sĩ tìm đến bút mực như thú tiêu dao. Thêm nữa, triều Nguỵ và Tấn đều có lệnh cấm dựng bia, khắc đá thưa dần, trong khi giấy ngày càng phổ biến; chữ của người Tấn vì thế truyền lại chủ yếu qua lụa và giấy, thứ vật liệu hợp với nét bút tự do nhưng mong manh, nay gần như không còn chân tích."
+    },
+    {
+     "t": "h",
+     "x": "Chung Do và chữ “lưu mỹ”: khi viết chữ trở thành sáng tạo cái đẹp"
+    },
+    {
+     "t": "p",
+     "x": "Nước Nguỵ, nhờ cha con họ Tào ưa văn nghệ, trở thành nơi văn nhân tụ hội, và trong những buổi tụ hội ấy người ta bắt đầu *bàn về cách dùng bút*. Đó là mầm mống của những “salon” văn nhân đời sau. Nhân vật trung tâm là **Chung Do** (151–230). Truyền thuyết kể ông say mê bút pháp của Thái Ung đến mức đấm ngực hộc máu khi Vi Đản không chịu cho xem, rồi đợi Vi Đản chết mới cho đào mộ lấy được. Chuyện khó tin, nhưng nó nói lên điều quan trọng: trước Chung Do chưa từng có ai *si mê chữ* đến thế. Ông tự nói đã dốc ba mươi năm, nằm ngồi đều lấy tay vạch chữ, đến mức chăn đệm thủng cả; nhìn muôn vật đều thấy hình chữ trong đó."
+    },
+    {
+     "t": "p",
+     "x": "Câu nói nổi tiếng nhất gắn với Chung Do gói gọn bước ngoặt của cả thời đại:"
+    },
+    {
+     "t": "quote",
+     "zh": "笔迹者，界也；流美者，人也。",
+     "hv": "Bút tích giả, giới dã; lưu mỹ giả, nhân dã.",
+     "vi": "Dấu bút là đường ranh (vạch giới hạn của hình chữ); còn làm cho cái đẹp tuôn chảy là ở con người.",
+     "src": "Chung Do (tương truyền), «Dụng bút pháp»"
+    },
+    {
+     "t": "p",
+     "x": "Nét chữ chỉ là ranh giới, cái khung; *vẻ đẹp chảy ra từ người viết*. Đây có lẽ là lần đầu tiên một người viết chữ nói rõ rằng mục đích của mình là cái đẹp chứ không phải sự chính xác để người khác đọc được. Ranh giới giữa *tả tự* (viết chữ) và *thư pháp* được vạch ra từ đây. Về mặt kỹ thuật, Chung Do cũng là người hoàn chỉnh khải thư: ông “cởi bỏ” thể lệ để thành chữ chân, trên nối Thái Ung, dưới mở đường cho Vương Hi Chi. «Tuyên thị biểu» được tôn là tổ của chữ chính, nhưng bản gốc đã bị chôn theo Vương Tu; bản lưu truyền nay có lẽ chỉ là bản lâm, nên hãy xem nó như một mẫu chữ đẹp hơn là chứng cứ chắc chắn về nét bút của Chung Do."
+    },
+    {
+     "t": "h",
+     "x": "Giấy, gia tộc và trường học: thư pháp có chỗ đứng trong xã hội"
+    },
+    {
+     "t": "p",
+     "x": "Một nghệ thuật muốn tự giác cần ba thứ: vật liệu, người truyền dạy, và sự tôn trọng của xã hội. Về vật liệu, việc tìm thấy giấy thời Tây Hán ở Bá Kiều (Tây An, 1957) cho thấy Thái Luân không phải người phát minh mà là người hoàn thiện kỹ thuật làm giấy. Đến cuối Hán, giấy Tả Bá nổi tiếng tinh tốt; tác phẩm thư pháp trên giấy sớm nhất còn lại là «Bình phục thiếp» chương thảo của Lục Cơ đời Tây Tấn. Khi vật liệu đã sẵn, tay bút được giải phóng khỏi sự ngưng trọng của đá và đồng."
+    },
+    {
+     "t": "p",
+     "x": "Về người truyền dạy, đây là thời của **các gia tộc thư pháp**. Họ Vệ bốn đời ham chữ: Vệ Ký đời Nguỵ, con là Vệ Quán, cháu là Vệ Hằng, và người cháu gái Vệ Thước, tức **Vệ phu nhân**, học Chung Do và tương truyền là cô giáo vỡ lòng của Vương Hi Chi. Họ Vương thì đông đảo hơn: Vương Đạo, Vương Dị (chú và cũng là thầy của Vương Hi Chi), Vương Khoáng, rồi đến Hi Chi với bảy người con trai, trong đó Vương Hiến Chi nổi nhất. Cha truyền con, anh em thi nhau: khi một kỹ nghệ được giữ trong gia tộc qua nhiều đời, đó là dấu hiệu xã hội đã thực sự coi trọng nó. Nhà nước cũng vào cuộc: Tuân Úc đời Tấn đặt chức thư bác sĩ, dạy con em lấy Chung Do, Hồ Chiêu làm mẫu, tức là lấy *chữ của nhà thư pháp* chứ không còn lấy *chữ của nhà văn tự học* làm khuôn."
+    },
+    {
+     "t": "p",
+     "x": "So với đời Hán, sự thay đổi rất rõ. Người Hán coi viết chữ đẹp là tiểu kỹ, bia đá phần lớn không ghi tên người viết. Đến Nguỵ Tấn, chữ đẹp đem lại danh dự cho cả dòng họ; đến Vương Hi Chi thì thư pháp đã bước lên hàng đầu của văn hoá, đứng cạnh thơ và phú. Từ đó hình thành tâm lý *sùng bái anh hùng* trong thư pháp: phải có một bậc thầy tối cao để noi theo."
+    },
+    {
+     "t": "h",
+     "x": "Thành Công Tuy và Vệ Hằng: viết về chữ bằng thể phú"
+    },
+    {
+     "t": "p",
+     "x": "Văn bản lý luận đáng kể của Tây Tấn không nhiều, nổi bật là **Thành Công Tuy** (231–273) và **Vệ Hằng** (mất năm 291). Thành Công Tuy giỏi âm luật, giỏi từ phú, nên bài «Lệ thư thể» của ông là một bài phú. Phần đầu khen lệ thư phồn giản vừa phải, dễ dùng, ấy là cái nhìn thực dụng; nhưng phần đáng đọc là đoạn tả cảnh người viết:"
+    },
+    {
+     "t": "quote",
+     "zh": "或轻拂徐振，缓按急挑，挽横引纵，左牵右绕，长波郁拂，微势缥缈。工巧难传，善之者少，应心随手，必由意晓。",
+     "hv": "Hoặc khinh phất từ chấn, hoãn án cấp khiêu, vãn hoành dẫn tung, tả khiên hữu nhiễu, trường ba uất phất, vi thế phiêu miểu. Công xảo nan truyền, thiện chi giả thiểu, ứng tâm tuỳ thủ, tất do ý hiểu.",
+     "vi": "Có khi lướt nhẹ rồi từ từ vung lên, ấn chậm rồi hất nhanh, kéo nét ngang, dẫn nét dọc, bên trái níu, bên phải vòng; nét sóng dài cuộn lượn, thế nhỏ mờ ảo. Cái khéo khó truyền, người giỏi được rất ít; lòng muốn đâu tay theo đó, ắt phải hiểu bằng ý.",
+     "src": "Thành Công Tuy, «Lệ thư thể»"
+    },
+    {
+     "t": "p",
+     "x": "Chỉ trong vài câu đã có đủ các động tác dụng bút: phất, án, khiêu, dẫn, trú, bạt. Điều đáng chú ý hơn là câu *công xảo nan truyền*: kỹ thuật cao không thể chỉ dạy bằng lời, phải ngộ bằng ý. Sau phần tả người viết, ông chuyển sang tả người xem, và đây là chỗ cho thấy chữ đã thành đối tượng để thưởng ngoạn:"
+    },
+    {
+     "t": "quote",
+     "zh": "或若虬龙盘游，蜿蜒轩翥，鸾凤翱翔，矫翼欲去；或若鸷鸟将击，并体抑怒，良马腾骧，奔放向路。仰而望之，郁若霄雾朝升，游烟连云；俯而察之，漂若清风厉水，漪澜成文。",
+     "hv": "Hoặc nhược cầu long bàn du, uyển diên hiên chứ, loan phượng ngao tường, kiểu dực dục khứ; hoặc nhược chí điểu tương kích, tịnh thể ức nộ, lương mã đằng tương, bôn phóng hướng lộ. Ngưỡng nhi vọng chi, uất nhược tiêu vụ triêu thăng, du yên liên vân; phủ nhi sát chi, phiêu nhược thanh phong lệ thuỷ, y lan thành văn.",
+     "vi": "Có khi như rồng cù cuộn mình bơi lượn, uốn khúc vươn bay; như loan phượng liệng cao, rướn cánh muốn đi. Có khi như chim dữ sắp vồ, thu mình nén giận; như ngựa hay chồm dậy, phóng thẳng ra đường. Ngẩng lên mà trông thì dày đặc như mây mù buổi sớm bốc lên, khói trôi nối liền mây; cúi xuống mà xét thì lâng lâng như gió mát lướt trên mặt nước, gợn sóng thành vân.",
+     "src": "Thành Công Tuy, «Lệ thư thể»"
+    },
+    {
+     "t": "p",
+     "x": "Vệ Hằng viết «Tứ thể thư thế», bàn bốn thể cổ văn, triện, lệ, thảo; thực chất là một bài khảo về nguồn gốc các thể chữ, kèm những đoạn “thế” mang giọng phú. Trong đó đoạn về triện được ghi là của Thái Ung, đoạn về thảo thư là của Thôi Viện; các đoạn còn lại có lẽ do chính Vệ Hằng viết. (Bản chép trong «Tấn thư» và bản trong các tuyển tập đời sau khác nhau khá nhiều.) Đoạn tả cổ văn tiêu biểu cho lối tư duy ví von của thời đại:"
+    },
+    {
+     "t": "quote",
+     "zh": "其曲如弓，其直如弦，矫然突出，若龙腾于川；渺尔下颓，若雨坠于天。或引笔奋力，若鸿鹄高飞，邈邈翩翩；或纵肆婀娜，若流苏悬羽，靡靡绵绵。是故远而望之，若翔凤厉水，清波漪涟；就而察之，有若自然。",
+     "hv": "Kỳ khúc như cung, kỳ trực như huyền, kiểu nhiên đột xuất, nhược long đằng ư xuyên; diểu nhĩ hạ đồi, nhược vũ truỵ ư thiên. Hoặc dẫn bút phấn lực, nhược hồng hộc cao phi, mạc mạc phiên phiên; hoặc túng tứ a na, nhược lưu tô huyền vũ, mỹ mỹ miên miên. Thị cố viễn nhi vọng chi, nhược tường phượng lệ thuỷ, thanh ba y liên; tựu nhi sát chi, hữu nhược tự nhiên.",
+     "vi": "Chỗ cong như cánh cung, chỗ thẳng như dây cung; vụt nhô lên như rồng vọt khỏi sông, xa xa rơi xuống như mưa rơi từ trời. Có khi kéo bút dốc sức như hồng hộc bay cao, xa vời chấp chới; có khi buông tuồng yểu điệu như tua rủ lông vũ treo, mềm mại liên miên. Cho nên đứng xa mà trông thì như phượng liệng lướt nước, sóng trong gợn lăn tăn; lại gần mà xét thì giống hệt tự nhiên.",
+     "src": "Vệ Hằng, «Tứ thể thư thế» (phần Cổ văn)"
+    },
+    {
+     "t": "p",
+     "x": "Đọc kỹ, các đoạn “thế” này đều đi qua hai tầng. Tầng thứ nhất là *ví von bằng trực giác*: nét này như rồng, nét kia như mưa, như chim, như ngựa. Tầng thứ hai là *quy về chỗ không nói được*: cuối đoạn lệ thư là “kỳ tư quyệt quỷ, bất khả thắng nguyên” (dáng lạ biến hoá, không truy tận được), cuối đoạn thảo thư là câu dưới đây:"
+    },
+    {
+     "t": "quote",
+     "zh": "就而察之，一画不可移。几微要妙，临时从宜。",
+     "hv": "Tựu nhi sát chi, nhất hoạch bất khả di. Cơ vi yếu diệu, lâm thời tòng nghi.",
+     "vi": "Lại gần mà xét thì một nét cũng không thể xê dịch. Chỗ tinh vi then chốt là tuỳ lúc mà ứng biến cho thích hợp.",
+     "src": "Thôi Viện, «Thảo thế», chép trong «Tứ thể thư thế»"
+    },
+    {
+     "t": "p",
+     "x": "Vì sao lại “không nói được”? Bởi trong quan niệm thời ấy, chữ viết ra đời để *ghi giữ cương kỷ muôn việc* và thể hiện đạo lớn; cái đẹp cao nhất của nó phải gần với tự nhiên, mà “đạo nói ra được thì không phải đạo thường” như Lão Tử dạy. Tầng ví von là hình nhi hạ, tầng bất khả ngôn là hình nhi thượng. Cái khung hai tầng này chính là đóng góp lớn của người Nguỵ Tấn; các đời sau chỉ nhấn bên này hay bên kia. Nó gắn chặt với không khí *huyền học* đương thời, khi Hướng Tú, Quách Tượng chú giải Trang Tử và Đạo gia thịnh hành. Cần nhớ thêm một điều: lối ví von rất hợp cho việc thưởng thức, vì cái đẹp của chữ vốn trừu tượng và tuỳ vào liên tưởng của người xem; nhưng dùng nó để dạy kỹ thuật thì dễ mơ hồ. Các hình ảnh như *ốc lậu ngân* (vệt nước dột), *chuy hoạch sa* (dùi vạch cát) về sau mỗi người hiểu một kiểu."
+    },
+    {
+     "t": "h",
+     "x": "«Bút trận đồ» và những văn bản mang tên Vương Hi Chi"
+    },
+    {
+     "t": "p",
+     "x": "Sang Đông Tấn, khung lý luận rõ nét hơn qua hai nhóm văn bản: «Bút trận đồ» đề tên Vệ phu nhân (ghi năm Vĩnh Hoà thứ tư, 348) và mấy bài đề tên Vương Hi Chi như «Đề Vệ phu nhân Bút trận đồ hậu», «Bút thế luận thập nhị chương». Thời nào cũng có người nghi đó là đồ người Lục triều nguỵ thác. Cách đọc khôn ngoan là gác chuyện thật giả sang một bên và coi chúng như *tư tưởng thư pháp có thật của thời Tấn – Lục triều*. Chính việc phải mượn tên Vương Hi Chi đã chứng tỏ uy quyền của ông."
+    },
+    {
+     "t": "p",
+     "x": "«Bút trận đồ» chia nét thành bảy loại và gán cho mỗi loại một hình ảnh: ngang như mây trận nghìn dặm, chấm như đá rơi từ đỉnh cao, phẩy như cắt đứt sừng tê ngà voi, móc như nỏ trăm cân bật, sổ như dây leo vạn năm khô, mác như sóng đổ sấm rền, gập móc như gân khớp của nỏ cứng. Hai hình ảnh đầu có kèm lời giải thích:"
+    },
+    {
+     "t": "quote",
+     "zh": "一，如千里阵云，隐隐然其实有形。丶，如高峰坠石，磕磕然实如崩也。",
+     "hv": "Nhất, như thiên lý trận vân, ẩn ẩn nhiên kỳ thực hữu hình. Điểm, như cao phong truỵ thạch, khái khái nhiên thực như băng dã.",
+     "vi": "Nét ngang như dải mây trận dài nghìn dặm, mờ mờ mà thật ra có hình. Nét chấm như hòn đá từ đỉnh núi cao rơi xuống, ầm ầm như thật sự lở sụp.",
+     "src": "Vệ phu nhân (tương truyền), «Bút trận đồ»"
+    },
+    {
+     "t": "p",
+     "x": "Chữ quan trọng là *ẩn ẩn nhiên*: viết nét ngang không phải là vẽ mây, mà là gợi ra cái *ý tượng* của mây trận: dài, dày, có sức nén. «Bút trận đồ» vì thế nêu nguyên tắc *tự phi thông linh cảm vật, bất khả dữ đàm tư đạo*: không thông được cõi linh diệu và không cảm được muôn vật thì chưa thể bàn đạo này. *Cảm vật* là tầng hình nhi hạ, nơi tâm người viết giao cảm với ngoại vật; *thông linh* là tầng hình nhi thượng, nơi nắm được lẽ huyền vi. Văn bản này cũng để lại tiêu chuẩn về lực mà người học chữ Hán đến nay vẫn nghe thầy nhắc:"
+    },
+    {
+     "t": "quote",
+     "zh": "善笔力者多骨，不善笔力者多肉；多骨微肉者谓之筋书，多肉微骨者谓之墨猪；多力丰筋者圣，无力无筋者病。",
+     "hv": "Thiện bút lực giả đa cốt, bất thiện bút lực giả đa nhục; đa cốt vi nhục giả vị chi cân thư, đa nhục vi cốt giả vị chi mặc trư; đa lực phong cân giả thánh, vô lực vô cân giả bệnh.",
+     "vi": "Người giỏi bút lực thì chữ nhiều xương, người không giỏi bút lực thì chữ nhiều thịt. Nhiều xương ít thịt gọi là chữ gân; nhiều thịt ít xương gọi là lợn mực. Nhiều lực, đầy gân là bậc thánh; không lực, không gân là chữ bệnh.",
+     "src": "Vệ phu nhân (tương truyền), «Bút trận đồ»"
+    },
+    {
+     "t": "p",
+     "x": "Các bài đề tên Vương Hi Chi đi xa hơn ở hai điểm. Thứ nhất, chúng kéo lý luận vào *vùng tâm lý trước khi đặt bút*: phải tĩnh tâm, hình dung chữ trước rồi mới viết. Việc phân biệt viết nghệ thuật với viết thực dụng ngay từ khâu chuẩn bị tinh thần là nền móng để thư pháp đứng vững như một nghệ thuật:"
+    },
+    {
+     "t": "quote",
+     "zh": "夫欲书者，先乾研墨，凝神静思，预想字形大小、偃仰、平直、振动，令筋脉相连，意在笔前，然后作字。",
+     "hv": "Phù dục thư giả, tiên can nghiên mặc, ngưng thần tĩnh tư, dự tưởng tự hình đại tiểu, yển ngưỡng, bình trực, chấn động, linh cân mạch tương liên, ý tại bút tiền, nhiên hậu tác tự.",
+     "vi": "Người muốn viết, trước hết mài mực, tập trung tinh thần, lặng lẽ suy nghĩ, hình dung trước chữ to hay nhỏ, nét ngả hay ngửa, bằng hay thẳng, động hay tĩnh, khiến gân mạch liền nhau; ý có trước bút, rồi sau mới viết chữ.",
+     "src": "Vương Hi Chi (tương truyền), «Đề Vệ phu nhân Bút trận đồ hậu»"
+    },
+    {
+     "t": "p",
+     "x": "Thứ hai, chúng chú ý đến *quan hệ giữa các bộ phận*: chữ lớn thì nên thu gọn, chữ nhỏ thì nên nới rộng để rộng hẹp vừa chỗ; chữ không được nặng trên nhẹ dưới. «Bút thế luận» có một câu so sánh rất dễ nhớ, nhìn từng chi tiết từ góc độ toàn thể:"
+    },
+    {
+     "t": "quote",
+     "zh": "一点失所，若美人之病一目；一画失节，如壮士之折一肱。",
+     "hv": "Nhất điểm thất sở, nhược mỹ nhân chi bệnh nhất mục; nhất hoạch thất tiết, như tráng sĩ chi chiết nhất quăng.",
+     "vi": "Một chấm đặt sai chỗ như người đẹp bị hỏng một mắt; một nét sai nhịp như tráng sĩ gãy một cánh tay.",
+     "src": "Vương Hi Chi (tương truyền), «Bút thế luận thập nhị chương»"
+    },
+    {
+     "t": "p",
+     "x": "Lý tưởng thẩm mỹ của các văn bản này là *kiện tráng*: buông ra như cung giương tên bắn, thu lại như hổ vồ rồng cuộn; tránh lợn mực, lưng ong, gối hạc. Ngôn ngữ chiến trận tràn ngập: giấy là trận địa, bút là đao giáo, tâm ý là tướng quân. Cũng phải biết rằng ngay từ đầu Đường, Tôn Quá Đình đã không tin «Bút thế luận» là của Vương Hi Chi. Ông lập luận: người tài cao, văn nhã như Hữu Quân không lẽ khi dạy con lại viết vụng về đến thế; hơn nữa bài tựa cứ dặn đi dặn lại phải giấu kín làm “của báu nhà”, không hợp với tính cách phóng khoáng của ông:"
+    },
+    {
+     "t": "quote",
+     "zh": "又有《笔势论》一篇，文鄙理疏，意乖言拙，详其旨趣，殊非右军。",
+     "hv": "Hựu hữu «Bút thế luận» nhất thiên, văn bỉ lý sơ, ý quai ngôn chuyết, tường kỳ chỉ thú, thù phi Hữu Quân.",
+     "vi": "Lại có một thiên «Bút thế luận», văn quê mùa, lý sơ sài, ý trái khoáy, lời vụng về; xét kỹ chủ đích thì hoàn toàn không phải của Hữu Quân.",
+     "src": "Tôn Quá Đình, «Thư phổ»"
+    },
+    {
+     "t": "h",
+     "x": "Vương Hi Chi qua sông: thư pháp lên đỉnh và bắt đầu chia dòng"
+    },
+    {
+     "t": "p",
+     "x": "Gia tộc họ Vương gốc ở Lâm Nghi phương Bắc. Vương Hi Chi học chữ từ những người phương Bắc (Vệ phu nhân, chú Vương Dị), rồi theo cuộc dời đô xuống Giang Nam, làm Cối Kê nội sử. Phong cảnh *núi cao rừng rậm, trúc dài thanh thoát* ở đó đã đổi thay chữ ông, cho ra cái *cương nhu tương tế* của «Lan Đình tự». Đào Hoằng Cảnh đời Lương nhận xét rằng chữ Hữu Quân trước thời ở Ngô Hưng còn chưa đạt; những bút tích đẹp đều thuộc khoảng mười năm Vĩnh Hoà ở Cối Kê. Một cá nhân qua sông mà cả nền thư pháp bắt đầu phân dòng Nam Bắc."
+    },
+    {
+     "t": "p",
+     "x": "Nội dung văn bản cũng góp phần đổi phong cách. Chữ đời Hán và Tam Quốc chủ yếu là văn bia ghi công, biểu tấu, nội dung nghiêm trang nên phong cách chất phác, trang trọng. Chữ của người Tấn phần nhiều là thư từ gửi người nhà bạn bè, văn tả cảnh trữ tình. Âu Dương Tu đời Tống từng nói đại ý rằng những pháp thiếp ấy chỉ là vài dòng hỏi thăm viết trong hứng thừa, không hề cố ý, nên mới tự nhiên đáng yêu. Nhận xét này đáng để người học tự hỏi: mình đang học *dáng chữ* của Tấn nhân hay học *tâm thế không cố ý* của họ?"
+    },
+    {
+     "t": "h",
+     "x": "Tổng kết: một khung tư tưởng và cách đọc nó"
+    },
+    {
+     "t": "p",
+     "x": "Nhìn lại, thời Nguỵ Tấn đã hội đủ mọi điều kiện: vật liệu (giấy, bút, mực) chín muồi, kinh nghiệm mấy trăm năm khắc viết được tích luỹ, phong tục và giáo dục đã coi trọng chữ đẹp. Thư pháp chuyển từ *truy cầu không tự giác* sang *truy cầu tự giác*. Bộ khung ba phần, gồm **kỹ pháp luận**, **sáng tác luận** và **thẩm mỹ luận**, được dựng lên trong thời này, còn linh hồn triết học của nó là quan niệm *pháp tự nhiên* (lấy tự nhiên làm phép)."
+    },
+    {
+     "t": "p",
+     "x": "Bài học thực hành quan trọng nhất: khi đọc thư luận cổ, đừng hiểu các hình ảnh theo nghĩa đen. “Mây trận”, “đá rơi” không có nghĩa nét chữ phải *giống* mây hay đá; đó là dùng vật cụ thể để chỉ cái đạo vô hình, là nói về *sinh khí* chứ không phải về hình dạng. Đọc thư luận mà chỉ dừng ở mặt chữ thì chỉ được phần da lông."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Lưu mỹ",
+       "zh": "流美",
+       "vi": "Làm cho cái đẹp tuôn chảy; theo Chung Do, phần thuộc về con người, vượt lên trên nét chữ đơn thuần."
+      },
+      {
+       "hv": "Tự giác",
+       "zh": "自觉",
+       "vi": "Ý thức rõ mình đang sáng tạo cái đẹp; đối lập với viết chữ thuần thực dụng."
+      },
+      {
+       "hv": "Thư thế",
+       "zh": "书势",
+       "vi": "Thể văn (thường dạng phú) mô tả thần thái, khí thế của một thể chữ bằng hình ảnh."
+      },
+      {
+       "hv": "Pháp tự nhiên",
+       "zh": "法自然",
+       "vi": "Lấy tự nhiên làm khuôn phép; linh hồn triết học của thư luận Nguỵ Tấn."
+      },
+      {
+       "hv": "Thông linh cảm vật",
+       "zh": "通灵感物",
+       "vi": "Cảm ứng với ngoại vật (tầng hình nhi hạ) và thấu được lẽ huyền diệu (tầng hình nhi thượng)."
+      },
+      {
+       "hv": "Ý tại bút tiền",
+       "zh": "意在笔前",
+       "vi": "Ý có trước bút: hình dung chữ trước khi đặt bút."
+      },
+      {
+       "hv": "Cân thư / Mặc trư",
+       "zh": "筋书 / 墨猪",
+       "vi": "Chữ nhiều gân xương ít thịt (được khen) / chữ béo nhiều thịt không xương (bị chê)."
+      },
+      {
+       "hv": "Cốt – Nhục – Cân",
+       "zh": "骨肉筋",
+       "vi": "Xương, thịt, gân: bộ từ vựng ví nét chữ với cơ thể sống để bàn về lực."
+      },
+      {
+       "hv": "Nguỵ thác",
+       "zh": "伪托",
+       "vi": "Mượn tên người nổi tiếng để lưu truyền văn bản của mình."
+      },
+      {
+       "hv": "Pháp thiếp",
+       "zh": "法帖",
+       "vi": "Thư từ, bản viết tay của danh gia được khắc in làm mẫu học."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Chung Do",
+       "zh": "钟繇",
+       "years": "151–230, Tào Nguỵ",
+       "note": "Hoàn thiện khải thư, nêu chữ “lưu mỹ”; «Tuyên thị biểu»."
+      },
+      {
+       "name": "Thành Công Tuy",
+       "zh": "成公绥",
+       "years": "231–273, Tây Tấn",
+       "note": "Viết «Lệ thư thể» bằng thể phú, sớm đề cao việc thưởng ngoạn chữ."
+      },
+      {
+       "name": "Vệ Hằng",
+       "zh": "卫恒",
+       "years": "?–291, Tây Tấn",
+       "note": "Tác giả «Tứ thể thư thế», con Vệ Quán."
+      },
+      {
+       "name": "Sách Tĩnh",
+       "zh": "索靖",
+       "years": "239–303, Tây Tấn",
+       "note": "Danh gia chương thảo, có «Thảo thư thế» theo lối phú."
+      },
+      {
+       "name": "Vệ phu nhân (Vệ Thước)",
+       "zh": "卫夫人（卫铄）",
+       "years": "272–349, Đông Tấn",
+       "note": "Học Chung Do, tương truyền dạy Vương Hi Chi; «Bút trận đồ» mang tên bà."
+      },
+      {
+       "name": "Vương Hi Chi",
+       "zh": "王羲之",
+       "years": "303–361 (có thuyết 321–379), Đông Tấn",
+       "note": "Thư thánh; «Lan Đình tự»; nhiều văn bản lý luận được đề tên ông."
+      },
+      {
+       "name": "Vương Dị",
+       "zh": "王廙",
+       "years": "276–322, Đông Tấn",
+       "note": "Chú của Vương Hi Chi, người ảnh hưởng lớn nhất đến ông thời trẻ."
+      },
+      {
+       "name": "Lục Cơ",
+       "zh": "陆机",
+       "years": "261–303, Tây Tấn",
+       "note": "Văn hào; «Bình phục thiếp» là bản thư pháp trên giấy sớm nhất còn lại."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Câu “Bút tích giả, giới dã; lưu mỹ giả, nhân dã” của Chung Do có ý nghĩa gì trong việc phân biệt viết chữ và thư pháp?",
+      "Vì sao một thời đại loạn lạc như Nguỵ Tấn lại là lúc thư pháp tự giác ra đời? Nêu ít nhất ba điều kiện.",
+      "Các bài “thư thế” đời Tấn mô tả chữ qua hai tầng nào? Lối ví von có lợi và có hại gì khi dùng để dạy kỹ thuật?",
+      "Câu “ý tại bút tiền” gợi ý gì cho cách bạn chuẩn bị trước mỗi buổi luyện chữ?",
+      "Nếu nhiều văn bản đề tên Vương Hi Chi là nguỵ thác, chúng vẫn có giá trị gì cho lịch sử tư tưởng thư pháp?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c07",
+   "no": "Chương 7",
+   "title": "Phân dòng lưu phái và đối trĩ học phái",
+   "titleZh": "流派的分野与学派的对峙",
+   "pages": "80–86",
+   "summary": "Hai trăm năm Nam Bắc triều chia thư pháp làm hai dòng: phương Nam là văn nhân sĩ đại phu sống dưới bóng Nhị Vương, viết thư thiếp trên giấy lụa và bắt đầu lý luận về thần thái, phẩm bình; phương Bắc là đá khắc, tượng Phật và vô số thợ chữ vô danh. Khác biệt ấy, xét đến cùng, là khác biệt giữa tư tưởng văn nhân và tư tưởng dân gian chứ không chỉ do địa lý.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Năm 420, Lưu Dụ nhận ngôi nhà Tấn lập nên nhà Tống ở phương Nam; ở phương Bắc, họ Thác Bạt dẹp các nước Hồ, dựng nhà Nguỵ. Từ đó đến khi nhà Tuỳ thống nhất là gần hai trăm năm hai miền đối đầu. Cùng dùng chữ Hán, nhưng thổ nhưỡng, phong tục, sở thích khác nhau, nên thư pháp cũng rẽ hai ngả. Phương Nam giữ lệnh cấm dựng bia qua Tống, Tề, Lương, đến đời Trần mới nới; thói quen đã thành nếp nên chữ chủ yếu viết trên lụa và giấy, dưới dạng *thiếp*, thiên về hành thảo uyển chuyển. Phương Bắc sùng Phật: tạo tượng, khắc kinh, dựng bia khắp nơi, chữ trên đá phải đoan trang nên chủ yếu là khải thư vuông vức. Nói gọn: *Nam thiếp, Bắc bi*."
+    },
+    {
+     "t": "p",
+     "x": "Điều thú vị là về quốc lực, thời này kém cả Hán Tấn lẫn Tuỳ Đường, thế mà về thư pháp lại vô cùng đặc sắc. Chính sự chia cắt khiến mỗi miền phát huy bản sắc riêng; sự phân dòng lưu phái lớn của thư pháp Trung Hoa bắt đầu từ đây, và kéo theo nó là sự đối lập của các tiêu chuẩn phê bình: người thì chê chữ Nam yếu mềm, người lại chê chữ Bắc thiếu cái phong nhã của Tấn."
+    },
+    {
+     "t": "h",
+     "x": "Phương Nam: vua tôi say chữ dưới bóng Nhị Vương"
+    },
+    {
+     "t": "p",
+     "x": "Nam triều có một nét chung hiếm thấy: hầu như vị vua nào cũng mê chữ. Tống Văn Đế, Hiếu Vũ Đế, Minh Đế đều viết giỏi; Tề Cao Đế Tiêu Đạo Thành từng thi chữ với Vương Tăng Kiền rồi hỏi ai nhất, được trả lời khéo léo: chữ thần nhất trong hàng bề tôi, chữ bệ hạ nhất trong hàng vua chúa. Lương Vũ Đế Tiêu Diễn mở ra phong khí bàn chữ sôi nổi nhất: ông trao đổi thư từ về thư pháp với Đào Hoằng Cảnh, Viên Ngang soạn «Cổ kim thư bình», Dữu Kiên Ngô soạn «Thư phẩm», Tiêu Tử Vân có «Thập nhị pháp»."
+    },
+    {
+     "t": "p",
+     "x": "Nhưng bao trùm tất cả là bóng của **Nhị Vương**. Dương Hân học trực tiếp Vương Hiến Chi, giống đến mức người đương thời nói *mua chữ Vương mà được chữ Dương cũng không thất vọng*; Vương Tăng Kiền nối Tiểu Vương; Tiêu Tử Vân bắt chước Dật Thiếu; nhà sư Trí Vĩnh giữ trọn gia pháp tổ tiên. Chữ Nhị Vương trở thành *thước đo* để vua chúa bình chữ bề tôi. Giữa cả một thời như thế, câu trả lời của Trương Dung là tiếng nói hiếm hoi:"
+    },
+    {
+     "t": "quote",
+     "zh": "非恨臣无二王法，亦恨二王无臣法。",
+     "hv": "Phi hận thần vô Nhị Vương pháp, diệc hận Nhị Vương vô thần pháp.",
+     "vi": "Không phải đáng tiếc là thần không có phép của Nhị Vương, mà đáng tiếc là Nhị Vương không có phép của thần.",
+     "src": "«Nam Tề thư · Trương Dung truyện» (đáp lời Tề Cao Đế chê chữ ông “có cốt lực nhưng tiếc không có phép Nhị Vương”)"
+    },
+    {
+     "t": "p",
+     "x": "Thư pháp phương Nam lan truyền trong vòng tròn sĩ đại phu: thư từ qua lại giữa vua tôi, bạn bè. Người Đường còn thấy được chân tích Nam triều của mấy chục người, tất cả đều là văn sĩ. Cũng chính lúc này, *sưu tầm và thưởng ngoạn* chữ trở thành một thú riêng. Ngu Hoà đời Tống Minh Đế, trong «Luận thư biểu» dâng vua, kể việc chỉnh lý kho thư pháp của triều đình và đưa ra một nhận xét rất sắc về quy luật thị hiếu:"
+    },
+    {
+     "t": "quote",
+     "zh": "夫古质而今妍，数之常也；爱妍而薄质，人之情也。",
+     "hv": "Phù cổ chất nhi kim nghiên, số chi thường dã; ái nghiên nhi bạc chất, nhân chi tình dã.",
+     "vi": "Xưa mộc mạc mà nay đẹp đẽ, ấy là lẽ thường của thời vận; yêu cái đẹp đẽ mà coi nhẹ cái mộc mạc, ấy là thường tình của con người.",
+     "src": "Ngu Hoà, «Luận thư biểu»"
+    },
+    {
+     "t": "p",
+     "x": "Câu này giải thích vì sao Tiểu Vương với nét phóng khoáng, mỹ lệ lại được đời Tống, Tề ưa hơn cha. Với người học hôm nay, nó là lời nhắc: thị hiếu của mắt luôn nghiêng về cái *nghiên* (đẹp, bóng bẩy); muốn giữ được cái *chất* thì phải tự ý thức mà chống lại."
+    },
+    {
+     "t": "h",
+     "x": "Lý luận Nam triều: thần thái, công phu và thiên nhiên"
+    },
+    {
+     "t": "p",
+     "x": "Đóng góp lý luận quan trọng nhất của Nam triều thuộc về **Vương Tăng Kiền** với «Bút ý tán». Ông là người đầu tiên tuyên bố rõ ràng thứ bậc giá trị mà phê bình thư pháp Trung Hoa giữ mãi về sau:"
+    },
+    {
+     "t": "quote",
+     "zh": "书之妙道，神彩为上，形质次之，兼之者方可绍于古人。……必使心忘于笔，手忘于书，心手达情，书不忘想，是谓求之不得，考之即彰。",
+     "hv": "Thư chi diệu đạo, thần thái vi thượng, hình chất thứ chi, kiêm chi giả phương khả thiệu ư cổ nhân. … Tất sử tâm vong ư bút, thủ vong ư thư, tâm thủ đạt tình, thư bất vong tưởng, thị vị cầu chi bất đắc, khảo chi tức chương.",
+     "vi": "Cái đạo kỳ diệu của thư pháp lấy thần thái làm trên, hình chất đứng sau; gồm được cả hai mới có thể nối được người xưa. … Phải khiến lòng quên cây bút, tay quên việc viết, lòng và tay cùng thông đạt tình cảm, viết mà không rời ý tưởng; ấy gọi là cố tìm thì không được, mà xét lại thì hiện rõ.",
+     "src": "Vương Tăng Kiền, «Bút ý tán»"
+    },
+    {
+     "t": "p",
+     "x": "*Thần thái vi thượng* là một bước mở rộng lớn của quan niệm phê bình: chữ không chỉ được đánh giá bằng đúng hay đẹp về hình, mà trước hết bằng cái *thần* toát ra. Muốn có thần thì phải đạt đến trạng thái *tâm quên bút, tay quên chữ*, tức là kỹ thuật đã nhuần đến mức không còn phải nghĩ tới. Đây là chỗ nghệ thuật tách khỏi thực dụng: viết thực dụng chỉ cần hình đúng; viết nghệ thuật phải *đạt tình*."
+    },
+    {
+     "t": "p",
+     "x": "Trong khi đó **Lương Vũ Đế** lại làm một việc gây bất ngờ: giữa lúc thiên hạ chuộng Tiểu Vương, ông đảo ngược thứ bậc, đặt Chung Do lên trên cả Vương Hi Chi. Trong bài viết về mười hai ý của chữ Chung Do, ông nhận xét:"
+    },
+    {
+     "t": "quote",
+     "zh": "逸少至学钟书，势巧形密；及其独运，意疏字缓。譬犹楚音习夏，不能无楚。……子敬之不迨逸少，犹逸少之不迨元常。",
+     "hv": "Dật Thiếu chí học Chung thư, thế xảo hình mật; cập kỳ độc vận, ý sơ tự hoãn. Thí do Sở âm tập Hạ, bất năng vô Sở. … Tử Kính chi bất đãi Dật Thiếu, do Dật Thiếu chi bất đãi Nguyên Thường.",
+     "vi": "Dật Thiếu khi chuyên học chữ Chung thì thế khéo, hình chặt; đến khi tự mình vận bút thì ý thưa, chữ chùng. Ví như người nói giọng Sở tập nói tiếng Hạ, không thể không còn giọng Sở. … Tử Kính không bằng Dật Thiếu, cũng như Dật Thiếu không bằng Nguyên Thường.",
+     "src": "Lương Vũ Đế, «Quan Chung Do thư pháp thập nhị ý»"
+    },
+    {
+     "t": "p",
+     "x": "Thứ bậc *Chung > Vương Hi Chi > Vương Hiến Chi* này về sau bị Đường Thái Tông lật lại hoàn toàn, nhưng nó cho thấy thời Lương đã có tranh luận thực sự về chuẩn mực, chứ không chỉ một chiều sùng Vương. Mười hai “ý” mà Vũ Đế liệt kê (bình, trực, quân, mật, phong, lực, khinh, quyết, bổ, tổn, xảo, xứng) cũng là một bộ khái niệm kỹ pháp sớm, nói về ngang, dọc, khoảng cách, chỗ tiếp giáp, đầu nét, sức nét, cách bù chỗ thiếu, bớt chỗ thừa, bố trí và cân xứng."
+    },
+    {
+     "t": "h",
+     "x": "Từ liệt kê đến phẩm bình"
+    },
+    {
+     "t": "p",
+     "x": "Song song với lý luận, phê bình cũng ra đời theo từng bước. Dương Hân soạn «Thái cổ lai năng thư nhân danh», liệt kê sáu mươi chín người viết giỏi từ Tần đến Tấn theo thứ tự thời gian, mỗi người kèm vài lời nhận xét; tính chất còn gần với sử học hơn là phê bình. Khoảng trăm năm sau, Viên Ngang phụng chiếu Lương Vũ Đế (năm 523) soạn «Cổ kim thư bình», không xếp theo thời đại nữa mà theo con mắt nghệ thuật, mỗi người một hình ảnh ví von:"
+    },
+    {
+     "t": "quote",
+     "zh": "王右军书如谢家子弟，纵复不端正者，爽爽有一种风气。王子敬书如河洛间少年，虽皆充悦，而举体沓拖，殊不可耐。",
+     "hv": "Vương Hữu Quân thư như Tạ gia tử đệ, túng phục bất đoan chính giả, sảng sảng hữu nhất chủng phong khí. Vương Tử Kính thư như Hà Lạc gian thiếu niên, tuy giai sung duyệt, nhi cử thể đạp tha, thù bất khả nại.",
+     "vi": "Chữ Vương Hữu Quân như con em nhà họ Tạ, dù có chỗ không ngay ngắn vẫn phơi phới một vẻ phong lưu. Chữ Vương Tử Kính như chàng trai vùng Hà Lạc, tuy ai cũng tươi tắn đầy đặn mà cả người lề mề lôi thôi, thật khó chịu nổi.",
+     "src": "Viên Ngang, «Cổ kim thư bình»"
+    },
+    {
+     "t": "p",
+     "x": "Lối bình bằng hình ảnh này vẫn thuộc truyền thống ví von của Nguỵ Tấn, nhưng đã có *thái độ khen chê*. Đến **Dữu Kiên Ngô** với «Thư phẩm», phê bình có hệ thống thật sự: hơn một trăm hai mươi người viết được chia làm thượng, trung, hạ, mỗi hạng lại chia ba bậc, thành chín phẩm, mỗi phẩm có lời luận, toàn văn có lời tựa chung. Lối “phẩm” này vay từ «Cổ hoạ phẩm lục» của Tạ Hách bên hội hoạ. Quan trọng hơn cả là cặp khái niệm ông dùng để so ba bậc thầy:"
+    },
+    {
+     "t": "quote",
+     "zh": "张工夫第一，天然次之……钟天然第一，工夫次之……王工夫不及张，天然过之；天然不及钟，工夫过之。",
+     "hv": "Trương công phu đệ nhất, thiên nhiên thứ chi … Chung thiên nhiên đệ nhất, công phu thứ chi … Vương công phu bất cập Trương, thiên nhiên quá chi; thiên nhiên bất cập Chung, công phu quá chi.",
+     "vi": "Trương Chi công phu bậc nhất, thiên nhiên đứng sau; Chung Do thiên nhiên bậc nhất, công phu đứng sau; họ Vương công phu không bằng Trương mà thiên nhiên hơn; thiên nhiên không bằng Chung mà công phu hơn.",
+     "src": "Dữu Kiên Ngô, «Thư phẩm»"
+    },
+    {
+     "t": "p",
+     "x": "*Công phu* là cái luyện được, *thiên nhiên* là cái trời cho, vẻ tự nhiên không thể học. Cặp khái niệm này đến nay vẫn rất hữu ích cho người học: nó nhắc rằng chăm chỉ là cần nhưng chưa đủ, và cái “tự nhiên” cũng phải được nuôi bằng công phu mới lộ ra. Con đường từ Dương Hân đến Dữu Kiên Ngô chính là con đường từ *ghi chép* sang *phê bình tự giác*; chương sau sẽ thấy nó chín muồi ở đời Đường."
+    },
+    {
+     "t": "h",
+     "x": "Phương Bắc: đá, Phật và những người thợ vô danh"
+    },
+    {
+     "t": "p",
+     "x": "Ở phương Bắc gần như không có thiếp, nhưng đá khắc thì không đếm xuể: tượng Phật, bia mộ, mộ chí, kinh khắc trên vách núi. Khang Hữu Vi chỉ chọn những bia quan trọng nhất cũng đã hơn một trăm sáu mươi loại. Nguồn gốc là đạo Phật: theo «Nguỵ thư · Thích Lão chí», cuối thời Bắc Nguỵ chùa chiền đã lên đến hơn ba vạn. Vua và hoàng hậu xướng ở trên, sĩ dân hưởng ứng ở dưới, nên tạo tượng, khắc kinh lan khắp nơi; trên núi Thái Sơn có cả bộ «Kim Cương kinh» khắc vào đá, chữ to đến một thước."
+    },
+    {
+     "t": "p",
+     "x": "Người viết giỏi được biết tên ở phương Bắc chủ yếu là **Trịnh Đạo Chiêu**, với các khắc đá ở núi Vân Phong; Diệp Xương Xí đời Thanh khen bút lực của ông có thể đâm tê giác, vật rồng rắn, và cho ông là “thánh trong khải thư”. Trịnh Đạo Chiêu cũng là người mở đầu *bảng thư* (chữ đại tự): bốn chữ “Thử Bạch Câu cốc” khắc trên vách đá, chữ to hơn một thước. Ngoài ông ra, tuyệt đại đa số là người vô danh. Kiệt tác «Thạch Môn minh» chỉ ghi người viết là Vương Viễn, một cái tên không thấy ở bất cứ sử sách hay bia nào khác. Điều lạ là văn bia Bắc triều thường quê mùa, nhưng chữ thì hầu như bia nào cũng đẹp. Khang Hữu Vi đã nhận ra điều này:"
+    },
+    {
+     "t": "quote",
+     "zh": "魏碑无不佳者，虽穷乡儿女造像，而骨血峻宕，拙厚中皆有异态，构字亦紧密非常。",
+     "hv": "Nguỵ bi vô bất giai giả, tuy cùng hương nhi nữ tạo tượng, nhi cốt huyết tuấn đãng, chuyết hậu trung giai hữu dị thái, cấu tự diệc khẩn mật phi thường.",
+     "vi": "Bia Nguỵ không có cái nào không đẹp; dù là tượng do đàn bà con trẻ ở làng xa tạo, mà xương máu vẫn cao vót phóng khoáng, trong cái vụng dày đều có dáng lạ, cách dựng chữ cũng chặt chẽ khác thường.",
+     "src": "Khang Hữu Vi, «Quảng nghệ chu song tập»"
+    },
+    {
+     "t": "p",
+     "x": "Giải thích hợp lý nhất là so với văn học. Văn học có thơ của văn nhân và có ca dao; thư pháp cũng có chữ văn nhân và có chữ dân gian. Người thợ chữ dân gian không mưu cầu danh tiếng, không lấy danh gia làm khuôn, *tuỳ tay mà viết*, nên chữ của họ hồn nhiên chứ không làm dáng, giống thẻ tre đời Hán hay kinh chép tay đời Đường. Có thể nói đây là lần đầu tiên trong lịch sử có một dòng chữ lớn nằm *ngoài khuôn Nhị Vương*, mà lại không phải do ai cố ý “sáng tạo”. Từ đó suy ra một lời cảnh tỉnh cho người học: từ đời Thanh, rất nhiều người học bi mà ít người thành, vì họ chỉ chép hình bia mà quên rằng người thợ xưa *không hề có ý làm thư pháp*; đem con mắt văn nhân chép bia Nguỵ thì dễ được hình mà mất thần."
+    },
+    {
+     "t": "p",
+     "x": "Mở rộng ra, phương Bắc đem thư pháp ra khỏi thư phòng, khắc lên vách núi, hoà vào trời đất. Trong nhà có bức thư hoạ, ngoài đồng nội, chùa miếu có bia và ma nhai; đó là nét rất riêng của văn hoá Trung Hoa, và là một cuộc cách mạng trong quan niệm thẩm mỹ: những tác phẩm khí tượng hùng vĩ như vậy, đồ chơi “bỏ túi” trong thư trai không thể sánh. Ngoài thực tiễn, phương Bắc ít lý luận; đáng kể có «Cổ kim văn tự chí mục» của Vương Âm, nay chỉ còn mục lục, liệt kê hàng chục lối chữ trang trí (chữ chim, chữ rồng, chữ rùa, chữ huyền châm, chữ muỗi chân…), cho thấy góc nhìn rộng hơn khuôn khổ năm thể triện, lệ, khải, hành, thảo."
+    },
+    {
+     "t": "h",
+     "x": "Nam Bắc khác nhau vì địa lý hay vì tư tưởng?"
+    },
+    {
+     "t": "p",
+     "x": "Đời Thanh, Nguyễn Nguyên viết «Nam Bắc thư phái luận», phân hai phái rõ ràng:"
+    },
+    {
+     "t": "quote",
+     "zh": "南派乃江左风流，疏放妍妙，长于启牍……北派则是中原古法，拘谨拙陋，长于碑榜。",
+     "hv": "Nam phái nãi Giang Tả phong lưu, sơ phóng nghiên diệu, trường ư khải độc … Bắc phái tắc thị Trung Nguyên cổ pháp, câu cẩn chuyết lậu, trường ư bi bảng.",
+     "vi": "Phái Nam là phong lưu đất Giang Tả, phóng khoáng, đẹp đẽ, giỏi về thư từ … Phái Bắc là phép cổ của Trung Nguyên, câu nệ, vụng mộc, giỏi về bia và biển.",
+     "src": "Nguyễn Nguyên, «Nam Bắc thư phái luận»"
+    },
+    {
+     "t": "p",
+     "x": "Thuyết này có cơ sở nhưng thiên lệch. Phương Nam cũng có bia, và hai tấm «Thoán Bảo Tử» (405) và «Thoán Long Nhan» (458) ở Vân Nam, vùng biên viễn phía nam, lại gần với phong cách bia Bắc hơn mọi thứ ở Giang Tả. Ngược lại, Trương Chi người Tửu Tuyền, Sách Tĩnh người Đôn Hoàng, đều là người phương Bắc mà chữ thảo lại thuộc dòng thiếp. Lưu Hy Tái đời Thanh từng đặt giả thiết: nếu Nam triều không cấm bia, biết đâu bia Nam lại chẳng hơn Bắc. Âu Dương Tu thì chê Nam khen Bắc, Triệu Mạnh Kiên lại chê chữ Bắc thiếu phong nhã; mỗi người một tiêu chuẩn."
+    },
+    {
+     "t": "p",
+     "x": "Cách nhìn sâu hơn là: khác biệt Nam Bắc *trước hết là khác biệt tư tưởng*. Người viết phía Nam là sĩ đại phu thượng lưu, nho nhã phong lưu; người khắc phía Bắc là thợ dân gian. Vì thế hai tấm bia biên viễn ở Vân Nam, cũng do người địa phương vô danh viết, mới gần với bia Bắc. Trong văn học, việc tôn vinh ca dao, nhạc phủ đã là chuyện hiển nhiên; còn trong thư pháp, sĩ đại phu suốt nhiều thế kỷ không coi chữ bia Bắc ra gì. Phải đến Khang Hữu Vi đời Thanh mới “lật án” cho bia Bắc, nhưng ông dừng ở chỗ tôn bia mà chưa đi thêm một bước để tôn *thư pháp dân gian* như một dòng nghệ thuật ngang hàng. Nam Bắc triều, nói cho đúng, là thời đại *người viết dân gian trổ tài*."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Nam thiếp Bắc bi",
+       "zh": "南帖北碑",
+       "vi": "Phương Nam mạnh về thư thiếp viết trên giấy lụa, phương Bắc mạnh về bia khắc đá."
+      },
+      {
+       "hv": "Thần thái",
+       "zh": "神彩",
+       "vi": "Cái thần toát ra từ chữ; theo Vương Tăng Kiền đứng trên hình chất."
+      },
+      {
+       "hv": "Hình chất",
+       "zh": "形质",
+       "vi": "Hình dáng, chất liệu cụ thể của nét chữ."
+      },
+      {
+       "hv": "Công phu / Thiên nhiên",
+       "zh": "工夫 / 天然",
+       "vi": "Cái luyện được và cái tự nhiên trời cho; cặp tiêu chuẩn của Dữu Kiên Ngô."
+      },
+      {
+       "hv": "Cổ chất kim nghiên",
+       "zh": "古质今妍",
+       "vi": "Xưa mộc mạc, nay đẹp đẽ; quy luật thị hiếu theo Ngu Hoà."
+      },
+      {
+       "hv": "Cửu phẩm",
+       "zh": "九品",
+       "vi": "Lối chia người viết thành ba phẩm, mỗi phẩm ba bậc, thành chín bậc."
+      },
+      {
+       "hv": "Tạo tượng ký",
+       "zh": "造像记",
+       "vi": "Bài ký khắc kèm tượng Phật, nguồn chữ khải Bắc Nguỵ phong phú nhất."
+      },
+      {
+       "hv": "Ma nhai",
+       "zh": "摩崖",
+       "vi": "Chữ khắc thẳng lên vách núi."
+      },
+      {
+       "hv": "Bảng thư",
+       "zh": "榜书",
+       "vi": "Chữ cỡ lớn viết biển, xưa gọi là thự thư."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Dương Hân",
+       "zh": "羊欣",
+       "years": "370–442, Lưu Tống",
+       "note": "Học trực tiếp Vương Hiến Chi; «Thái cổ lai năng thư nhân danh»."
+      },
+      {
+       "name": "Ngu Hoà",
+       "zh": "虞龢",
+       "years": "thế kỷ V, Lưu Tống",
+       "note": "«Luận thư biểu»; chỉnh lý kho thư pháp triều đình."
+      },
+      {
+       "name": "Vương Tăng Kiền",
+       "zh": "王僧虔",
+       "years": "426–485, Lưu Tống – Tề",
+       "note": "«Bút ý tán»; nêu “thần thái vi thượng”."
+      },
+      {
+       "name": "Trương Dung",
+       "zh": "张融",
+       "years": "444–497, Tề",
+       "note": "Câu nói “tiếc Nhị Vương không có phép của thần”."
+      },
+      {
+       "name": "Lương Vũ Đế (Tiêu Diễn)",
+       "zh": "梁武帝（萧衍）",
+       "years": "464–549, Lương",
+       "note": "Đặt Chung Do trên Vương Hi Chi; trao đổi thư luận với Đào Hoằng Cảnh."
+      },
+      {
+       "name": "Đào Hoằng Cảnh",
+       "zh": "陶弘景",
+       "years": "456–536, Lương",
+       "note": "Đạo sĩ, học giả; các thư «Dữ Lương Vũ Đế luận thư khải»."
+      },
+      {
+       "name": "Viên Ngang",
+       "zh": "袁昂",
+       "years": "461–540, Lương",
+       "note": "«Cổ kim thư bình», bình chữ bằng hình ảnh ví von."
+      },
+      {
+       "name": "Dữu Kiên Ngô",
+       "zh": "庾肩吾",
+       "years": "487–551, Lương",
+       "note": "«Thư phẩm», chia chín phẩm; cặp khái niệm công phu – thiên nhiên."
+      },
+      {
+       "name": "Trịnh Đạo Chiêu",
+       "zh": "郑道昭",
+       "years": "?–516, Bắc Nguỵ",
+       "note": "Khắc đá núi Vân Phong; mở đầu bảng thư."
+      },
+      {
+       "name": "Nguyễn Nguyên",
+       "zh": "阮元",
+       "years": "1764–1849, Thanh",
+       "note": "«Nam Bắc thư phái luận», «Bắc bi Nam thiếp luận»."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Vì sao lệnh cấm bia ở phương Nam và đạo Phật ở phương Bắc lại tạo ra hai dòng chữ khác nhau?",
+      "Câu “thần thái vi thượng, hình chất thứ chi” thay đổi cách đánh giá chữ như thế nào? Bạn đánh giá bài viết của mình theo tiêu chí nào nhiều hơn?",
+      "Phân biệt “công phu” và “thiên nhiên” theo Dữu Kiên Ngô. Trong luyện tập, làm sao để nuôi được cái “thiên nhiên”?",
+      "Vì sao hai bia «Thoán Bảo Tử», «Thoán Long Nhan» là phản ví dụ cho thuyết chia Nam Bắc thuần theo địa lý?",
+      "Theo bạn, người học bia Nguỵ hôm nay nên làm gì để không “được hình mà mất thần”?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c08",
+   "no": "Chương 8",
+   "title": "Thời đại sùng Vương, trọng pháp",
+   "titleZh": "崇王尚法的大时代",
+   "pages": "87–111",
+   "summary": "Tuỳ Đường là đường ranh giữa thư pháp cổ và kim: Trí Vĩnh và Đường Thái Tông đưa Vương Hi Chi lên ngôi độc tôn, khải thư bị trói vào khoa cử, “pháp” thành nguyên tắc tối cao; nhưng chính đời Đường cũng sinh ra Tôn Quá Đình, Trương Hoài Quán với hệ thống lý luận hoàn chỉnh, Nhan Chân Khanh chuyển từ “trọng trí” sang “trọng tình”, và Trương Húc, Hoài Tố cùng các thiền tăng phá vỡ khuôn phép bằng cuồng thảo.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Nhà Tuỳ chỉ tồn tại ba mươi bảy năm (581–618); các bậc thầy đầu Đường đều từng làm quan đời Tuỳ và học người triều trước: Ngu Thế Nam học Trí Vĩnh, Chử Toại Lương thụ pháp từ Sử Lăng. Vì thế gộp Tuỳ Đường làm một chương là hợp lý. Nhà Đường kéo dài gần ba trăm năm, quốc lực cường thịnh, lại có một vị vua mê chữ ngay từ đầu. Kết quả có hai mặt: thư pháp được đề cao chưa từng thấy (lập *thư học* trong Quốc Tử Giám, tuyển quan có xét chữ), nhưng khi cả thiên hạ ngước nhìn sở thích của một người, sự đa dạng rực rỡ của Nam Bắc triều mất đi."
+    },
+    {
+     "t": "p",
+     "x": "Người đời sau đánh giá thư pháp Đường rất khác nhau: người khen không kém đời Tấn, người chê cổ ý đã mất, khải thư đều tăm tắp như hạt bàn tính; Khang Hữu Vi còn cho rằng chữ trước Đường dày, sáp, thư thái, còn chữ sau Đường mỏng, trơn, gấp gáp. Dù đứng về phía nào, không ai phủ nhận **Đường là đường phân giới cổ – kim** của thư pháp, và nguyên nhân sâu xa là tư tưởng: lấy khải thư chọn quan khiến lòng công danh lấn át sự hồn nhiên dân gian; người viết chủ yếu là văn nhân; giấy bút tinh xảo khiến nét trơn hơn. Từ đây cũng hình thành yêu cầu *công phu ngoài chữ*: không thông kinh sử, thơ hoạ thì khó được gọi là nhà thư pháp, và người viết dân gian dần bị gạt khỏi lịch sử chính thống."
+    },
+    {
+     "t": "h",
+     "x": "Nhà Tuỳ và vị sư không xuống lầu: Trí Vĩnh"
+    },
+    {
+     "t": "p",
+     "x": "Nhân vật then chốt của thời chuyển tiếp là **Trí Vĩnh**, cháu bảy đời của Vương Hi Chi. Tương truyền ông ở chùa Vĩnh Hân (Ngô Hưng), lên lầu hơn bốn mươi năm không xuống, chép «Thiên tự văn» tám trăm bản đem tặng các chùa Giang Đông. Sự tĩnh tâm ấy không khác thiền sư diện bích. Ông là *người đầu tiên dốc trọn đời để tôn Vương, học Vương*; và chính bản «Thiên tự văn» của ông đã đặt nền cho phong khí đầu Đường. Tô Thức đời Tống hiểu rất rõ cái đẹp kín đáo của chữ Trí Vĩnh:"
+    },
+    {
+     "t": "quote",
+     "zh": "永禅师书，骨气深稳，体兼众妙，精能之至，反造疏淡。如观陶彭泽诗，初若散缓不收，反复不已，乃识其奇趣。",
+     "hv": "Vĩnh thiền sư thư, cốt khí thâm ổn, thể kiêm chúng diệu, tinh năng chi chí, phản tạo sơ đạm. Như quan Đào Bành Trạch thi, sơ nhược tán hoãn bất thu, phản phúc bất dĩ, nãi thức kỳ kỳ thú.",
+     "vi": "Chữ của Vĩnh thiền sư cốt khí sâu vững, thể gồm mọi cái hay, tinh thục đến cùng cực rồi lại hoá ra thưa nhạt. Như đọc thơ Đào Bành Trạch, thoạt tưởng rời rạc lỏng lẻo, đọc đi đọc lại mãi mới nhận ra cái thú lạ.",
+     "src": "Tô Thức, «Thư Đường thị lục gia thư hậu»"
+    },
+    {
+     "t": "p",
+     "x": "Trí Vĩnh và Trí Quả (người viết «Tâm thành tụng» về kết cấu chữ, cái tên đã mang hơi thở nhà Phật) mở ra hiện tượng *thư tăng*: nhà nho luyện chữ để tu thân, nhà sư viết chữ như một pháp tu. Cùng lúc, sự thống nhất chính trị kéo theo một sự “thống nhất” vô hình cho chữ: khải thư Lục triều hùng hậu, biến hoá, đến Tuỳ dần đều đặn, bia Tuỳ phần nhiều một khuôn mặt. Thực chất đó là *thú vị của sĩ đại phu thay dần vẻ mộc mạc dân gian*."
+    },
+    {
+     "t": "h",
+     "x": "Đường Thái Tông và chủ nghĩa “thượng pháp”"
+    },
+    {
+     "t": "p",
+     "x": "Đường Thái Tông Lý Thế Dân yêu chữ Vương Hi Chi đến mức trước khi mất dặn Cao Tông chôn «Lan Đình» theo mình. Ngu Thế Nam học Trí Vĩnh, Âu Dương Tuân khởi đầu từ chữ Vương, Chử Toại Lương được khen là cao đồ của Hữu Quân: các bậc thầy đầu Đường không ai đứng ngoài khuôn ấy. Chính tay vua viết lời bàn cuối truyện Vương Hi Chi trong «Tấn thư», chê hết các nhà khác để tôn một người:"
+    },
+    {
+     "t": "quote",
+     "zh": "详察古今，研精篆素，尽善尽美，其惟王逸少乎！观其点曳之工，裁成之妙，烟霏露结，状若断而还连；凤翥龙蟠，势如斜而反直。玩之不觉为倦，览之莫识其端，心慕手追，此人而已；其余区区之类，何足论哉！",
+     "hv": "Tường sát cổ kim, nghiên tinh triện tố, tận thiện tận mỹ, kỳ duy Vương Dật Thiếu hồ! Quan kỳ điểm duệ chi công, tài thành chi diệu, yên phi lộ kết, trạng nhược đoạn nhi hoàn liên; phượng chứ long bàn, thế như tà nhi phản trực. Ngoạn chi bất giác vi quyện, lãm chi mạc thức kỳ đoan, tâm mộ thủ truy, thử nhân nhi dĩ; kỳ dư khu khu chi loại, hà túc luận tai!",
+     "vi": "Xét kỹ xưa nay, nghiền ngẫm chữ trên thẻ trên lụa, tận thiện tận mỹ, chỉ có Vương Dật Thiếu chăng! Xem cái khéo của nét chấm nét kéo, cái tài cắt đặt thành hình: như khói tan sương đọng, dáng tưởng đứt mà lại liền; như phượng bay rồng cuộn, thế tưởng nghiêng mà hoá thẳng. Ngắm mãi không chán, xem mãi không biết đâu là đầu mối; lòng mến tay theo, chỉ có người này mà thôi; những kẻ tầm thường khác, đáng gì mà bàn!",
+     "src": "Đường Thái Tông, «Tấn thư · Vương Hi Chi truyện luận»"
+    },
+    {
+     "t": "p",
+     "x": "Không vị vua nào ảnh hưởng đến thư pháp sâu như Lý Thế Dân; từ đây thứ bậc “Hữu Quân đệ nhất” do vua khâm định gần như không ai dám vượt. Nhưng điều đáng học hơn là *nội dung* của chủ nghĩa thượng pháp, thể hiện qua hai văn bản kỹ pháp tiêu biểu. Bài thứ nhất tương truyền của Âu Dương Tuân:"
+    },
+    {
+     "t": "quote",
+     "zh": "每秉笔必在圆正，气力纵横重轻，凝神静虑。当审字势，四面停均，八边具备，短长合度，粗细折中，心眼准程，疏密欹正。最不可忙，忙则失势；次不可缓，缓则骨痴；又不可瘦，瘦当形枯；复不可肥，肥即质浊。细详缓临，自然备体，此是最要妙处。",
+     "hv": "Mỗi bỉnh bút tất tại viên chính, khí lực tung hoành trọng khinh, ngưng thần tĩnh lự. Đương thẩm tự thế, tứ diện đình quân, bát biên cụ bị, đoản trường hợp độ, thô tế chiết trung, tâm nhãn chuẩn trình, sơ mật khi chính. Tối bất khả mang, mang tắc thất thế; thứ bất khả hoãn, hoãn tắc cốt si; hựu bất khả sấu, sấu đương hình khô; phục bất khả phì, phì tức chất trọc. Tế tường hoãn lâm, tự nhiên bị thể, thử thị tối yếu diệu xứ.",
+     "vi": "Mỗi khi cầm bút, phải tròn và ngay; khí lực dọc ngang nặng nhẹ, tập trung tinh thần, lắng lặng suy nghĩ. Phải xét thế chữ: bốn mặt cân đều, tám bên đầy đủ, ngắn dài vừa độ, to nhỏ dung hoà; lòng và mắt cùng làm chuẩn mực cho thưa mau, nghiêng ngay. Tối kỵ vội, vội thì mất thế; kế đến chớ chậm, chậm thì xương ngây; lại chớ gầy, gầy thì hình khô; cũng chớ béo, béo thì chất đục. Xem kỹ, lâm chậm, tự nhiên đủ thể; đó là chỗ trọng yếu kỳ diệu nhất.",
+     "src": "Âu Dương Tuân (tương truyền), «Truyền thụ quyết»"
+    },
+    {
+     "t": "p",
+     "x": "Bài thứ hai mang tên chính Thái Tông. Đến đây, chuẩn mực gần như thành pháp điển:"
+    },
+    {
+     "t": "quote",
+     "zh": "夫欲书之时，当收视反听，绝虑凝神，心正气和，则契于玄妙。心神不正，书则欹斜；志气不和，字则颠仆。其道同鲁庙之器，虚则欹，满则覆，中则正。正者，冲和之谓也。",
+     "hv": "Phù dục thư chi thời, đương thu thị phản thính, tuyệt lự ngưng thần, tâm chính khí hoà, tắc khế ư huyền diệu. Tâm thần bất chính, thư tắc khi tà; chí khí bất hoà, tự tắc điên phó. Kỳ đạo đồng Lỗ miếu chi khí, hư tắc khi, mãn tắc phúc, trung tắc chính. Chính giả, xung hoà chi vị dã.",
+     "vi": "Khi muốn viết, phải thu mắt lại, lắng tai vào trong, dứt lo nghĩ, tụ tinh thần; lòng ngay khí hoà thì hợp với lẽ huyền diệu. Tâm thần không ngay thì chữ nghiêng lệch; chí khí không hoà thì chữ đổ ngã. Đạo ấy giống chiếc bình trong miếu nước Lỗ: rỗng thì nghiêng, đầy thì đổ, vừa phải thì đứng ngay. Ngay, tức là xung hoà vậy.",
+     "src": "Đường Thái Tông, «Bút pháp quyết»"
+    },
+    {
+     "t": "p",
+     "x": "Đặc trưng của tư tưởng đầu Đường hiện rõ: **lý trí kiềm chế tình cảm, quy luật khách quan đứng trên tinh thần chủ quan, trật tự chống lại “phóng đản”**. Chữ ngay là tâm ngay; tâm không được rỗng, không được đầy, chỉ được *trung*. Đây là *chủ nghĩa cổ điển* của thư pháp, mở đường cho lối bàn chữ bằng lý học đời Tống. Ngu Thế Nam, dù trong khuôn ấy, nhắc thêm một chiều sâu: chỗ huyền diệu phải ngộ bằng thần:"
+    },
+    {
+     "t": "quote",
+     "zh": "字虽有质，迹本无为，禀阴阳而动静，体万物以成形，达性通变，其常不主。……故知书道玄妙，必资神遇，不可以力求也。",
+     "hv": "Tự tuy hữu chất, tích bản vô vi, bẩm âm dương nhi động tĩnh, thể vạn vật dĩ thành hình, đạt tính thông biến, kỳ thường bất chủ. … Cố tri thư đạo huyền diệu, tất tư thần ngộ, bất khả dĩ lực cầu dã.",
+     "vi": "Chữ tuy có chất, nhưng dấu bút vốn là vô vi; nhận âm dương mà động tĩnh, thể theo muôn vật mà thành hình, thấu tính tình, thông biến hoá, cái thường của nó không cố định. … Cho nên biết đạo thư pháp huyền diệu, ắt phải nhờ thần mà gặp, không thể dùng sức mà cầu.",
+     "src": "Ngu Thế Nam, «Bút tuỷ luận · Khế diệu»"
+    },
+    {
+     "t": "p",
+     "x": "Mặt trái của “thượng pháp” nằm ở khoa cử. Nhà Đường tuyển quan theo bốn tiêu chí *thân, ngôn, thư, phán*, chữ phải “khải pháp tuấn mỹ”. Khi cả thiên hạ học chữ để làm quan, khải thư bị trói chặt nhất, tự do tư tưởng gần như không còn. Khương Quỳ đời Tống đã nói thẳng:"
+    },
+    {
+     "t": "quote",
+     "zh": "唐人以书判取士，而士大夫字书，类有科举习气。颜鲁公作《干禄字书》，是其证也。",
+     "hv": "Đường nhân dĩ thư phán thủ sĩ, nhi sĩ đại phu tự thư, loại hữu khoa cử tập khí. Nhan Lỗ Công tác «Can lộc tự thư», thị kỳ chứng dã.",
+     "vi": "Người Đường lấy chữ viết và văn phán để chọn kẻ sĩ, nên chữ của sĩ đại phu phần nhiều mang thói khoa cử. Nhan Lỗ Công viết «Can lộc tự thư» (sách chữ để cầu bổng lộc), ấy là chứng cớ.",
+     "src": "Khương Quỳ, «Tục thư phổ»"
+    },
+    {
+     "t": "p",
+     "x": "Ngược lại, thảo thư không bị khoa trường ràng buộc nên trở thành nơi người Đường giải phóng lòng mình. Hành thảo giữa Đường, xét cho cùng, là một phản ứng chống lại khải pháp đầu Đường."
+    },
+    {
+     "t": "h",
+     "x": "Lý luận thành hệ thống: Tôn Quá Đình và Trương Hoài Quán"
+    },
+    {
+     "t": "p",
+     "x": "Trước Đường, thư luận chỉ là những câu rời rạc, những bài bàn lặp lại về sư thừa, lại nhiều văn bản đáng ngờ. Đường mới có công trình mang tầm hệ thống, đứng đầu là **«Thư phổ»** của **Tôn Quá Đình** (687). Ông nói sách gồm sáu thiên, nhưng thứ còn lại chỉ là bài tựa viết bằng thảo thư; chỉ bài tựa ấy đã vừa là tấm bia lớn của lý luận, vừa là kiệt tác thảo thư. Ông chê lý luận trước mình hay dở lẫn lộn, kẻ nhắc chuyện cũ, kẻ bịa thuyết mới vô ích. Đóng góp cốt lõi của ông là khẳng định thư pháp là nghệ thuật vì nó **biểu đạt tình tính**:"
+    },
+    {
+     "t": "quote",
+     "zh": "虽篆、隶、草、章，工用多变，济成厥美，各有攸宜：篆尚婉而通，隶欲精而密，草贵流而畅，章务检而便。然后凛之以风神，温之以妍润，鼓之以枯劲，和之以闲雅；故可达其情性，形其哀乐。",
+     "hv": "Tuy triện, lệ, thảo, chương, công dụng đa biến, tế thành quyết mỹ, các hữu du nghi: triện thượng uyển nhi thông, lệ dục tinh nhi mật, thảo quý lưu nhi sướng, chương vụ kiểm nhi tiện. Nhiên hậu lẫm chi dĩ phong thần, ôn chi dĩ nghiên nhuận, cổ chi dĩ khô kình, hoà chi dĩ nhàn nhã; cố khả đạt kỳ tình tính, hình kỳ ai lạc.",
+     "vi": "Tuy triện, lệ, thảo, chương thảo công dụng nhiều biến đổi, muốn thành cái đẹp thì mỗi thể có chỗ thích hợp riêng: triện chuộng uyển chuyển mà thông suốt, lệ cần tinh tế mà chặt chẽ, thảo quý trôi chảy mà thông sướng, chương thảo cốt gọn gàng mà tiện. Sau đó làm cho nó nghiêm bằng phong thần, ấm bằng vẻ tươi nhuận, mạnh lên bằng nét khô cứng, hoà lại bằng sự nhàn nhã; nhờ thế mới có thể đạt được tình tính, hiện ra nỗi buồn niềm vui.",
+     "src": "Tôn Quá Đình, «Thư phổ»"
+    },
+    {
+     "t": "p",
+     "x": "Nếu chữ không đạt tình tính thì khác gì chữ thực dụng? Từ đó Tôn Quá Đình đi vào *tâm lý sáng tác*, nêu năm điều hợp và năm điều trái, một đoạn đến nay vẫn là kim chỉ nam cho người cầm bút:"
+    },
+    {
+     "t": "quote",
+     "zh": "神怡务闲，一合也；感惠徇知，二合也；时和气润，三合也；纸墨相发，四合也；偶然欲书，五合也。心遽体留，一乖也；意违势屈，二乖也；风燥日炎，三乖也；纸墨不称，四乖也；情怠手阑，五乖也。……得时不如得器，得器不如得志。若五乖同萃，思遏手蒙；五合交臻，神融笔畅。",
+     "hv": "Thần di vụ nhàn, nhất hợp dã; cảm huệ tuẫn tri, nhị hợp dã; thời hoà khí nhuận, tam hợp dã; chỉ mặc tương phát, tứ hợp dã; ngẫu nhiên dục thư, ngũ hợp dã. Tâm cự thể lưu, nhất quai dã; ý vi thế khuất, nhị quai dã; phong táo nhật viêm, tam quai dã; chỉ mặc bất xứng, tứ quai dã; tình đãi thủ lan, ngũ quai dã. … Đắc thời bất như đắc khí, đắc khí bất như đắc chí. Nhược ngũ quai đồng tuỵ, tư át thủ mông; ngũ hợp giao trăn, thần dung bút sướng.",
+     "vi": "Tinh thần vui vẻ, công việc thong thả là hợp thứ nhất; cảm ơn người tri kỷ mà đáp lại là hợp thứ hai; thời tiết ôn hoà, không khí ẩm dịu là hợp thứ ba; giấy mực ăn ý nhau là hợp thứ tư; bỗng dưng muốn viết là hợp thứ năm. Lòng vội mà thân bị giữ lại là trái thứ nhất; ý không thuận, thế bị ép là trái thứ hai; gió hanh nắng gắt là trái thứ ba; giấy mực không xứng là trái thứ tư; tình uể oải, tay mỏi mệt là trái thứ năm. … Được thời không bằng được đồ dùng, được đồ dùng không bằng được chí. Nếu năm điều trái cùng đến thì ý nghĩ tắc, tay mờ; năm điều hợp cùng tới thì thần hoà, bút thông.",
+     "src": "Tôn Quá Đình, «Thư phổ»"
+    },
+    {
+     "t": "p",
+     "x": "Trong năm điều hợp, ba điều thuộc về tinh thần; câu *đắc khí bất như đắc chí* đặt tinh thần lên trên cả giấy bút lẫn thời tiết. So với lối ví von Nguỵ Tấn, đây là bước tiến lớn: thay vì nói nét chấm “như đá rơi”, Tôn Quá Đình giải thích *vì sao* cùng một người lúc viết hay lúc viết dở. Ông cũng không coi Nhị Vương hay Chung, Trương là đích duy nhất: ai dồn được biến thái nơi đầu bút, hoà được tình điệu lên mặt giấy thì dù trái Vương, Chung vẫn không hỏng. Đoạn sau có lẽ là lời khuyên thực tế nhất về các giai đoạn luyện kết cấu:"
+    },
+    {
+     "t": "quote",
+     "zh": "至如初学分布，但求平正；既知平正，务追险绝；既能险绝，复归平正。初谓未及，中则过之，后乃通会，通会之际，人书俱老。",
+     "hv": "Chí như sơ học phân bố, đãn cầu bình chính; ký tri bình chính, vụ truy hiểm tuyệt; ký năng hiểm tuyệt, phục quy bình chính. Sơ vị vị cập, trung tắc quá chi, hậu nãi thông hội; thông hội chi tế, nhân thư câu lão.",
+     "vi": "Như việc mới học cách bố trí chữ, chỉ cần cầu cho bằng phẳng ngay ngắn; đã biết bằng ngay rồi thì phải đuổi theo cái hiểm tuyệt; đã làm được hiểm tuyệt rồi lại trở về bằng ngay. Lúc đầu là chưa tới, giữa chừng là vượt quá, sau cùng mới thông suốt hoà hợp; đến lúc thông hội thì người và chữ cùng già dặn.",
+     "src": "Tôn Quá Đình, «Thư phổ»"
+    },
+    {
+     "t": "p",
+     "x": "Ngang hàng với «Thư phổ» là các trước tác của **Trương Hoài Quán** (đời Khai Nguyên): «Thư đoạn», «Thư nghị», «Văn tự luận», «Bình thư dược thạch luận». «Thư phổ» nổi tiếng hơn một phần nhờ là bút tích tuyệt đẹp, nhưng về lý luận Trương không hề kém. Con đường phê bình đã thấy ở chương trước, từ bảng tên của Dương Hân, lời bình của Viên Ngang, chín phẩm của Dữu Kiên Ngô đến chữ “ưu liệt” của Lương Vũ Đế, đến Trương thì hoàn chỉnh: «Thư đoạn» chia các nhà thành ba phẩm *thần, diệu, năng*. Quan trọng hơn là tiêu chuẩn giá trị ông đặt ra:"
+    },
+    {
+     "t": "quote",
+     "zh": "玄妙之意，出于物类之表；幽深之理，伏于杳冥之间；岂常情之所能言，世智之所能测。……然智则无涯，法固不定，且以风神骨气者居上，妍美功用者居下。",
+     "hv": "Huyền diệu chi ý, xuất ư vật loại chi biểu; u thâm chi lý, phục ư yểu minh chi gian; khởi thường tình chi sở năng ngôn, thế trí chi sở năng trắc. … Nhiên trí tắc vô nhai, pháp cố bất định, thả dĩ phong thần cốt khí giả cư thượng, nghiên mỹ công dụng giả cư hạ.",
+     "vi": "Ý huyền diệu vượt ra ngoài hình tướng của sự vật; lý sâu xa ẩn trong chốn mịt mờ; đâu phải tình thường nói được, trí đời đo được. … Trí thì không bờ bến, phép vốn không cố định; hãy lấy phong thần cốt khí làm bậc trên, lấy vẻ đẹp đẽ và công dụng làm bậc dưới.",
+     "src": "Trương Hoài Quán, «Thư nghị»"
+    },
+    {
+     "t": "p",
+     "x": "Câu *phong thần cốt khí cư thượng, nghiên mỹ công dụng cư hạ*, nói ra giữa thời trọng pháp và chạy theo bổng lộc, đã cắt đứt mối dây dây dưa giữa nghệ thuật và thực dụng. Ông còn nói gọn hơn trong «Văn tự luận»:"
+    },
+    {
+     "t": "quote",
+     "zh": "深识书者，惟观神彩，不见字形。",
+     "hv": "Thâm thức thư giả, duy quan thần thái, bất kiến tự hình.",
+     "vi": "Người hiểu sâu thư pháp chỉ nhìn thần thái, không thấy hình chữ.",
+     "src": "Trương Hoài Quán, «Văn tự luận»"
+    },
+    {
+     "t": "p",
+     "x": "Từ đó suy ra hai hệ quả: thưởng thức chữ là chuyện *lặng lẽ cảm nhận mà không nói ra được*, và thẩm mỹ là *tự chủ*, mỗi người một khẩu vị như năm vị trong món ăn. Dũng cảm hơn cả, giữa lúc cả nước tôn Vương, ông xếp Vương Hi Chi đứng cuối trong tám nhà thảo thư, cho rằng danh tiếng của Hữu Quân chủ yếu nhờ chân thư và hành thư:"
+    },
+    {
+     "t": "quote",
+     "zh": "逸少则格律非高，功夫又少，虽圆丰妍美，乃乏神气，无戈戟铦锐可畏，无物象生动可奇，是以劣于诸子。",
+     "hv": "Dật Thiếu tắc cách luật phi cao, công phu hựu thiểu, tuy viên phong nghiên mỹ, nãi phạp thần khí, vô qua kích tiêm duệ khả uý, vô vật tượng sinh động khả kỳ, thị dĩ liệt ư chư tử.",
+     "vi": "Còn Dật Thiếu thì cách luật không cao, công phu lại ít; tuy tròn đầy đẹp đẽ nhưng thiếu thần khí, không có cái sắc nhọn như giáo mác khiến người phải sợ, không có cái sinh động của vật tượng khiến người phải lạ; vì thế kém các nhà kia.",
+     "src": "Trương Hoài Quán, «Thư nghị»"
+    },
+    {
+     "t": "p",
+     "x": "Đây không phải lời nói ngông để cầu danh mà là hệ quả logic của lý thuyết ông: nếu phép không cố định, thì không thể lấy một bậc thầy làm khuôn cho mọi người. Ông gọi lời mình là “thuốc đá” (dược thạch), thứ thuốc đắng chữa bệnh:"
+    },
+    {
+     "t": "quote",
+     "zh": "圣人不凝滞于物，万法无定，殊途同归，神智无方而妙有用，得其法而不著，至于无法，可谓得矣，何必钟、王、张、索而是规模？道本自然，谁其限约？",
+     "hv": "Thánh nhân bất ngưng trệ ư vật, vạn pháp vô định, thù đồ đồng quy, thần trí vô phương nhi diệu hữu dụng, đắc kỳ pháp nhi bất trước, chí ư vô pháp, khả vị đắc hĩ, hà tất Chung, Vương, Trương, Sách nhi thị quy mô? Đạo bản tự nhiên, thuỳ kỳ hạn ước?",
+     "vi": "Thánh nhân không bị vướng mắc vào vật; muôn phép không cố định, đường khác mà cùng về một chỗ; thần trí không có khuôn mà diệu dụng vẫn có. Được phép mà không bám vào phép, đến chỗ vô pháp, mới gọi là được. Hà tất cứ phải lấy Chung, Vương, Trương, Sách làm khuôn mẫu? Đạo vốn tự nhiên, ai trói buộc được?",
+     "src": "Trương Hoài Quán, «Bình thư dược thạch luận»"
+    },
+    {
+     "t": "h",
+     "x": "Nhan Chân Khanh: từ “trọng trí” sang “trọng tình”, và câu hỏi nhân phẩm"
+    },
+    {
+     "t": "p",
+     "x": "Sau loạn An Sử, người mở ra phong cách mới đầu tiên kể từ Đại Vương là **Nhan Chân Khanh**. Ông đỗ tiến sĩ đời Khai Nguyên, bị Dương Quốc Trung chèn ép, cùng anh khởi binh chống An Lộc Sơn, cuối đời phụng mệnh đến dụ Lý Hy Liệt và bị giết. Chữ của ông có hai mặt. Khải thư của ông, gần với chuẩn mực khoa trường, bị Mễ Phất chê thẳng là xấu và tục. Còn «Tế điệt văn cảo», bản nháp bài văn tế người cháu tử trận, viết trong đau thương, xoá sửa chằng chịt, được tôn là “thiên hạ đệ nhị hành thư”."
+    },
+    {
+     "t": "p",
+     "x": "Danh hiệu “đệ nhị” ấy cho thấy trật tự do Thái Tông khâm định bền đến mức nào. Thật ra so «Lan Đình» với «Tế điệt» là so hai tâm thái. «Lan Đình» là tình đã được trí lọc qua, trong cái trung hoà kín đáo, là khúc ca của trí; «Tế điệt» là tình trào ra trực tiếp như một bản điện tâm đồ, là khúc tự sự của tình. Việc chuyển từ bút pháp *nội yếm* (thu vào) của Nhị Vương sang *ngoại thác* (mở ra) của Nhan cũng không chỉ là kỹ thuật, mà bên dưới là sự đổi thay quan niệm. Từ giữa Đường, *phát huy tình cảm* thành dòng chính của sáng tác."
+    },
+    {
+     "t": "p",
+     "x": "Nhan Chân Khanh còn được đời sau tôn sùng vì nhân cách, và đây là chỗ cần suy nghĩ tỉnh táo. Ý niệm “nhìn chữ biết người” có gốc rất xa:"
+    },
+    {
+     "t": "quote",
+     "zh": "言，心声也；书，心画也。声画形，君子小人见矣。",
+     "hv": "Ngôn, tâm thanh dã; thư, tâm hoạ dã. Thanh hoạ hình, quân tử tiểu nhân hiện hĩ.",
+     "vi": "Lời nói là tiếng của lòng; chữ viết là nét vẽ của lòng. Tiếng và nét đã hiện ra thì quân tử hay tiểu nhân đều lộ rõ.",
+     "src": "Dương Hùng, «Pháp ngôn · Vấn thần»"
+    },
+    {
+     "t": "p",
+     "x": "Liễu Công Quyền khi can vua nói *tâm chính tắc bút chính*; đến Hạng Mục đời Minh thì thành “người ngay thì chữ ngay”. Thời thái bình, cái nho nhã của Vương Hi Chi hợp lý tưởng sĩ đại phu; sau loạn, cái cương liệt của Nhan mới hợp nhịp; đời Tống bị ngoại xâm càng tôn Nhan, nên câu “học chữ nên học Nhan” của Lục Du mang nhiều ý nghĩa ngoài nghệ thuật. Về sáng tác, đề cao tu dưỡng nhân cách là đúng, vì chữ là tâm thái lộ ra ngoài. Nhưng về phê bình, đồng nhất người với chữ không khớp với lịch sử: không giải thích được những người phẩm cách thấp mà chữ đẹp như Thái Kinh, Tần Cối. Nghệ thuật còn có tiêu chuẩn độc lập của nó."
+    },
+    {
+     "t": "h",
+     "x": "Trương điên, Tố cuồng và tinh thần Thiền"
+    },
+    {
+     "t": "p",
+     "x": "Hoàn tất bước chuyển sang “trọng tình” còn có hai bậc thầy cuồng thảo **Trương Húc** và **Hoài Tố**, mà ở giữa Đường ảnh hưởng còn lớn hơn Nhan: kiếm của Bùi Mân, thơ Lý Bạch, thảo thư Trương Húc được gọi là “tam tuyệt”; Lý Bạch, Đỗ Phủ, Cao Thích, Đới Thúc Luân… đều có thơ đề tặng; nhà quyền quý dựng sẵn bình phong, vách trắng chờ Hoài Tố đến vung bút. Hàn Dũ giải thích nguồn sức mạnh của Trương Húc chính xác hơn ai hết:"
+    },
+    {
+     "t": "quote",
+     "zh": "往时张旭善草书，不治他技。喜怒窘穷，忧悲、愉佚、怨恨、思慕、酣醉、无聊、不平，有动于心，必于草书焉发之。观于物，见山水崖谷，鸟兽虫鱼，草木之花实，日月列星，风雨水火，雷霆霹雳，歌舞战斗，天地事物之变，可喜可愕，一寓于书。故旭之书，变动犹鬼神，不可端倪。……今闲之于草书，有旭之心哉？不得其心而逐其迹，未见其能旭也。",
+     "hv": "Vãng thời Trương Húc thiện thảo thư, bất trị tha kỹ. Hỷ nộ, quẫn cùng, ưu bi, du dật, oán hận, tư mộ, hàm tuý, vô liêu, bất bình, hữu động ư tâm, tất ư thảo thư yên phát chi. Quan ư vật, kiến sơn thuỷ nhai cốc, điểu thú trùng ngư, thảo mộc chi hoa thực, nhật nguyệt liệt tinh, phong vũ thuỷ hoả, lôi đình phích lịch, ca vũ chiến đấu, thiên địa sự vật chi biến, khả hỷ khả ngạc, nhất ngụ ư thư. Cố Húc chi thư, biến động do quỷ thần, bất khả đoan nghê. … Kim Nhàn chi ư thảo thư, hữu Húc chi tâm tai? Bất đắc kỳ tâm nhi trục kỳ tích, vị kiến kỳ năng Húc dã.",
+     "vi": "Ngày trước Trương Húc giỏi thảo thư, không làm nghề gì khác. Mừng giận, cùng quẫn, lo buồn, vui sướng, oán hận, nhớ mong, say sưa, buồn chán, bất bình, hễ điều gì động đến lòng, ắt phát ra trong thảo thư. Nhìn ngoại vật, thấy núi sông vách hang, chim muông sâu cá, hoa quả cỏ cây, mặt trời mặt trăng và các vì sao, gió mưa nước lửa, sấm sét, ca múa chiến trận, mọi biến đổi của trời đất muôn vật, đáng mừng hay đáng kinh, đều gửi cả vào chữ. Cho nên chữ của Húc biến động như quỷ thần, không lần ra đầu mối. … Nay Cao Nhàn viết thảo, có được cái tâm của Húc chăng? Không được cái tâm mà chạy theo dấu vết, chưa thấy ai thành được Húc.",
+     "src": "Hàn Dũ, «Tống Cao Nhàn thượng nhân tự»"
+    },
+    {
+     "t": "p",
+     "x": "*Bất đắc kỳ tâm nhi trục kỳ tích*: câu này đáng chép lên bàn viết của mọi người học thảo. Trương Húc nhìn người gánh hàng tranh đường, xem Công Tôn đại nương múa kiếm mà ngộ thế bút. Khi Nhan Chân Khanh, Bùi Kình hỏi bút pháp, ông cười lớn rồi viết thảo mấy tờ, chỉ dặn chăm lâm tả, *bút pháp tự mình ngộ ra*. Đó không phải chủ trương “vô pháp”, mà là từ chối lối dạy mở miệng là nói pháp của đầu Đường. Hoài Tố còn nói rõ thầy của mình là thiên nhiên:"
+    },
+    {
+     "t": "quote",
+     "zh": "贫道观夏云多奇峰，辄常师之。夏云因风变化，乃无常势。又遇坼壁之路，一一自然。",
+     "hv": "Bần đạo quan hạ vân đa kỳ phong, triếp thường sư chi. Hạ vân nhân phong biến hoá, nãi vô thường thế. Hựu ngộ sách bích chi lộ, nhất nhất tự nhiên.",
+     "vi": "Bần đạo thấy mây mùa hạ có nhiều đỉnh lạ, thường lấy làm thầy. Mây mùa hạ theo gió mà biến hoá, không có thế cố định. Lại gặp những đường nứt trên vách tường, đường nào cũng tự nhiên.",
+     "src": "Lục Vũ, «Tăng Hoài Tố truyện»"
+    },
+    {
+     "t": "p",
+     "x": "Trước họ, viết chữ là thuật *trị tâm*, phải *tâm bình khí hoà* bên song cửa sáng, bàn sạch. Trương Húc, Hoài Tố cố ý *phá vỡ sự thăng bằng ấy*: để rượu khơi nhiệt tình, để lý trí lùi về số không. Đới Thúc Luân tả Hoài Tố: lòng và tay làm thầy cho nhau, hình kỳ dáng quái lại hoá hợp lẽ, ai hỏi chỗ diệu thì chính ông cũng bảo không biết. Lý Bạch còn bảo ta học nghề này *không học người xưa*. Cái “cuồng” ấy vừa là tình cảm nồng cháy, vừa là thái độ coi nhẹ quyền uy cũ."
+    },
+    {
+     "t": "p",
+     "x": "Nguồn gốc sâu xa của tinh thần này là **Thiền tông**. Hoài Tố cùng thời với Thần Hội, Mã Tổ, Hy Thiên, những thiền sư dùng gậy, tiếng hét thay lời giảng, “gặp Phật giết Phật” để không bị gì trói buộc. Thiền không dạy bí quyết bút mực, nhưng lối tư duy trực giác, đốn ngộ của nó là một cuộc giải phóng lớn cho sáng tác. Thư tăng đời Đường phần lớn viết thảo, và họ lên tiếng mạnh nhất chống lại sự nô lệ khuôn phép; người gọi tên “thư nô” lại chính là một nhà sư:"
+    },
+    {
+     "t": "quote",
+     "zh": "凡书通即变。……若执法不变，纵能入石三分，亦被号为书奴，终非自立之体。",
+     "hv": "Phàm thư thông tức biến. … Nhược chấp pháp bất biến, túng năng nhập thạch tam phân, diệc bị hiệu vi thư nô, chung phi tự lập chi thể.",
+     "vi": "Phàm thư pháp hễ thông thì phải biến. … Nếu giữ khư khư phép cũ mà không biến, dù nét có ăn sâu vào đá ba phân, cũng bị gọi là nô lệ của chữ, rốt cuộc không phải thể tự lập.",
+     "src": "Á Thê, «Luận thư»"
+    },
+    {
+     "t": "p",
+     "x": "So sánh với Trí Vĩnh sẽ thấy tư tưởng thời đại tác động sâu đến thế nào: cũng là nhà sư, nhưng Trí Vĩnh tu theo lối tĩnh lặng, giữ trọn gia pháp, “một nét không dám ra ngoài khuôn Dật Thiếu”; còn thư tăng giữa Đường mang tinh thần cuồng thiền. Và sau Đường, ảnh hưởng của Thiền lại đi theo một ngả khác: vẻ vụng, xấu, lạ, ngây trong chữ các nhà sư đời sau."
+    },
+    {
+     "t": "h",
+     "x": "Tổng kết: hai dòng chảy cùng tồn tại"
+    },
+    {
+     "t": "p",
+     "x": "Đường mở đầu bằng không khí sùng Vương đậm đặc. Khải thư bị khoa cử trói buộc nên linh tính chìm mất; thảo thư xa thực dụng nên linh tính được giải phóng; khác biệt ấy cốt ở tư tưởng. Nhà nho dùng chữ để giáo hoá, nhà sư dùng chữ để đạt đạo. Lý luận đến Tôn Quá Đình và Trương Hoài Quán thì thành hệ thống. Cũng như thơ Đường vừa có luật thi nghiêm vừa có cổ phong tự do, thư pháp Đường vừa có *pháp* chặt nhất vừa có *tình* phóng túng nhất; nhờ Nhan, Trương, Hoài Tố, đời Tống mới có thể “thượng ý” để phản lại “thượng pháp”. Bài học cho người học: học pháp đầu Đường cho vững, nhưng pháp chỉ là cửa vào; mục đích là *đắc kỳ tâm* chứ không phải *trục kỳ tích*."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Thượng pháp",
+       "zh": "尚法",
+       "vi": "Coi phép tắc là nguyên tắc tối cao; đặc trưng thư pháp đầu Đường."
+      },
+      {
+       "hv": "Tâm chính bút chính",
+       "zh": "心正笔正",
+       "vi": "Lòng ngay thì bút ngay (Liễu Công Quyền); gốc của phê bình nhân phẩm."
+      },
+      {
+       "hv": "Xung hoà",
+       "zh": "冲和",
+       "vi": "Trạng thái trung chính, hài hoà của tâm, lý tưởng của Đường Thái Tông."
+      },
+      {
+       "hv": "Ngũ hợp ngũ quai",
+       "zh": "五合五乖",
+       "vi": "Năm điều thuận và năm điều trái cho việc sáng tác (Tôn Quá Đình)."
+      },
+      {
+       "hv": "Bình chính – Hiểm tuyệt",
+       "zh": "平正 – 险绝",
+       "vi": "Bằng ngay và hiểm lạ: ba chặng luyện kết cấu, đi từ bình chính qua hiểm tuyệt rồi trở về bình chính."
+      },
+      {
+       "hv": "Thần – Diệu – Năng",
+       "zh": "神品 / 妙品 / 能品",
+       "vi": "Ba phẩm bậc trong «Thư đoạn» của Trương Hoài Quán."
+      },
+      {
+       "hv": "Phong thần cốt khí",
+       "zh": "风神骨气",
+       "vi": "Thần thái và khí cốt; Trương Hoài Quán đặt trên vẻ đẹp và công dụng."
+      },
+      {
+       "hv": "Nội yếm / Ngoại thác",
+       "zh": "内擫 / 外拓",
+       "vi": "Bút pháp thu vào trong (Nhị Vương) và mở ra ngoài (Nhan Chân Khanh)."
+      },
+      {
+       "hv": "Cuồng thảo",
+       "zh": "狂草",
+       "vi": "Thảo thư phóng túng nhất, gắn với Trương Húc, Hoài Tố."
+      },
+      {
+       "hv": "Thư nô",
+       "zh": "书奴",
+       "vi": "Nô lệ của chữ: người chỉ biết giữ phép cũ mà không biến (Á Thê)."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Trí Vĩnh",
+       "zh": "智永",
+       "years": "thế kỷ VI – đầu VII, Trần – Tuỳ",
+       "note": "Cháu bảy đời Vương Hi Chi; «Chân thảo Thiên tự văn»; tổ của thư tăng."
+      },
+      {
+       "name": "Đường Thái Tông (Lý Thế Dân)",
+       "zh": "唐太宗（李世民）",
+       "years": "598–649, Đường",
+       "note": "Độc tôn Vương Hi Chi; «Bút pháp quyết»."
+      },
+      {
+       "name": "Âu Dương Tuân",
+       "zh": "欧阳询",
+       "years": "557–641, Tuỳ – Đường",
+       "note": "Khải thư hiểm kính; «Truyền thụ quyết», «Bát quyết» mang tên ông."
+      },
+      {
+       "name": "Ngu Thế Nam",
+       "zh": "虞世南",
+       "years": "558–638, Tuỳ – Đường",
+       "note": "Học Trí Vĩnh; «Bút tuỷ luận»."
+      },
+      {
+       "name": "Tôn Quá Đình",
+       "zh": "孙过庭",
+       "years": "khoảng 646–691, Đường",
+       "note": "«Thư phổ» (687), bia lớn của lý luận thư pháp."
+      },
+      {
+       "name": "Trương Hoài Quán",
+       "zh": "张怀瓘",
+       "years": "thế kỷ VIII, Đường",
+       "note": "«Thư đoạn», «Thư nghị», «Văn tự luận»; định quy mô phê bình."
+      },
+      {
+       "name": "Nhan Chân Khanh",
+       "zh": "颜真卿",
+       "years": "709–784, Đường",
+       "note": "Biến pháp sau Nhị Vương; «Tế điệt văn cảo»."
+      },
+      {
+       "name": "Trương Húc",
+       "zh": "张旭",
+       "years": "khoảng 675–750, Đường",
+       "note": "“Trương điên”, cuồng thảo; thầy bút pháp của Nhan Chân Khanh."
+      },
+      {
+       "name": "Hoài Tố",
+       "zh": "怀素",
+       "years": "725–785, Đường",
+       "note": "“Tố cuồng”, thư tăng; «Tự tự thiếp»."
+      },
+      {
+       "name": "Hàn Dũ",
+       "zh": "韩愈",
+       "years": "768–824, Đường",
+       "note": "«Tống Cao Nhàn thượng nhân tự», bàn về tâm của Trương Húc."
+      },
+      {
+       "name": "Á Thê",
+       "zh": "亚栖",
+       "years": "cuối Đường",
+       "note": "Thư tăng; «Luận thư», phê phán “thư nô”."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Vì sao nói đời Đường là đường phân giới “cổ – kim” của thư pháp? Nêu ít nhất hai nguyên nhân thuộc về tư tưởng.",
+      "Trình bày nội dung “năm hợp, năm trái” của Tôn Quá Đình. Hãy tự đánh giá buổi luyện chữ gần nhất của bạn theo năm điều ấy.",
+      "Ba chặng “bình chính – hiểm tuyệt – bình chính” gợi ý gì cho lộ trình luyện kết cấu của bạn?",
+      "Vì sao Trương Hoài Quán dám xếp thảo thư của Vương Hi Chi sau các nhà khác? Điều đó liên quan gì đến câu “pháp cố bất định”?",
+      "Câu “bất đắc kỳ tâm nhi trục kỳ tích” của Hàn Dũ và quan niệm “nhân phẩm – thư phẩm” có thể được dung hoà như thế nào trong việc học chữ hôm nay?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c09",
+   "no": "Chương 9",
+   "title": "Thời đại trò chơi bút mực",
+   "titleZh": "玩墨的游戏时代",
+   "pages": "112–131",
+   "summary": "Từ Ngũ Đại sang Tống, thư pháp chuyển từ “thượng pháp” sang “thượng ý”: văn nhân coi viết chữ là cuộc chơi để bày tỏ lòng mình, thư và hoạ hợp làm một, còn «Thuần Hoá các thiếp» mở ra thiếp học và cuộc tranh luận bia – thiếp kéo dài tám trăm năm.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Câu nói quen thuộc *Đường nhân thượng pháp, Tống nhân thượng ý* (người Đường chuộng phép tắc, người Tống chuộng ý tứ) thường được học viên thuộc lòng như một công thức. Chương này giúp ta hiểu công thức ấy từ bên trong: vì sao chỉ sau vài chục năm loạn lạc, người cầm bút lại đổi hẳn cách nhìn về chữ, từ một việc nghiêm cẩn, gần như nghi lễ, thành một cuộc *chơi mực* (ngoạn mặc) để bày tỏ lòng mình. Chữ *chơi* ở đây không hề nhẹ: đó là một cuộc giải phóng thẩm mỹ, đặt nền cho gần như toàn bộ thư pháp văn nhân đời sau."
+    },
+    {
+     "t": "h",
+     "x": "Ngũ Đại: năm mươi năm lặng lẽ mà làm bản lề"
+    },
+    {
+     "t": "p",
+     "x": "Nhiều sử gia thư pháp xếp Ngũ Đại (907–960) như cái đuôi của nhà Đường. Tác giả đề nghị nhìn ngược lại: đây là *lời dạo đầu* của Tống. Lý do không nằm ở số lượng danh gia (rất ít), mà ở chỗ quan niệm thay đổi nhanh hơn chính tác phẩm. Ba dấu hiệu đáng chú ý."
+    },
+    {
+     "t": "p",
+     "x": "**Thứ nhất, chữ bước ra khỏi thư phòng.** Hậu Thục chủ Mạnh Sưởng chê chữ học sĩ viết lên bùa đào ngày Trừ tịch không đẹp, bèn tự cầm bút đề hai câu đối. Sự kiện được coi là khởi đầu của tục câu đối Tết, về sau lan ra câu đối mừng thọ, phúng điếu, cưới hỏi. Một khi chữ trở thành vật trang trí cửa nhà, đình đài, quán xá, thì đòi hỏi *phải đẹp* tự nhiên trở nên rõ rệt hơn đòi hỏi *phải đúng*."
+    },
+    {
+     "t": "quote",
+     "zh": "新年纳余庆，嘉节号长春。",
+     "hv": "Tân niên nạp dư khánh, gia tiết hiệu trường xuân.",
+     "vi": "Năm mới đón thêm phúc lành, tiết đẹp gọi là xuân dài mãi.",
+     "src": "Mạnh Sưởng, câu đối đề trên bùa đào (năm 964)"
+    },
+    {
+     "t": "p",
+     "x": "**Thứ hai, hội hoạ chen vào.** Mạnh Sưởng lập Hàn lâm Đồ hoạ viện, Nam Đường noi theo; khi hai nước mất, các hoạ sư như Hoàng Thuyên, Đổng Nguyên theo vua về Biện Lương, làm nòng cốt cho hội hoạ Tống. Lý Dục, vị vua – từ gia Nam Đường, viết chữ run rẩy như *kim thác đao*, vẽ trúc bằng nét *thiết câu toả* (móc sắt khoá xích); hoạ gia Chu Văn Củ thì tự nhận lối nét gầy cứng của mình học từ chữ Lý Dục. Đây là một trong những ghi chép sớm nhất về việc *bút pháp thư và hoạ thấm vào nhau*. Người viết chữ không còn chỉ là quan lại – văn sĩ, mà dần thành *nghệ sĩ* kiêm thơ, hoạ."
+    },
+    {
+     "t": "p",
+     "x": "**Thứ ba, Dương Ngưng Thức.** Biệt hiệu “Dương điên”, ông đi tiếp con đường cuồng thảo của Trương Húc, Hoài Tố, viết nghiêng thế để lấy dáng, khiến chữ đã rời khỏi khuôn Đường dù gốc vẫn là Nhan, Liễu và Nhị Vương. Lý Thuỵ Thanh cuối Thanh gọi ông là *bản lề từ Đường sang Tống*."
+    },
+    {
+     "t": "h",
+     "x": "Vì sao người Tống “chơi” chữ"
+    },
+    {
+     "t": "p",
+     "x": "Nhà Tống lập quốc bằng một cuộc binh biến (Trần Kiều), không có võ công lừng lẫy như Hán, Đường, và để giữ ngai vàng, Tống Thái Tổ dùng chính sách *trọng văn khinh võ*, giao quyền cho quan văn. Hệ quả ngoài ý muốn là văn hoá nghệ thuật nở rộ. Các hoàng đế Tống hầu như ai cũng giỏi thư hoạ: Thái Tông sai Vương Trứ mô khắc «Thuần Hoá các thiếp» (992), Nhân Tông lúc rảnh việc nước thì “chỉ thân bút mực”, Huy Tông sáng tạo *sấu kim thể* và mải mê đến mức quân Kim kéo tới vẫn chưa buông bút. Thời Chính Hoà – Tuyên Hoà, người của Thư hoạ viện được *bội ngư* (đeo túi cá bằng vàng bạc), một biểu tượng sang trọng chưa từng có với nghệ nhân. Mễ Phế được làm *Thư hoạ học bác sĩ*, viết chữ trước mặt vua mà vén tay áo nhảy nhót, Huy Tông vẫn bao dung."
+    },
+    {
+     "t": "p",
+     "x": "Bên dưới triều đình là đời sống văn nhân. Thời Nguỵ Tấn người ta thanh đàm, đời Đường xướng hoạ thơ, còn người Tống *uống trà, uống rượu rồi chơi mực*. Cuộc tụ họp nổi tiếng nhất là *Tây Viên nhã tập* tại phủ phò mã Vương Sân, có Tô Thức, Mễ Phế, Hoàng Đình Kiên, Lý Công Lân, Tần Quán… cùng vẽ, làm thơ, viết chữ, nghe đàn. Nhiều tác phẩm đẹp nhất của Tô Đông Pha được viết sau chén rượu. Song song là sự trỗi dậy của văn hoá thị dân: quán ăn ở kinh đô treo biển chữ lớn, trường học và thư trai đều treo hoành phi."
+    },
+    {
+     "t": "p",
+     "x": "Thêm một yếu tố thường bị bỏ qua: **kỹ thuật in**. Hoạt tự của Tất Thăng (khoảng 1041–1048) khiến sách rẻ và nhiều, kéo theo vô số bút ký, thi thoại, hoạ luận, thư luận. Vì vậy lý luận thư pháp Tống phong phú nhưng **tản mạn**: phần lớn nằm trong lời đề bạt, thư từ, bút ký, và rất nhiều là thơ. Đời Tống gần như không có công trình hệ thống ngang tầm «Thư phổ» của Tôn Quá Đình; bù lại, một câu ngắn đôi khi “điểm phá thiên cơ”. Câu nói của Âu Dương Tu, nhắc lại lời Tô Thuấn Khâm, tóm được tinh thần ấy:"
+    },
+    {
+     "t": "quote",
+     "zh": "苏子美尝言：明窗净几，笔砚纸墨皆极精良，亦自是人生一乐。然能得此乐者甚稀，其不为外物移其好者，又特稀也。",
+     "hv": "Tô Tử Mỹ thường ngôn: Minh song tịnh kỷ, bút nghiễn chỉ mặc giai cực tinh lương, diệc tự thị nhân sinh nhất lạc. Nhiên năng đắc thử lạc giả thậm hy, kỳ bất vi ngoại vật di kỳ hiếu giả, hựu đặc hy dã.",
+     "vi": "Tô Tử Mỹ từng nói: cửa sổ sáng, án sạch, bút nghiên giấy mực đều thật tốt, ấy cũng là một niềm vui của đời người. Nhưng người có được niềm vui ấy rất hiếm, mà người không để ngoại vật làm đổi sở thích của mình lại càng hiếm hơn.",
+     "src": "Âu Dương Tu, «Thí bút · Học thư vi lạc»"
+    },
+    {
+     "t": "p",
+     "x": "Đối với người Đường, chữ gắn với đạo, với lễ, với khoa cử; đối với Âu Dương Tu, chữ trước hết là *niềm vui khi ngồi tĩnh*. Tác giả chơi chữ: người trước viết để chở *đạo*, người Tống viết để *thư*, tức *giãi bày* nỗi lòng (hai chữ đồng âm). Từ đây thuyết *mặc hí* (trò chơi mực) thịnh hành."
+    },
+    {
+     "t": "h",
+     "x": "Tuyên ngôn “tự xuất tân ý”: chống lại phép tắc nhà Đường"
+    },
+    {
+     "t": "p",
+     "x": "Về bản chất, tư tưởng thư pháp Tống là một **phản ứng** đối với hệ thống thủ pháp của Đường. Người phát biểu mạnh nhất là Tô Thức. Trong hội hoạ, ông bảo bàn tranh mà chỉ xét giống hay không thì kiến thức chẳng hơn trẻ con; trong thư pháp, ông giương cao một lá cờ còn táo bạo hơn:"
+    },
+    {
+     "t": "quote",
+     "zh": "吾虽不善书，晓书莫如我。苟能通其意，常谓不学可。……端庄杂流丽，刚健含婀娜。……貌妍容有颦，璧美何妨椭。",
+     "hv": "Ngô tuy bất thiện thư, hiểu thư mạc như ngã. Cẩu năng thông kỳ ý, thường vị bất học khả. … Đoan trang tạp lưu lệ, cương kiện hàm a na. … Mạo nghiên dung hữu tần, bích mỹ hà phương thoả.",
+     "vi": "Ta tuy viết không giỏi, nhưng hiểu chữ thì chẳng ai bằng ta. Nếu thông được cái ý, ta vẫn nói không cần học cũng được. … Đoan trang mà xen vẻ lưu loát đẹp đẽ, cương kiện mà ngậm nét mềm mại thướt tha. … Mặt đẹp thì dẫu có nhíu mày vẫn đẹp, ngọc bích quý thì méo một chút có sao.",
+     "src": "Tô Thức, «Hoà Tử Do luận thư»"
+    },
+    {
+     "t": "quote",
+     "zh": "吾书虽不甚佳，然自出新意，不践古人，是一快也。",
+     "hv": "Ngô thư tuy bất thậm giai, nhiên tự xuất tân ý, bất tiễn cổ nhân, thị nhất khoái dã.",
+     "vi": "Chữ ta tuy không đẹp lắm, nhưng tự tạo ra ý mới, không giẫm theo dấu người xưa, ấy là một điều khoái chí.",
+     "src": "Tô Thức, «Bình thảo thư»"
+    },
+    {
+     "t": "p",
+     "x": "Cần đọc kỹ để khỏi hiểu lầm. “Không học cũng được” không có nghĩa là bỏ luyện tập (Tô Thức tập Nhan, Từ Hạo, Lý Ung rất kỹ), mà là đặt *thông ý* lên trên *rập khuôn*. Câu “ngọc đẹp méo có sao” chính là bước đầu của quan niệm *khuyết điểm có thể là vẻ đẹp*. Cùng thời, Thẩm Quát viết trong «Mộng Khê bút đàm» rằng cái diệu của thư hoạ phải lĩnh hội bằng thần, khó tìm bằng hình khí. Tô Thức còn tự nhận chữ mình đổi phong cách theo mức độ hứng; một người mà nhiều phong cách, nguyên nhân nằm ở chữ **ý**."
+    },
+    {
+     "t": "p",
+     "x": "Người “vung đao” quyết liệt nhất là Mễ Phế. Ông điểm danh gần hết danh gia Đường: chữ chân của Nhan Lỗ Công thì “vào hạng tục”, Liễu Công Quyền là “tổ của chữ xấu”, và Âu, Ngu, Chử, Liễu, Nhan đều mắc bệnh *sắp đặt*. Ông cũng chê luôn lối bình chữ bằng ví von của tiền nhân:"
+    },
+    {
+     "t": "quote",
+     "zh": "历观前贤论书，征引迂远，比况奇巧，如“龙跳天门，虎卧凤阙”，是何等语？或遣辞求工，去法逾远，无益学者。",
+     "hv": "Lịch quan tiền hiền luận thư, trưng dẫn vu viễn, tỉ huống kỳ xảo, như “long khiêu thiên môn, hổ ngoạ phượng khuyết”, thị hà đẳng ngữ? Hoặc khiển từ cầu công, khứ pháp du viễn, vô ích học giả.",
+     "vi": "Xem khắp lời bàn chữ của các bậc hiền trước, dẫn chứng xa xôi, ví von kỳ xảo, như “rồng nhảy cửa trời, hổ nằm lầu phượng”, là thứ lời gì vậy? Có khi chuốt câu cho hay mà càng xa phép bút, chẳng ích gì cho người học.",
+     "src": "Mễ Phế, «Hải Nhạc danh ngôn»"
+    },
+    {
+     "t": "quote",
+     "zh": "欧、虞、褚、柳、颜，皆一笔书也，安排费工，岂能垂世？",
+     "hv": "Âu, Ngu, Chử, Liễu, Nhan, giai nhất bút thư dã, an bài phí công, khởi năng thuỳ thế?",
+     "vi": "Âu, Ngu, Chử, Liễu, Nhan đều là thứ chữ một kiểu bút, sắp đặt tốn công, sao có thể truyền đời?",
+     "src": "Mễ Phế, «Hải Nhạc danh ngôn»"
+    },
+    {
+     "t": "p",
+     "x": "Mễ Phế quá khắt khe? Đúng vậy, nhưng tác giả nhắc rằng trường phái mới nào cũng phải “quá khắt” với hệ thống cũ mới mở được đường. Và khi hỏi ông rốt cuộc coi thư pháp là gì, câu trả lời là một bài thơ:"
+    },
+    {
+     "t": "quote",
+     "zh": "要之皆一戏，不当问拙工。意足我自足，放笔一戏空。",
+     "hv": "Yếu chi giai nhất hí, bất đương vấn chuyết công. Ý túc ngã tự túc, phóng bút nhất hí không.",
+     "vi": "Tóm lại tất cả chỉ là một trò chơi, chẳng nên hỏi vụng hay khéo. Ý đủ thì ta tự đủ, buông bút, một cuộc chơi rỗng không.",
+     "src": "Mễ Phế, «Đáp Thiệu Bành thư lai luận Tấn thiếp ngộ tự»"
+    },
+    {
+     "t": "p",
+     "x": "Hoàng Đình Kiên bênh vực bạn mình theo cùng một logic. Có người chê Đông Pha viết nét mác hay thành nét bệnh, cổ tay đặt xuống bàn nên bút nằm, chữ bên trái tươi bên phải khô. Hoàng đáp rằng đó là nhìn báo qua ống tre:"
+    },
+    {
+     "t": "quote",
+     "zh": "殊不知西施捧心而颦，虽其病处，乃自成妍。",
+     "hv": "Thù bất tri Tây Thi phủng tâm nhi tần, tuy kỳ bệnh xứ, nãi tự thành nghiên.",
+     "vi": "Họ đâu biết Tây Thi ôm ngực nhíu mày, dù chỗ ấy là bệnh, vẫn tự thành vẻ đẹp.",
+     "src": "Hoàng Đình Kiên, «Bạt Đông Pha thuỷ lục tán»"
+    },
+    {
+     "t": "p",
+     "x": "Sang Nam Tống, Khương Quỳ trong «Tục thư phổ» nói thẳng điều mà một người Đường không thể nói. Khi chuẩn mực thay đổi, cái người Đường gọi là “bệnh” chưa chắc là bệnh với người Tống: Đông Pha *bụng béo*, Sơn Cốc *duỗi dài*, Mễ Phế *quét* (xoát tự), những khác biệt kỹ thuật ấy thực chất là đổi mới thẩm mỹ."
+    },
+    {
+     "t": "quote",
+     "zh": "真书以平正为善，此世俗之论，唐人之失也。",
+     "hv": "Chân thư dĩ bình chính vi thiện, thử thế tục chi luận, Đường nhân chi thất dã.",
+     "vi": "Cho rằng chữ chân lấy bằng phẳng ngay ngắn làm hay, đó là lời bàn của thế tục, là chỗ sai của người Đường.",
+     "src": "Khương Quỳ, «Tục thư phổ»"
+    },
+    {
+     "t": "p",
+     "x": "Tất nhiên không phải người Tống nào cũng đồng ý. Hàn Kỳ vẫn cho rằng xem tranh chỉ cần giống thật; Chu Trường Văn trong «Tục thư đoạn» tiếp nối lối phẩm bình của Trương Hoài Quán và tôn Nhan Chân Khanh lên hàng đầu, coi trọng khí tiết hơn là phóng túng. Nhưng xu thế chung đã rõ: một lối nghĩ trước kia chỉ là tiếng lẻ loi, nay thành tiếng nói của cả thời đại."
+    },
+    {
+     "t": "h",
+     "x": "Gốc Thiền – Trang và cuộc hợp lưu thư hoạ"
+    },
+    {
+     "t": "p",
+     "x": "Không thể giải thích làn sóng này chỉ bằng nội bộ thư pháp; nó là một bọt sóng của cuộc giải phóng tư tưởng triết học. Sĩ đại phu Tống thấm Thiền rất sâu. Tô Thức qua lại thân với các thiền sư, nhất là sau khi bị đày Hoàng Châu; Hoàng Đình Kiên theo học các vị Pháp Tú, Tổ Tâm, Ngộ Tân. Thiền chuộng *đốn ngộ*, coi nhẹ văn tự và khuôn phép, đặt trọng tâm vào tâm; chuyển vào nghệ thuật, nó thành sự đề cao *ý* và tự do khi cấu tứ. Mà Thiền Trung Hoa vốn đã hút nhiều chất Lão Trang. Bài thơ Tô Thức đề tranh trúc của Văn Đồng gần như một bài giảng Trang Tử về sáng tác:"
+    },
+    {
+     "t": "quote",
+     "zh": "与可画竹时，见竹不见人。岂独不见人，嗒然遗其身。其身与竹化，无穷出清新。庄周世无有，谁知此凝神。",
+     "hv": "Dữ Khả hoạ trúc thời, kiến trúc bất kiến nhân. Khởi độc bất kiến nhân, tháp nhiên di kỳ thân. Kỳ thân dữ trúc hoá, vô cùng xuất thanh tân. Trang Chu thế vô hữu, thuỳ tri thử ngưng thần.",
+     "vi": "Lúc Dữ Khả vẽ trúc, chỉ thấy trúc mà chẳng thấy người. Đâu chỉ không thấy người, ông lặng lẽ quên cả thân mình. Thân ông hoá cùng cây trúc, cái thanh tân tuôn ra vô tận. Đời nay chẳng còn Trang Chu, ai hiểu được sự ngưng thần này?",
+     "src": "Tô Thức, «Thư Triều Bổ Chi sở tàng Dữ Khả hoạ trúc»"
+    },
+    {
+     "t": "p",
+     "x": "*Tháp nhiên* (quên mình) lấy từ «Tề vật luận», *thân hoá với trúc* là biến thể của *vật hoá*, *ngưng thần* là chữ ruột của Trang Tử. Vật ngã hợp nhất, tinh thần thoát khỏi mọi ràng buộc: đó chính là bí quyết của *tả ý*. Hoàng Đình Kiên khen Tô Thức “chiết xung Nho Mặc”, “thư nhập Nhan Dương”, trong ngực tự có gò khe; tức là phải nuôi cái học rộng bên trong thì nét bút mới có chỗ mà đến."
+    },
+    {
+     "t": "p",
+     "x": "Từ cùng một nền triết lý, **thư và hoạ hợp lưu**. Đời Đường đã có câu *trong thơ có hoạ, trong hoạ có thơ* của Vương Duy, nhưng thơ vẫn là thơ, tranh vẫn là tranh. Đến Tống, trong *Tống tứ gia* chỉ có Thái Tương xa lạ với hội hoạ: Tô Thức học vẽ trúc với Văn Đồng và là người thực sự khai sáng văn nhân hoạ, Mễ Phế lập ra lối *Mễ điểm sơn thuỷ*, Hoàng Đình Kiên được người sau cho là đã mở ra phép vẽ lan trúc từ bút pháp chữ. Hai chiều tác động rất rõ: thư pháp đem *bút mặc tình thú* vào tranh, đến nỗi bàn tranh mà hỏi “có giống không” bị coi là lời ngoại đạo; còn hội hoạ đem *ý thức nghệ thuật thuần tuý* vào thư pháp, kéo nó ra xa việc viết chữ thực dụng. Từ Tống về sau, hiếm có đại hoạ gia nào không giỏi chữ, và hiếm có thư gia nào không thạo tranh."
+    },
+    {
+     "t": "p",
+     "x": "Tác giả gói tinh thần ấy trong một nhận xét đáng nhớ: nghệ thuật Trung Hoa vừa *huyền* vừa *diệu*; chỉ huyền mà không diệu thì chẳng thành nghệ thuật, chỉ diệu mà không huyền thì chẳng phải nghệ thuật Trung Hoa, và thư pháp là nơi hai chữ ấy gặp nhau trọn vẹn nhất."
+    },
+    {
+     "t": "h",
+     "x": "«Thuần Hoá các thiếp» và mầm mống tranh luận bia – thiếp"
+    },
+    {
+     "t": "p",
+     "x": "Năm 992, Vương Trứ phụng chỉ mô khắc bút tích các đời thành mười quyển «Thuần Hoá các thiếp», một nửa là Nhị Vương. Từ đó phong trào khắc lại, mô lại nở rộ: «Đàm thiếp», «Đại Quán thiếp»… cho đến bộ «Lan Đình» một trăm mười bảy bản thời Lý Tông, mà ngay người đương thời đã gọi là *ngoạn vật táng chí*. **Thiếp học** ra đời, và cuộc tranh luận bia – thiếp kéo dài tám trăm năm bắt đầu. Có thể hiểu đơn giản: *thiếp* là mô lại chữ người khác viết rồi khắc; *bia* là khắc chữ viết trực tiếp lên đá."
+    },
+    {
+     "t": "p",
+     "x": "Tác giả đánh giá công bằng: «Thuần Hoá các thiếp» là tổ của các bộ hợp thiếp, giữ lại nhiều thư trát quý; nhưng nó sắp xếp lộn xộn, có chỗ nhầm tác giả, và quan trọng hơn, nó phản ánh **khẩu vị cung đình**. Chữ của dân gian, của bia Bắc triều không có chỗ trong đó. Đời Tống còn có thói *theo người đang quý hiển*: Thái Tương được trọng thì cả nước học Thái; Vương An Thạch làm tướng thì học Vương; Cao Tông học Hoàng rồi học Mễ, thiên hạ đổi theo. Theo tác giả, đó là lý do Nam Tống không sinh được bậc thầy ngang Bắc Tống: tâm thế cầu lợi lộc quá nặng."
+    },
+    {
+     "t": "h",
+     "x": "Nhân phẩm lên ngôi phán xét"
+    },
+    {
+     "t": "p",
+     "x": "Mặt thứ hai của Nam Tống là phê bình đạo đức hoá. Mang nỗi nhục Tĩnh Khang, sĩ đại phu đặt phẩm cách người viết lên hàng đầu. Thái Kinh, Tần Cối viết chữ rất đẹp nhưng bị đời sau ruồng bỏ; chữ “Thái” trong *Tô Hoàng Mễ Thái* có thuyết cho rằng vốn là Thái Kinh, bị đổi thành Thái Tương vì ghét người. Ngược lại chữ Nhạc Phi được tôn vì khí phách. Lục Du khuyên học chữ Nhan, mong có một trung thần như Lỗ Công. Một nhà bình hoạ đời Thanh nói thẳng ra nguyên tắc này:"
+    },
+    {
+     "t": "quote",
+     "zh": "书画清高，首重人品。品节既优，不但人人重其笔墨，更钦仰其人。",
+     "hv": "Thư hoạ thanh cao, thủ trọng nhân phẩm. Phẩm tiết ký ưu, bất đãn nhân nhân trọng kỳ bút mặc, cánh khâm ngưỡng kỳ nhân.",
+     "vi": "Thư hoạ là việc thanh cao, trước hết coi trọng nhân phẩm. Phẩm tiết đã tốt thì không những ai cũng quý bút mực, mà còn kính ngưỡng con người ấy.",
+     "src": "Tùng Niên, «Di Viên luận hoạ»"
+    },
+    {
+     "t": "p",
+     "x": "Tác giả không phủ nhận nguyên tắc này nhưng chỉ ra nó **không nhất quán**: Đào Tông Nghi vừa mắng Tần Cối, vừa hết lời khen chữ Thái Kinh. Ông còn phân biệt hai thứ “nhân phẩm”: trước Đường, nói nhân phẩm là để *tu dưỡng tâm hồn nghệ sĩ*; sau Đường, nhất là từ Nam Tống, nó gắn với vận nước, để *cứu vong*. Hiểu điều này giúp ta đọc các lời chê Triệu Mạnh Phủ ở chương sau một cách tỉnh táo hơn."
+    },
+    {
+     "t": "h",
+     "x": "Ý nghĩa cho người học hôm nay"
+    },
+    {
+     "t": "p",
+     "x": "Thượng ý không phải giấy phép để viết bừa. Tô, Hoàng, Mễ đều có công phu cổ điển rất dày; cái họ chống là sự *sắp đặt*, *bình chính máy móc*, *rập theo bản khắc*. Khi luyện chữ, ta có thể tự hỏi ba câu kiểu Tống: chữ này có *ý* của mình chưa? cái “khuyết” trong nét có phải là sức sống hay chỉ là lỗi? mình đang học bút tích thật hay học bóng của bóng? Chương này cũng cho thấy khả năng *cảm ứng* của thư pháp: hội hoạ tả ý xuất hiện thì có thượng ý; về sau kim thạch học thịnh thì có bia học. Tác giả kết luận: không có thiếp học hưng thịnh trước thì cũng không có bia học trỗi dậy sau."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Thượng ý",
+       "zh": "尚意",
+       "vi": "Chuộng ý: đặt tình ý, cá tính người viết lên trên phép tắc; tinh thần chủ đạo của thư pháp Tống."
+      },
+      {
+       "hv": "Thượng pháp",
+       "zh": "尚法",
+       "vi": "Chuộng phép: tinh thần thư pháp Đường, coi trọng quy củ kết thể, bút pháp."
+      },
+      {
+       "hv": "Mặc hí / Ngoạn mặc",
+       "zh": "墨戏 / 玩墨",
+       "vi": "Trò chơi mực, chơi mực: coi viết vẽ là cuộc chơi tự do để giãi bày lòng mình."
+      },
+      {
+       "hv": "Tự xuất tân ý",
+       "zh": "自出新意",
+       "vi": "Tự tạo ý mới, không giẫm dấu người xưa (Tô Thức)."
+      },
+      {
+       "hv": "Tả ý",
+       "zh": "写意",
+       "vi": "Vẽ, viết để biểu đạt ý tình hơn là để mô tả đúng hình."
+      },
+      {
+       "hv": "Văn nhân hoạ",
+       "zh": "文人画",
+       "vi": "Tranh của kẻ sĩ, kết hợp thơ, chữ, tranh, coi trọng bút mặc tình thú."
+      },
+      {
+       "hv": "Thiếp học",
+       "zh": "帖学",
+       "vi": "Dòng học chữ theo các bộ thiếp khắc lại từ bút tích (chủ yếu Nhị Vương), khởi từ «Thuần Hoá các thiếp»."
+      },
+      {
+       "hv": "Hợp thiếp / Các thiếp",
+       "zh": "汇帖 / 阁帖",
+       "vi": "Bộ thiếp tập hợp bút tích nhiều người; «Thuần Hoá các thiếp» là tổ của loại này."
+      },
+      {
+       "hv": "Bội ngư",
+       "zh": "佩鱼",
+       "vi": "Đeo túi hình cá bằng vàng bạc, dấu hiệu sang quý; đời Tống ban cho người của Thư hoạ viện."
+      },
+      {
+       "hv": "Nhân phẩm thư phẩm",
+       "zh": "人品书品",
+       "vi": "Lối phê bình đặt phẩm cách người viết làm tiêu chuẩn đánh giá chữ; đặc biệt gay gắt từ Nam Tống."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Dương Ngưng Thức",
+       "zh": "杨凝式",
+       "years": "873–954, Ngũ Đại",
+       "note": "Biệt hiệu “Dương điên”; bản lề từ Đường sang Tống."
+      },
+      {
+       "name": "Lý Dục",
+       "zh": "李煜",
+       "years": "937–978, Nam Đường",
+       "note": "Vua – từ gia; chữ “kim thác đao”, vẽ trúc bằng nét “thiết câu toả”."
+      },
+      {
+       "name": "Âu Dương Tu",
+       "zh": "欧阳修",
+       "years": "1007–1072, Bắc Tống",
+       "note": "Coi viết chữ là “niềm vui khi ngồi tĩnh”; người nâng đỡ Tô Thức."
+      },
+      {
+       "name": "Thẩm Quát",
+       "zh": "沈括",
+       "years": "1031–1095, Bắc Tống",
+       "note": "«Mộng Khê bút đàm»: cái diệu của thư hoạ phải lĩnh hội bằng thần."
+      },
+      {
+       "name": "Tô Thức",
+       "zh": "苏轼",
+       "years": "1037–1101, Bắc Tống",
+       "note": "Hiệu Đông Pha; “ý tạo vốn không phép”, “tự xuất tân ý”; người khai sáng văn nhân hoạ."
+      },
+      {
+       "name": "Hoàng Đình Kiên",
+       "zh": "黄庭坚",
+       "years": "1045–1105, Bắc Tống",
+       "note": "Hiệu Sơn Cốc; chịu ảnh hưởng Thiền sâu; đề cao vận, chống tục."
+      },
+      {
+       "name": "Mễ Phế",
+       "zh": "米芾",
+       "years": "1051–1107, Bắc Tống",
+       "note": "Thư hoạ học bác sĩ; phê phán gay gắt chữ Đường; “tóm lại tất cả là trò chơi”."
+      },
+      {
+       "name": "Tống Huy Tông (Triệu Cát)",
+       "zh": "宋徽宗 赵佶",
+       "years": "1082–1135",
+       "note": "Sáng tạo sấu kim thể; thời Tuyên Hoà thư hoạ viện cực thịnh."
+      },
+      {
+       "name": "Chu Trường Văn",
+       "zh": "朱长文",
+       "years": "1039–1098, Bắc Tống",
+       "note": "Tác giả «Tục thư đoạn», «Mặc trì biên»; tôn Nhan Chân Khanh."
+      },
+      {
+       "name": "Khương Quỳ",
+       "zh": "姜夔",
+       "years": "khoảng 1155–1221, Nam Tống",
+       "note": "«Tục thư phổ»: phê phán quan niệm chữ chân phải bình chính."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Vì sao tác giả đề nghị xếp Ngũ Đại vào trước Tống thay vì coi là phần đuôi của Đường? Nêu ba dấu hiệu.",
+      "Những điều kiện xã hội nào (chính sách, thư hoạ viện, tục uống trà rượu, kỹ thuật in) khiến người Tống coi viết chữ là một cuộc “chơi”?",
+      "Giải thích các câu “cẩu năng thông kỳ ý, thường vị bất học khả” và “tuy kỳ bệnh xứ, nãi tự thành nghiên”. Chúng có phải lời khuyên bỏ luyện tập không?",
+      "Thiền tông và Trang Tử đã góp gì vào tinh thần “thượng ý”? Phân tích qua bài thơ Tô Thức đề tranh trúc của Văn Đồng.",
+      "«Thuần Hoá các thiếp» có công và có hại thế nào đối với việc học chữ? Liên hệ với việc bạn đang học theo bản in nhiều lớp hay bút tích thật."
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c10",
+   "no": "Chương 10",
+   "title": "Thời đại sùng bái người khổng lồ khập khiễng",
+   "titleZh": "向跛足巨人膜拜的时代",
+   "pages": "132–145",
+   "summary": "Suốt Nguyên – Minh, thư đàn quỳ trước một Vương Hi Chi đã bị các bản khắc lại làm méo mó, dưới bóng Triệu Mạnh Phủ và Đổng Kỳ Xương; Hạng Mục dựng hệ thống “trung hoà” của Nho gia, còn Từ Vị một mình phá khuôn, mở đường cho thẩm mỹ “xú” đời Thanh.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Tên chương nghe lạ nhưng rất chính xác. *Người khổng lồ* là Vương Hi Chi, bậc thư thánh mà từ Đường Thái Tông về sau ai cũng tôn thờ. Còn *khập khiễng* là vì cái Vương Hi Chi mà người Nguyên, Minh học không còn là bút tích thật, mà là hình bóng qua những bản khắc lại nhiều lớp của «Thuần Hoá các thiếp», do Vương Trứ, một người không giỏi chữ, mô lại. Quỳ lạy một người khổng lồ đã bị cắt chân: đó là cách tác giả đánh giá hơn ba trăm năm thiếp học thời Nguyên – Minh. Nói vậy không có nghĩa thời kỳ này trống rỗng. Nó có những gương mặt rất lớn: Triệu Mạnh Phủ, Đổng Kỳ Xương, Hạng Mục, Từ Vị, và đặc biệt là sự kết tinh của *văn nhân hoạ*, nơi thư pháp trở thành linh hồn của tranh."
+    },
+    {
+     "t": "h",
+     "x": "Triệu Mạnh Phủ và lá cờ của cái đẹp mềm mại"
+    },
+    {
+     "t": "p",
+     "x": "Nhà Nguyên chưa đầy trăm năm (1271–1368). Văn học có tạp kịch, hội hoạ có tranh sĩ đại phu nở rộ, riêng thư pháp thì đìu hiu. Kẻ sĩ người Hán không cam làm thần dân Mông Cổ, mang nỗi u uất ấy vào tranh: không cần giống, không cần thật, chỉ cần *giản dật* và *thần vận của bút mực*. Trúc mực, lan mực thịnh hành; tục đề chữ lên tranh phát triển, thúc đẩy thơ – chữ – tranh hoà làm một."
+    },
+    {
+     "t": "p",
+     "x": "Người ảnh hưởng lớn nhất là **Triệu Mạnh Phủ**, cháu mười một đời của Tống Thái Tổ, hai mươi lăm tuổi thì nước mất, về sau ra làm quan cho Nguyên đến Hàn lâm học sĩ thừa chỉ. Đánh giá về ông phân cực hiếm thấy. Người khen nói *năm trăm năm trên dưới, vạn dặm ngang dọc* không có chữ nào bằng, hoặc cho rằng sau Vương Hi Chi chỉ có một mình ông. Người chê bảo chữ ông tròn trượt, không xương; Mạc Thị Long đời Minh nhận xét chữ Triệu đặt giữa cổ thiếp thì như kẻ tục mặc áo nho sĩ, *khuôn phép thừa mà cốt khí chưa đủ*. Tác giả chỉ ra: sự phân cực ấy phần lớn do *góc nhìn*. Người đời Minh, đời Thanh ghét “nhị thần” (bề tôi thờ hai chủ), ghét con người “tròn trịa” nên ghét luôn nét chữ tròn trịa."
+    },
+    {
+     "t": "p",
+     "x": "Nếu gác chuyện chính trị, Triệu Mạnh Phủ làm một điều thực sự mới: ông giương lá cờ của **vẻ đẹp nhu mì, ôn nhuận**. Từ Tấn Đường tới nay, tiêu chuẩn có thể đổi nhưng *cốt khí* luôn là sợi chỉ xuyên suốt; chữ Triệu thì chỉ cầu nét đẹp, gạt bỏ những dao động cảm xúc và biến hoá đột ngột. Một nhà nghiên cứu hiện đại gọi đó là *chủ nghĩa duy mỹ*. Nhìn theo biện chứng, sau những nét nghiêng lệch phóng túng của Tống, xuất hiện thứ chữ điềm tĩnh này là điều tự nhiên; giống như từ Tống có phái *hào phóng* và *uyển ước*, thì đến Triệu, phái uyển ước của thư pháp mới thật sự được xác lập."
+    },
+    {
+     "t": "p",
+     "x": "Trong hội hoạ, Triệu đề cao *cổ ý*; có thể đó là cách tâm hồn ông lánh khỏi thực tại đau lòng:"
+    },
+    {
+     "t": "quote",
+     "zh": "作画贵有古意，若无古意，虽工无益。",
+     "hv": "Tác hoạ quý hữu cổ ý, nhược vô cổ ý, tuy công vô ích.",
+     "vi": "Vẽ tranh quý ở chỗ có ý xưa; nếu không có ý xưa, dù khéo cũng vô ích.",
+     "src": "Triệu Mạnh Phủ, lời đề tranh"
+    },
+    {
+     "t": "p",
+     "x": "Đóng góp lý luận quan trọng nhất của ông là **thư hoạ dụng bút đồng pháp**. Trương Ngạn Viễn đời Đường đã nhận ra bút pháp chữ và tranh liên quan nhau, Quách Hi đời Tống nói vẽ có thể học bút từ chữ; nhưng phải đến Triệu thì nguyên tắc mới được nói thành lời rõ ràng, trong bài thơ đề trên bức «Tú thạch sơ lâm đồ»:"
+    },
+    {
+     "t": "quote",
+     "zh": "石如飞白木如籀，写竹还应八法通。若也有人能会此，须知书画本来同。",
+     "hv": "Thạch như phi bạch mộc như trứu, tả trúc hoàn ưng bát pháp thông. Nhược dã hữu nhân năng hội thử, tu tri thư hoạ bản lai đồng.",
+     "vi": "Vẽ đá như nét phi bạch, vẽ cây như chữ trứu, vẽ trúc cũng phải thông tám phép chữ Vĩnh. Nếu có người hiểu được điều này, ắt biết thư và hoạ vốn là một.",
+     "src": "Triệu Mạnh Phủ, đề «Tú thạch sơ lâm đồ»"
+    },
+    {
+     "t": "p",
+     "x": "Chú ý chữ **tả**: người ta không còn nói “vẽ” trúc mà nói “viết” trúc. Đổi một chữ là đổi cả quan niệm. Thời Nguyên, khi Triệu hỏi Tiền Tuyển thế nào là *sĩ khí* trong tranh, Tiền đáp gọn: *lệ thể nhĩ*, tức là chất của lối chữ lệ. Nghê Toản thì nói rõ nhất tinh thần văn nhân hoạ:"
+    },
+    {
+     "t": "quote",
+     "zh": "余之竹聊以写胸中逸气耳，岂复较其似与非、叶之繁与疏、枝之斜与直哉！或涂抹久之，他人视以为麻为芦，仆亦不能强辩为竹，真没奈览者何。",
+     "hv": "Dư chi trúc liêu dĩ tả hung trung dật khí nhĩ, khởi phục giảo kỳ tự dữ phi, diệp chi phồn dữ sơ, chi chi tà dữ trực tai! Hoặc đồ mạt cửu chi, tha nhân thị dĩ vi ma vi lô, bộc diệc bất năng cưỡng biện vi trúc, chân một nại lãm giả hà.",
+     "vi": "Trúc của tôi chỉ để tả cái khí phóng dật trong lòng mà thôi, đâu còn so xem giống hay không, lá rậm hay thưa, cành nghiêng hay thẳng! Có khi bôi quệt lâu rồi, người khác nhìn cho là cây gai, cây lau, tôi cũng không gượng cãi rằng đó là trúc; thật chẳng biết làm sao với người xem.",
+     "src": "Nghê Toản, «Đề tự hoạ mặc trúc»"
+    },
+    {
+     "t": "p",
+     "x": "Vậy văn nhân hoạ là gì? Câu trả lời ngắn nhất: tranh được *viết* bằng kỹ thuật và tinh thần thư pháp. Thời Nguyên tuy thư pháp không có tác phẩm lớn, nhưng tinh thần thư pháp lại vượt lên chi phối hội hoạ. Về lý luận thuần tuý, có «Diễn cực» của Trịnh Biểu, dựng khung bằng Kinh Dịch, cho rằng nguồn của chữ là quy luật sinh diệt biến dịch của trời đất chứ không đơn giản là bắt chước hình vật; nhưng sách viết cổ kính, tản mạn, nên ảnh hưởng ít."
+    },
+    {
+     "t": "h",
+     "x": "Nhà Minh: thiếp học bao trùm và khí chất khoa trường"
+    },
+    {
+     "t": "p",
+     "x": "Các vua Minh đều ưa thiếp học: Thành Tổ chọn hai mươi tám người chuyên tập chữ Nhị Vương, Nhân Tông thích tập «Lan Đình», Thần Tông mang «Áp đầu hoàn thiếp» theo bên mình. Phong trào khắc thiếp không kém đời Tống: «Đông thư đường thiếp», «Đình Vân quán thiếp» của Văn Trưng Minh, «Hý Hồng đường thiếp» của Đổng Kỳ Xương… Người viết chữ đẹp được tuyển vào Trung thư khoa, Hàn lâm. Hệ quả là chữ hành và chữ tiểu khải phát triển, nhưng **khí chất cầu lộc, khí chất trường thi** rất đậm, nhất là ở tiểu khải. Lệ thư, triện thư gần như tuyệt tích. Nếu Tấn chuộng vận, Đường chuộng pháp, Tống chuộng ý, thì theo các sử gia, người Minh *chỉ chuộng lợi lộc*. Nhưng tác giả thêm một nhận xét sâu: dòng chảy càng suy thì sức phản kháng của kẻ đi ngược càng mạnh."
+    },
+    {
+     "t": "h",
+     "x": "Hạng Mục: hệ thống “trung hoà” của Nho gia"
+    },
+    {
+     "t": "p",
+     "x": "Giữa bao nhiêu tuỳ bút, bút ký ngắn, **«Thư pháp nhã ngôn»** của Hạng Mục là công trình hệ thống hiếm hoi, có thể xem là bộ sách lớn nhất sau «Thư phổ». Hạng Mục là con nhà sưu tập lừng danh Hạng Nguyên Biện, lớn lên giữa kho bút tích thật, nên luận điểm rất cao và nghiêm. Nền móng của sách là **Nho học**, trong khi từ Đường Tống tới lúc ấy, triết học nghệ thuật chủ lưu là Lão Trang, huyền học, Thiền. Ngay chương mở đầu «Thư thống», ông xác định chức năng của chữ:"
+    },
+    {
+     "t": "quote",
+     "zh": "书之作也，帝王之经纶，圣贤之学术，至于玄文内典，百氏九流，诗歌之劝惩，碑铭之训诫，不由斯字，何以纪辞？故书之为功，同流天地，翼卫教经者也。",
+     "hv": "Thư chi tác dã, đế vương chi kinh luân, thánh hiền chi học thuật, chí ư huyền văn nội điển, bách thị cửu lưu, thi ca chi khuyến trừng, bi minh chi huấn giới, bất do tư tự, hà dĩ kỷ từ? Cố thư chi vi công, đồng lưu thiên địa, dực vệ giáo kinh giả dã.",
+     "vi": "Chữ viết ra đời là để ghi kinh luân của đế vương, học thuật của thánh hiền; cho đến sách Đạo, kinh Phật, trăm nhà chín dòng, lời khuyên răn trong thơ ca, lời dạy bảo trên bia minh, nếu không nhờ chữ thì lấy gì mà ghi? Cho nên công của chữ chảy cùng trời đất, là để chở che giữ gìn giáo hoá và kinh điển.",
+     "src": "Hạng Mục, «Thư pháp nhã ngôn · Thư thống»"
+    },
+    {
+     "t": "p",
+     "x": "Điều này chẳng khác quan niệm đời Hán coi nghệ thuật là để *trợ nhân luân, thành giáo hoá*. “Đại thống” mà Hạng Mục bảo vệ là Vương Hi Chi; kẻ phá hoại là Tô, Mễ và những người bắt chước họ. Ông chia thư phẩm thành năm bậc, bậc thấp nhất là *bàng lưu* (dòng tà), tức lối chữ phóng túng, hung hăng, khoe nét, lúc gầy khô, lúc béo tràn. Lời chê các danh gia Tống của ông cay nghiệt nổi tiếng:"
+    },
+    {
+     "t": "quote",
+     "zh": "苏似肥艳美婢，抬作夫人，举止邪陋而大足，当令掩口。米若风流公子，染患痈疣，驰马试剑而叫笑，旁若无人。",
+     "hv": "Tô tự phì diễm mỹ tì, đài tác phu nhân, cử chỉ tà lậu nhi đại túc, đương lệnh yểm khẩu. Mễ nhược phong lưu công tử, nhiễm hoạn ung vưu, trì mã thí kiếm nhi khiếu tiếu, bàng nhược vô nhân.",
+     "vi": "Chữ Tô như cô hầu đẹp béo mập được nâng lên làm phu nhân, cử chỉ quê kệch mà chân to, khiến người phải che miệng cười. Chữ Mễ như công tử phong lưu mắc bệnh ung nhọt, phi ngựa múa kiếm mà la hét cười cợt, coi như bên cạnh chẳng có ai.",
+     "src": "Hạng Mục, «Thư pháp nhã ngôn»"
+    },
+    {
+     "t": "p",
+     "x": "Với Tô, Mễ, ông chỉ chê chữ; với Triệu Mạnh Phủ, ông chê đến người: chữ Triệu ôn nhuận nhàn nhã nhưng *mềm yếu, thiếu khí tiết không thể đoạt*, cho nên dòng dõi họ Triệu mới cam ăn lộc kẻ thù. Bởi với Hạng Mục, chữ hoàn toàn quyết định bởi **tâm**:"
+    },
+    {
+     "t": "quote",
+     "zh": "心为人之帅，心正则人正矣。笔为书之充，笔正则事正矣。人由心正，书由笔正，即《诗》云“思无邪”，《礼》云“毋不敬”，书法大旨，一语括之矣。",
+     "hv": "Tâm vi nhân chi suý, tâm chính tắc nhân chính hĩ. Bút vi thư chi sung, bút chính tắc sự chính hĩ. Nhân do tâm chính, thư do bút chính, tức «Thi» vân “tư vô tà”, «Lễ» vân “vô bất kính”, thư pháp đại chỉ, nhất ngữ quát chi hĩ.",
+     "vi": "Tâm là tướng soái của con người, tâm ngay thì người ngay. Bút là cái làm đầy chữ, bút ngay thì việc ngay. Người nhờ tâm mà ngay, chữ nhờ bút mà ngay; Kinh Thi nói “nghĩ không tà”, Kinh Lễ nói “không gì không kính”, ý lớn của thư pháp gói trong một lời ấy.",
+     "src": "Hạng Mục, «Thư pháp nhã ngôn · Tâm tướng»"
+    },
+    {
+     "t": "quote",
+     "zh": "中也者，无过不及是也；和也者，无乖无戾是也。",
+     "hv": "Trung dã giả, vô quá bất cập thị dã; hoà dã giả, vô quai vô lệ thị dã.",
+     "vi": "Trung là không thái quá cũng không bất cập; hoà là không trái nghịch, không ngang ngạnh.",
+     "src": "Hạng Mục, «Thư pháp nhã ngôn · Trung hoà»"
+    },
+    {
+     "t": "p",
+     "x": "Từ câu *thư là tâm hoạ* của Dương Hùng đời Hán, Hạng Mục phát triển thành cả một hệ thống: *luận chữ như xem tướng, xem chữ như xem người*, và *chính thư pháp để chính nhân tâm, chính nhân tâm để giữ đạo thánh*. Khái niệm *thiện ác* của luân lý và *mỹ xú* của nghệ thuật nhập làm một; mục đích thẩm mỹ phục tùng đạo đức. Tác giả chỉ ra gốc rễ của nó trong «Nhạc luận» của Tuân Tử (xem Bài 4): nhạc trung chính thì dân hoà, nhạc dâm loạn thì dân hư; thay “nhạc” bằng “chữ” là ra Hạng Mục. Hệ thống chặt chẽ, nhưng *luận cao khó làm*: ông cho rằng học chữ không đủ bốn mươi năm không thành, vì tu dưỡng nhân cách không thể một sớm một chiều. Và nó **ít tiếng vang**: đời Thanh, người ta không nghe ông mà giương cao lá cờ *xú* và *quái*."
+    },
+    {
+     "t": "h",
+     "x": "Từ Vị: tiếng kêu đau đớn giữa bóng Triệu"
+    },
+    {
+     "t": "p",
+     "x": "Ngược hẳn với Hạng Mục là **Từ Vị** (1521–1593). Tám lần thi hương không đỗ, làm mạc khách cho Hồ Tông Hiến, khi Hồ bị tội thì sợ hãi phát cuồng, nhiều lần tự sát không chết, lỡ tay giết vợ, ngồi tù bảy năm. Ông tự xếp *chữ thứ nhất, thơ thứ hai, văn thứ ba, hoạ thứ tư*; người sau thì làm ngược lại, coi hoạ là nhất, có người chê chữ ông là *dã hồ thiền* (thiền cáo hoang, tức tu sai đường). Người hiểu ông đầu tiên là Viên Hoằng Đạo:"
+    },
+    {
+     "t": "quote",
+     "zh": "文长喜作书，笔意奔放如其诗，苍劲中姿媚跃出……不论书法而论书神，先生者诚八法之散圣，字林之侠客也。",
+     "hv": "Văn Trường hỷ tác thư, bút ý bôn phóng như kỳ thi, thương kính trung tư mị dược xuất … Bất luận thư pháp nhi luận thư thần, tiên sinh giả thành bát pháp chi tán thánh, tự lâm chi hiệp khách dã.",
+     "vi": "Văn Trường thích viết chữ, ý bút phóng khoáng như thơ của ông, trong vẻ già dặn cứng cỏi lại vọt ra nét duyên dáng … Không bàn phép chữ mà bàn thần của chữ, thì tiên sinh quả là vị thánh phiêu bạt của tám phép, là hiệp khách của rừng chữ.",
+     "src": "Viên Hoằng Đạo, «Từ Văn Trường truyện»"
+    },
+    {
+     "t": "p",
+     "x": "Chữ Từ Vị lúc to lúc nhỏ, lúc thảo lúc khải, lúc nặng lúc nhẹ, lúc khô lúc ướt; cố ý phản trật tự, phản thống nhất, phản hài hoà. Bức «Mặc bồ đào» còn ở Cố Cung, dòng đề thơ nghiêng ngả, to nhỏ, đậm nhạt hoàn toàn phục tùng cảm xúc:"
+    },
+    {
+     "t": "quote",
+     "zh": "半生落魄已成翁，独立书斋啸晚风。笔底明珠无处卖，闲抛闲掷野藤中。",
+     "hv": "Bán sinh lạc phách dĩ thành ông, độc lập thư trai khiếu vãn phong. Bút để minh châu vô xứ mại, nhàn phao nhàn trịch dã đằng trung.",
+     "vi": "Nửa đời lận đận đã thành ông lão, đứng một mình trong thư phòng hú gọi gió chiều. Ngọc sáng dưới ngòi bút chẳng nơi nào bán, đành thong thả ném vứt vào đám dây leo hoang.",
+     "src": "Từ Vị, đề «Mặc bồ đào đồ»"
+    },
+    {
+     "t": "p",
+     "x": "Tác giả xếp Từ Vị vào dòng **biểu hiện chủ nghĩa** sau Trương Húc. Lời Hàn Dũ nói về Trương Húc, rằng mọi vui giận, cùng quẫn, oán hận, say tỉnh, bất bình động trong lòng đều trút vào thảo thư, có thể đem dùng nguyên cho Từ Vị. Nhưng khác biệt rõ: Trương Húc *cuồng mà không quái*, từng nét vẫn hợp quy củ; Từ Vị lập vẻ đẹp *xú* bằng cách phá quy củ. Và điểm độc đáo nhất: ông không dùng Nho, Đạo, Phật để làm dịu nỗi đau, thậm chí biến khổ thành vui, mà để nó **phá vỡ thăng bằng tâm lý**. Thư hoạ với ông không phải liều thuốc giải sầu mà là *miệng núi lửa*. Trịnh Bản Kiều khắc ấn tự xưng “chó giữ cửa nhà Thanh Đằng”, Tề Bạch Thạch ước sinh sớm ba trăm năm để mài mực cho ông. Từ Phó Sơn đến Lưu Hy Tải, lý luận *xú* đời Thanh, và cái *quái* của Kim Nông, Trịnh Bản Kiều, đều nối mạch từ đây."
+    },
+    {
+     "t": "h",
+     "x": "Đổng Kỳ Xương: họa thiền, Nam Bắc tông và chữ “sinh”"
+    },
+    {
+     "t": "p",
+     "x": "**Đổng Kỳ Xương** (1555–1636) là nhân vật bản lề nối Minh với Thanh. Cùng Mạc Thị Long, ông đề xuất thuyết **Nam Bắc tông** trong hội hoạ: như Thiền có Nam tông, Bắc tông, tranh cũng vậy; Vương Duy là tổ văn nhân hoạ (Nam tông, thuỷ mặc, hư hoà tiêu tán), Lý Tư Huấn là tổ dòng thanh lục (Bắc tông). Ý đồ của ông là *dương Nam ức Bắc*. Phùng Ban liền nói *hoạ có Nam Bắc, chữ cũng có Nam Bắc*, và đến Nguyễn Nguyên thì thành thuyết *Bắc bi Nam thiếp*, nhưng lần này lại *dương Bắc ức Nam*. Đây là ví dụ đẹp về việc lý luận hội hoạ sinh ra lý luận thư pháp. Với Đổng, người văn nhân vẽ tranh phải dùng phép chữ thảo, chữ lệ, nếu không thì dù đúng khuôn cũng đã rơi vào *ma đạo của thợ vẽ*. Tên tập luận của ông là «Hoạ thiền thất tuỳ bút»: người Tống gọi là *mặc hí*, người Minh gọi là *hoạ thiền*, hai chữ “hí” và “thiền” chung một ý: gạt bỏ công lợi xã hội."
+    },
+    {
+     "t": "quote",
+     "zh": "画家以古人为师，已自上乘，进此当以天地为师。",
+     "hv": "Hoạ gia dĩ cổ nhân vi sư, dĩ tự thượng thừa, tiến thử đương dĩ thiên địa vi sư.",
+     "vi": "Hoạ gia lấy người xưa làm thầy đã là bậc thượng thừa; tiến thêm nữa thì phải lấy trời đất làm thầy.",
+     "src": "Đổng Kỳ Xương, «Hoạ thiền thất tuỳ bút»"
+    },
+    {
+     "t": "p",
+     "x": "Tác giả nhắc một phân biệt hay: *sư tạo hoá* không phải là “vẽ ký hoạ” theo kiểu phương Tây (nắm hình sắc của khách thể), mà là xuyên qua vật để nắm *sinh cơ*, lý sinh diệt của vạn vật. Về thư pháp, Đổng sớm nhìn ra bệnh của thiếp học, điều thường bị bỏ qua vì người ta xếp ông vào phe thiếp:"
+    },
+    {
+     "t": "quote",
+     "zh": "书家好观《阁帖》，此正是病。盖王著辈绝不识晋、唐人笔意，专得其形，故多正局。字须奇宕潇洒，时出新致，以奇为正，不主故常。",
+     "hv": "Thư gia hiếu quan «Các thiếp», thử chính thị bệnh. Cái Vương Trứ bối tuyệt bất thức Tấn, Đường nhân bút ý, chuyên đắc kỳ hình, cố đa chính cục. Tự tu kỳ đãng tiêu sái, thời xuất tân trí, dĩ kỳ vi chính, bất chủ cố thường.",
+     "vi": "Người học chữ ưa xem «Các thiếp», đó chính là bệnh. Bởi bọn Vương Trứ hoàn toàn không biết bút ý người Tấn, Đường, chỉ lấy được cái hình, nên phần nhiều là thế ngay ngắn. Chữ phải kỳ lạ phóng khoáng, thường có nét mới, lấy cái lạ làm cái chính, không giữ mãi lối cũ.",
+     "src": "Đổng Kỳ Xương, «Hoạ thiền thất tuỳ bút»"
+    },
+    {
+     "t": "p",
+     "x": "Người khổng lồ mà Đổng muốn vượt qua chính là Triệu Mạnh Phủ. Ông nhiều lần chê Triệu chưa vào được *nhà Tấn Đường*, không hiểu *lấy kỳ làm chính*, và tự so sánh:"
+    },
+    {
+     "t": "quote",
+     "zh": "吾书与赵文敏较，各有短长。行间茂密，千字一同，吾不如赵。若临仿历代，赵得其十一，吾得其十七。又赵书因熟得俗态，吾书因生得秀色。",
+     "hv": "Ngô thư dữ Triệu Văn Mẫn giảo, các hữu đoản trường. Hàng gian mậu mật, thiên tự nhất đồng, ngô bất như Triệu. Nhược lâm phỏng lịch đại, Triệu đắc kỳ thập nhất, ngô đắc kỳ thập thất. Hựu Triệu thư nhân thục đắc tục thái, ngô thư nhân sinh đắc tú sắc.",
+     "vi": "Chữ ta so với Triệu Văn Mẫn, mỗi bên có chỗ hơn kém. Giữa các hàng dày dặn chặt chẽ, nghìn chữ như một, ta không bằng Triệu. Còn lâm mô các đời, Triệu được một phần mười, ta được bảy phần mười. Lại nữa, chữ Triệu vì *thục* (quá quen tay) mà thành dáng tục, chữ ta vì *sinh* (còn lạ) mà có vẻ thanh tú.",
+     "src": "Đổng Kỳ Xương, «Hoạ thiền thất tuỳ bút»"
+    },
+    {
+     "t": "p",
+     "x": "Gọi là “so hơn kém”, thật ra cái “hơn” của Triệu (đều đặn, thành thục) chính là cái Đổng coi là kém. Từ cuộc tranh hơn ấy ra đời những khái niệm phê bình còn sống đến hôm nay: **sinh – thục**, **kỳ – chính**, **tú**, **sĩ khí**. Đổng nói vẽ phải *thục ngoại thục*, và *sinh nhi hậu thục, thục nhi hậu sinh*; chữ “sinh” sau “thục” ấy gần với lời Tô Thức về cái *bình đạm* vốn là *tột cùng của rực rỡ*. Số phận đời sau của hai người cũng trái ngược thú vị: Triệu mang tiếng “nhị thần” mấy trăm năm, còn Đổng chết trước khi Minh mất, được vua Khang Hy sùng ái khiến cả nước học Đổng. Phải đến Khang Hữu Vi, người ta mới chê chữ Đổng *thần khí hàn kiệm* (gầy guộc nghèo nàn), một lời tác giả cho là quá tay."
+    },
+    {
+     "t": "h",
+     "x": "Nhìn lại: vì sao gọi là “khập khiễng”"
+    },
+    {
+     "t": "p",
+     "x": "Nguyên – Minh hơn ba trăm bảy mươi năm, trong sáng tác là cuộc giằng co giữa *mỹ* và *xú*, trong lý luận là *Thiền* và *Nho* cùng hát. Triệu, Đổng bàn Phật nói Thiền nhưng chỉ dừng ở lý; Hạng Mục là người tập đại thành lối dùng Nho học trị thư học, song *luận cao mà tiếng nhỏ*. Còn Từ Vị, tuy viết ít, lại là ngọn cờ mà đời Thanh giương lên để coi Triệu, Đổng như “cặn bã”. Bài học cho người học thiếp: đừng nhầm *bóng* với *người*. Học Vương Hi Chi qua một bản khắc lại nhiều đời mà đòi “đúng Vương” thì chính là quỳ trước người khổng lồ khập khiễng. Nên tìm bản tốt nhất có thể, so sánh nhiều bản, và hiểu rằng cái *thục* quá đà dễ thành *tục*."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Thư hoạ dụng bút đồng pháp",
+       "zh": "书画用笔同法",
+       "vi": "Bút pháp chữ và tranh là một; nguyên tắc Triệu Mạnh Phủ phát biểu rõ trong câu “thư hoạ bản lai đồng”."
+      },
+      {
+       "hv": "Cổ ý",
+       "zh": "古意",
+       "vi": "Ý vị của người xưa; tiêu chuẩn Triệu Mạnh Phủ đặt cho tranh."
+      },
+      {
+       "hv": "Sĩ khí",
+       "zh": "士气",
+       "vi": "Khí chất kẻ sĩ trong tranh, đối lập với lối thợ vẽ; Tiền Tuyển giải thích là “lệ thể”."
+      },
+      {
+       "hv": "Trung hoà",
+       "zh": "中和",
+       "vi": "Không thái quá, không bất cập, không trái nghịch; chuẩn mực thẩm mỹ tối cao của Hạng Mục."
+      },
+      {
+       "hv": "Bàng lưu",
+       "zh": "傍流",
+       "vi": "Dòng tà, bậc thấp nhất trong năm bậc thư phẩm của Hạng Mục: phóng túng, khoe nét."
+      },
+      {
+       "hv": "Tâm hoạ",
+       "zh": "心画",
+       "vi": "Chữ là bức vẽ của tâm (Dương Hùng); nền của lối xem chữ biết người."
+      },
+      {
+       "hv": "Nam Bắc tông",
+       "zh": "南北宗",
+       "vi": "Thuyết chia hội hoạ thành hai dòng của Đổng Kỳ Xương, Mạc Thị Long; về sau gợi ra thuyết Nam Bắc thư phái."
+      },
+      {
+       "hv": "Sinh / Thục",
+       "zh": "生 / 熟",
+       "vi": "Lạ và quen tay; Đổng Kỳ Xương cho rằng quá thục thì tục, cái sinh sau thục mới quý."
+      },
+      {
+       "hv": "Dĩ kỳ vi chính",
+       "zh": "以奇为正",
+       "vi": "Lấy cái lạ làm cái chính, chống thế chữ ngay ngắn đơn điệu."
+      },
+      {
+       "hv": "Hoạ thiền",
+       "zh": "画禅",
+       "vi": "Coi thư hoạ như con đường tu Thiền; cách gọi của người Minh, tương ứng “mặc hí” của người Tống."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Triệu Mạnh Phủ",
+       "zh": "赵孟頫",
+       "years": "1254–1322, Nguyên",
+       "note": "Hiệu Tùng Tuyết; lá cờ của vẻ đẹp ôn nhuận; “thư hoạ bản lai đồng”."
+      },
+      {
+       "name": "Tiền Tuyển",
+       "zh": "钱选",
+       "years": "khoảng 1239–1301, Tống mạt Nguyên sơ",
+       "note": "Giải thích sĩ khí trong tranh là “lệ thể”."
+      },
+      {
+       "name": "Nghê Toản",
+       "zh": "倪瓒",
+       "years": "1301–1374, Nguyên",
+       "note": "Vẽ trúc “để tả dật khí trong lòng”, không cần giống."
+      },
+      {
+       "name": "Trịnh Biểu",
+       "zh": "郑杓",
+       "years": "đời Nguyên",
+       "note": "Tác giả «Diễn cực», lấy Kinh Dịch làm khung bàn thư."
+      },
+      {
+       "name": "Từ Vị",
+       "zh": "徐渭",
+       "years": "1521–1593, Minh",
+       "note": "Hiệu Thanh Đằng; chữ và tranh như tiếng kêu bi phẫn; tiền thân thẩm mỹ “xú”."
+      },
+      {
+       "name": "Hạng Mục",
+       "zh": "项穆",
+       "years": "thế kỷ XVI, Minh (đời Vạn Lịch)",
+       "note": "Tác giả «Thư pháp nhã ngôn», hệ thống thư học theo Nho gia, chuẩn “trung hoà”."
+      },
+      {
+       "name": "Đổng Kỳ Xương",
+       "zh": "董其昌",
+       "years": "1555–1636, Minh",
+       "note": "Thuyết Nam Bắc tông, «Hoạ thiền thất tuỳ bút»; khái niệm sinh – thục, kỳ – chính."
+      },
+      {
+       "name": "Phùng Ban",
+       "zh": "冯班",
+       "years": "1602–1671, Minh mạt Thanh sơ",
+       "note": "«Độn ngâm thư yếu»: “hoạ có Nam Bắc, chữ cũng có Nam Bắc”."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Giải thích hình ảnh “người khổng lồ khập khiễng”. Ai là người khổng lồ, và vì sao lại khập khiễng?",
+      "Vì sao đánh giá về Triệu Mạnh Phủ phân cực đến thế? Hãy tách phần đánh giá nghệ thuật khỏi phần đánh giá chính trị.",
+      "Câu “tả trúc hoàn ưng bát pháp thông” cho thấy điều gì về quan hệ thư – hoạ? Vì sao người ta nói “viết” trúc chứ không nói “vẽ” trúc?",
+      "So sánh lập trường của Hạng Mục và Từ Vị: một bên “trung hoà”, một bên “phá thăng bằng”. Bạn thấy mỗi bên đúng và hạn chế ở đâu?",
+      "Đổng Kỳ Xương nói chữ Triệu “vì thục mà thành tục”. Trong quá trình luyện chữ của bạn, làm thế nào để quen tay mà không tục?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c11",
+   "no": "Chương 11",
+   "title": "Thời đại phê phán",
+   "titleZh": "批判的时代",
+   "pages": "146–161",
+   "summary": "Đời Thanh là thời tư tưởng thư pháp sôi nổi nhất: Phó Sơn giương ngọn cờ “xú”, hoạ gia đem ý thức nghệ thuật vào chữ, kim thạch học khai sinh bia học, và từ Nguyễn Nguyên, Bao Thế Thần, Lưu Hy Tải đến Khang Hữu Vi, thư luận mang tinh thần phê phán thiếp học và chữ quán các.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Nếu phải chọn một từ cho tư tưởng thư pháp đời Thanh, tác giả chọn **phê phán**. Từ Phó Sơn đến Khang Hữu Vi, hầu như mọi nhà lý luận lớn đều *chống* một cái gì đó: chống chữ Triệu Mạnh Phủ, Đổng Kỳ Xương, chống thiếp học, chống chữ quán các của trường thi. Điều nghịch lý là chính một vương triều ngoại tộc, chuộng thiếp học và kiểm soát tư tưởng gắt gao, lại vô tình tạo ra những điều kiện cho cuộc phê phán ấy. Bài giảng đi qua năm chủ đề: bối cảnh; ngọn cờ *xú*; chữ của hoạ gia; sự ra đời của bia học; và hệ thống của Khang Hữu Vi."
+    },
+    {
+     "t": "h",
+     "x": "Bối cảnh: vua chuộng thiếp, trường thi chuộng tiểu khải, sĩ phu vùi vào kim thạch"
+    },
+    {
+     "t": "p",
+     "x": "Các vua đầu Thanh đều là người có tầm nhìn: họ hiểu không thể trị Trung Nguyên bằng tục lệ ngoài biên và đao kiếm, nên tự mình học bút mực, khắc thiếp ban cho bề tôi («Tam hy đường pháp thiếp» thời Càn Long). Khang Hy mê chữ Đổng Kỳ Xương, cả triều đua nhau bắt chước; Càn Long lại thích chữ Triệu, chữ Triệu liền đoạt ngôi chữ Đổng. Một người thích, thiên hạ theo. Mã Tông Hoắc chia thư học đời Thanh làm hai kỳ: trước Gia Khánh – Đạo Quang là kỳ thiếp học, sau đó là kỳ bia học."
+    },
+    {
+     "t": "p",
+     "x": "Hai lực đẩy khác cũng rất mạnh. Một là **khoa cử**: chọn người bằng tiểu khải khắt khe hơn cả đời Đường; một chữ sứt, một chấm bẩn cũng đủ trượt Hàn lâm. Năm 1898 Trương Chi Động còn tâu rằng kẻ sĩ thoát được ách bát cổ thì lại mắc ách tiểu khải, đến tuổi sáu mươi vẫn phải thi chữ. Chữ như thế *nét nào cũng tới nơi mà nét nào cũng như vật chết*: đó là **quán các thể**. Hai là **văn tự ngục** thời Ung Chính, Càn Long: sĩ phu sợ hãi rút vào khảo cứ, văn tự học, và muốn khảo kinh chứng sử thì phải đọc kim thạch, đọc bia. Thế là kim thạch học thịnh, và thứ vốn là tư liệu khảo cổ lại thành mẫu cho người học chữ. Tác giả tóm thư pháp đời Thanh thành ba dòng song song: chữ *cầu lộc* của trường thi, dòng *biểu hiện* chịu ảnh hưởng hội hoạ, và dòng *biến cổ* chịu ảnh hưởng kim thạch; hai dòng sau thấm vào nhau."
+    },
+    {
+     "t": "h",
+     "x": "Ngọn cờ “xú”: từ Phó Sơn đến Lưu Hy Tải"
+    },
+    {
+     "t": "p",
+     "x": "Mầm của thẩm mỹ “xú” có từ Tống: Tô Thức nói *ngọc đẹp méo có sao*, Hoàng Đình Kiên nói *chỗ bệnh tự thành đẹp*, Mễ Phế nói *chẳng nên hỏi vụng khéo*. Trong hội hoạ từ Nguyên trở đi, “vụng” là đẹp, “bệnh” là đẹp đã thành chuẩn. Nhưng trong thư pháp, vì chữ gắn với thực dụng, vì khoa cử, và vì vua chúa các đời đều đi đường thiếp học, những lời ấy chưa thành thực tiễn. Nhiệm vụ lịch sử này rơi vào tay các nhà lý luận đời Thanh. Người đầu tiên giương cờ là **Phó Sơn**:"
+    },
+    {
+     "t": "quote",
+     "zh": "宁拙毋巧，宁丑毋媚，宁支离毋轻滑，宁直率毋安排。",
+     "hv": "Ninh chuyết vô xảo, ninh xú vô mị, ninh chi ly vô khinh hoạt, ninh trực suất vô an bài.",
+     "vi": "Thà vụng chứ đừng khéo, thà xấu chứ đừng điệu đà, thà rời rạc chứ đừng trơn tuột, thà thẳng thắn bộc trực chứ đừng sắp đặt.",
+     "src": "Phó Sơn, «Tác tự thị nhi tôn»"
+    },
+    {
+     "t": "p",
+     "x": "Lối nói “thà… đừng…” đã có trong thi luận (thường gán cho Trần Sư Đạo đời Tống), nhưng đưa vào thư pháp thì *tứ ninh tứ vô* chi phối cả một thời đại. Tác giả nhấn mạnh: với Phó Sơn, đây không chỉ là chuyện chữ. Là di dân nhà Minh không chịu khuất phục, ông nhìn những kẻ quay sang thờ nhà Thanh như hiện thân của *khéo, trơn, điệu*. Ông kể chuyện học chữ Triệu như một lời tự thú:"
+    },
+    {
+     "t": "quote",
+     "zh": "偶得赵子昂、董香光诗墨迹，爱其圆转流丽，遂临之，不数过而遂欲乱真。此无他，即如人学正人君子，只觉觚棱难近；降而与匪人游，神情不觉其日亲日密，而无尔我者然也。",
+     "hv": "Ngẫu đắc Triệu Tử Ngang, Đổng Hương Quang thi mặc tích, ái kỳ viên chuyển lưu lệ, toại lâm chi, bất sổ quá nhi toại dục loạn chân. Thử vô tha, tức như nhân học chính nhân quân tử, chỉ giác cô lăng nan cận; giáng nhi dữ phỉ nhân du, thần tình bất giác kỳ nhật thân nhật mật, nhi vô nhĩ ngã giả nhiên dã.",
+     "vi": "Tình cờ được bút tích thơ của Triệu Tử Ngang, Đổng Hương Quang, yêu nét tròn trịa trôi chảy, bèn tập theo, chưa được mấy lượt đã gần như giống thật. Chẳng có gì lạ: như người muốn học làm chính nhân quân tử thì thấy góc cạnh khó gần; còn hạ mình chơi với kẻ xấu thì bất giác ngày càng thân thiết, chẳng còn phân biệt anh với tôi.",
+     "src": "Phó Sơn, «Tác tự thị nhi tôn» (phần ghi thêm)"
+    },
+    {
+     "t": "p",
+     "x": "Phó Sơn còn nói *làm chữ trước hết phải làm người*. Vì Triệu, Đổng là chữ được các vua đầu Thanh tôn sùng, đánh Triệu, Đổng không thuần là chuyện nghệ thuật; và vì thế lý luận “xú” phải nằm im suốt thời Khang – Càn, đến khi nhà Thanh suy từ Gia – Đạo mới bùng lên. Tác giả nhận xét thẳng: về sáng tác, Phó Sơn chưa phải hạng nhất; nhưng tư tưởng của ông vẫn sống đến hôm nay."
+    },
+    {
+     "t": "p",
+     "x": "Người phát triển thành lý luận là **Lưu Hy Tải** (1813–1881) trong «Nghệ khái · Thư khái». Ông mượn hình ảnh đá lạ, đề tài ưa thích của văn nhân hoạ:"
+    },
+    {
+     "t": "quote",
+     "zh": "怪石以丑为美，丑到极处，便是美到极处。一丑字中丘壑未易尽言。",
+     "hv": "Quái thạch dĩ xú vi mỹ, xú đáo cực xứ, tiện thị mỹ đáo cực xứ. Nhất xú tự trung khâu hác vị dị tận ngôn.",
+     "vi": "Đá lạ lấy xấu làm đẹp; xấu đến tột cùng chính là đẹp đến tột cùng. Trong một chữ “xấu” có bao gò khe, khó mà nói hết.",
+     "src": "Lưu Hy Tải, «Nghệ khái · Thư khái»"
+    },
+    {
+     "t": "p",
+     "x": "Cần hiểu đúng: “xú” của Lưu là phạm trù mỹ học, tức sự bộc lộ tự nhiên của tâm hồn. Chữ tục mà cố làm ra vẻ vụng xấu thì chẳng đáng gì; sự giả tạo mất hết thiên chân mới là *xấu thật*. Ông không hề coi nhẹ kỹ thuật:"
+    },
+    {
+     "t": "quote",
+     "zh": "学书者始由不工求工，继由工求不工。不工者，工之极也。",
+     "hv": "Học thư giả thuỷ do bất công cầu công, kế do công cầu bất công. Bất công giả, công chi cực dã.",
+     "vi": "Người học chữ, thoạt đầu từ chỗ chưa khéo mà cầu khéo, sau đó từ chỗ khéo mà cầu chỗ không khéo. Cái không khéo ấy là tột cùng của khéo.",
+     "src": "Lưu Hy Tải, «Nghệ khái · Thư khái»"
+    },
+    {
+     "t": "quote",
+     "zh": "书非使人爱之为难，而不求人爱之为难。",
+     "hv": "Thư phi sử nhân ái chi vi nan, nhi bất cầu nhân ái chi vi nan.",
+     "vi": "Viết chữ khiến người ta yêu thì chưa khó; khó là viết mà không cầu người ta yêu.",
+     "src": "Lưu Hy Tải, «Nghệ khái · Thư khái»"
+    },
+    {
+     "t": "p",
+     "x": "Không cầu người yêu tức là lòng không mong lộc, không mong được sủng ái, toàn tâm đặt vào nghệ thuật. Phó Sơn và Lưu Hy Tải cùng nói “xú” nhưng gốc khác nhau: Phó Sơn xuất phát từ tinh thần dân tộc; Lưu Hy Tải dựng khung bằng Kinh Dịch và Trang Tử. «Thư khái» mở đầu bằng câu *thánh nhân làm Dịch, lập tượng để nói hết ý*, đầy rẫy âm dương cương nhu; còn những nhân vật dị hình mà tinh thần toàn vẹn của Trang Tử chính là cơ sở triết học cho cái “xú”. Ông thậm chí nói *học chữ thông với học tiên: luyện thần là trên, luyện khí thứ đến, luyện hình lại thứ nữa*. Lấy âm dương bàn nghệ thuật cũng là trào lưu chung của đời Thanh: Diêu Nãi phái Đồng Thành chia vẻ đẹp văn chương thành *dương cương* và *âm nhu*."
+    },
+    {
+     "t": "h",
+     "x": "Chữ của hoạ gia: ý thức nghệ thuật lên ngôi"
+    },
+    {
+     "t": "p",
+     "x": "Ít người nói đến chiều tác động *hội hoạ → thư pháp*, trong khi đây là một nguồn chính của tinh thần đổi mới đời Thanh. Chu Tinh Liên thời Đạo Quang mô tả xu thế ấy gọn nhất:"
+    },
+    {
+     "t": "quote",
+     "zh": "以书法透入于画，而画无不妙；以画法参入于书，而书无不神。故曰：善书者必善画，善画者亦必善书。",
+     "hv": "Dĩ thư pháp thấu nhập ư hoạ, nhi hoạ vô bất diệu; dĩ hoạ pháp tham nhập ư thư, nhi thư vô bất thần. Cố viết: thiện thư giả tất thiện hoạ, thiện hoạ giả diệc tất thiện thư.",
+     "vi": "Đem phép chữ thấm vào tranh thì tranh không gì không diệu; đem phép tranh hoà vào chữ thì chữ không gì không thần. Cho nên nói: người giỏi chữ ắt giỏi tranh, người giỏi tranh cũng ắt giỏi chữ.",
+     "src": "Chu Tinh Liên, «Lâm trì quản kiến»"
+    },
+    {
+     "t": "p",
+     "x": "Một chi tiết hình thức có sức nặng lớn: **lạc khoản**. Người Đường chỉ ghi chữ nhỏ giấu trong gốc cây, kẽ đá, người viết chữ xấu thì ghi sau lưng giấy; Tống bắt đầu ghi năm tháng một dòng; Tô Thức dùng hành khải lớn vài dòng; đến Nghê Toản đề cả trăm chữ. Minh Thanh, có bức chữ còn nhiều hơn tranh. Để chữ hợp với tình thú của tranh, chữ buộc phải biến hoá. Thế là xuất hiện *chữ hoạ gia*: Bát Đại Sơn Nhân dùng bút cùn, nét gần như đều, kết cấu và chương pháp theo ý thức bố cục tranh; Kim Nông tạo *tất thư* (chữ sơn); Trịnh Bản Kiều tự gọi chữ mình là *lục phân bán thư* (sáu phần rưỡi); Thạch Đào pha lệ ý và chất tượng ký Lục triều vào hành thư. Cái “đẹp khi nhìn” đã vượt lên trên cái “đọc được”."
+    },
+    {
+     "t": "p",
+     "x": "Tinh thần ấy cũng có lời tuyên ngôn. Thạch Đào nói *bút mặc đương tuỳ thời đại*; Trịnh Bản Kiều có câu thơ *lĩnh dị tiêu tân nhị nguyệt hoa* (khác lạ mới mẻ như hoa tháng hai). Nếu ai cũng mang mặt Vương Hi Chi thì còn gì là sáng tạo? Chữ *viết để thi* thì không cần “dụng tình”, “phóng hoài”; còn vẽ tranh thì vừa cầm bút đã phải dụng tình. Hoạ gia viết chữ vì thế mang ý thức biểu hiện mạnh hơn. Tác giả còn chỉ ra một điểm thường bị bỏ quên: những người mở đầu phong khí bia học như Kim Nông, Trịnh Bản Kiều đều là hoạ gia; còn Triệu, Đổng của thiếp học cũng là đại hoạ gia. Vậy bia và thiếp, xét về tư tưởng nghệ thuật, không hẳn như nước với lửa."
+    },
+    {
+     "t": "h",
+     "x": "Kim thạch học và sự ra đời của bia học"
+    },
+    {
+     "t": "p",
+     "x": "Đến Gia Khánh – Đạo Quang, thiếp học thịnh cực mà suy. Bia đá cổ ra đời ngày càng nhiều, bản rập lưu truyền rộng; khoa cử và tiểu khải bị phái cải cách công kích. Bia học *mượn danh phục cổ để làm việc sáng tạo*: triện thì theo Tần, lệ theo Hán, chân thư theo Lục triều, chủ yếu là Bắc Nguỵ, tức là vượt qua cả Đường để về trước nữa. Tác giả còn thấy một dòng chảy ngầm của ý thức dân tộc: bia học hưng thịnh cùng lúc quyền lực nhà Thanh suy, những người đi đầu là kẻ sĩ ở ngoài trường thi. **Đặng Thạch Như** không đi thi, ngộ bút pháp từ khắc ấn, từ kim văn Tần, ấn Hán, trán bia, ngói, gạch, những thứ phần nhiều do bàn tay vô danh làm ra; học từ đó là một chuyển biến căn bản về quan niệm."
+    },
+    {
+     "t": "p",
+     "x": "Người đặt tên cho dòng chảy này là **Nguyễn Nguyên** (1764–1849), nhà khảo cứ học lớn. Mượn ý “chữ cũng có Nam Bắc” của Phùng Ban, ông viết «Nam Bắc thư phái luận» và «Bắc bi Nam thiếp luận». Theo ông, phái Nam là *phong lưu Giang Tả, phóng khoáng đẹp đẽ, giỏi thư trát*; phái Bắc là *cổ pháp Trung Nguyên, câu nệ vụng chất, giỏi bia bảng*; từ khi «Các thiếp» thịnh, phái Bắc mờ dần. Lời phân định nghe khách quan:"
+    },
+    {
+     "t": "quote",
+     "zh": "短笺长卷，意态挥洒，则帖擅其长；界格方严，法书深刻，则碑据其胜。",
+     "hv": "Đoản tiên trường quyển, ý thái huy sái, tắc thiếp thiện kỳ trường; giới cách phương nghiêm, pháp thư thâm khắc, tắc bi cứ kỳ thắng.",
+     "vi": "Thư ngắn, quyển dài, ý thái vung vẩy tự do thì thiếp sở trường; ô kẻ vuông vức nghiêm cẩn, chữ mẫu khắc sâu thì bia chiếm ưu thế.",
+     "src": "Nguyễn Nguyên, «Bắc bi Nam thiếp luận»"
+    },
+    {
+     "t": "p",
+     "x": "Nhưng khuynh hướng của ông rất rõ: ông chê người Nguyên, Minh bị «Các thiếp» trói buộc, khuyên người tài *tìm lại sự nghiệp đã đổ của Nguỵ, Tề*. Cách chia Nam Bắc của Nguyễn Nguyên về sau bị phê là không chặt chẽ, nhưng việc đưa Bắc bi bị chôn vùi hơn nghìn năm trở lại ánh sáng là cống hiến mang tính thời đại."
+    },
+    {
+     "t": "p",
+     "x": "**Bao Thế Thần** (1775–1855) tiếp bước với «Nghệ chu song tiếp» (bàn cả văn lẫn chữ, như hai mái chèo). Ông nghiên cứu bút pháp, kết thể Bắc bi rất sâu, đánh thẳng vào Đổng, Triệu (“bắt giặc phải bắt vua”), và trong «Quốc triều thư phẩm» chỉ cho một mình Đặng Thạch Như vào thần phẩm. Chữ của ông thì bị Hà Thiệu Cơ, Lý Thuỵ Thanh chê; thành tựu lý luận cao hơn sáng tác. Nhưng giữa thời quán các trói tay, một câu của ông như ngọn đèn đưa thư pháp về vương quốc tự do của nghệ thuật:"
+    },
+    {
+     "t": "quote",
+     "zh": "书道妙在性情，能在形质。",
+     "hv": "Thư đạo diệu tại tính tình, năng tại hình chất.",
+     "vi": "Cái diệu của đạo chữ nằm ở tính tình; cái giỏi nằm ở hình chất.",
+     "src": "Bao Thế Thần, «Nghệ chu song tiếp»"
+    },
+    {
+     "t": "p",
+     "x": "Lưu Hy Tải, người thường trao đổi với Bao Thế Thần, đến khi bia học đã thắng thế nên ít sa vào chuyện khen bia chê thiếp mà đi vào mỹ học và sáng tác luận. Ông nói *Bắc thư lấy cốt thắng, Nam thư lấy vận thắng*, nhưng *Bắc tự có vận của Bắc, Nam tự có cốt của Nam*, một lời rất công bằng. Ông còn phân biệt hai cảnh giới của lâm mô:"
+    },
+    {
+     "t": "quote",
+     "zh": "入他神者，我化为古也；入我神者，古化为我也。",
+     "hv": "Nhập tha thần giả, ngã hoá vi cổ dã; nhập ngã thần giả, cổ hoá vi ngã dã.",
+     "vi": "Vào được thần của người, là ta hoá thành người xưa; vào được thần của ta, là người xưa hoá thành ta.",
+     "src": "Lưu Hy Tải, «Nghệ khái · Thư khái»"
+    },
+    {
+     "t": "p",
+     "x": "Đương nhiên *nhập ngã thần* là cảnh giới cao hơn. Chu Tinh Liên cũng khuyên lâm mô chỉ là để lấy bút pháp, chớ rập khuôn hình. Từ Gia – Đạo, tìm *mặt mũi của chính mình* thành trào lưu của thư đàn."
+    },
+    {
+     "t": "h",
+     "x": "Khang Hữu Vi: tôn bia, ti Đường và triết lý của sự biến đổi"
+    },
+    {
+     "t": "p",
+     "x": "Người tập đại thành là **Khang Hữu Vi** (1858–1927), lãnh tụ phong trào Duy tân. «Quảng nghệ chu song tiếp» gồm sáu quyển hai mươi bảy thiên, nối tiếp và *mở rộng* Bao Thế Thần, nhưng luận điểm quyết liệt hơn nhiều. Tác giả đặt nó ngang «Thư phổ» như *đôi ngọc* của thư luận, và ghi nhận phương pháp: thay vì lời đề bạt rời rạc, đây là một hệ thống có kết cấu, dẫn chứng rộng (đem cả chữ Anh, Pháp, Nga, Đức ra so sánh với chữ Hán), suy luận chặt. Thiên đầu tiên đã lộ tiếng nói của nhà cải cách:"
+    },
+    {
+     "t": "quote",
+     "zh": "书学与治法，势变略同。",
+     "hv": "Thư học dữ trị pháp, thế biến lược đồng.",
+     "vi": "Học chữ và phép trị nước, xu thế biến đổi đại để giống nhau.",
+     "src": "Khang Hữu Vi, «Quảng nghệ chu song tiếp · Nguyên thư»"
+    },
+    {
+     "t": "p",
+     "x": "Mọi thứ đều biến, *biến là lẽ trời*; nên thiếp suy bia thịnh là thuận đạo trời. Thiên thứ hai, ông đặt tên thẳng là «Tôn bi», và nêu năm lý do:"
+    },
+    {
+     "t": "quote",
+     "zh": "笔画完好，精神流露，易于临摹，一也；可以考隶楷之变，二也；可以考后世之源流，三也；唐言结构，宋尚意态，六朝碑各体毕备，四也；笔法舒长刻入，雄奇角出，应接不暇，实为唐、宋之所无有，五也。有是五者，不亦宜于尊乎！",
+     "hv": "Bút hoạch hoàn hảo, tinh thần lưu lộ, dị ư lâm mô, nhất dã; khả dĩ khảo lệ khải chi biến, nhị dã; khả dĩ khảo hậu thế chi nguyên lưu, tam dã; Đường ngôn kết cấu, Tống thượng ý thái, Lục triều bi các thể tất bị, tứ dã; bút pháp thư trường khắc nhập, hùng kỳ giác xuất, ứng tiếp bất hạ, thực vi Đường, Tống chi sở vô hữu, ngũ dã. Hữu thị ngũ giả, bất diệc nghi ư tôn hồ!",
+     "vi": "Nét chữ còn nguyên vẹn, tinh thần bộc lộ, dễ lâm mô, là một; có thể khảo sự biến chuyển từ lệ sang khải, là hai; có thể khảo nguồn gốc dòng chảy của đời sau, là ba; người Đường nói kết cấu, người Tống chuộng ý thái, còn bia Lục triều có đủ mọi thể, là bốn; bút pháp duỗi dài, khắc sâu, hùng mạnh kỳ lạ nảy ra tứ phía, nhìn không xuể, thật là thứ Đường, Tống không có, là năm. Có năm điều ấy, chẳng nên tôn sùng sao!",
+     "src": "Khang Hữu Vi, «Quảng nghệ chu song tiếp · Tôn bi»"
+    },
+    {
+     "t": "p",
+     "x": "Ông tôn «Tước Long Nhan bi» là *tổ của vẻ hùng cường mậu mỹ*, và tấn công thẳng vào nhà Đường: đời Đường chỉ chú trọng kết cấu, đều đặn như bàn tính, Âu, Ngu, Chử, Tiết đã mất vẻ thuần phác, đến Nhan, Liễu thì cổ pháp tiêu hết. Ông khuyên người học *phân rõ ranh giới, đừng vào từ người Đường*. Nguyễn Nguyên, Bao Thế Thần nhắm vào Triệu, Đổng; Khang Hữu Vi đánh thẳng vào ông tổ của thiếp học. Ông cũng mô tả chữ quán các bằng một đoạn mỉa mai tuyệt khéo: phân bố cân đối, nặng nhẹ vừa chừng, *nhốt cả rồng nhảy hổ nằm vào trong khuôn*, *tinh xảo vượt mọi đời*. Năm 1905 bỏ khoa cử, quán các thể cũng tắt theo."
+    },
+    {
+     "t": "p",
+     "x": "Tác giả đánh giá cả hai mặt. Khang Hữu Vi là nhà cách mạng nên khó tránh *thiên lệch*; nhưng «Quảng nghệ chu song tiếp» là cột mốc phương pháp luận, và gần như là giới hạn cuối của thư luận cổ đại. Điều tác giả tiếc là ông vẫn coi thư pháp là *tiểu nghệ*, nên không xây dựng một công trình lớn hơn; trong khi nghệ thuật, nhất là thứ nghệ thuật chỉ dân tộc mình có, là nơi phản ánh rõ nhất tinh thần dân tộc. Còn chữ của chính Khang Hữu Vi, học «Thạch Môn minh» và các bia Lục triều, khí thế hùng tráng, càng to càng đẹp, đi bằng thần chứ không câu nệ từng nét: đó là thành quả của việc thoát khỏi tư duy thiếp học."
+    },
+    {
+     "t": "h",
+     "x": "Ý nghĩa cho người học hôm nay"
+    },
+    {
+     "t": "p",
+     "x": "Ba trăm năm phê phán đời Thanh để lại cho người học ba bài học. *Một*, đừng để một khuôn mẫu duy nhất, dù là Vương Hi Chi, Triệu hay Nhan, chiếm hết tầm nhìn; nguồn học có thể là bia vô danh, ấn, ngói gạch. *Hai*, “xú” không phải là cẩu thả: từ không khéo đến khéo rồi mới đến không khéo; ai bỏ qua chặng giữa thì chỉ được cái “xú” giả. *Ba*, kỹ năng trình bày và tạo hình (chương pháp, bố cục, quan hệ chữ với tranh, với ấn) là một phần chính đáng của thư pháp, chứ không phải chỉ là phụ hoạ cho việc chép chữ cho đúng. Tác giả kết luận: quá trình tăng cường ý thức nghệ thuật cũng là quá trình phai nhạt quan niệm thực dụng, và với một nghệ thuật bị trường thi quấy nhiễu, đó là một cuộc *khởi tử hồi sinh*."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Tứ ninh tứ vô",
+       "zh": "四宁四毋",
+       "vi": "Bốn câu “thà… chứ đừng…” của Phó Sơn: thà vụng, thà xấu, thà rời rạc, thà bộc trực."
+      },
+      {
+       "hv": "Xú",
+       "zh": "丑",
+       "vi": "Cái “xấu” như một phạm trù mỹ học: vẻ đẹp của sự tự nhiên, vụng chất, không chiều lòng người xem."
+      },
+      {
+       "hv": "Quán các thể",
+       "zh": "馆阁体",
+       "vi": "Chữ tiểu khải chuẩn mực của trường thi, Hàn lâm: đều đặn, bóng bẩy, thiếu tính linh."
+      },
+      {
+       "hv": "Bia học",
+       "zh": "碑学",
+       "vi": "Dòng học chữ theo bia khắc Hán, Nguỵ, Lục triều và kim thạch, hưng khởi từ Gia – Đạo."
+      },
+      {
+       "hv": "Bắc bi Nam thiếp",
+       "zh": "北碑南帖",
+       "vi": "Thuyết của Nguyễn Nguyên: phái Bắc giỏi bia bảng, phái Nam giỏi thư trát."
+      },
+      {
+       "hv": "Kim thạch học",
+       "zh": "金石学",
+       "vi": "Môn nghiên cứu chữ trên đồ đồng, bia đá; đời Thanh vốn để khảo kinh chứng sử, sau thành nguồn mẫu học chữ."
+      },
+      {
+       "hv": "Nhập tha thần / Nhập ngã thần",
+       "zh": "入他神 / 入我神",
+       "vi": "Ta hoá thành người xưa / người xưa hoá thành ta; hai cảnh giới lâm mô theo Lưu Hy Tải."
+      },
+      {
+       "hv": "Tôn bi ti Đường",
+       "zh": "尊碑卑唐",
+       "vi": "Tôn bia Lục triều, hạ thấp chữ Đường; lập trường của Khang Hữu Vi."
+      },
+      {
+       "hv": "Tất thư",
+       "zh": "漆书",
+       "vi": "“Chữ sơn” của Kim Nông: nét ngang dày dẹt như quét sơn, kết cấu lạ."
+      },
+      {
+       "hv": "Lục phân bán thư",
+       "zh": "六分半书",
+       "vi": "Lối chữ của Trịnh Bản Kiều, pha lệ (bát phân) với khải, hành, thảo."
+      }
+     ]
+    },
+    {
+     "t": "people",
+     "items": [
+      {
+       "name": "Phó Sơn",
+       "zh": "傅山",
+       "years": "1607–1684, Minh mạt Thanh sơ",
+       "note": "Tự Thanh Chủ; “tứ ninh tứ vô”, “làm chữ trước làm người”; công kích Triệu, Đổng."
+      },
+      {
+       "name": "Thạch Đào",
+       "zh": "石涛",
+       "years": "1642–1707, Thanh",
+       "note": "Hậu duệ tông thất Minh, hoạ tăng; “bút mặc đương tuỳ thời đại”."
+      },
+      {
+       "name": "Bát Đại Sơn Nhân (Chu Đáp)",
+       "zh": "八大山人 朱耷",
+       "years": "1626–1705, Thanh",
+       "note": "Chữ bút cùn, nét đều, chương pháp theo ý thức bố cục tranh."
+      },
+      {
+       "name": "Kim Nông",
+       "zh": "金农",
+       "years": "1687–1763, Thanh",
+       "note": "Hiệu Đông Tâm, Dương Châu bát quái; “tất thư”."
+      },
+      {
+       "name": "Trịnh Bản Kiều (Trịnh Tiếp)",
+       "zh": "郑板桥 郑燮",
+       "years": "1693–1765, Thanh",
+       "note": "Dương Châu bát quái; “lục phân bán thư”."
+      },
+      {
+       "name": "Đặng Thạch Như",
+       "zh": "邓石如",
+       "years": "1743–1805, Thanh",
+       "note": "Không đi thi; ngộ bút pháp từ khắc ấn và kim thạch; được Bao Thế Thần xếp thần phẩm."
+      },
+      {
+       "name": "Nguyễn Nguyên",
+       "zh": "阮元",
+       "years": "1764–1849, Thanh",
+       "note": "«Nam Bắc thư phái luận», «Bắc bi Nam thiếp luận»; mở đầu phong khí tôn bia."
+      },
+      {
+       "name": "Bao Thế Thần",
+       "zh": "包世臣",
+       "years": "1775–1855, Thanh",
+       "note": "«Nghệ chu song tiếp»; “thư đạo diệu tại tính tình”."
+      },
+      {
+       "name": "Lưu Hy Tải",
+       "zh": "刘熙载",
+       "years": "1813–1881, Thanh",
+       "note": "«Nghệ khái · Thư khái»; lý luận “xú”, “nhập ngã thần”."
+      },
+      {
+       "name": "Khang Hữu Vi",
+       "zh": "康有为",
+       "years": "1858–1927, Thanh mạt",
+       "note": "«Quảng nghệ chu song tiếp»; tôn bia ti Đường; tập đại thành bia học."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Những yếu tố nào (chính sách của vua, khoa cử, văn tự ngục, kim thạch học) đã cùng tạo nên bia học? Yếu tố nào theo bạn quan trọng nhất?",
+      "Phân tích “tứ ninh tứ vô” của Phó Sơn. Vì sao tác giả cho rằng đây không thuần là một quan điểm nghệ thuật?",
+      "Lưu Hy Tải nói “bất công giả, công chi cực dã”. Hãy giải thích và liên hệ với quá trình luyện chữ của bạn.",
+      "Hoạ gia đã thay đổi thư pháp đời Thanh như thế nào? Cho ví dụ về Kim Nông hoặc Trịnh Bản Kiều.",
+      "Nêu năm lý do “tôn bi” của Khang Hữu Vi. Lập trường “ti Đường” của ông có chỗ nào thiên lệch?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c12",
+   "no": "Phụ lục",
+   "title": "Lược thuật tư tưởng thư pháp sau Cách mạng Tân Hợi",
+   "titleZh": "附：辛亥后书法思想的简介",
+   "pages": "162–168",
+   "summary": "Sau khi bỏ khoa cử và nhà Thanh sụp đổ, thư pháp mất chỗ đứng thực dụng nhưng lại được nhìn bằng con mắt mỹ học mới (Lương Khải Siêu, Thái Nguyên Bồi, Lâm Ngữ Đường, Tông Bạch Hoa); giáp cốt, thẻ tre, phong trào cải cách chữ viết và những biến động chính trị thế kỷ XX đều để lại dấu ấn.",
+   "body": [
+    {
+     "t": "p",
+     "x": "Phần phụ lục ngắn này trả lời một câu hỏi người học hôm nay rất cần: thư pháp đã đi từ thế giới của «Quảng nghệ chu song tiếp» đến thế giới của chúng ta như thế nào?"
+    },
+    {
+     "t": "h",
+     "x": "Mất chỗ đứng thực dụng, được chỗ đứng nghệ thuật"
+    },
+    {
+     "t": "p",
+     "x": "Khoa cử bị bãi bỏ (1905), rồi Cách mạng Tân Hợi (1911) chấm dứt nhà Thanh. Trường học mới thay trường tư thục, hàng nghìn người du học, bút sắt phương Tây tiện lợi tràn vào. Thanh niên trí thức mơ cứu nước bằng khoa học và dân chủ, coi “quốc tuý” là cũ kỹ, và thư pháp bị coi là *tiểu nghệ* vô dụng. Những người viết chữ nổi danh đầu thế kỷ phần lớn là người của triều trước như Khang Hữu Vi, Ngô Xương Thạc."
+    },
+    {
+     "t": "p",
+     "x": "Nhưng khi tách khỏi thực dụng, thư pháp dần trở thành một **nghệ thuật chuyên môn** giống như hội hoạ. Kỹ thuật in ảnh làm cho những bảo vật trước kia giá nghìn vàng nay mua được với giá rẻ; bộ sưu tập của nội phủ được đem ra triển lãm. Các hội nghiên cứu thư pháp cũng lần đầu xuất hiện."
+    },
+    {
+     "t": "h",
+     "x": "Những cách nhìn mỹ học mới"
+    },
+    {
+     "t": "p",
+     "x": "Người thực hiện bước ngoặt đầu tiên là **Lương Khải Siêu**, học trò của Khang Hữu Vi. Ông vẫn khuyên học bia Lục triều nhưng không hạ thấp người Đường như thầy. Trong bài nói chuyện tại Đại học Thanh Hoa, ông giải thích vì sao viết chữ là một môn mỹ thuật. Lý do thứ nhất là công cụ: bút lông giàu sức biểu hiện hơn hẳn bút sắt. Lý do thứ hai là chữ có bốn vẻ đẹp: *vẻ đẹp của đường nét*, *vẻ đẹp của ánh sáng* (độ bóng, độ sống của mực), *vẻ đẹp của lực*, và *sự biểu hiện cá tính*. Người xưa từng nói lẻ tẻ từng điều; Lương Khải Siêu gom lại thành một khung rõ ràng, phác ra quy mô của mỹ học thư pháp hiện đại, dù không phát triển thêm."
+    },
+    {
+     "t": "p",
+     "x": "**Thái Nguyên Bồi** không viết chuyên luận về chữ, nhưng ảnh hưởng của ông rất lớn. Khi làm hiệu trưởng Đại học Bắc Kinh, ông giảng mỹ học, chủ trương *lấy giáo dục thẩm mỹ thay tôn giáo*, lập hội thư pháp, và cùng **Thẩm Doãn Mặc** biến Bắc Đại thành trung tâm thư pháp phương Bắc. Thẩm Doãn Mặc lại đi đường khác hẳn Khang, Lương: ông tôn Tấn Đường, lấy Nhị Vương làm đích, viết «Chấp bút ngũ tự pháp» (1943). Công lớn của ông là giữ mạch thư pháp không đứt."
+    },
+    {
+     "t": "p",
+     "x": "Song song là dòng nghiên cứu sử liệu theo lối Hán học: trọng chứng cứ hơn sáng kiến. Mã Tông Hoắc biên «Thư lâm tảo giám» và «Thư lâm kỷ sự» (1935), Chúc Gia viết «Thư học sử» (1940), Dư Thiệu Tống soạn «Thư hoạ thư lục giải đề» khảo thật giả các sách thư hoạ."
+    },
+    {
+     "t": "p",
+     "x": "Phần *luận* về bản chất nghệ thuật của thư pháp thì mỏng hơn, và gương mặt mới mẻ nhất theo tác giả là **Lâm Ngữ Đường**. Trong các sách viết bằng tiếng Anh như «My Country and My People» và «The Gay Genius» (tiểu sử Tô Đông Pha), ông nhìn thư pháp từ tầm văn hoá thế giới: nghệ thuật phương Tây tìm nhịp điệu lý tưởng ở thân thể con người, còn người Trung Hoa rèn cảm thức nhịp điệu qua thư pháp; chữ không tả vật gì cả, nên có thể xem như một thứ *hội hoạ trừu tượng*, đánh giá bằng đường nét và cấu trúc mà gác nghĩa chữ sang bên. Các khái niệm cân bằng, hư thực, hô ứng của thư pháp đã thấm vào thơ, tranh, kiến trúc, nên thư pháp là nền mỹ học của cả dân tộc. **Tông Bạch Hoa** (bài viết năm 1962) và **Chu Quang Tiềm** đi tiếp con đường ấy: thư pháp như âm nhạc, kiến trúc, dùng nét trừu tượng gợi ra sức sống chứ không mô phỏng hình thể."
+    },
+    {
+     "t": "h",
+     "x": "Tư liệu mới và các phong trào chữ thảo"
+    },
+    {
+     "t": "p",
+     "x": "Hai phát hiện khảo cổ làm thay đổi tầm nhìn của người viết chữ hiện đại: **giáp cốt văn** (từ cuối Thanh) và **thẻ tre, thẻ gỗ** đời Hán (những đợt lớn vào thập niên 1930 và 1970). Giáp cốt cho thấy chữ trước thời Chu; còn thẻ tre quý ở chỗ là *bút tích thật* chứ không phải bản khắc. Ảnh hưởng của chúng đến sử học lớn hơn đến sáng tác, nhưng nhờ in ấn, chúng mở rộng biên giới thẩm mỹ và thúc đẩy tinh thần *cầu tân cầu biến*."
+    },
+    {
+     "t": "p",
+     "x": "Một nguồn tác động khác đến từ **phong trào cải cách chữ viết**. Chữ Hán bị cho là quá khó, cản trở giáo dục; có người đòi chuyển sang chữ phiên âm, có người chủ trương giản hoá. Phe giản hoá có hai hướng gắn với thư pháp. Hướng thứ nhất cổ vũ **chương thảo**: Chương Thái Viêm và học trò Tiền Huyền Đồng đề xướng, Trác Định Mưu sưu tập hơn trăm mẫu và viết «Chương thảo khảo». Hướng thứ hai là **tiêu chuẩn thảo thư** của Vu Hữu Nhậm: từ 1932 ông tuyển chữ thảo các đời để định ra một mẫu chuẩn, in thành «Tiêu chuẩn thảo thư» năm 1936. Điều thú vị là mục tiêu cải cách chữ viết dần phai đi, và cả hai phong trào biến thành hoạt động nghệ thuật thuần tuý. Chính chữ Khang Hữu Vi rốt cuộc cũng *không thuộc hẳn bia, không thuộc hẳn thiếp*: thực tế sáng tác đa dạng hơn mọi khẩu hiệu."
+    },
+    {
+     "t": "h",
+     "x": "Thư pháp giữa những biến động chính trị"
+    },
+    {
+     "t": "p",
+     "x": "Sau 1949, hai bờ eo biển đều chịu ảnh hưởng chính trị mạnh. Ở Đài Loan thập niên 1950, với Vu Hữu Nhậm và nhiều danh gia, thư pháp vẫn có một làn sóng sôi nổi. Ở đại lục, các hội nghệ sĩ lần lượt ra đời nhưng chưa có hội thư pháp; hoạt động chủ yếu dựa vào người yêu chữ trong dân gian. Thịnh hành là *Tân Nguỵ thể* và *chữ mỹ thuật* dùng cho khẩu hiệu; trong những năm hỗn loạn, việc viết báo chữ lớn lại khiến nhiều người lần đầu cầm bút lông. Đến thập niên 1980, “cơn sốt thư pháp” lan rộng chưa từng có, gắn với trào lưu “tìm về cội rễ” và khôi phục tinh thần bản thể dân tộc."
+    },
+    {
+     "t": "p",
+     "x": "Tác giả khép sách bằng ý của học giả Hứa Tư Viên: phát huy văn hoá dân tộc phải bắt đầu từ khôi phục cảnh giới nghệ thuật mà gốc là thư pháp. Với người học Việt Nam, phụ lục này gợi một liên hệ gần gũi: chúng ta cũng đã đi qua thời bỏ khoa cử, đổi sang chữ Quốc ngữ, và thư pháp hôm nay sống lại không phải như công cụ ghi chép, mà như một nghệ thuật để tìm lại chiều sâu văn hoá. Câu hỏi của Lương Khải Siêu hay Lâm Ngữ Đường, *chữ đẹp ở đâu khi không còn cần đọc?*, cũng là câu hỏi của chúng ta."
+    },
+    {
+     "t": "terms",
+     "items": [
+      {
+       "hv": "Tiểu nghệ",
+       "zh": "小艺",
+       "vi": "“Nghề nhỏ”: quan niệm coi thư pháp là kỹ năng vụn vặt, phổ biến đầu thế kỷ XX."
+      },
+      {
+       "hv": "Mỹ dục đại tôn giáo",
+       "zh": "美育代宗教",
+       "vi": "Lấy giáo dục thẩm mỹ thay tôn giáo; chủ trương của Thái Nguyên Bồi."
+      },
+      {
+       "hv": "Giáp cốt văn",
+       "zh": "甲骨文",
+       "vi": "Chữ khắc trên mai rùa, xương thú đời Thương; phát hiện cuối Thanh."
+      },
+      {
+       "hv": "Giản độc",
+       "zh": "简牍",
+       "vi": "Thẻ tre, thẻ gỗ có bút tích đời Hán; quý vì là chữ viết trực tiếp."
+      },
+      {
+       "hv": "Chương thảo",
+       "zh": "章草",
+       "vi": "Lối thảo sớm mang dáng lệ, chữ rời nhau; được đề xướng như hướng giản hoá chữ."
+      },
+      {
+       "hv": "Tiêu chuẩn thảo thư",
+       "zh": "标准草书",
+       "vi": "Hệ thống chữ thảo chuẩn hoá do Vu Hữu Nhậm biên soạn (1936)."
+      },
+      {
+       "hv": "Chấp bút ngũ tự pháp",
+       "zh": "执笔五字法",
+       "vi": "Phép cầm bút năm chữ (yếp, áp, câu, cách, để); Thẩm Doãn Mặc phân biệt rõ với phép “bát đăng”."
+      }
+     ]
+    },
+    {
+     "t": "qs",
+     "items": [
+      "Việc bỏ khoa cử vừa làm thư pháp suy, vừa giúp thư pháp thành nghệ thuật chuyên môn. Hãy giải thích nghịch lý này.",
+      "Bốn vẻ đẹp của chữ theo Lương Khải Siêu là gì? Bạn thấy điều nào rõ nhất trong bài viết của chính mình?",
+      "Lâm Ngữ Đường so sánh thư pháp với hội hoạ trừu tượng. Cách nhìn này giúp ích và có hạn chế gì khi áp dụng cho thư pháp chữ Việt?",
+      "Giáp cốt và thẻ tre đã mở rộng tầm nhìn thẩm mỹ của người viết chữ hiện đại như thế nào?"
      ]
     }
    ]

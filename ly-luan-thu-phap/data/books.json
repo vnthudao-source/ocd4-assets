@@ -16,43 +16,50 @@
      "id": "c01",
      "no": "Chương 1",
      "title": "Thư luận đời Hán",
-     "titleZh": "汉代书论"
+     "titleZh": "汉代书论",
+     "ready": false
     },
     {
      "id": "c02",
      "no": "Chương 2",
      "title": "Thư luận Nguỵ Tấn Nam Bắc triều",
-     "titleZh": "魏晋南北朝书论"
+     "titleZh": "魏晋南北朝书论",
+     "ready": false
     },
     {
      "id": "c03",
      "no": "Chương 3",
      "title": "Thư luận đời Đường",
-     "titleZh": "唐代书论"
+     "titleZh": "唐代书论",
+     "ready": false
     },
     {
      "id": "c04",
      "no": "Chương 4",
      "title": "Thư luận đời Tống",
-     "titleZh": "宋代书论"
+     "titleZh": "宋代书论",
+     "ready": false
     },
     {
      "id": "c05",
      "no": "Chương 5",
      "title": "Thư luận đời Nguyên",
-     "titleZh": "元代书论"
+     "titleZh": "元代书论",
+     "ready": false
     },
     {
      "id": "c06",
      "no": "Chương 6",
      "title": "Thư luận đời Minh",
-     "titleZh": "明代书论"
+     "titleZh": "明代书论",
+     "ready": false
     },
     {
      "id": "c07",
      "no": "Chương 7",
      "title": "Thư luận đời Thanh",
-     "titleZh": "清代书论"
+     "titleZh": "清代书论",
+     "ready": false
     }
    ],
    "publisher": "Thủ đô Sư phạm Đại học xuất bản xã",
@@ -388,49 +395,49 @@
      "no": "Chương 6",
      "title": "Bước vào thời đại tự giác",
      "titleZh": "步入自觉的大时代",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c07",
      "no": "Chương 7",
      "title": "Phân dòng lưu phái và đối trĩ học phái",
      "titleZh": "流派的分野与学派的对峙",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c08",
      "no": "Chương 8",
      "title": "Thời đại sùng Vương, trọng pháp",
      "titleZh": "崇王尚法的大时代",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c09",
      "no": "Chương 9",
      "title": "Thời đại trò chơi bút mực",
      "titleZh": "玩墨的游戏时代",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c10",
      "no": "Chương 10",
      "title": "Thời đại sùng bái người khổng lồ khập khiễng",
      "titleZh": "向跛足巨人膜拜的时代",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c11",
      "no": "Chương 11",
      "title": "Thời đại phê phán",
      "titleZh": "批判的时代",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c12",
      "no": "Phụ lục",
      "title": "Lược thuật tư tưởng thư pháp sau Cách mạng Tân Hợi",
      "titleZh": "附：辛亥后书法思想的简介",
-     "ready": false
+     "ready": true
     }
    ]
   },
