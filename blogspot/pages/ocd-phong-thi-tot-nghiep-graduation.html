@@ -52,8 +52,17 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
        trong unlimitedCodes (TEST001) và ADMIN vào được. Bài đã bắt đầu trong khung giờ
        vẫn làm tiếp bình thường dù quá 22:00. Để trống "" = không giới hạn giờ.
     */
-    examWindowStart: "2026-10-30T18:00:00+07:00",
-    examWindowEnd: "2026-10-30T22:00:00+07:00"
+    examWindowStart: "2026-10-31T00:00:00+07:00",
+    examWindowEnd: "2026-10-31T23:00:00+07:00",
+
+    /* Thời gian làm bài (phút) */
+    examMinutes: 90,
+
+    /*
+       ĐỢT THI LÀM LẠI: bài thi / phiên thi bắt đầu TRƯỚC mốc này (đợt cũ) không tính,
+       học viên được thi lại một lần trong đợt mới. Để trống "" = tính mọi bài đã nộp.
+    */
+    roundStart: "2026-10-31T00:00:00+07:00"
 
 };
 </script>
@@ -1470,7 +1479,7 @@ window.OCD_GRADUATION_EXAM_SETTINGS = {
             class="exam-timer"
             id="examTimer"
         >
-            60:00
+            90:00
         </div>
 
     </div>
@@ -1666,10 +1675,14 @@ var UNLIMITED_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.9.2_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.10.0_20_10_2",
 
     durationMs:
-        60*60*1000,
+        (Number(GLOBAL_SETTINGS.examMinutes) > 0 ? Number(GLOBAL_SETTINGS.examMinutes) : 60)*60*1000,
+
+    /* v2.10.0: đợt thi làm lại – bỏ qua bài / phiên thi trước mốc này */
+    roundStartMs:
+        Date.parse(GLOBAL_SETTINGS.roundStart || "") || 0,
 
     /*
        v2.7.0: phần trắc nghiệm = 20 câu chữ + 10 câu hình ảnh
@@ -3768,6 +3781,18 @@ function examHistoryCsvUrl(){
 }
 
 
+/* v2.10.0: thời điểm bắt đầu lấy từ Exam ID (…-yyyyMMddHHmmss, giờ Việt Nam) */
+function examIdStartMs(examId){
+    var m=String(examId||"").match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/);
+    if(!m){ return 0; }
+    return Date.parse(m[1]+"-"+m[2]+"-"+m[3]+"T"+m[4]+":"+m[5]+":"+m[6]+"+07:00") || 0;
+}
+function isOldRound(examId,startedAt){
+    if(!CONFIG.roundStartMs){ return false; }
+    var t=examIdStartMs(examId) || Number(startedAt) || 0;
+    return !!t && t<CONFIG.roundStartMs;
+}
+
 async function findPreviousExam(code){
 
     if(
@@ -3907,6 +3932,17 @@ async function findPreviousExam(code){
                 code
             )
         ){
+
+            if(
+                isOldRound(
+                    valueAt(
+                        row,
+                        examIdCol
+                    )
+                )
+            ){
+                continue;
+            }
 
             var isStart=
                 normalizeCode(
@@ -6113,13 +6149,25 @@ function loadSession(){
                 storageKey()
             );
 
-        return raw
+        var data=
+            raw
             ?
             JSON.parse(
                 raw
             )
             :
             null;
+        /* v2.10.0: phiên của đợt thi cũ không dùng lại */
+        if(
+            data &&
+            isOldRound(
+                data.examId,
+                data.startedAt
+            )
+        ){
+            return null;
+        }
+        return data;
 
     }catch(error){
 

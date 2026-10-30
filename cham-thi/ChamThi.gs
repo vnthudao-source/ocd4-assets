@@ -1,5 +1,5 @@
 /* =========================================================
-   CHẤM THI TỐT NGHIỆP – ChamThi.gs v1.2.1 (30/10/2026)
+   CHẤM THI TỐT NGHIỆP – ChamThi.gs v1.2.2 (30/10/2026)
    Apps Script RIÊNG (project mới, không sửa Code.gs / Auth.gs đang chạy).
 
    CÁCH CÀI (làm một lần):
@@ -50,6 +50,12 @@
    -> sửa -> Phiên bản mới (giữ nguyên URL). Không cần thêm quyền mới.
 
 
+   v1.2.2 (30/10/2026) – đợt làm lại 31/10/2026: thời gian làm bài 90 phút, nên câu 32
+     nhận ảnh trong 90 phút + 10 phút dự phòng tính từ lúc bắt đầu.
+   Nâng cấp từ v1.2.1: dán đè toàn bộ file -> Lưu -> Triển khai -> Quản lý triển khai
+   -> sửa -> Phiên bản mới (giữ nguyên URL). Không cần thêm quyền mới.
+
+
    CHUẨN ĐIỂM (thang 10):
    - Điểm lý thuyết: lấy từ bài thi (BaiThiTotNghiep, trắc nghiệm chấm tự động).
    - Điểm thực hành: TRUNG BÌNH điểm các câu thực hành GVCN chấm (mỗi câu 0–10).
@@ -57,7 +63,7 @@
 ========================================================= */
 
 var CHAM_CONFIG = {
-  version: "CHAM_THI_V1.2.1",
+  version: "CHAM_THI_V1.2.2",
   spreadsheetId: "1GJoTRsbq0kZfZrDdh0uCC667PwS3Bgkje2fHQnwnCKs",
   examSheet: "BaiThiTotNghiep",
   gradingSheet: "ChamThiTotNghiep",
@@ -71,7 +77,7 @@ var CHAM_CONFIG = {
   folderName: "OCD – Thi tốt nghiệp (ảnh bài thi & thẻ thành tích)",
   folderProp: "EXAM_FOLDER_ID",
   maxBytes: 8 * 1024 * 1024,
-  examMinutes: 60,
+  examMinutes: 90,
   graceMinutes: 10,
   maxUploadsPerExam: 5,
 
