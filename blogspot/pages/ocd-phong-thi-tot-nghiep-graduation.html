@@ -1666,7 +1666,7 @@ var UNLIMITED_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.9.1_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.9.2_20_10_2",
 
     durationMs:
         60*60*1000,
@@ -6619,6 +6619,25 @@ async function(){
                 history.done
             );
 
+            return false;
+        }
+        /* v2.9.2: bài đã làm xong trên chính máy này nhưng chưa gửi được lên máy chủ
+           (mất mạng, đóng trang...) -> mở lại kết quả và gửi lại, KHÔNG tạo phiên mới đè lên bài đã làm */
+        if(
+            old &&
+            sessionStatus(
+                old
+            )===
+            "submitted" &&
+            old.result
+        ){
+            STATE.session=
+                old;
+            opened=true;
+            openResultScreen();
+            if(needsRemoteSend(old)){
+                sendResultToGoogleForm();
+            }
             return false;
         }
 
