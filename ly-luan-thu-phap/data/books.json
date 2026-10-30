@@ -200,10 +200,96 @@
    "titleZh": "中国书法史",
    "authors": "Chu Thiên Thự",
    "intro": [
-    "Bộ thông sử thư pháp từ văn tự sơ khai đến cận đại, đi qua các thời kỳ, thư thể và thư gia tiêu biểu.",
-    "Mục lục chi tiết sẽ được cập nhật khi có bản đọc được của sách."
+    "Bộ thông sử thư pháp Trung Hoa từ văn tự sơ khai đến thế kỷ XX, chia thành mười phần theo các thời kỳ phong cách: tượng hình và trang sức, khắc đá Tần Hán, phong độ Nguỵ Tấn, Nam Bắc triều, Tuỳ Đường, Tống, Nguyên, Minh, Thanh và cận hiện đại.",
+    "Mỗi bài giảng ứng với một phần của sách, kèm ảnh bút tích và thác bản cổ."
    ],
-   "chapters": []
+   "chapters": [
+    {
+     "id": "c00",
+     "no": "Dẫn nhập",
+     "title": "Dẫn nhập",
+     "titleZh": "引言",
+     "ready": false
+    },
+    {
+     "id": "c01",
+     "no": "Phần 1",
+     "title": "Tượng hình và trang sức – từ thuở hỗn mang đến lệ biến",
+     "titleZh": "象形与装饰",
+     "ready": false
+    },
+    {
+     "id": "c02",
+     "no": "Phần 2",
+     "title": "Sắc màu khắc đá – thư pháp đời Tần, Hán",
+     "titleZh": "刻石异彩",
+     "ready": false
+    },
+    {
+     "id": "c03",
+     "no": "Phần 3",
+     "title": "Phong độ Nguỵ Tấn",
+     "titleZh": "魏晋风度",
+     "ready": false
+    },
+    {
+     "id": "c04",
+     "no": "Phần 4",
+     "title": "Nam diễm, Bắc chất – thư pháp Nam Bắc triều",
+     "titleZh": "南妍北质",
+     "ready": false
+    },
+    {
+     "id": "c05",
+     "no": "Phần 5",
+     "title": "Khuôn phép thời thịnh thế – Tuỳ, Đường, Ngũ Đại",
+     "titleZh": "盛世的典则",
+     "ready": false
+    },
+    {
+     "id": "c06",
+     "no": "Phần 6",
+     "title": "Ý thú và diệu lý – thư pháp đời Tống",
+     "titleZh": "意趣与妙理",
+     "ready": false
+    },
+    {
+     "id": "c07",
+     "no": "Phần 7",
+     "title": "Gió phục cổ – thư pháp đời Nguyên",
+     "titleZh": "复古之风",
+     "ready": false
+    },
+    {
+     "id": "c08",
+     "no": "Phần 8",
+     "title": "Trường phái và trào lưu tư tưởng – thư pháp đời Minh",
+     "titleZh": "流派思潮",
+     "ready": false
+    },
+    {
+     "id": "c09",
+     "no": "Phần 9",
+     "title": "Thời đại bi học trỗi dậy – thư pháp đời Thanh",
+     "titleZh": "碑学兴起的时代",
+     "ready": false
+    },
+    {
+     "id": "c10",
+     "no": "Phần 10",
+     "title": "Khí tượng đa nguyên – thư pháp cận hiện đại",
+     "titleZh": "多元气象",
+     "ready": false
+    },
+    {
+     "id": "c11",
+     "no": "Phụ lục",
+     "title": "Thư pháp – tiêu bản nghệ thuật của văn hoá Trung Hoa",
+     "titleZh": "书法是中国文化的艺术标本",
+     "ready": false
+    }
+   ],
+   "publisher": "Văn hoá Nghệ thuật xuất bản xã"
   },
   {
    "id": "tu-tuong-su",
