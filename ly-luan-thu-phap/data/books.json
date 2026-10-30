@@ -17,49 +17,49 @@
      "no": "Chương 1",
      "title": "Thư luận đời Hán",
      "titleZh": "汉代书论",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c02",
      "no": "Chương 2",
      "title": "Thư luận Nguỵ Tấn Nam Bắc triều",
      "titleZh": "魏晋南北朝书论",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c03",
      "no": "Chương 3",
      "title": "Thư luận đời Đường",
      "titleZh": "唐代书论",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c04",
      "no": "Chương 4",
      "title": "Thư luận đời Tống",
      "titleZh": "宋代书论",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c05",
      "no": "Chương 5",
      "title": "Thư luận đời Nguyên",
      "titleZh": "元代书论",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c06",
      "no": "Chương 6",
      "title": "Thư luận đời Minh",
      "titleZh": "明代书论",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c07",
      "no": "Chương 7",
      "title": "Thư luận đời Thanh",
      "titleZh": "清代书论",
-     "ready": false
+     "ready": true
     }
    ],
    "publisher": "Thủ đô Sư phạm Đại học xuất bản xã",
@@ -458,175 +458,204 @@
      "id": "c01",
      "no": "Bài 1",
      "title": "Bàn về nguồn mạch thư học",
-     "titleZh": "书学源流论"
+     "titleZh": "书学源流论",
+     "ready": false
     },
     {
      "id": "c02",
      "no": "Bài 2",
      "title": "Ghi chép khi hiệu khám «Thuần Hoá các thiếp»",
-     "titleZh": "校《淳化阁帖》记"
+     "titleZh": "校《淳化阁帖》记",
+     "ready": false
     },
     {
      "id": "c03",
      "no": "Bài 3",
      "title": "Đôi điều tự đắc nơi ao mực",
-     "titleZh": "临池一得"
+     "titleZh": "临池一得",
+     "ready": false
     },
     {
      "id": "c04",
      "no": "Bài 4",
      "title": "Tuyệt cú luận thư",
-     "titleZh": "论书绝句"
+     "titleZh": "论书绝句",
+     "ready": false
     },
     {
      "id": "c05",
      "no": "Bài 5",
      "title": "Bàn về văn nghệ",
-     "titleZh": "文艺篇"
+     "titleZh": "文艺篇",
+     "ready": false
     },
     {
      "id": "c06",
      "no": "Bài 6",
      "title": "Chín mươi tắc đề bạt thư hoạ",
-     "titleZh": "书画题跋九十则"
+     "titleZh": "书画题跋九十则",
+     "ready": false
     },
     {
      "id": "c07",
      "no": "Bài 7",
      "title": "Nhìn qua ống trúc pháp thư Nhị Vương – kinh nghiệm học chữ Vương",
-     "titleZh": "二王法书管窥——关于学习王字的经验谈"
+     "titleZh": "二王法书管窥——关于学习王字的经验谈",
+     "ready": false
     },
     {
      "id": "c08",
      "no": "Bài 8",
      "title": "Bàn về thư pháp",
-     "titleZh": "书法论"
+     "titleZh": "书法论",
+     "ready": false
     },
     {
      "id": "c09",
      "no": "Bài 9",
      "title": "Thích nghĩa kinh nghiệm học chữ của các danh gia (I)",
-     "titleZh": "历代名家学书经验谈辑要释义（一）"
+     "titleZh": "历代名家学书经验谈辑要释义（一）",
+     "ready": false
     },
     {
      "id": "c10",
      "no": "Bài 10",
      "title": "Thích nghĩa kinh nghiệm học chữ của các danh gia (II)",
-     "titleZh": "历代名家学书经验谈辑要释义（二）"
+     "titleZh": "历代名家学书经验谈辑要释义（二）",
+     "ready": false
     },
     {
      "id": "c11",
      "no": "Bài 11",
      "title": "Mười bảy tắc tạp ký thư hoạ",
-     "titleZh": "书画札记十七则"
+     "titleZh": "书画札记十七则",
+     "ready": false
     },
     {
      "id": "c12",
      "no": "Bài 12",
      "title": "Thuật yếu thư pháp",
-     "titleZh": "书法述要"
+     "titleZh": "书法述要",
+     "ready": false
     },
     {
      "id": "c13",
      "no": "Bài 13",
      "title": "Bàn về ấn đời Tần",
-     "titleZh": "谈秦印"
+     "titleZh": "谈秦印",
+     "ready": false
     },
     {
      "id": "c14",
      "no": "Bài 14",
      "title": "Các giai đoạn hình thành ấn học",
-     "titleZh": "印学形成的几个阶段"
+     "titleZh": "印学形成的几个阶段",
+     "ready": false
     },
     {
      "id": "c15",
      "no": "Bài 15",
      "title": "Bước đầu tìm hiểu cách cầm bút thời cổ",
-     "titleZh": "古代书法执笔初探"
+     "titleZh": "古代书法执笔初探",
+     "ready": false
     },
     {
      "id": "c16",
      "no": "Bài 16",
      "title": "Thể viết và thể khắc trong bút tích Lưỡng Tấn Nam Bắc triều – mấu chốt cuộc tranh luận «Lan Đình»",
-     "titleZh": "两晋南北朝书迹的写体与刻体——兰亭帖争论的关键问题"
+     "titleZh": "两晋南北朝书迹的写体与刻体——兰亭帖争论的关键问题",
+     "ready": false
     },
     {
      "id": "c17",
      "no": "Bài 17",
      "title": "Bốn tắc tạp ký thư hoạ",
-     "titleZh": "书画札记四则"
+     "titleZh": "书画札记四则",
+     "ready": false
     },
     {
      "id": "c18",
      "no": "Bài 18",
      "title": "Ba tắc đề bạt thư pháp",
-     "titleZh": "书法题跋三则"
+     "titleZh": "书法题跋三则",
+     "ready": false
     },
     {
      "id": "c19",
      "no": "Bài 19",
      "title": "Khải thư – chuẩn chính tự từ thời trung cổ về sau",
-     "titleZh": "楷书为中古以后正字标准"
+     "titleZh": "楷书为中古以后正字标准",
+     "ready": false
     },
     {
      "id": "c20",
      "no": "Bài 20",
      "title": "Cương lĩnh «tân thiếp học»: ba hệ thống triển khai",
-     "titleZh": "书法“新帖学”论纲：三个系列的展开"
+     "titleZh": "书法“新帖学”论纲：三个系列的展开",
+     "ready": false
     },
     {
      "id": "c21",
      "no": "Bài 21",
      "title": "Nhận thức bước đầu về «phép cầm bút» trong thư luận",
-     "titleZh": "书论中关于“执笔法”论述的初步认识"
+     "titleZh": "书论中关于“执笔法”论述的初步认识",
+     "ready": false
     },
     {
      "id": "c22",
      "no": "Bài 22",
      "title": "Giá trị bản thể của bút pháp",
-     "titleZh": "论书法笔法的本体价值"
+     "titleZh": "论书法笔法的本体价值",
+     "ready": false
     },
     {
      "id": "c23",
      "no": "Bài 23",
      "title": "Từ biến đổi nhận thức bản thể luận nhìn mô thức sáng tác thư pháp sắp tới",
-     "titleZh": "从书法本体论认识的变化看今后书法创作的模式和走向"
+     "titleZh": "从书法本体论认识的变化看今后书法创作的模式和走向",
+     "ready": false
     },
     {
      "id": "c24",
      "no": "Bài 24",
      "title": "Khảo lược danh xưng người trong thư trát của Vương Hi Chi, Vương Hiến Chi",
-     "titleZh": "王羲之、王献之书札所见人名称谓略考"
+     "titleZh": "王羲之、王献之书札所见人名称谓略考",
+     "ready": false
     },
     {
      "id": "c25",
      "no": "Bài 25",
      "title": "Thiển kiến về «tự thể» và «thư thể»",
-     "titleZh": "“字体”“书体”之浅见"
+     "titleZh": "“字体”“书体”之浅见",
+     "ready": false
     },
     {
      "id": "c26",
      "no": "Bài 26",
      "title": "Ức thuyết về hiện đại hoá thư pháp",
-     "titleZh": "书法现代化臆说"
+     "titleZh": "书法现代化臆说",
+     "ready": false
     },
     {
      "id": "c27",
      "no": "Bài 27",
      "title": "Bàn về sáng tác thư pháp – kiêm bàn các vấn đề phong cách",
-     "titleZh": "书法创作论——兼及书法创作的风格诸问题"
+     "titleZh": "书法创作论——兼及书法创作的风格诸问题",
+     "ready": false
     },
     {
      "id": "c28",
      "no": "Bài 28",
      "title": "Cường hoá hình thức và đại chúng hoá nghệ thuật – đặc trưng và hướng đi của thư pháp hiện đại",
-     "titleZh": "形式强化和艺术大众化——现代书法的特征与走向"
+     "titleZh": "形式强化和艺术大众化——现代书法的特征与走向",
+     "ready": false
     },
     {
      "id": "c29",
      "no": "Bài 29",
      "title": "Mấy vấn đề về xây dựng ngành học nghệ thuật triện khắc",
-     "titleZh": "关于篆刻艺术学科建设的若干问题"
+     "titleZh": "关于篆刻艺术学科建设的若干问题",
+     "ready": false
     }
    ]
   },
