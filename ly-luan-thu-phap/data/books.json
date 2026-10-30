@@ -8,10 +8,55 @@
    "titleZh": "中国书法理论纲要",
    "authors": "Vương Thế Chinh, Vân Chí Công",
    "intro": [
-    "Giáo trình hệ thống về các vấn đề cơ bản của lý luận thư pháp: bản chất, hình thức và nội dung, sáng tác, thưởng thức và phê bình.",
-    "Mục lục chi tiết sẽ được cập nhật khi có bản đọc được của sách."
+    "Giáo trình đi qua các văn bản thư luận tiêu biểu từ đời Hán đến cuối Thanh: Dương Hùng, Thái Ung, Vệ phu nhân, Vương Hi Chi, Tôn Quá Đình, Trương Hoài Quán, Tô Thức, Hoàng Đình Kiên, Khương Quỳ, Triệu Mạnh Phủ, Hạng Mục, Đổng Kỳ Xương, Phó Sơn, Bao Thế Thần, Lưu Hi Tái, Khang Hữu Vi…",
+    "Mỗi bài giảng ứng với một chương (một triều đại); các câu thư luận cổ được dẫn nguyên văn, âm Hán-Việt và dịch trọn."
    ],
-   "chapters": []
+   "chapters": [
+    {
+     "id": "c01",
+     "no": "Chương 1",
+     "title": "Thư luận đời Hán",
+     "titleZh": "汉代书论"
+    },
+    {
+     "id": "c02",
+     "no": "Chương 2",
+     "title": "Thư luận Nguỵ Tấn Nam Bắc triều",
+     "titleZh": "魏晋南北朝书论"
+    },
+    {
+     "id": "c03",
+     "no": "Chương 3",
+     "title": "Thư luận đời Đường",
+     "titleZh": "唐代书论"
+    },
+    {
+     "id": "c04",
+     "no": "Chương 4",
+     "title": "Thư luận đời Tống",
+     "titleZh": "宋代书论"
+    },
+    {
+     "id": "c05",
+     "no": "Chương 5",
+     "title": "Thư luận đời Nguyên",
+     "titleZh": "元代书论"
+    },
+    {
+     "id": "c06",
+     "no": "Chương 6",
+     "title": "Thư luận đời Minh",
+     "titleZh": "明代书论"
+    },
+    {
+     "id": "c07",
+     "no": "Chương 7",
+     "title": "Thư luận đời Thanh",
+     "titleZh": "清代书论"
+    }
+   ],
+   "publisher": "Thủ đô Sư phạm Đại học xuất bản xã",
+   "year": "2002"
   },
   {
    "id": "thu-phap-nghien-cuu-1",
