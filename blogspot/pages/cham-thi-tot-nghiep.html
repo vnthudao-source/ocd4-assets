@@ -2427,15 +2427,17 @@ function parseCSV(text){
    SHEET URL
 ========================================================= */
 
+/* v-fix 30/10/2026: đọc bằng export CSV theo gid (giá trị hiển thị của MỌI ô).
+   gviz bỏ trống các ô khác kiểu với đa số trong cột (vd. điểm 8 dạng số giữa 6.67 dạng chữ). */
+var SHEET_GIDS={BaiThiTotNghiep:"60957786",ChamThiTotNghiep:"1476302274"};
 function sheetUrl(sheetName){
-
+    var gid=SHEET_GIDS[sheetName];
     return (
         "https://docs.google.com/spreadsheets/d/" +
         CONFIG.spreadsheetId +
-        "/gviz/tq?tqx=out:csv&sheet=" +
-        encodeURIComponent(
-            sheetName
-        ) +
+        (gid
+            ? "/export?format=csv&gid=" + gid
+            : "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(sheetName)) +
         "&_=" +
         Date.now()
     );

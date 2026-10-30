@@ -1666,7 +1666,7 @@ var UNLIMITED_CODES =
 var CONFIG={
 
     version:
-        "OCD_GRADUATION_EXAM_V2.9.0_20_10_2",
+        "OCD_GRADUATION_EXAM_V2.9.1_20_10_2",
 
     durationMs:
         60*60*1000,
@@ -3751,15 +3751,17 @@ function submissionCsvUrl(){
    EXAM HISTORY
 ========================================================= */
 
+/* v-fix 30/10/2026: đọc bằng export CSV theo gid (giá trị hiển thị của MỌI ô).
+   gviz bỏ trống các ô khác kiểu với đa số trong cột (vd. điểm 8 dạng số giữa 6.67 dạng chữ). */
+var SHEET_GIDS={BaiThiTotNghiep:"60957786",ChamThiTotNghiep:"1476302274"};
 function examHistoryCsvUrl(){
-
+    var gid=SHEET_GIDS[CONFIG.examSheetName];
     return (
         "https://docs.google.com/spreadsheets/d/" +
         CONFIG.examSpreadsheetId +
-        "/gviz/tq?tqx=out:csv&sheet=" +
-        encodeURIComponent(
-            CONFIG.examSheetName
-        ) +
+        (gid
+            ? "/export?format=csv&gid=" + gid
+            : "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(CONFIG.examSheetName)) +
         "&cb=" +
         Date.now()
     );
