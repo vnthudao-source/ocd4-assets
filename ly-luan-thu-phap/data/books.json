@@ -209,84 +209,84 @@
      "no": "Dẫn nhập",
      "title": "Dẫn nhập",
      "titleZh": "引言",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c01",
      "no": "Phần 1",
      "title": "Tượng hình và trang sức – từ thuở hỗn mang đến lệ biến",
      "titleZh": "象形与装饰",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c02",
      "no": "Phần 2",
      "title": "Sắc màu khắc đá – thư pháp đời Tần, Hán",
      "titleZh": "刻石异彩",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c03",
      "no": "Phần 3",
      "title": "Phong độ Nguỵ Tấn",
      "titleZh": "魏晋风度",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c04",
      "no": "Phần 4",
      "title": "Nam diễm, Bắc chất – thư pháp Nam Bắc triều",
      "titleZh": "南妍北质",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c05",
      "no": "Phần 5",
      "title": "Khuôn phép thời thịnh thế – Tuỳ, Đường, Ngũ Đại",
      "titleZh": "盛世的典则",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c06",
      "no": "Phần 6",
      "title": "Ý thú và diệu lý – thư pháp đời Tống",
      "titleZh": "意趣与妙理",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c07",
      "no": "Phần 7",
      "title": "Gió phục cổ – thư pháp đời Nguyên",
      "titleZh": "复古之风",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c08",
      "no": "Phần 8",
      "title": "Trường phái và trào lưu tư tưởng – thư pháp đời Minh",
      "titleZh": "流派思潮",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c09",
      "no": "Phần 9",
      "title": "Thời đại bi học trỗi dậy – thư pháp đời Thanh",
      "titleZh": "碑学兴起的时代",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c10",
      "no": "Phần 10",
      "title": "Khí tượng đa nguyên – thư pháp cận hiện đại",
      "titleZh": "多元气象",
-     "ready": false
+     "ready": true
     },
     {
      "id": "c11",
      "no": "Phụ lục",
      "title": "Thư pháp – tiêu bản nghệ thuật của văn hoá Trung Hoa",
      "titleZh": "书法是中国文化的艺术标本",
-     "ready": false
+     "ready": true
     }
    ],
    "publisher": "Văn hoá Nghệ thuật xuất bản xã"

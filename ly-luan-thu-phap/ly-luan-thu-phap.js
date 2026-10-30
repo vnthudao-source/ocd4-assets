@@ -73,7 +73,7 @@ var LL = (function () {
       case 'people': return '<table class="ll-bang"><thead><tr><th>Nhân vật</th><th>Thời đại</th><th>Ghi chú</th></tr></thead><tbody>'
         + k.items.map(function (i) { return '<tr><td><b>' + esc(i.name) + '</b>' + (i.zh ? ' <span class="zh" lang="zh">' + esc(i.zh) + '</span>' : '') + '</td><td>' + esc(i.years || '') + '</td><td>' + inl(i.note || '') + '</td></tr>'; }).join('') + '</tbody></table>';
       case 'img': return '<figure class="ll-hinh"><img loading="lazy" onerror="this.parentNode.style.display=\'none\'" src="' + esc(/^https?:/.test(k.src) ? k.src : BASE + k.src) + '" alt="' + esc(k.cap) + '"><figcaption>' + inl(k.cap)
-        + (k.link ? ' · <a href="' + esc(k.link) + '" target="_blank" rel="noopener">' + esc(k.credit || 'Nguồn ảnh') + '</a>' : '') + '</figcaption></figure>';
+        + (k.link ? ' · <a href="' + esc(k.link) + '" target="_blank" rel="noopener">' + esc(k.credit || 'Nguồn ảnh') + '</a>' : (k.credit ? ' · ' + esc(k.credit) : '')) + '</figcaption></figure>';
       case 'qs': return '<div class="ll-hoi"><b>Câu hỏi ôn tập</b><ol>' + k.items.map(function (q) { return '<li>' + inl(q) + '</li>'; }).join('') + '</ol></div>';
       default: return '';
     }
