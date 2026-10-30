@@ -645,10 +645,143 @@
    "publisher": "Chiết Giang Đại học xuất bản xã",
    "year": "2007",
    "intro": [
-    "Gồm ba phần hội hoạ, thư pháp và triện khắc: nghiên cứu mỹ thuật thời Dân Quốc, hội hoạ Tống – Nguyên – Minh, học thuật thư pháp, thư gia và lưu phái, kim thạch triện khắc.",
-    "Mục lục chi tiết từng bài sẽ được cập nhật dần."
+    "Quyển hạ gồm nghiên cứu của giảng viên, nghiên cứu sinh Viện Nghệ thuật Đại học Chiết Giang (2001–2006).",
+    "Tủ sách chọn 22 bài thuộc hai phần Thư pháp và Triện khắc: ngành thư pháp học, thuật ngữ thư luận, Nhan Chân Khanh, Hoàng Đình Kiên, Chu Hi, Sa Mạnh Hải, Lục Duy Chiêu, học viện phái, Trần Giới Kỳ, Tây Linh ấn xã, đao pháp và giám định. Phần hội hoạ không đưa vào."
    ],
-   "chapters": []
+   "chapters": [
+    {
+     "id": "c01",
+     "no": "Bài 1",
+     "title": "Nghiên cứu thư học trong môi trường «tân học thuật» đầu thế kỷ XX",
+     "titleZh": "20世纪前叶中国“新学术”环境下的书学研究"
+    },
+    {
+     "id": "c02",
+     "no": "Bài 2",
+     "title": "Sự xác lập ý thức ngành học thư pháp qua nội hàm hai từ «thư học» và «thư pháp học»",
+     "titleZh": "从“书学”“书法学”之语词内涵看书法学科意识的确立"
+    },
+    {
+     "id": "c03",
+     "no": "Bài 3",
+     "title": "Khảo cổ học Trung Quốc thế kỷ XX và hướng nghiên cứu thư pháp học",
+     "titleZh": "20世纪中国考古学与书法学之研究构想"
+    },
+    {
+     "id": "c04",
+     "no": "Bài 4",
+     "title": "Hai chiều thẩm mỹ của tư tưởng «xú học» trong thư pháp",
+     "titleZh": "论书法丑学思想的两个审美维度"
+    },
+    {
+     "id": "c05",
+     "no": "Bài 5",
+     "title": "Vấn đề «phì – sấu» trong thuật ngữ lý luận thư pháp cổ điển",
+     "titleZh": "古典书法理论术语中的“肥瘦”问题试析"
+    },
+    {
+     "id": "c06",
+     "no": "Bài 6",
+     "title": "Tổng thuật tình hình nghiên cứu thư pháp Nhan Chân Khanh",
+     "titleZh": "颜真卿书法研究现状综述"
+    },
+    {
+     "id": "c07",
+     "no": "Bài 7",
+     "title": "«Đẩu tẩu»: một cách hiểu sai về Hoàng Đình Kiên",
+     "titleZh": "“抖擞”：对黄庭坚的误读"
+    },
+    {
+     "id": "c08",
+     "no": "Bài 8",
+     "title": "Tổng thuật các luận văn nghiên cứu thư pháp Hoàng Đình Kiên từ thập niên 1980",
+     "titleZh": "关于20世纪80年代以来黄庭坚书法研究论文的综述"
+    },
+    {
+     "id": "c09",
+     "no": "Bài 9",
+     "title": "Thái độ thư pháp của Chu Hi",
+     "titleZh": "朱熹的书法态度"
+    },
+    {
+     "id": "c10",
+     "no": "Bài 10",
+     "title": "Thư phẩm, nhân phẩm và thú thẩm mỹ của Tăng Hi",
+     "titleZh": "曾熙的书品、人品与审美情趣"
+    },
+    {
+     "id": "c11",
+     "no": "Bài 11",
+     "title": "Gương cổ soi thần – bàn về nghiên cứu lý luận thư học của Sa Mạnh Hải",
+     "titleZh": "古镜照神——浅论沙孟海的书学理论研究"
+    },
+    {
+     "id": "c12",
+     "no": "Bài 12",
+     "title": "Nghiên cứu việc dạy thư pháp, triện khắc của Lục Duy Chiêu",
+     "titleZh": "陆维钊书法篆刻教学研究"
+    },
+    {
+     "id": "c13",
+     "no": "Bài 13",
+     "title": "Phân tích nguyên nhân thành công của thư pháp học viện phái",
+     "titleZh": "学院派书法成功原因分析"
+    },
+    {
+     "id": "c14",
+     "no": "Bài 14",
+     "title": "Từ nghiên cứu thư pháp học viện phái đến suy nghĩ về phương pháp nghiên cứu lịch sử lưu phái thư pháp đương đại",
+     "titleZh": "从学院派书法研究引向对当代书法流派史研究方法的思考"
+    },
+    {
+     "id": "c15",
+     "no": "Bài 15",
+     "title": "Giá trị thư pháp học của «Đôn Hoàng tục tự điển»",
+     "titleZh": "《敦煌俗字典》的书法学价值"
+    },
+    {
+     "id": "c16",
+     "no": "Bài 16",
+     "title": "Tư tưởng truyền cổ của Trần Giới Kỳ và việc dùng nhiếp ảnh phương Tây",
+     "titleZh": "论陈介祺的传古思想及西洋照相术的使用"
+    },
+    {
+     "id": "c17",
+     "no": "Bài 17",
+     "title": "Nhận thức của Trần Giới Kỳ về cổ tỉ qua cách biên «Thập Chung sơn phòng ấn cử»",
+     "titleZh": "从《十钟山房印举》的编例看陈介祺对古玺的认识"
+    },
+    {
+     "id": "c18",
+     "no": "Bài 18",
+     "title": "Ý nghĩa của khái niệm «kim thạch thư hoạ gia» trong lịch sử ban đầu của Tây Linh ấn xã",
+     "titleZh": "“金石书画家”概念的提出在西泠印社早期社史中的意义"
+    },
+    {
+     "id": "c19",
+     "no": "Bài 19",
+     "title": "Khảo lược những người tài trợ thời đầu của Tây Linh ấn xã",
+     "titleZh": "杭州西泠印社早期赞助人简考"
+    },
+    {
+     "id": "c20",
+     "no": "Bài 20",
+     "title": "Đóng góp của các đời xã trưởng vào bước chuyển hiện đại của Tây Linh ấn xã",
+     "titleZh": "历任社长对西泠印社现代转型的贡献"
+    },
+    {
+     "id": "c21",
+     "no": "Bài 21",
+     "title": "Nếu hội thông được thì đạo cùng một mối – ba khuynh hướng đao pháp triện khắc văn nhân",
+     "titleZh": "苟能会通，道均一贯——文人篆刻刀法的三种取向"
+    },
+    {
+     "id": "c22",
+     "no": "Bài 22",
+     "title": "Nghiên cứu các trường phái giám định thư hoạ đương đại Trung Quốc",
+     "titleZh": "当代中国书画鉴定学派研究"
+    }
+   ]
   }
  ]
 }
