@@ -14,7 +14,7 @@
 (function(){
 "use strict";
 if(window.OCDSubmitWork) return;
-window.OCDSubmitWork={version:"1.2.1"};
+window.OCDSubmitWork={version:"1.2.2"};
 
 const DEFAULT_API="https://script.google.com/macros/s/AKfycbwtMkodKNVrUgVWhpvhwMndPZKBrdWD4OF0XoR4i5poQsxRkEDLIkm56-MTxuOCVW9JXA/exec";
 const MAX_SIDE=2000, QUALITY=0.86, TIMEOUT=120000;
@@ -279,11 +279,24 @@ async function openModal(){
         submit.disabled=true; submit.textContent="ĐANG GỬI BÀI…";
         say(msg,"Đang gửi ảnh, vui lòng không đóng trang…","info");
         const A=auth();
-        const r=await send({token:A&&A.token()?A.token():"",code:v.code,lesson:lesson,note:n,data:picked});
+        const payload={token:A&&A.token()?A.token():"",code:v.code,lesson:lesson,note:n,data:picked};
+        /* v1.2.2: máy chủ bận (nhiều bạn nộp cùng lúc, Apps Script xếp hàng) -> tự gửi lại tối đa 3 lần,
+           không bắt học viên bấm lại; ảnh trùng không bị ghi hai lần nên gửi lại là an toàn */
+        let r=null;
+        for(let attempt=1;attempt<=4;attempt++){
+            r=await send(payload);
+            if(r && r.busy && attempt<4){
+                say(msg,"Máy chủ đang bận vì nhiều bạn nộp cùng lúc. Đang tự gửi lại (lần "+attempt+"/3), vui lòng giữ trang mở…","info");
+                await new Promise(function(ok){ setTimeout(ok,4000+attempt*2000); });
+                continue;
+            }
+            break;
+        }
         submit.disabled=false; submit.textContent="GỬI BÀI";
         if(!r || !r.ok){
             let e=(r&&r.error)||"Chưa gửi được bài. Vui lòng thử lại.";
-            if(!r || (!r.op && !r.network)) e="Máy chủ chưa nhận lệnh nộp bài mới (Apps Script cần bản Auth.gs v1.6.2 và triển khai phiên bản mới). Máy chủ trả lời: \""+((r&&r.error)||"không rõ")+"\"";
+            if(r && r.busy) e="Máy chủ vẫn đang bận sau 3 lần gửi lại. Vui lòng đợi khoảng một phút rồi bấm GỬI BÀI lần nữa (bài trùng sẽ không bị ghi hai lần).";
+            else if(!r || (!r.op && !r.network)) e="Máy chủ chưa nhận lệnh nộp bài mới (Apps Script cần bản Auth.gs v1.6.2 và triển khai phiên bản mới). Máy chủ trả lời: \""+((r&&r.error)||"không rõ")+"\"";
             say(msg,e); return;
         }
         body.innerHTML="";
